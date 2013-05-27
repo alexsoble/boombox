@@ -1,0 +1,31 @@
+<!--- <div class="video-box centerbox"><iframe width="420" height="315" src="http://www.youtube.com/embed/<%= @video.url.slice(31,11) %>" frameborder="0" allowfullscreen></iframe></div>  -->
+
+<div class="video-box centerbox"><div id="show-video-box"></div></div>
+
+<div class="lyrics-box centerbox" id="lyrics">
+  <% @lines.each do |l| %>
+
+    <div class="wide-lyrics-container" id="<%= l.time %>">
+      <div class="text-container">
+        <p class="lyrics"><%= l.lang1 %></p>
+      </div>
+    </div>
+
+<!---
+      <div class="container lyrics-container lang2">
+        <div class="text-container">
+          <p class="white-text"><%= l.lang2 %></p>
+        </div>
+      </div>
+
+-->
+
+<!---    <div class="button-container">
+      <i class="icon-thumbs-up"></i><i class="icon-thumbs-down"></i><i class="icon-comment-alt"></i>
+    </div>
+
+-->
+
+  <% end %>
+
+</div>

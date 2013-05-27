@@ -1,0 +1,90 @@
+/*
+ * This is a manifest file that'll be compiled into application.css, which will include all the files
+ * listed below.
+ *
+ * Any CSS and SCSS file within this directory, lib/assets/stylesheets, vendor/assets/stylesheets,
+ * or vendor/assets/stylesheets of plugins, if any, can be referenced here using a relative path.
+ *
+ * You're free to add application-wide styles to this file and they'll appear at the top of the
+ * compiled file, but it's generally better to create a new file per style scope.
+ *
+ *= require_self
+ *= require_tree .
+ */
+
+/*** MULTIPLE PAGES (VIDEOS) ***/
+
+.centerbox {
+  margin-right: auto; 
+  margin-left: auto; 
+  width: 420px; 
+  overflow: scroll;
+}
+.video-box {
+  height: 320px;
+}
+
+/*** INDEX PAGE (VIDEOS) ***/
+
+.video-thumb-box {
+  width: 180px;
+  margin-right: 40px;
+  float: left;
+}
+
+/*** NEW PAGE (VIDEOS) ***/
+
+.very-wide-box {
+  width: 600px;
+  text-align: center;
+}
+.translate-new-video-box {
+  height: 1000px;
+}
+.language-option {
+  color: black;
+}
+.left-container {
+  width: 190px;
+  margin: 0;
+}
+.right-container {
+  width: 190px;
+  float: right;
+  margin: 0;
+}
+
+/*** SHOW PAGE (VIDEOS) ***/
+
+.lyrics-box {
+  height: 60px;
+}
+.wide-lyrics-container {
+  width: 420px;
+  height: 60px;
+  float: left; 
+  margin-top: 1px;
+  margin-bottom: 1px;
+  background-color: #0101DF;
+  border-top: 1px solid white 
+}
+.text-container {
+  float: left;
+  width: 400px;
+}
+.lang2 {
+  background-color: #013ADF;
+}
+.button-container {
+  background-color: white;
+  float: right;
+  width: 10px;
+  border-top: 2px solid white 
+}
+p {
+  color: black;
+}
+.lyrics {
+  color: white;
+  text-align: center;
+}

@@ -1,0 +1,17 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/Fixtures.html
+
+one:
+  lang1: MyString
+  lang2: MyString
+  time: 1
+  upvotes: 1
+  downvotes: 1
+  interpretation_id: 1
+
+two:
+  lang1: MyString
+  lang2: MyString
+  time: 1
+  upvotes: 1
+  downvotes: 1
+  interpretation_id: 1

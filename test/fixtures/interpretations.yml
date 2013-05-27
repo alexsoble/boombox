@@ -1,0 +1,11 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/Fixtures.html
+
+one:
+  lang1: MyString
+  lang2: MyString
+  video_id: 1
+
+two:
+  lang1: MyString
+  lang2: MyString
+  video_id: 1
