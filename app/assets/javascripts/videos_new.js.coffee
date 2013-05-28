@@ -33,36 +33,10 @@ $ ->
     console.log "user_url = #{user_url}"
     youtube_id = "#{user_url}".replace "http://www.youtube.com/watch?v=", ""
     console.log "youtube_id = #{youtube_id}"
-    if window.keyup isnt 1
 
+    if window.keyup isnt 1
       window.keyup = 1
       console.log "keyup = #{keyup}"
-      
-      onYouTubeIframeAPIReady = ->
-        player = new YT.Player("new-video-box",
-          height: '315'
-          width: '420'
-          videoId: "#{youtube_id}"
-          events:
-            onReady: onPlayerReady
-            onStateChange: onPlayerStateChange)
-
-      onPlayerReady = (event) ->
-        event.target.playVideo()
-
-      done = false
-      onPlayerStateChange = (event) ->
-        if event.data is YT.PlayerState.PLAYING and not done
-          setTimeout stopVideo, 6000
-          done = true
-
-      stopVideo = ->
-        player.stopVideo()
-
-      tag = document.createElement('script')
-      tag.src = "https://www.youtube.com/iframe_api"
-      firstScriptTag = document.getElementsByTagName('script')[0]
-      firstScriptTag.parentNode.insertBefore(tag, firstScriptTag)
 
       $('#video-language-dropdown').html('<ul class="nav nav-pills"> <li class="dropdown"> <a href="#" data-toggle="dropdown" class="dropdown-toggle">Video language: <b class="caret"></b></a> <ul class="dropdown-menu" id="menu1">  <li><a class="language-video-option" id="English">English</a></li> <li><a class="language-video-option" id="Spanish">Spanish</a></li> <li><a class="language-video-option" id="Chinese">Chinese</a></li> <li><a class="language-video-option" id="French">French</a></li> <li><a class="language-video-option" id="Norwegian">Norwegian</a></li> <li><a class="language-video-option" id="Hindi">Hindi</a></li> <li><a class="language-video-option" id="Korean">Korean</a></li> </ul> </li> </ul>')
       

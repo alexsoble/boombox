@@ -71,6 +71,7 @@
 .text-container {
   float: left;
   width: 400px;
+  margin: 18px;
 }
 .lang2 {
   background-color: #013ADF;
