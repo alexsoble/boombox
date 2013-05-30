@@ -5,8 +5,11 @@
   <%= stylesheet_link_tag    "application", :media => "all" %>
   <%= javascript_include_tag "application" %>
   <%= javascript_include_tag "bootstrap.min.css" %>
+  <%= javascript_include_tag "js/video_#{action_name}" %>
   <%= csrf_meta_tags %>
 </head>
+  <script>
+</script>
 <body>
 <div class="navbar navbar-inverse">
   <div class="navbar-inner">
@@ -19,72 +22,4 @@
 <%= yield %>
 
 </body>
-<script>
-  <% if controller_name == "videos" && action_name == "show" %>
-
-    var tag = document.createElement('script');
-    tag.src = "https://www.youtube.com/iframe_api";
-    var firstScriptTag = document.getElementsByTagName('script')[0];
-    firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
-
-    var player;
-    function onYouTubeIframeAPIReady() {
-      player = new YT.Player('show-video-box', {
-        height: '315',
-        width: '420',
-        videoId: 'k3-BDy55tq4',
-        events: {
-          'onReady': onPlayerReady,
-          'onStateChange': onPlayerStateChange
-        }
-      });
-    }
-
-    function onPlayerReady(event) {
-      event.target.playVideo();
-    }
-
-    function countVideoPlayTime() {
-      exact_time = player.getCurrentTime();
-      time = Math.round(exact_time)
-
-      function array_builder() {
-        arr = [];
-        lyrics = $('.wide-lyrics-container');
-        jQuery.each(lyrics, function() {
-          id = $(this).attr("id");
-          arr.push(id);
-        });
-      return arr;
-      }
-
-      var arr = array_builder();
-      var do_scroll = scroll(arr, time);
-
-      function scroll(array,time) {
-        this_time = "line-" + time
-          console.log("Time: " + time + ", Array: " + array);
-        if (array.indexOf(this_time) > -1) {
-          target = '#line-' + time
-          $("#lyrics").scrollTo(target, 2000);
-        }
-      }
-    }
-
-    var counter = setInterval(countVideoPlayTime, 1000);
-  
-    var done = false;
-    function onPlayerStateChange(event) {
-      if (event.data == YT.PlayerState.PLAYING && !done) {
-        setTimeout(stopVideo, 6000);
-        done = true;
-      }
-    }
-
-    function stopVideo() {
-      player.stopVideo();
-    }
-
-  <% end %> 
-</script>
 </html>
