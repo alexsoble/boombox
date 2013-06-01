@@ -7,7 +7,7 @@ $ ->
     $(this).keypress (e) ->
       if e.which == 13
         n += 1
-        $('#lang1-box').append('<div id="timer"></div><div class="controls"><input type="text" class="input-xlarge lang1-line" id="' + n + '"></div>')
+        $('#lang1-box').append('<label class="control-label" for="input01"><div id="timer"></div></label><div class="controls"><input type="text" class="input-xlarge lang1-line" id="' + n + '"></div>')
         $('#lang2-box').append('<div id="timer"></div><div class="controls"><input type="text" class="input-xlarge lang2-line" id="' + n + '"></div>')
         data = this.value
         console.log "Content: #{data}, n: #{n}"
@@ -37,12 +37,10 @@ $ ->
 # WHEN A NEW VIDEO URL GETS PASTED IN
 
   $("#new-video-submit").keyup =>
-    user_url = $("#new-video-submit").val()
-    console.log "user_url = #{user_url}"
-    youtube_id = "#{user_url}".replace "http://www.youtube.com/watch?v=", ""
-    console.log "youtube_id = #{youtube_id}"
+    user_submit = $("#new-video-submit").val()
+    youtube_id = "#{user_submit}".replace "http://www.youtube.com/watch?v=", ""
 
-    if window.keyup isnt 1
+    if (window.keyup isnt 1) and (user_submit.match(/youtube/) isnt null)
       window.keyup = 1
       console.log "keyup = #{keyup}"
 
@@ -60,9 +58,14 @@ $ ->
           videoId: youtube_id
           events:
             onReady: onPlayerReady
-            onStateChange: onPlayerStateChange
-            )
-        this
+            onStateChange: onPlayerStateChange)
+        $('#outer-video-box').mouseenter(-> 
+          state = player.getPlayerState()
+          if state == 1
+            player.pauseVideo()
+          if state == 2
+            player.playVideo()
+          )
 
       onPlayerReady = (event) ->
         event.target.playVideo()
@@ -79,6 +82,7 @@ $ ->
         $("#timer").html(minutes + ":" + seconds)
 
       onPlayerStateChange = (event) ->
+        stopVideo -> player.stopVideo()
         if event.data is YT.PlayerState.PLAYING and not done
           setTimeout stopVideo, 6000
           done = true
@@ -94,32 +98,28 @@ $ ->
 
       # ADDING THE INPUT LINES
 
-      $('#lyrics-form-left').html('<div id="timer"></div><div class="controls"><input type="text" class="input-xlarge lang1-line" id="1" size="40"></div>')
+      $('#lyrics-form-left').html('<div class="control-group"><label class="control-label" for="1"><div id="timer"></div></label><div class="controls"><input type="text" class="input-xlarge lang1-line" id="1" size="40"></div></div>')
       $('#lyrics-form-right').html('<div class="controls"><input type="text" class="input-xlarge lang2-line" id="1" size="40"></div>')
 
       $('.done-button').html('<div class="btn btn-primary" id="done-button">Done</div>')
       $('.save-button').html('<div class="btn btn-primary" id="save-button">Save</div>')
 
-      # $('.very-wide-box').slideUp()
-
-      # AJAX
+      # AJAX - CREATE NEW VIDEO OBJECT IN DB; GET TITLE FROM YOUTUBE
 
       getTitle = (data) ->
         title = data.entry.title.$t
-        console.log title
+        $.post('/new_video', { 'video' : { 'youtube_id' : "#{youtube_id}", 'title' : "#{title}" } } )
+        $('.very-wide-box').slideUp(1000).delay(1500).slideDown(1000).delay(1500).fadeIn(3000)
+        slowTitleReplace = -> 
+          $('.very-wide-box').html("<h2>#{title}</h2>")
+        window.setTimeout(slowTitleReplace, 2000)
 
       getTitleFromYouTube = (handleData) ->
         $.get('https://gdata.youtube.com/feeds/api/videos/' + youtube_id + '?v=2&alt=json', 
           (data) ->
-            handleData(data) 
-        )
+            handleData(data) )
 
       getTitleFromYouTube(getTitle) ->
-
-      $.post('/new_video', { 'video' : {
-          'youtube_id' : "#{youtube_id}",
-          'title' : "#{title}" } }
-      )
 
 # VIDEO LANGUAGE SELECTORS
 
