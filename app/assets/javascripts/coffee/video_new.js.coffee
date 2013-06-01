@@ -1,23 +1,34 @@
 $ ->
 
-# MORE LINES
-  n = 0
+  # MORE LINES (AND OH YEAH, SAVING LINES TO THE DATABASE)
 
+  n = 0
   $(".lang1-line").livequery ->
-    $(this).keypress (e) ->
-      if e.which == 13
-        n += 1
-        $('#lang1-box').append('<label class="control-label" for="input01"><div id="timer"></div></label><div class="controls"><input type="text" class="input-xlarge lang1-line" id="' + n + '"></div>')
-        $('#lang2-box').append('<div id="timer"></div><div class="controls"><input type="text" class="input-xlarge lang2-line" id="' + n + '"></div>')
-        data = this.value
-        console.log "Content: #{data}, n: #{n}"
+    $(this).keyup (e) ->
+      e.preventDefault
+      if e.which == 13 and ($('.lang2-line').val() isnt '')
+        entry = this.value
+        that_entry = $('.lang2-line').val()
+        console.log "entry: #{entry}, that_entry: #{that_entry}"
+        time = $("#timer").html()
+        $('#lang1-lyrics').append("<p><small>(#{time})</small>  #{entry}</p>")
+        $('#lang2-lyrics').append("<p><small>(#{time})</small>  #{that_entry}</p>")
+        $('.lang1-line').val('')
+        $('.lang2-line').val('')
         $.post('/new_line')
 
   $(".lang2-line").livequery ->
-    $(this).keypress (e) ->
-      if e.which == 13
-        $('#lang2-box').append('<div id="timer"></div><div class="controls"><input type="text" class="input-xlarge lang2-line" id="1"></div>')
-        $('#lang1-box').append('<div id="timer"></div><div class="controls"><input type="text" class="input-xlarge lang1-line" id="1"></div>')
+    $(this).keyup (e) ->
+      if e.which == 13 and ($('.lang1-line').val() isnt '')
+        entry = this.value
+        that_entry = $('.lang1-line').val()
+        console.log "entry: #{entry}, that_entry: #{that_entry}"
+        time = $("#timer").html()
+        $('#lang2-lyrics').append("<p><small>(#{time})</small>  #{entry}</p>")
+        $('#lang1-lyrics').append("<p><small>(#{time})</small>  #{that_entry}</p>")
+        $('.lang1-line').val('')
+        $('.lang2-line').val('')
+        $.post('/new_line')
 
 # DONE BUTTON
 
@@ -77,14 +88,14 @@ $ ->
           seconds = '0' + seconds
         $("#timer").html(minutes + ":" + seconds)
 
+      counter = setInterval(countVideoPlayTime, 500)
+      done = false
+
       onPlayerStateChange = (event) ->
         stopVideo -> player.stopVideo()
         if event.data is YT.PlayerState.PLAYING and not done
           setTimeout stopVideo, 6000
           done = true
-
-      counter = setInterval(countVideoPlayTime, 100)
-      done = false
 
       # ADDING THE VIDEO LANGUAGE SELECTORS
 
@@ -94,8 +105,9 @@ $ ->
 
       # ADDING THE INPUT LINES
 
-      $('#lyrics-form-left').html('<div class="control-group"><label class="control-label" for="1"><div id="timer"></div></label><div class="controls"><input type="text" class="input-xlarge lang1-line" id="1" size="40"></div></div>')
-      $('#lyrics-form-right').html('<div class="controls"><input type="text" class="input-xlarge lang2-line" id="1" size="40"></div>')
+      $('#lang1-input').html('<div class="control-group"><div class="controls"><input type="text" class="input-xlarge lang1-line" id="1" size="40"></div></div>')
+      $('#lang2-input').html('<div class="controls"><input type="text" class="input-xlarge lang2-line" id="1" size="40"></div>')
+      $('#video-language-dropdown').prepend('<div id="timer"></div>')
 
       $('.done-button').html('<div class="btn btn-primary" id="done-button">Done</div>')
       $('.save-button').html('<div class="btn btn-primary" id="save-button">Save</div>')
