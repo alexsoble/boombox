@@ -47,16 +47,23 @@ small {
 .language-option {
   color: black;
 }
-.left-container {
-  width: 190px;
-  margin: 0;
+#timer-box {
+  position: relative;
+  top: 200px;
+  left: 20px;
+  z-index: 1;
 }
-.right-container {
-  width: 190px;
-  float: right;
-  margin: 0;
+#timer {
+  width: 90px;
+  height: 90px;
+  border-radius: 45px;
+  background-color: blue;
+  text-align: center;
 }
-
+#timer-text {
+  color: white;
+  line-height: 90px;
+}
 /*** SHOW PAGE (VIDEOS) ***/
 
 .lyrics-box {

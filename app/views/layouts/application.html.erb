@@ -8,6 +8,8 @@
   <%= javascript_include_tag "coffee/video_#{action_name}" %>
   <%= csrf_meta_tags %>
 </head>
+
+<body>
 <div class="navbar navbar-inverse">
   <div class="navbar-inner">
     <div class="container" style="width: auto;">
@@ -15,7 +17,6 @@
     </div>
   </div>
 </div>
-
 <%= yield %>
 
 <!-- <div id="footer">

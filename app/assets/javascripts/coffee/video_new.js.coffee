@@ -86,7 +86,7 @@ $ ->
         seconds = time - minutes * 60
         if seconds < 10
           seconds = '0' + seconds
-        $("#timer").html(minutes + ":" + seconds)
+        $("#timer-text").html(minutes + ":" + seconds)
 
       counter = setInterval(countVideoPlayTime, 500)
       done = false
@@ -107,7 +107,7 @@ $ ->
 
       $('#lang1-input').html('<div class="control-group"><div class="controls"><input type="text" class="input-xlarge lang1-line" id="1" size="40"></div></div>')
       $('#lang2-input').html('<div class="controls"><input type="text" class="input-xlarge lang2-line" id="1" size="40"></div>')
-      $('#video-language-dropdown').prepend('<div id="timer"></div>')
+      $('#timer-box').html('<div id="timer"><h2 id="timer-text"></h2></div>')
 
       $('.done-button').html('<div class="btn btn-primary" id="done-button">Done</div>')
       $('.save-button').html('<div class="btn btn-primary" id="save-button">Save</div>')
@@ -133,11 +133,11 @@ $ ->
 
   $(".language-video-option").livequery ->
     $(this).click ->
-      $("#video-language-dropdown").html("<a class=\"btn btn-primary\" id=\"video-lang-choice\">#{this.id}</a>")
+      $("#video-language-dropdown").html('<a class="btn btn-primary" id="video-lang-choice">#{this.id}</a>')
 
   $(".language-translation-option").livequery ->
     $(this).click ->
-      $("#translation-language-dropdown").html("<a class=\"btn btn-primary\" id=\"translation-lang-choice\">#{this.id}</a>")
+      $("#translation-language-dropdown").html('<a class="btn btn-primary" id="translation-lang-choice">#{this.id}</a>')
 
   $("#video-lang-choice").livequery ->
     $(this).click ->
