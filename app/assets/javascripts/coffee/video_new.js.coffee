@@ -10,12 +10,14 @@ $ ->
         entry = this.value
         that_entry = $('.lang2-line').val()
         console.log "entry: #{entry}, that_entry: #{that_entry}"
-        time = $("#timer").html()
+        time = $("#timer").text()
         $('#lang1-lyrics').append("<p><small>(#{time})</small>  #{entry}</p>")
         $('#lang2-lyrics').append("<p><small>(#{time})</small>  #{that_entry}</p>")
         $('.lang1-line').val('')
         $('.lang2-line').val('')
-        $.post('/new_line')
+        time_in_seconds = parseInt(time.slice(3,5)) + parseInt(time.slice(0,2))*60
+        console.log time_in_seconds
+        $.post('/new_line', { 'line' : { 'lang1' : "#{entry}", 'lang2' : "#{that_entry}", 'time' : "#{time_in_seconds}" } } )
 
   $(".lang2-line").livequery ->
     $(this).keyup (e) ->
@@ -23,12 +25,14 @@ $ ->
         entry = this.value
         that_entry = $('.lang1-line').val()
         console.log "entry: #{entry}, that_entry: #{that_entry}"
-        time = $("#timer").html()
+        time = $("#timer").text()
         $('#lang2-lyrics').append("<p><small>(#{time})</small>  #{entry}</p>")
         $('#lang1-lyrics').append("<p><small>(#{time})</small>  #{that_entry}</p>")
         $('.lang1-line').val('')
         $('.lang2-line').val('')
-        $.post('/new_line')
+        time_in_seconds = parseInt(time.slice(3,5)) + parseInt(time.slice(0,2))*60
+        console.log time_in_seconds
+        $.post('/new_line', { 'line' : { 'lang1' : "#{that_entry}", 'lang2' : "#{entry}", 'time' : "#{time_in_seconds}" } } )
 
 # DONE BUTTON
 
@@ -101,7 +105,7 @@ $ ->
 
       $('#video-language-dropdown').html('<ul class="nav nav-pills"> <li class="dropdown"> <a href="#" data-toggle="dropdown" class="dropdown-toggle">Video language: <b class="caret"></b></a> <ul class="dropdown-menu" id="menu1">  <li><a class="language-video-option" id="English">English</a></li> <li><a class="language-video-option" id="Spanish">Spanish</a></li> <li><a class="language-video-option" id="Chinese">Chinese</a></li> <li><a class="language-video-option" id="French">French</a></li> <li><a class="language-video-option" id="Norwegian">Norwegian</a></li> <li><a class="language-video-option" id="Hindi">Hindi</a></li> <li><a class="language-video-option" id="Korean">Korean</a></li> </ul> </li> </ul>')
       
-      $('#translation-language-dropdown').html('<ul class="nav nav-pills"> <li class="dropdown"> <a href="#" data-toggle="dropdown" class="dropdown-toggle">Translation language: <b class="caret"></b></a> <ul class="dropdown-menu" id="menu1">  <li><a class="language-translation-option" id="English">English</a></li> <li><a class="language-translation-option" id="Spanish">Spanish</a></li> <li><a class="language-translation-option" id="Chinese">Chinese</a></li> <li><a class="language-translation-option" id="French">French</a></li> <li><a class="language-translation-option" id="Norwegian">Norwegian</a></li> <li><a class="language-translation-option" id="Hindi">Hindi</a></li> <li><a class="language-translation-option" id="Korean">Korean</a></li></ul></li></ul> ')
+      $('#translation-language-dropdown').html('<ul class="nav nav-pills"> <li class="dropdown"><a href="#" data-toggle="dropdown" class="dropdown-toggle">Translation language: <b class="caret"></b></a> <ul class="dropdown-menu" id="menu1"><li><a class="language-translation-option" id="English">English</a></li><li><a class="language-translation-option" id="Spanish">Spanish</a></li><li><a class="language-translation-option" id="Chinese">Chinese</a></li><li><a class="language-translation-option" id="French">French</a></li><li><a class="language-translation-option" id="Norwegian">Norwegian</a></li><li><a class="language-translation-option" id="Hindi">Hindi</a></li><li><a class="language-translation-option" id="Korean">Korean</a></li></ul></li></ul>')
 
       # ADDING THE INPUT LINES
 
@@ -112,11 +116,14 @@ $ ->
       $('.done-button').html('<div class="btn btn-primary" id="done-button">Done</div>')
       $('.save-button').html('<div class="btn btn-primary" id="save-button">Save</div>')
 
-      # AJAX - CREATE NEW VIDEO OBJECT IN DB; GET TITLE FROM YOUTUBE
+      # AJAX - OH YEAH
+      # CREATE NEW VIDEO OBJECT IN DB
+      # GET TITLE FROM YOUTUBE
 
       getTitle = (data) ->
         title = data.entry.title.$t
         $.post('/new_video', { 'video' : { 'youtube_id' : "#{youtube_id}", 'title' : "#{title}" } } )
+        $.post('/new_interp', { 'interpretation ' : { 'youtube_id' : "#{youtube_id}" } } )
         $('.very-wide-box').slideUp(1000).delay(1500).slideDown(1000).delay(1500).fadeIn(6000)
         slowTitleReplace = -> 
           $('.very-wide-box').html("<h2>#{title}</h2>")

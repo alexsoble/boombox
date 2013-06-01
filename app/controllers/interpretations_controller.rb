@@ -3,18 +3,23 @@ class InterpretationsController < ApplicationController
 
   def create 
   
-    @interp = Interpretation.new(params[:interpretation])
-    
-    if @interp.save
-      data = "Saved."
-    else
-      data = "Failed."
+    @youtube_id = params[:interpretation][:youtube_id]
+    @video = Video.where(:youtube_id => @youtube_id)
+
+    if @video.blank?
+      # that's not good!
     end
 
-    respond_with data
+    @interp = Interpretation.new(:video_id => @video.id)
 
-    redirect_to '/index'
+      if @interp.save
+        data = "Saved."
+      else
+        data = "Failed."
+      end
 
-  end
+      respond_with data
+
+    end
 
 end
