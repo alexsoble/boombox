@@ -9,7 +9,7 @@
   </ul>
 </div>
 <div style="float: right; margin-right: 100px; margin-top: 5px;">
-  <a class="btn btn-primary btn-large" style="float: right;" onClick="parent.location='/videos/new'">Translate new video</a>
+  <a class="btn btn-primary btn-large" id="translate-button" style="float: right;" onClick="parent.location='/videos/new'">Translate new video</a>
 </div>
 <br>
 <div style="margin-top: 100px; margin-left: 100px; margin-right: 100px;">
@@ -17,7 +17,7 @@
     <div class="video-thumb-box <%= v.lang1 %>">
       <strong><%= link_to "#{v.title} - #{v.artist}", video_url(v.id) %></strong>
       <br>
-      <img src="http://img.youtube.com/vi/<%= v.url.slice(31,11) %>/2.jpg">
+      <img src="http://img.youtube.com/vi/<%= v.youtube_id %>/2.jpg">
       <br><br>
     </div>
   <% end %>

@@ -1,6 +1,17 @@
 class VideosController < ApplicationController
+  respond_to :html, :json
 
-  def new
+  def create
+
+    @video = Video.new(params[:video])
+
+    if @video.save
+      data = "Saved."
+    else
+      data = "Failed."
+    end
+
+    respond_with data
 
   end
 

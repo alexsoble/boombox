@@ -1,32 +1,40 @@
 $ ->
 
-  $(".language-video-option").livequery ->
-    $(this).click ->
-      $("#video-language-dropdown").html("<a class=\"btn btn-primary\" id=\"video-lang-choice\">#{this.id}</a>")
+# MORE LINES
+  n = 0
 
-  $(".language-translation-option").livequery ->
-    $(this).click ->
-      $("#translation-language-dropdown").html("<a class=\"btn btn-primary\" id=\"translation-lang-choice\">#{this.id}</a>")
-
-  $(".line").livequery ->
+  $(".lang1-line").livequery ->
     $(this).keypress (e) ->
       if e.which == 13
-        $('#lyrics-form').append('<div class=\"controls\"><input type=\"text\" class=\"input-xlarge line\" id=\"1\"></div>')
+        n += 1
+        $('#lang1-box').append('<div id="timer"></div><div class="controls"><input type="text" class="input-xlarge lang1-line" id="' + n + '"></div>')
+        $('#lang2-box').append('<div id="timer"></div><div class="controls"><input type="text" class="input-xlarge lang2-line" id="' + n + '"></div>')
+        data = this.value
+        console.log "Content: #{data}, n: #{n}"
+        $.post('/new_line')
 
-  $("#video-lang-choice").livequery ->
-    $(this).click ->
-      return $(this).currentTarget.val()
-  $("#translation-lang-choice").livequery ->
-    $(this).click ->
-      return $(this).currentTarget.val()
+  $(".lang2-line").livequery ->
+    $(this).keypress (e) ->
+      if e.which == 13
+        $('#lang2-box').append('<div id="timer"></div><div class="controls"><input type="text" class="input-xlarge lang2-line" id="1"></div>')
+        $('#lang1-box').append('<div id="timer"></div><div class="controls"><input type="text" class="input-xlarge lang1-line" id="1"></div>')
+
+  $("#timer").livequery -> 
+  
+  $("#video-title").livequery ->
+
+# DONE BUTTON
 
   $("#done-button").livequery ->
     $(this).click -> 
-      video_lang = $("#video-lang-choice").click()
-      console.log video_lang
-      translation_lang = $("#translation-lang-choice").click()
-      console.log translation_lang
-      window.location.href = "http://localhost:3000/welcome/?video_lang=#{video_lang}&translation_lang=#{translation_lang}"
+      # video_lang = $("#video-lang-choice").click()
+      # console.log video_lang
+      # translation_lang = $("#translation-lang-choice").click()
+      # console.log translation_lang
+      
+      # window.location.href = "http://localhost:3000/welcome/?video_lang=#{video_lang}&translation_lang=#{translation_lang}"
+
+# WHEN A NEW VIDEO URL GETS PASTED IN
 
   $("#new-video-submit").keyup =>
     user_url = $("#new-video-submit").val()
@@ -58,38 +66,74 @@ $ ->
 
       onPlayerReady = (event) ->
         event.target.playVideo()
+
       countVideoPlayTime = ->
-        array_builder = ->
-          arr = []
-          lyrics = $(".wide-lyrics-container")
-          jQuery.each lyrics, ->
-            id = $(this).attr("id")
-            arr.push id
-          arr
-        scroll = (array, time) ->
-          this_time = "line-" + time
-          console.log "Time: " + time + ", Array: " + array
-          if array.indexOf(this_time) > -1
-            target = "#line-" + time
-            $("#lyrics").scrollTo target, 2000
         exact_time = player.getCurrentTime()
         time = Math.round(exact_time)
-        arr = array_builder()
-        do_scroll = scroll(arr, time)
+        minutes = Math.floor(time / 60)
+        if minutes < 10
+          minutes = '0' + minutes
+        seconds = time - minutes * 60
+        if seconds < 10
+          seconds = '0' + seconds
+        $("#timer").html(minutes + ":" + seconds)
+
       onPlayerStateChange = (event) ->
         if event.data is YT.PlayerState.PLAYING and not done
           setTimeout stopVideo, 6000
           done = true
 
-      counter = setInterval(countVideoPlayTime, 1000)
+      counter = setInterval(countVideoPlayTime, 100)
       done = false
+
+      # ADDING THE VIDEO LANGUAGE SELECTORS
 
       $('#video-language-dropdown').html('<ul class="nav nav-pills"> <li class="dropdown"> <a href="#" data-toggle="dropdown" class="dropdown-toggle">Video language: <b class="caret"></b></a> <ul class="dropdown-menu" id="menu1">  <li><a class="language-video-option" id="English">English</a></li> <li><a class="language-video-option" id="Spanish">Spanish</a></li> <li><a class="language-video-option" id="Chinese">Chinese</a></li> <li><a class="language-video-option" id="French">French</a></li> <li><a class="language-video-option" id="Norwegian">Norwegian</a></li> <li><a class="language-video-option" id="Hindi">Hindi</a></li> <li><a class="language-video-option" id="Korean">Korean</a></li> </ul> </li> </ul>')
       
-      $('#translation-language-dropdown').html('<ul class="nav nav-pills"> <li class="dropdown"> <a href="#" data-toggle="dropdown" class="dropdown-toggle">Translation language: <b class="caret"></b></a> <ul class="dropdown-menu" id="menu1">  <li><a class="language-translation-option" id="English">English</a></li> <li><a class="language-translation-option" id="Spanish">Spanish</a></li> <li><a class="language-translation-option" id="Chinese">Chinese</a></li> <li><a class="language-translation-option" id="French">French</a></li> <li><a class="language-translation-option" id="Norwegian">Norwegian</a></li> <li><a class="language-translation-option" id="Hindi">Hindi</a></li> <li><a class="language-translation-option" id="Korean">Korean</a></li>  </ul> </li> </ul> ')
+      $('#translation-language-dropdown').html('<ul class="nav nav-pills"> <li class="dropdown"> <a href="#" data-toggle="dropdown" class="dropdown-toggle">Translation language: <b class="caret"></b></a> <ul class="dropdown-menu" id="menu1">  <li><a class="language-translation-option" id="English">English</a></li> <li><a class="language-translation-option" id="Spanish">Spanish</a></li> <li><a class="language-translation-option" id="Chinese">Chinese</a></li> <li><a class="language-translation-option" id="French">French</a></li> <li><a class="language-translation-option" id="Norwegian">Norwegian</a></li> <li><a class="language-translation-option" id="Hindi">Hindi</a></li> <li><a class="language-translation-option" id="Korean">Korean</a></li></ul></li></ul> ')
 
-      $('#lyrics-form').append('<div class=\"controls\"><input type=\"text\" class=\"input-xlarge line\" id=\"1\"></div>')
+      # ADDING THE INPUT LINES
 
-      $('.done-button-box').append("<div class=\"btn btn-primary\" id=\"done-button\">Done</div>")
+      $('#lyrics-form-left').html('<div id="timer"></div><div class="controls"><input type="text" class="input-xlarge lang1-line" id="1" size="40"></div>')
+      $('#lyrics-form-right').html('<div class="controls"><input type="text" class="input-xlarge lang2-line" id="1" size="40"></div>')
 
-      $('.very-wide-box').slideUp() 'fast'
+      $('.done-button').html('<div class="btn btn-primary" id="done-button">Done</div>')
+      $('.save-button').html('<div class="btn btn-primary" id="save-button">Save</div>')
+
+      # $('.very-wide-box').slideUp()
+
+      # AJAX
+
+      getTitle = (data) ->
+        title = data.entry.title.$t
+        console.log title
+
+      getTitleFromYouTube = (handleData) ->
+        $.get('https://gdata.youtube.com/feeds/api/videos/' + youtube_id + '?v=2&alt=json', 
+          (data) ->
+            handleData(data) 
+        )
+
+      getTitleFromYouTube(getTitle) ->
+
+      $.post('/new_video', { 'video' : {
+          'youtube_id' : "#{youtube_id}",
+          'title' : "#{title}" } }
+      )
+
+# VIDEO LANGUAGE SELECTORS
+
+  $(".language-video-option").livequery ->
+    $(this).click ->
+      $("#video-language-dropdown").html("<a class=\"btn btn-primary\" id=\"video-lang-choice\">#{this.id}</a>")
+
+  $(".language-translation-option").livequery ->
+    $(this).click ->
+      $("#translation-language-dropdown").html("<a class=\"btn btn-primary\" id=\"translation-lang-choice\">#{this.id}</a>")
+
+  $("#video-lang-choice").livequery ->
+    $(this).click ->
+      return $(this).currentTarget.val()
+  $("#translation-lang-choice").livequery ->
+    $(this).click ->
+      return $(this).currentTarget.val()

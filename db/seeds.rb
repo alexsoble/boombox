@@ -6,14 +6,14 @@ Line.destroy_all
 
 v = Video.new
 v.title = "Eres Tú"
-v.url = "http://www.youtube.com/watch?v=sdhep5OaAC0"
+v.youtube_id = "sdhep5OaAC0"
 v.artist = "Carla Morrison"
 v.lang1 = "Spanish"
 v.save
 
 v = Video.new
 v.title = "Nachspiel"
-v.url = "http://www.youtube.com/watch?v=eUtfrSS0oR0"
+v.youtube_id = "eUtfrSS0oR0"
 v.artist = "Chim1"
 v.lang1 = "Norwegian"
 v.save
@@ -25,14 +25,14 @@ v.save
 
 v = Video.new
 v.title = "Call Me Maybe"
-v.url = "http://www.youtube.com/watch?v=fWNaR-rxAic"
+v.youtube_id = "fWNaR-rxAic"
 v.artist = "Carly Rae Jepsen"
 v.lang1 = "English"
 v.save
 
 v = Video.new
 v.title = "Allez Olla Olé"
-v.url = "http://www.youtube.com/watch?v=IX2pxtkhx-M"
+v.youtube_id = "IX2pxtkhx-M"
 v.artist = "Jessy Matador"
 v.lang1 = "French"
 v.save
@@ -64,14 +64,14 @@ v.save
 
 v = Video.new
 v.title = "Thrift Shop"
-v.url = "http://www.youtube.com/watch?v=QK8mJJJvaes"
+v.youtube_id = "QK8mJJJvaes"
 v.artist = "Macklemore"
 v.lang1 = "English"
 v.save
 
 v = Video.new
 v.title = "BOM BOM BOM"
-v.url = "http://www.youtube.com/watch?v=k3-BDy55tq4"
+v.youtube_id = "k3-BDy55tq4"
 v.artist = "Roy Kim"
 v.lang1 = "Korean"
 v.save
