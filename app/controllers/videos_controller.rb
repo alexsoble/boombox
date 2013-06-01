@@ -3,15 +3,21 @@ class VideosController < ApplicationController
 
   def create
 
-    @video = Video.new(params[:video])
+    @youtube_id = params[:video][:youtube_id]
 
-    if @video.save
-      data = "Saved."
-    else
-      data = "Failed."
+    if Video.where(:youtube_id => @youtube_id).blank? 
+
+      @video = Video.new(params[:video])
+
+      if @video.save
+        data = "Saved."
+      else
+        data = "Failed."
+      end
+
+      respond_with data
+
     end
-
-    respond_with data
 
   end
 

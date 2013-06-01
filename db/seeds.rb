@@ -7,14 +7,12 @@ Line.destroy_all
 v = Video.new
 v.title = "Eres Tú"
 v.youtube_id = "sdhep5OaAC0"
-v.artist = "Carla Morrison"
 v.lang1 = "Spanish"
 v.save
 
 v = Video.new
 v.title = "Nachspiel"
 v.youtube_id = "eUtfrSS0oR0"
-v.artist = "Chim1"
 v.lang1 = "Norwegian"
 v.save
 
@@ -26,14 +24,12 @@ v.save
 v = Video.new
 v.title = "Call Me Maybe"
 v.youtube_id = "fWNaR-rxAic"
-v.artist = "Carly Rae Jepsen"
 v.lang1 = "English"
 v.save
 
 v = Video.new
 v.title = "Allez Olla Olé"
 v.youtube_id = "IX2pxtkhx-M"
-v.artist = "Jessy Matador"
 v.lang1 = "French"
 v.save
 
@@ -65,14 +61,12 @@ v.save
 v = Video.new
 v.title = "Thrift Shop"
 v.youtube_id = "QK8mJJJvaes"
-v.artist = "Macklemore"
 v.lang1 = "English"
 v.save
 
 v = Video.new
 v.title = "BOM BOM BOM"
 v.youtube_id = "k3-BDy55tq4"
-v.artist = "Roy Kim"
 v.lang1 = "Korean"
 v.save
 

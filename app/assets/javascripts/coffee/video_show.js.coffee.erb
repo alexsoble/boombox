@@ -1,0 +1,49 @@
+player = null
+
+$ ->
+
+  tag = document.createElement("script")
+  tag.src = "https://www.youtube.com/iframe_api"
+  firstScriptTag = document.getElementsByTagName("script")[0]
+  firstScriptTag.parentNode.insertBefore tag, firstScriptTag
+  video_youtube_id = $('#video-id').data('youtube-id')
+  console.log video_youtube_id
+
+  window.onYouTubeIframeAPIReady = ->
+    player = new YT.Player("show-video-box",
+      height: "315"
+      width: "420"
+      videoId: video_youtube_id
+      events:
+        onReady: onPlayerReady
+        onStateChange: onPlayerStateChange
+        )
+    this
+
+  onPlayerReady = (event) ->
+    event.target.playVideo()
+  countVideoPlayTime = ->
+    array_builder = ->
+      arr = []
+      lyrics = $(".wide-lyrics-container")
+      jQuery.each lyrics, ->
+        id = $(this).attr("id")
+        arr.push id
+      arr
+    scroll = (array, time) ->
+      this_time = "line-" + time
+      console.log "Time: " + time + ", Array: " + array
+      if array.indexOf(this_time) > -1
+        target = "#line-" + time
+        $("#lyrics").scrollTo target, 2000
+    exact_time = player.getCurrentTime()
+    time = Math.round(exact_time)
+    arr = array_builder()
+    do_scroll = scroll(arr, time)
+  onPlayerStateChange = (event) ->
+    if event.data is YT.PlayerState.PLAYING and not done
+      setTimeout stopVideo, 6000
+      done = true
+
+  counter = setInterval(countVideoPlayTime, 1000)
+  done = false

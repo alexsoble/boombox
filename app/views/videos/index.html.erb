@@ -15,7 +15,7 @@
 <div style="margin-top: 100px; margin-left: 100px; margin-right: 100px;">
   <% Video.all.each do |v| %>
     <div class="video-thumb-box <%= v.lang1 %>">
-      <strong><%= link_to "#{v.title} - #{v.artist}", video_url(v.id) %></strong>
+      <strong><%= link_to "#{v.title}", video_url(v.id) %></strong>
       <br>
       <img src="http://img.youtube.com/vi/<%= v.youtube_id %>/2.jpg">
       <br><br>
