@@ -1,16 +1,27 @@
 <div class="centerbox very-wide-box">
-  <h2>Copy-and-paste the URL from YouTube:</h2>
-  <div class="controls">
-    <input type="text" class="input-xlarge" id="new-video-submit">
+  <div id="copy-and-paste-box">
+    <h2>Copy-and-paste the URL from YouTube:</h2>
+    <div class="controls">
+      <input type="text" class="input-xlarge" id="new-video-submit">
+    </div>
   </div>
 </div>
 
-<div id="timer-box"></div></div>
-<div style="margin-left: 60px; float: left;" id="outer-video-box"><div id="new-video-box"></div></div>
+<div id="outer-video-box" class="video-container">
+  <div id="new-video-box"></div>
+  <div id="timer-box"></div>
+</div>
 
-<div style="margin-left: 40px; margin-top: 0px; float: left; width: 300px;">
-  <div id="lang1-box">    
+<div id="select-language-box">
+  <div class="text-padding">
     <div id="video-language-dropdown"></div>
+    <br>
+    <div id="translation-language-dropdown"></div>
+  </div>
+</div>
+
+<div class="lyrics-container">
+  <div id="lang1-box">    
     <div id="lang1-lyrics"></div>
     <div id="lang1-input"></div>
   </div>
@@ -18,9 +29,8 @@
   <div class="done-button" style="float: left;"></div>
   <div class="save-button" style="float: left; margin-left: 20px;"></div>
 </div>
-<div style="margin-left: 40px; margin-top: 0px; float: left; width: 300px;">
+<div class="lyrics-container">
   <div id="lang2-box">
-    <div id="translation-language-dropdown"></div>
     <div id="lang2-lyrics"></div>
     <div id="lang2-input"></div>
   </div>

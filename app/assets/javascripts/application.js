@@ -15,4 +15,5 @@
 //= require bootstrap.min
 //= require jquery.livequery
 //= require jquery.scrollTo
+//= require jquery-ui-1.10.3.custom.min
 //= require_directory .

@@ -26,6 +26,11 @@
 small {
   color: blue;
 }
+body {
+  position: relative;
+  background-color: #fff;
+  margin: 0 auto;
+}
 
 /*** INDEX PAGE (VIDEOS) ***/
 
@@ -40,18 +45,27 @@ small {
 .very-wide-box {
   width: 1000px;
   text-align: center;
-}
-.translate-new-video-box {
-  height: 1000px;
+  height: 100px;
+  position: relative;
 }
 .language-option {
   color: black;
 }
+.video-container {
+  margin-left: 80px;
+  float: left;
+  }
+.lyrics-container {
+  margin-left: 40px; 
+  margin-top: 0px; 
+  float: left; 
+  width: 300px;
+}
 #timer-box {
   position: relative;
-  top: 200px;
-  left: 20px;
   z-index: 1;
+  bottom: 210px;
+  right: 45px;
 }
 #timer {
   width: 90px;
@@ -64,6 +78,31 @@ small {
   color: white;
   line-height: 90px;
 }
+#select-language-box {
+  height: 320px;
+  width: 420px;
+  float: right;
+  margin-left: 160px;
+  margin-right: 240px;
+}
+#translation-language-options {
+  margin-left: auto;
+  margin-right: auto;
+  width: 160px;
+  text-align: left;
+}
+#video-language-options {
+  margin-left: auto;
+  margin-right: auto;
+  width: 160px;
+  text-align: left;
+}
+.text-padding {
+  margin: 3px;
+  text-align: center;
+}
+
+
 /*** SHOW PAGE (VIDEOS) ***/
 
 .lyrics-box {
@@ -94,6 +133,9 @@ small {
 }
 p {
   color: black;
+}
+.white {
+  color: white;
 }
 .lyrics {
   color: white;
