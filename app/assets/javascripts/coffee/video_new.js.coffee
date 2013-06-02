@@ -54,8 +54,10 @@ $ ->
   $("#new-video-submit").keyup =>
     user_submit = $("#new-video-submit").val()
     youtube_id = "#{user_submit}".replace "http://www.youtube.com/watch?v=", ""
+    window.youtube_id = "#{youtube_id}"
     if youtube_id.match(/&list/)
       youtube_id = youtube_id.slice(0,11)
+      window.youtube_id = "#{youtube_id}"
 
     if (window.keyup isnt 1) and (user_submit.match(/youtube/) isnt null)
       window.keyup = 1
@@ -162,7 +164,6 @@ $ ->
       getTitle = (data) ->
         title = data.entry.title.$t
         $.post('/new_video', { 'video' : { 'youtube_id' : "#{youtube_id}", 'title' : "#{title}" } } )
-        $.post('/new_interp', { 'interpretation ' : { 'youtube_id' : "#{youtube_id}" } } )
         $('.very-wide-box').slideUp(1000).delay(1500).slideDown(1000).delay(1500).fadeIn(6000)
         slowTitleReplace = -> 
           $('#copy-and-paste-box').html("<h2>#{title}</h2>")
@@ -208,6 +209,10 @@ $ ->
       lang1 = $("#video-lang-choice").html()
       lang2 = this.id
       $("#translation-language-options").html("<a class='btn btn-primary' id='translation-lang-choice'>#{lang2}</a>")
+
+      # TALK TO THE SERVER HERE
+
+      $.post('/new_interp', { 'interpretation' : { 'youtube_id' : "#{window.youtube_id}" , 'lang1' : "#{lang1}", 'lang2' : "#{lang2}" } } )
 
       # INPUT LINES COME IN HERE
 
