@@ -1,23 +1,17 @@
 class VideosController < ApplicationController
+  require 'json'
   respond_to :html, :json
 
   def create
 
     @youtube_id = params[:video][:youtube_id]
-
     if Video.where(:youtube_id => @youtube_id).blank? 
-
-      @video = Video.new(params[:video])
-
-      if @video.save
-        data = "Saved."
-      else
-        data = "Failed."
-      end
-
-      respond_with data
-
+      @video = Video.create(params[:video])
+    else
+      @video = Video.where(:youtube_id => @youtube_id)
     end
+
+    render :json => { :video => @video }
 
   end
 
@@ -34,6 +28,10 @@ class VideosController < ApplicationController
   end 
 
   def index
+
+  end
+
+  def new
 
   end
 

@@ -3,15 +3,9 @@ class LinesController < ApplicationController
 
   def create 
     
-    @line = Line.new(params[:line])
+    @line = Line.create(params[:line])
     
-      if @line.save
-        data = "Saved."
-      else
-        data = "Failed."
-      end
-
-      respond_with data
+    render :json => { :data => @line }
 
     end
 

@@ -4,7 +4,6 @@ $ ->
 
   # MORE LINES (AND OH YEAH, SAVING LINES TO THE DATABASE)
 
-  n = 0
   $(".lang1-line").livequery ->
     $(this).keyup (e) ->
       e.preventDefault
@@ -19,7 +18,8 @@ $ ->
         $('.lang2-line').val('')
         time_in_seconds = parseInt(time.slice(3,5)) + parseInt(time.slice(0,2))*60
         console.log time_in_seconds
-        $.post('/new_line', { 'line' : { 'lang1' : "#{entry}", 'lang2' : "#{that_entry}", 'time' : "#{time_in_seconds}" } } )
+        $.post('/new_line', { 'line' : { 'lang1' : "#{entry}", 'lang2' : "#{that_entry}", 'time' : "#{time_in_seconds}", 'interpretation_id' : "#{window.interp_id}" , 'upvotes' : 0, 'downvotes' : 0  } }, (data) ->
+          console.log data.data )
 
   $(".lang2-line").livequery ->
     $(this).keyup (e) ->
@@ -34,7 +34,8 @@ $ ->
         $('.lang2-line').val('')
         time_in_seconds = parseInt(time.slice(3,5)) + parseInt(time.slice(0,2))*60
         console.log time_in_seconds
-        $.post('/new_line', { 'line' : { 'lang1' : "#{that_entry}", 'lang2' : "#{entry}", 'time' : "#{time_in_seconds}" } } )
+        $.post('/new_line', { 'line' : { 'lang1' : "#{that_entry}", 'lang2' : "#{entry}", 'time' : "#{time_in_seconds}", 'interpretation_id' : "#{window.interp_id}" , 'upvotes' : 0, 'downvotes' : 0  } }, (data) ->
+          console.log data.data )
 
 # DONE BUTTON RESPONSE
 
@@ -163,7 +164,8 @@ $ ->
 
       getTitle = (data) ->
         title = data.entry.title.$t
-        $.post('/new_video', { 'video' : { 'youtube_id' : "#{youtube_id}", 'title' : "#{title}" } } )
+        $.post('/new_video', { 'video' : { 'youtube_id' : "#{youtube_id}", 'title' : "#{title}" } }, (data) ->
+          console.log data, "json")
         $('.very-wide-box').slideUp(1000).delay(1500).slideDown(1000).delay(1500).fadeIn(6000)
         slowTitleReplace = -> 
           $('#copy-and-paste-box').html("<h2>#{title}</h2>")
@@ -212,7 +214,9 @@ $ ->
 
       # TALK TO THE SERVER HERE
 
-      $.post('/new_interp', { 'interpretation' : { 'youtube_id' : "#{window.youtube_id}" , 'lang1' : "#{lang1}", 'lang2' : "#{lang2}" } } )
+      $.post('/new_interp', { 'interpretation' : { 'youtube_id' : "#{window.youtube_id}" , 'lang1' : "#{lang1}", 'lang2' : "#{lang2}" } }, (data) ->
+          window.interp_id = data.data.id
+          console.log window.interp_id)
 
       # INPUT LINES COME IN HERE
 

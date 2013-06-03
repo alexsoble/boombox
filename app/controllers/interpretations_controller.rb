@@ -18,15 +18,9 @@ class InterpretationsController < ApplicationController
       # that's not good!
     end
 
-    @interp = Interpretation.new(:video_id => @video.id, :lang2 => @lang2)
+    @interp = Interpretation.create(:video_id => @video.id, :lang2 => @lang2)
 
-      if @interp.save
-        data = "Saved."
-      else
-        data = "Failed."
-      end
-
-      respond_with data
+    render :json => { :data => @interp }
 
     end
 
