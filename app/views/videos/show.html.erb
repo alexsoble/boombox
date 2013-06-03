@@ -9,18 +9,19 @@
 
   <% @lines.each do |l| %>
 
-    <div class="wide-lyrics-container" id="line-<%= l.time %>">
+    <div class="narrow-lyrics-container lang1" id="line-<%= l.time %>">
       <div class="text-container">
         <p class="lyrics"><%= l.lang1 %></p>
       </div>
     </div>
 
-  <!--
-      <div class="container lyrics-container lang2">
-        <div class="text-container">
-          <p class="white-text"><%= l.lang2 %></p>
-        </div>
+    <div class="narrow-lyrics-container lang2">
+      <div class="text-container">
+        <p class="lyrics"><%= l.lang2 %></p>
       </div>
+    </div>
+
+  <!--
 
     <div class="button-container">
       <i class="icon-thumbs-up"></i><i class="icon-thumbs-down"></i><i class="icon-comment-alt"></i>
@@ -28,12 +29,23 @@
 
   -->
 
-    <% end %>
+  <% end %>
 
+  </div>
+
+  <div class="centerbox visible">
+  <div class="btn-group">
+    <a class="btn btn-info dropdown-toggle" data-toggle="dropdown" href="#"><i class="icon-cog icon"></i></a></span></a>
+    <ul class="dropdown-menu">
+      <li><a id="just-lang2">Show just <%= @interpretation.lang2 %></a></li>
+      <li><a id="lang1-and-lang2">Show <%= @video.lang1 %> and <%= @interpretation.lang2 %></a></li>
+      <li><a id="just-lang1">Show just <%= @video.lang1 %></a></li>
+    </ul>
+  </div>
   </div>
 
   <% else %>
 
-  <div class="centerbox" style="text-align: center;"><h3>Nobody's translated this song yet. Want to give it a try?</h3></div>
+  <div class="centerbox" style="text-align: center;"><h3>Nobody's translated this song yet. <%= link_to "Want to give it a try?", "/videos/new" %></h3></div>
 
 <% end %>

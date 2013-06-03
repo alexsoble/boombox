@@ -12,6 +12,7 @@ class InterpretationsController < ApplicationController
       # that's not good!
     elsif @video.lang1.blank?
       @video.lang1 = @lang1
+      @video.save
     elsif @video.lang1 == @lang1
       # that's good!
     elsif @video.lang1 != @lang1

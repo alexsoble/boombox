@@ -34,6 +34,15 @@ body {
 .left {
   float: left;
 }
+p {
+  color: black;
+}
+.white {
+  color: white;
+}
+.visible {
+  overflow: visible;
+}
 
 /*** INDEX PAGE (VIDEOS) ***/
 
@@ -50,6 +59,7 @@ body {
   text-align: center;
   height: 100px;
   position: relative;
+  overflow: visible;
 }
 .language-option {
   color: black;
@@ -105,7 +115,6 @@ body {
   text-align: center;
 }
 
-
 /*** SHOW PAGE (VIDEOS) ***/
 
 .lyrics-box {
@@ -120,10 +129,14 @@ body {
   background-color: #0101DF;
   border-top: 1px solid white 
 }
-.text-container {
+.narrow-lyrics-container {
+  width: 210px;
+  height: 60px;
   float: left;
-  width: 400px;
-  margin: 18px;
+  margin-top: 1px;
+  margin-bottom: 1px;
+  background-color: #0101DF;
+  border-top: 1px solid white 
 }
 .lang2 {
   background-color: #013ADF;
@@ -133,12 +146,6 @@ body {
   float: right;
   width: 10px;
   border-top: 2px solid white 
-}
-p {
-  color: black;
-}
-.white {
-  color: white;
 }
 .lyrics {
   color: white;
