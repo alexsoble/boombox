@@ -14,39 +14,41 @@
 
 /*** MULTIPLE PAGES (VIDEOS) ***/
 
-.centerbox {
-  margin-right: auto; 
+.centerbox {  margin-right: auto; 
   margin-left: auto; 
   width: 420px; 
-  overflow: scroll;
-}
-.video-box {
-  height: 320px;
-}
-small {
-  color: #9B59BB;
-}
-body {
-  position: relative;
-  background-color: #fff;
-  margin: 0 auto;
-}
-.left {
-  float: left;
-}
-p {
-  color: black;
-}
-.white {
-  color: white;
-}
-.visible {
-  overflow: visible;
-}
-.quiet {
-  display: none;
-}
+  overflow: scroll; }
 
+.video-box { height: 320px; }
+
+small { color: #9B59BB; }
+
+.pretty { color: #9B59BB; }
+
+body { position: relative;
+  background-color: #fff;
+  margin: 0 auto; }
+
+.left { float: left; }
+
+p { color: black; }
+
+td { color: black; }
+
+table { border-collapse: separate; 
+  border-spacing: 5px 20px; 
+  border: 1px;
+  border-color: white; }
+
+.white { color: white; }
+
+.visible { overflow: visible; }
+
+.quiet { display: none; }
+
+.style52 { width: 52px;
+  background-color: #9B59BB; 
+  height: 40px; }
 
 /*** INDEX PAGE (VIDEOS) ***/
 
@@ -61,7 +63,7 @@ p {
 .very-wide-box {
   width: 1000px;
   text-align: center;
-  height: 100px;
+  height: 80px;
   position: relative;
   overflow: visible;
 }
@@ -79,8 +81,20 @@ p {
   width: 300px;
 }
 #copy-and-paste-box {
-  margin-top: 200px;
-}
+  margin-top: 200px; }
+
+.center-pill {
+  margin-right: auto; 
+  margin-left: auto; 
+  width: 142px;
+  text-align: center; }
+
+.language-video-option {
+  text-align: left; }
+
+.language-translation-option {
+  text-align: left; }
+
 #timer-box {
   position: relative;
   z-index: 1;
@@ -100,7 +114,7 @@ p {
 }
 #select-language-box {
   height: 320px;
-  width: 420px;
+  width: 480px;
   margin-left: auto;
   margin-right: auto;
 }
