@@ -24,7 +24,7 @@
   height: 320px;
 }
 small {
-  color: blue;
+  color: #9B59BB;
 }
 body {
   position: relative;
@@ -43,6 +43,10 @@ p {
 .visible {
   overflow: visible;
 }
+.quiet {
+  display: none;
+}
+
 
 /*** INDEX PAGE (VIDEOS) ***/
 
@@ -74,6 +78,9 @@ p {
   float: left; 
   width: 300px;
 }
+#copy-and-paste-box {
+  margin-top: 200px;
+}
 #timer-box {
   position: relative;
   z-index: 1;
@@ -84,7 +91,7 @@ p {
   width: 90px;
   height: 90px;
   border-radius: 45px;
-  background-color: blue;
+  background-color: #9B59BB;
   text-align: center;
 }
 #big-timer {

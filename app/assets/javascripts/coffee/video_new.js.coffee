@@ -40,10 +40,10 @@ $ ->
       $("#select-language-box").slideDown('slow')
       $(".very-wide-box").slideUp('slow')
 
-      $('#video-language-dropdown').html('<br><br><h3>Nice! A few quick questions...</3>
+      $('#video-language-dropdown').html('<br><br><h3>Nice!</h3><br><br><p>A few quick questions...</p>
       <br>
       <br>
-      <h3>This video is in:</h3>
+      <h4>This video is in:</h4>
       <ul class="nav nav-pills" id="video-language-options">
         <li class="dropdown"> 
           <a href="#" data-toggle="dropdown" class="dropdown-toggle">Select language<b class="caret"></b></a> 
@@ -62,7 +62,7 @@ $ ->
             <li><a class="language-video-option" id="Persian">Persian</a></li> 
             <li><a class="language-video-option" id="Hindi">Hindi</a></li></ul></li></ul>')
       
-      $('#translation-language-dropdown').html('<h3>I\'m translating it into:</h3>
+      $('#translation-language-dropdown').html('<p>I\'m translating it into:</p>
         <ul class="nav nav-pills" id="translation-language-options">
           <li class="dropdown">
             <a href="#" data-toggle="dropdown" class="dropdown-toggle">Select language<b class="caret"></b></a> 
@@ -90,7 +90,7 @@ $ ->
 
   $('.backtrack#video-lang-choice').livequery ->
     $(this).click ->
-      $('#video-language-dropdown').html('<h3>This video is in:</h3>
+      $('#video-language-dropdown').html('<p>This video is in:</p>
       <ul class="nav nav-pills" id="video-language-options">
         <li class="dropdown"> 
           <a href="#" data-toggle="dropdown" class="dropdown-toggle">Select language<b class="caret"></b></a> 
@@ -124,13 +124,13 @@ $ ->
       $("#select-language-box").slideDown()
 
       slowSplashPageContent = ->
-        $("#select-language-box").html('<br><br><h3>Thanks!  Three things to know before you get started:</h3>
+        $("#select-language-box").html('<br><br><h3>Thanks!</h3><br><br>
+          <p>Three things to know before you get started:</p>
           <br><br>
-          <ol><li>The video is broken down into 4-second loops to help you translate faster.</li>
-          <li>Use these purple buttons to skip ahead loops.</li>
-          <li>This settings page will let you adjust pausing and timer.</li></ol>
+          <ol><li>The video is broken down into loops to help you translate faster.</li>
+          <li>Use this button to adjust the length of the loop: <a class="btn btn-info"><i class="icon-repeat icon-2x"></i></a></li>
           <br><br>
-          <a class="btn btn-primary" id="lets-get-going">Great, let\'s get going!</a>')
+          <a class="btn btn-info" id="lets-get-going">Great, let\'s get going!</a>')
 
       slowSplashPageContent()
 
@@ -162,13 +162,25 @@ $ ->
         # PLAYER SETTINGS
 
         $("#settings").html('<div class="btn-group">
-          <a class="btn btn-info dropdown-toggle" data-toggle="dropdown" href="#"><i class="icon-cog icon-2x"></i></a></span></a><ul class="dropdown-menu">
-            <li><a id="loop-edit">Change default loop</a></li>
+          <a class="btn btn-info dropdown-toggle" data-toggle="dropdown" id="z"><i class="icon-cog icon-2x"></i></a></span>
+          <ul class="dropdown-menu">
             <li><a id="timer-toggle">Turn big timer on/off</a></li>
-            <li><a id="rollover-toggle">Pause video on mouse rollover</a></li></ul>
-          <a class="btn btn-info"><i class="icon-step-backward icon-2x"></i></a>
-          <a class="btn btn-info"><i class="icon-step-forward icon-2x"></i></a>
+            <li><a id="rollover-toggle">Pause video on mouse rollover</a></li></ul></div>
+          <div class="btn-group">
+          <a class="btn btn-info dropdown-toggle" data-toggle="dropdown" id="x"><i class="icon-refresh icon-2x"></i></a></span>
+          <ul class="dropdown-menu">
+            <li><a id="no-loop">No loop</a></li>
+            <li><a id="loop-2">2 seconds</a></li>
+            <li><a id="loop-4">4 seconds</a></li>
+            <li><a id="loop-8">8 seconds</a></li></ul>
+          <a class="btn btn-info" id="backward"><i class="icon-step-backward icon-2x"></i></a>
+          <a class="btn btn-info" id="forward"><i class="icon-step-forward icon-2x"></i></a>
+          </div>
+          <div class="btn-group">
+          <a class="btn btn-info" id="forward"><i class="icon-pushpin icon-2x"></i></a>
           </div>')
+
+        window.loop = 4
 
         $("#timer-toggle").livequery ->
           $(this).click ->
@@ -192,19 +204,94 @@ $ ->
       onPlayerReady = (event) ->
         event.target.playVideo()
 
+      window.section = 0 
+      window.time = 0
+
+      $("#forward").livequery ->
+        $(this).click -> 
+          section += 1
+          player.seekTo(window.loop * window.section, true)
+          $("#looping-box").html(window.loop * window.section)
+
+      $("#backward").livequery ->
+        $(this).click -> 
+          section -= 1
+          player.seekTo(window.loop * window.section, true)
+          $("#looping-box").html(window.loop * window.section)
+
       countVideoPlayTime = ->
         exact_time = player.getCurrentTime()
-        time = Math.round(exact_time)
-        minutes = Math.floor(time / 60)
+
+        # LOOPING HAPPENS HERE
+        if window.loop != false
+          if exact_time > (window.loop) * (window.section + 1) - .25
+            player.seekTo(window.loop * window.section, true)
+        window.time = Math.round(exact_time)
+        minutes = Math.floor(window.time / 60)
         if minutes < 10
           minutes = '0' + minutes
-        seconds = time - minutes * 60
+        seconds = window.time - minutes * 60
         if seconds < 10
           seconds = '0' + seconds
         $(".timer-text").html(minutes + ":" + seconds)
 
-      counter = setInterval(countVideoPlayTime, 200)
+        current_loop_time = window.loop * window.section
+        loop_minutes = Math.floor(current_loop_time / 60)
+        if loop_minutes < 10
+          loop_minutes = '0' + loop_minutes
+        loop_seconds = current_loop_time - loop_minutes * 60
+        if loop_seconds < 10
+          loop_seconds = '0' + loop_seconds
+        if window.loop != false
+          $(".current-loop-time").html(loop_minutes + ":" + loop_seconds)
+        else
+          $(".current-loop-time").html(minutes + ":" + seconds)
+
+      counter = setInterval(countVideoPlayTime, 400)
       done = false
+
+      $("#no-loop").livequery ->
+        $(this).click ->
+          window.loop = false
+          $("#no-loop").html('<strong>No loop</strong>')
+          $("#loop-2").html('2 seconds')
+          $("#loop-4").html('4 seconds')
+          $("#loop-8").html('8 seconds')
+          $("#forward").hide()
+          $("#backward").hide()
+
+      $("#loop-2").livequery ->
+        $(this).click ->
+          window.loop = 2
+          window.section = window.time / 2
+          $("#no-loop").html('No loop')
+          $("#loop-2").html('<strong>2 seconds</strong>')
+          $("#loop-4").html('4 seconds')
+          $("#loop-8").html('8 seconds')
+          $("#forward").show()
+          $("#backward").show()
+
+      $("#loop-4").livequery ->
+        $(this).click ->
+          window.loop = 4
+          window.section = window.time / 4
+          $("#no-loop").html('No loop')
+          $("#loop-2").html('2 seconds')
+          $("#loop-4").html('<strong>4 seconds</strong>')
+          $("#loop-8").html('8 seconds')
+          $("#forward").show()
+          $("#backward").show()
+
+      $("#loop-8").livequery ->
+        $(this).click ->
+          window.loop = 8
+          window.section = window.time / 8
+          $("#no-loop").html('No loop')
+          $("#loop-2").html('2 seconds')
+          $("#loop-4").html('4 seconds')
+          $("#loop-8").html('<strong>8 seconds</strong>')
+          $("#forward").show()
+          $("#backward").show()
 
       onPlayerStateChange = (event) ->
         stopVideo -> player.stopVideo()
@@ -214,8 +301,8 @@ $ ->
 
       # INPUT LINES COME IN HERE
 
-      $('#lang1-input').html("<i class='left'>#{window.lang1}&nbsp;</i><small class='left'>(<small class='timer-text'></small>)</small><div class='control-group'><div class='controls'><input type='text' class='input-xlarge lang1-line' id='1' size='40'></div></div>")
-      $('#lang2-input').html("<i class='left'>#{window.lang2}&nbsp;</i><small class='left'>(<small class='timer-text'></small>)</small><div class='controls'><input type='text' class='input-xlarge lang2-line' id='1' size='40'></div>")
+      $('#lang1-input').html("<i class='left'>#{window.lang1}&nbsp;</i><small class='left'>(<small class='current-loop-time'></small>)</small><div class='control-group'><div class='controls'><input type='text' class='input-xlarge lang1-line' id='1' size='40'></div></div>")
+      $('#lang2-input').html("<i class='left'>#{window.lang2}&nbsp;</i><small class='left'>(<small class='current-loop-time'></small>)</small><div class='controls'><input type='text' class='input-xlarge lang2-line' id='1' size='40'></div>")
 
       # DONE AND SHOW BUTTONS AND TIMER BOX ADDED HERE
 
@@ -233,7 +320,7 @@ $ ->
         entry = this.value
         that_entry = $('.lang2-line').val()
         console.log "entry: #{entry}, that_entry: #{that_entry}"
-        time = $("#timer").text()
+        time = $("#looping-box").text()
         $('#lang1-lyrics').append("<p><small><small>(#{time})</small></small>  #{entry}</p>")
         $('#lang2-lyrics').append("<p><small><small>(#{time})</small></small>  #{that_entry}</p>")
         $('.lang1-line').val('')
@@ -249,9 +336,9 @@ $ ->
         entry = this.value
         that_entry = $('.lang1-line').val()
         console.log "entry: #{entry}, that_entry: #{that_entry}"
-        time = $("#timer").text()
-        $('#lang2-lyrics').append("<p><small>(#{time})</small>  #{entry}</p>")
-        $('#lang1-lyrics').append("<p><small>(#{time})</small>  #{that_entry}</p>")
+        time = $("#looping-box").text()
+        $('#lang2-lyrics').append("<p><small><small>(#{time})</small></small>  #{entry}</p>")
+        $('#lang1-lyrics').append("<p><small><small>(#{time})</small></small>  #{that_entry}</p>")
         $('.lang1-line').val('')
         $('.lang2-line').val('')
         time_in_seconds = parseInt(time.slice(3,5)) + parseInt(time.slice(0,2))*60
