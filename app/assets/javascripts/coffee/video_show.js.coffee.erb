@@ -34,8 +34,10 @@ $ ->
       this_time = "line-" + time
       console.log "Time: " + time + ", Array: " + array
       if array.indexOf(this_time) > -1
-        target = "#line-" + time
-        $("#lyrics").scrollTo target, 2000
+        targeta = "#line-" + time + "-a"
+        targetb = "#line-" + time + "-b"
+        $("#lyrics").scrollTo targeta, 2000
+        $("#lyrics").scrollTo targetb, 2000
     exact_time = player.getCurrentTime()
     time = Math.round(exact_time)
     arr = array_builder()

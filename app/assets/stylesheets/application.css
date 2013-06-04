@@ -77,7 +77,7 @@ p {
 #timer-box {
   position: relative;
   z-index: 1;
-  bottom: 210px;
+  bottom: 250px;
   right: 45px;
 }
 #timer {
@@ -94,9 +94,8 @@ p {
 #select-language-box {
   height: 320px;
   width: 420px;
-  float: right;
-  margin-left: 160px;
-  margin-right: 240px;
+  margin-left: auto;
+  margin-right: auto;
 }
 #translation-language-options {
   margin-left: auto;
