@@ -7,31 +7,39 @@
 
   <div class="lyrics-box centerbox" id="lyrics">
 
-  <% @lines.each do |l| %>
+  <% if @lines_have_lang1 %>
+  
+    <% @lines.each do |l| %>
 
-    <div class="narrow-lyrics-container lang1" id="line-<%= l.time %>">
-      <div class="text-container">
-        <p class="lyrics"><%= l.lang1 %></p>
+      <div class="narrow-lyrics-container lang1">
+        <div class="text-container">
+          <p class="lyrics"><%= l.lang1 %></p>
+        </div>
       </div>
-    </div>
 
-    <div class="narrow-lyrics-container lang2" id="line-<%= l.time %>-b">
-      <div class="text-container">
-        <p class="lyrics"><%= l.lang2 %></p>
+      <div class="narrow-lyrics-container lang2" id="line-<%= l.time %>">
+        <div class="text-container">
+          <p class="lyrics"><%= l.lang2 %></p>
+        </div>
       </div>
-    </div>
 
-  <!--
+    <% end %>
 
-    <div class="button-container">
-      <i class="icon-thumbs-up"></i><i class="icon-thumbs-down"></i><i class="icon-comment-alt"></i>
-    </div>
+  <% else %>
+  
+    <% @lines.each do |l| %>
 
-  -->
+      <div class="wide-lyrics-container lang2" id="line-<%= l.time %>">
+        <div class="text-container">
+          <p class="lyrics"><%= l.lang2 %></p>
+        </div>
+      </div>
 
-  <% end %>
+    <% end %>
 
   </div>
+
+  <% end %>
 
   <% if @lines_have_lang1 %>
     <div class="centerbox visible">

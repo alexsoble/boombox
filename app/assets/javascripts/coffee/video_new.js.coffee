@@ -39,7 +39,7 @@ $ ->
 
       getTitle = (data) ->
         window.title = data.entry.title.$t
-        $.post('/new_video', { 'video' : { 'youtube_id' : "#{youtube_id}", 'title' : "#{window.title}" } }, (data) ->
+        $.post('/new_video', { 'video' : { 'youtube_id' : "#{youtube_id}", 'title' : "#{title}" } }, (data) ->
           console.log data, "json")
         $('.very-wide-box').html("<h2>#{window.title}</h2>")
         $(".very-wide-box").hide()
@@ -294,7 +294,7 @@ $ ->
           <a class="btn btn-info" id="backward"><i class="icon-step-backward icon-2x"></i></a>
           <a class="btn btn-info" id="forward"><i class="icon-step-forward icon-2x"></i></a>
         </div>')
-      $("#controls").prepend('<p id="red-arrow-text">When you hear the words, click to start translating!</p>')
+      $("#controls").prepend('<p id="red-arrow-text">Click here when the words start. Let\'s get translating!</p>')
       $("#red-arrow-text").hide()
 
       delayedShow = -> 
@@ -387,14 +387,14 @@ $ ->
         # INPUT LINES COME IN HERE
 
           if window.translation_type == 'just_lang2'
-            $('#lang2-input').html("<i class='left'>#{window.lang2}&nbsp;</i><small class='left'>(<small id='current-loop-time' class='current-loop-time'></small>)</small><div class='controls'><input type='text' class='input-xlarge lang2-line'></div>")
+            $('#lang2-input').html("<i class='left'>#{window.lang2}&nbsp;</i><small class='left'>(<small id='current-loop-time' class='current-loop-time'></small>)</small><br><div class='control-group'><div class='controls'><input type='text' class='input-xlarge lang2-line'></div></div>")
 
             # AND WIDTHS GET ADJUSTED DEPENDING ON IF ONE OR BOTH LANGUAGES ARE BEING TRANSCRIBED
             $('#lang1-box').parent().attr('class','')
             $('#lang2-box').parent().attr('class','lyrics-container wide')
 
           if window.translation_type == 'lang1_and_lang2'
-            $('#lang1-input').html("<i class='left'>#{window.lang1}&nbsp;</i><small class='left'>(<small class='current-loop-time' ></small>)</small><div class='control-group'><div class='controls'><input type='text' class='input-xlarge lang1-line'></div></div>")
+            $('#lang1-input').html("<i class='left'>#{window.lang1}&nbsp;</i><small class='left'>(<small class='current-loop-time'></small>)</small><div class='control-group'><div class='controls'><input type='text' class='input-xlarge lang1-line'></div></div>")
             $('#lang2-input').html("<i class='left'>#{window.lang2}&nbsp;</i><small class='left'>(<small id='current-loop-time' class='current-loop-time'></small>)</small><div class='controls'><input type='text' class='input-xlarge lang2-line'></div>")
 
       # LOGIC FOR THE CONTROLS PANEL

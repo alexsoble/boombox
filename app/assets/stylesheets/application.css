@@ -91,7 +91,11 @@ td { color: black;
 .lyrics-container.sticky {
   margin-left: 555px; }
 
-.lyrics-container.wide { width: 800px; }
+.lyrics-container.wide { 
+  width: 600px;
+  margin-left: 40px; 
+  margin-top: 0px; 
+  float: left; }
 
 .center-pill {
   margin-right: auto; 
@@ -192,8 +196,11 @@ td { color: black;
 
 /*** SHOW PAGE (VIDEOS) ***/
 
+.lyrics { text-align: center; }
+
 .lyrics-box {
-  height: 60px; }
+  height: 60px;
+  margin-top: 20px; }
 
 .wide-lyrics-container {
   width: 420px;
@@ -201,7 +208,7 @@ td { color: black;
   float: left; 
   margin-top: 1px;
   margin-bottom: 1px;
-  background-color: #0101DF;
+  background-color: white;
   border-top: 1px solid white }
 
 .narrow-lyrics-container {
@@ -210,21 +217,16 @@ td { color: black;
   float: left;
   margin-top: 1px;
   margin-bottom: 1px;
-  background-color: #0101DF;
+  background-color: white;
   border-top: 1px solid white }
 
-.lang2 {
-  background-color: #013ADF; }
+.lang2 { background-color: white; }
 
 .button-container {
   background-color: white;
   float: right;
   width: 10px;
   border-top: 2px solid white }
-
-.lyrics {
-  color: white;
-  text-align: center; }
 
 /*** STICKY FOOTER ***/
 

@@ -2,7 +2,7 @@ class VideosController < ApplicationController
   require 'json'
   respond_to :html, :json
 
-  def create=
+  def create
 
     @youtube_id = params[:video][:youtube_id]
     if Video.where(:youtube_id => @youtube_id).blank? 

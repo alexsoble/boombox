@@ -16,32 +16,31 @@ $ ->
       videoId: video_youtube_id
       events:
         onReady: onPlayerReady
-        onStateChange: onPlayerStateChange
-        )
-    this
+        onStateChange: onPlayerStateChange)
 
   onPlayerReady = (event) ->
     event.target.playVideo()
+
   countVideoPlayTime = ->
     array_builder = ->
       arr = []
-      lyrics = $(".lang1")
+      lyrics = $(".lang2")
       jQuery.each lyrics, ->
         id = $(this).attr("id")
         arr.push id
       arr
+
     scroll = (array, time) ->
-      this_time = "line-" + time
+      time_div = 'line-' + time
       console.log "Time: " + time + ", Array: " + array
-      if array.indexOf(this_time) > -1
-        targeta = "#line-" + time + "-a"
-        targetb = "#line-" + time + "-b"
-        $("#lyrics").scrollTo targeta, 2000
-        $("#lyrics").scrollTo targetb, 2000
+      if array.indexOf(time_div) > -1
+        $("#lyrics").scrollTo ('#' + time_div), 2000
+
     exact_time = player.getCurrentTime()
     time = Math.round(exact_time)
     arr = array_builder()
     do_scroll = scroll(arr, time)
+
   onPlayerStateChange = (event) ->
     if event.data is YT.PlayerState.PLAYING and not done
       setTimeout stopVideo, 6000
@@ -65,4 +64,3 @@ $ ->
     $(".lang1").slideDown()
     $(".lang2").slideUp()
     $(".lang1").attr("class", "wide-lyrics-container lang1")
-
