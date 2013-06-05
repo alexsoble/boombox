@@ -329,6 +329,20 @@ $ ->
           $('#red-arrow').fadeOut(2000)
           $('#red-arrow-text').fadeOut(2000)
 
+          newRedArrow = ->
+            console.log "New red arrow!!!"
+            $('#red-arrow').attr('class','shift-right').attr('style','display: inline;')
+            $('#red-arrow-text').attr('class','shift-right').attr('style','display: inline;')
+            $('#red-arrow-text').html('Use these tools to find the best loop for your video.')
+            redArrowFade = ->
+              console.log "Red arrow fade!!!"
+              $('#red-arrow').fadeOut(2000)
+              $('#red-arrow-text').fadeOut(2000)
+            window.setTimeout(redArrowFade, 5000) 
+            $('#red-arrow').show()
+            $('#red-arrow-text').show()
+          window.setTimeout(newRedArrow, 3000)
+
           # LOGIC FOR THE INPUT LINES
 
           if window.translation_type == 'lang1_and_lang2'

@@ -14,6 +14,8 @@
 
 /*** MULTIPLE PAGES (VIDEOS) ***/
 
+::-webkit-scrollbar { display: none; }
+
 .centerbox {  margin-right: auto; 
   margin-left: auto; 
   width: 420px; 
@@ -67,6 +69,8 @@ td { color: black;
   height: 80px;
   position: relative;
   overflow: visible; }
+
+#outer-video-box { overflow: visible; }
 
 #outer-video-box.sticky { 
   position: fixed; 
@@ -173,10 +177,20 @@ td { color: black;
   top: 50px;
   left: 75px; }
 
+#red-arrow.shift-right {
+  position: absolute;
+  top: 50px;
+  left: 130px; }
+
 #red-arrow-text {
   position: absolute;
   top: 130px;
   left: 240px; }
+
+#red-arrow-text.shift-right {
+  position: absolute;
+  top: 130px;
+  left: 295px; }
 
 #translation-language-options {
   margin-left: auto;
