@@ -3,6 +3,16 @@ $ ->
   $("#select-language-box").hide()
   $("#controls").hide() 
 
+  # YOUTUBE WINDOW STICKY ON SCROLL
+
+  $window = $(window)
+  video_box = $('#outer-video-box')
+  video_top = video_box.offset().top
+  lyrics_container = $('.lyrics-container')
+  $window.scroll ->
+    video_box.toggleClass('sticky', $window.scrollTop() > video_top)
+    lyrics_container.toggleClass('sticky', $window.scrollTop() > video_top)
+
   # WHEN A NEW VIDEO URL GETS PASTED IN
 
   $("#new-video-submit").keyup =>
@@ -16,6 +26,9 @@ $ ->
       window.youtube_id = "#{youtube_id}"
     if youtube_id.match(/player_embedded/)
       youtube_id = youtube_id.replace 'http://www.youtube.com/watch?feature=player_embedded&v=', ''
+      window.youtube_id = "#{youtube_id}"
+    if youtube_id.match(/endscreen/)
+      youtube_id = youtube_id.replace 'http://www.youtube.com/watch?feature=endscreen&NR=1&v=', ''
       window.youtube_id = "#{youtube_id}"
 
     if (window.keyup isnt 1) and (user_submit.match(/youtube/) isnt null)
@@ -264,9 +277,7 @@ $ ->
 
       # PLAYER SETTINGS ADDED
 
-      $("#controls").show()
-      $("#controls").append('
-        <div class="btn-group" id="settings-and-pin">
+      $("#controls").append('<div class="btn-group" id="settings-and-pin">
           <a class="btn btn-info dropdown-toggle" data-toggle="dropdown" id="settings"><i class="icon-cog icon-2x"></i></a></span>
             <ul class="dropdown-menu">
               <li><a id="timer-toggle">Turn big timer on/off</a></li>
@@ -283,8 +294,8 @@ $ ->
           <a class="btn btn-info" id="backward"><i class="icon-step-backward icon-2x"></i></a>
           <a class="btn btn-info" id="forward"><i class="icon-step-forward icon-2x"></i></a>
         </div>')
-      $("#controls").prepend('<p id="red-arrow-text">Click here when you <br>hear the words start!</p>')
-      $('#forward-and-backward').hide()
+      $("#controls").prepend('<p id="red-arrow-text">When you hear the words, click to start translating!</p>')
+      $("#red-arrow-text").hide()
 
       delayedShow = -> 
         
@@ -298,8 +309,11 @@ $ ->
         # $('.save-button').html('<div class="btn btn-info" id="save-button">Save</div>')
         $('#timer-box').html('<div id="timer"><h2 class="timer-text" id="big-timer"></h2></div>')
         $('#timer-box').hide()
+        $("#controls").show()
+        $("#red-arrow-text").show().effect('highlight',[],2000)
+        $('#forward-and-backward').hide()
 
-      window.setTimeout(delayedShow, 3000)
+      window.setTimeout(delayedShow, 1500)
 
       $("#select-language-box").show()
 
@@ -374,8 +388,10 @@ $ ->
 
           if window.translation_type == 'just_lang2'
             $('#lang2-input').html("<i class='left'>#{window.lang2}&nbsp;</i><small class='left'>(<small id='current-loop-time' class='current-loop-time'></small>)</small><div class='controls'><input type='text' class='input-xlarge lang2-line'></div>")
+
+            # AND WIDTHS GET ADJUSTED DEPENDING ON IF ONE OR BOTH LANGUAGES ARE BEING TRANSCRIBED
             $('#lang1-box').parent().attr('class','')
-            $('#lang1-box').parent().hide()
+            $('#lang2-box').parent().attr('class','lyrics-container wide')
 
           if window.translation_type == 'lang1_and_lang2'
             $('#lang1-input').html("<i class='left'>#{window.lang1}&nbsp;</i><small class='left'>(<small class='current-loop-time' ></small>)</small><div class='control-group'><div class='controls'><input type='text' class='input-xlarge lang1-line'></div></div>")

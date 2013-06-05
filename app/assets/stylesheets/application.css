@@ -68,6 +68,13 @@ td { color: black;
   position: relative;
   overflow: visible; }
 
+#outer-video-box.sticky { 
+  position: fixed; 
+  bottom: 210px; }
+
+#copy-and-paste-box {
+  margin-top: 200px; }
+
 .language-option {
   color: black; }
 
@@ -81,8 +88,10 @@ td { color: black;
   float: left; 
   width: 300px; }
 
-#copy-and-paste-box {
-  margin-top: 200px; }
+.lyrics-container.sticky {
+  margin-left: 555px; }
+
+.lyrics-container.wide { width: 800px; }
 
 .center-pill {
   margin-right: auto; 
