@@ -129,9 +129,9 @@ $ ->
           <p><i>Got it!  One more:</i></p>  
           <br>
           <div class='center-pill-wide'><ul class='nav nav-pills'>
-            <li><a id='just-lang2' class='translation-type-option'>I want to just write down just the #{window.lang2} translation, not the #{window.lang1}.</a></li>
-            <br><br><br><br><br>
-            <li><a id='lang1-and-lang2' class='translation-type-option'>I want to write down the #{window.lang2} and the #{window.lang1} side-by-side.</a></<ul></div>").slideDown()
+            <li><a id='just-lang2' class='translation-type-option'>I want to write out just the #{window.lang2} translation.</a></li>
+            <br><br><br><br>
+            <li><a id='lang1-and-lang2' class='translation-type-option'>I want to write out the #{window.lang2} and the #{window.lang1} side-by-side.</a></<ul></div>").slideDown()
         $("#translation-language-dropdown").html('')
 
         slowSplashPageContent = ->
@@ -292,16 +292,14 @@ $ ->
         
         $(".very-wide-box").slideDown('')
 
+        window.player.playVideo()
+
         # $('.done-button').html('<div class="btn btn-info" id="done-button">Done</div>')
         # $('.save-button').html('<div class="btn btn-info" id="save-button">Save</div>')
         $('#timer-box').html('<div id="timer"><h2 class="timer-text" id="big-timer"></h2></div>')
         $('#timer-box').hide()
 
-      window.setTimeout(delayedShow, 1500)
-
-      delayedPlay =->
-        window.player.playVideo()
-      window.setTimeout(delayedPlay, 3000)
+      window.setTimeout(delayedShow, 3000)
 
       $("#select-language-box").show()
 
@@ -317,15 +315,73 @@ $ ->
           $('#red-arrow').fadeOut(2000)
           $('#red-arrow-text').fadeOut(2000)
 
-        # INPUT LINES COME IN HERE
+          # LOGIC FOR THE INPUT LINES
+
+          if window.translation_type == 'lang1_and_lang2'
+
+            $(".lang1-line").livequery ->
+              $(this).keyup (e) ->
+                e.preventDefault
+                if e.which == 13 and ($('.lang2-line').val() isnt '')
+                  entry = this.value
+                  that_entry = $('.lang2-line').val()
+                  console.log "entry: #{entry}, that_entry: #{that_entry}"
+                  time = $("#current-loop-time").text()
+                  $('#lang1-lyrics').append("<p><small><small>(#{time})</small></small>  #{entry}</p>")
+                  $('#lang2-lyrics').append("<p><small><small>(#{time})</small></small>  #{that_entry}</p>")
+                  $('.lang1-line').val('')
+                  $('.lang2-line').val('')
+                  time_in_seconds = parseInt(time.slice(3,5)) + parseInt(time.slice(0,2))*60
+                  console.log time_in_seconds
+                  $.post('/new_line', { 'line' : { 'lang1' : "#{entry}", 'lang2' : "#{that_entry}", 'time' : "#{time_in_seconds}", 'interpretation_id' : "#{window.interp_id}" , 'upvotes' : 0, 'downvotes' : 0  } }, (data) ->
+                    console.log data.data )
+                  window.section += 1
+
+            $(".lang2-line").livequery ->
+              $(this).keyup (e) ->
+                if e.which == 13 and ($('.lang1-line').val() isnt '')
+                  entry = this.value
+                  that_entry = $('.lang1-line').val()
+                  console.log "entry: #{entry}, that_entry: #{that_entry}"
+                  time = $("#current-loop-time").text()
+                  $('#lang2-lyrics').append("<p><small><small>(#{time})</small></small>  #{entry}</p>")
+                  $('#lang1-lyrics').append("<p><small><small>(#{time})</small></small>  #{that_entry}</p>")
+                  $('.lang1-line').val('')
+                  $('.lang2-line').val('')
+                  $('.lang1-line').focus()
+                  time_in_seconds = parseInt(time.slice(3,5)) + parseInt(time.slice(0,2))*60
+                  $.post('/new_line', { 'line' : { 'lang1' : "#{that_entry}", 'lang2' : "#{entry}", 'time' : "#{time_in_seconds}", 'interpretation_id' : "#{window.interp_id}" , 'upvotes' : 0, 'downvotes' : 0  } }, (data) ->
+                    console.log data.data )
+                  window.section += 1
+
           if window.translation_type == 'just_lang2'
-            $('#lang2-input').html("<i class='left'>#{window.lang2}&nbsp;</i><small class='left'>(<small id='current-loop-time' class='current-loop-time'></small>)</small><div class='controls'><input type='text' class='input-xlarge lang2-line' id='1' size='40'></div>")
+
+            $(".lang2-line").livequery ->
+              $(this).keyup (e) ->
+                if e.which == 13
+                  entry = this.value
+                  console.log entry
+                  if entry != ''
+                    time = $("#current-loop-time").text()
+                    $('#lang2-lyrics').append("<p><small><small>(#{time})</small></small>  #{entry}</p>")
+                    $('.lang2-line').val('')
+                    time_in_seconds = parseInt(time.slice(3,5)) + parseInt(time.slice(0,2))*60
+                    $.post('/new_line', { 'line' : { 'lang1' : '', 'lang2' : "#{entry}", 'time' : "#{time_in_seconds}", 'interpretation_id' : "#{window.interp_id}" , 'upvotes' : 0, 'downvotes' : 0  } }, (data) ->
+                      console.log data.data )
+                  window.section += 1
+
+        # INPUT LINES COME IN HERE
+
+          if window.translation_type == 'just_lang2'
+            $('#lang2-input').html("<i class='left'>#{window.lang2}&nbsp;</i><small class='left'>(<small id='current-loop-time' class='current-loop-time'></small>)</small><div class='controls'><input type='text' class='input-xlarge lang2-line'></div>")
             $('#lang1-box').parent().attr('class','')
             $('#lang1-box').parent().hide()
 
           if window.translation_type == 'lang1_and_lang2'
-            $('#lang1-input').html("<i class='left'>#{window.lang1}&nbsp;</i><small class='left'>(<small class='current-loop-time' ></small>)</small><div class='control-group'><div class='controls'><input type='text' class='input-xlarge lang1-line' id='1' size='40'></div></div>")
-            $('#lang2-input').html("<i class='left'>#{window.lang2}&nbsp;</i><small class='left'>(<small id='current-loop-time' class='current-loop-time'></small>)</small><div class='controls'><input type='text' class='input-xlarge lang2-line' id='1' size='40'></div>")
+            $('#lang1-input').html("<i class='left'>#{window.lang1}&nbsp;</i><small class='left'>(<small class='current-loop-time' ></small>)</small><div class='control-group'><div class='controls'><input type='text' class='input-xlarge lang1-line'></div></div>")
+            $('#lang2-input').html("<i class='left'>#{window.lang2}&nbsp;</i><small class='left'>(<small id='current-loop-time' class='current-loop-time'></small>)</small><div class='controls'><input type='text' class='input-xlarge lang2-line'></div>")
+
+      # LOGIC FOR THE CONTROLS PANEL
 
       $("#no-loop").livequery ->
         $(this).click ->
@@ -400,60 +456,6 @@ $ ->
               player.pauseVideo()
             if state == 2
               player.playVideo() )
-
-  # MORE LINES (AND OH YEAH, SAVING LINES TO THE DATABASE)
-
-  if window.translation_type == 'lang1_and_lang2'
-
-    $(".lang1-line").livequery ->
-      $(this).keyup (e) ->
-        e.preventDefault
-        if e.which == 13 and ($('.lang2-line').val() isnt '')
-          entry = this.value
-          that_entry = $('.lang2-line').val()
-          console.log "entry: #{entry}, that_entry: #{that_entry}"
-          time = $("#current-loop-time").text()
-          $('#lang1-lyrics').append("<p><small><small>(#{time})</small></small>  #{entry}</p>")
-          $('#lang2-lyrics').append("<p><small><small>(#{time})</small></small>  #{that_entry}</p>")
-          $('.lang1-line').val('')
-          $('.lang2-line').val('')
-          time_in_seconds = parseInt(time.slice(3,5)) + parseInt(time.slice(0,2))*60
-          console.log time_in_seconds
-          $.post('/new_line', { 'line' : { 'lang1' : "#{entry}", 'lang2' : "#{that_entry}", 'time' : "#{time_in_seconds}", 'interpretation_id' : "#{window.interp_id}" , 'upvotes' : 0, 'downvotes' : 0  } }, (data) ->
-            console.log data.data )
-          window.section += 1
-
-    $(".lang2-line").livequery ->
-      $(this).keyup (e) ->
-        if e.which == 13 and ($('.lang1-line').val() isnt '')
-          entry = this.value
-          that_entry = $('.lang1-line').val()
-          console.log "entry: #{entry}, that_entry: #{that_entry}"
-          time = $("#current-loop-time").text()
-          $('#lang2-lyrics').append("<p><small><small>(#{time})</small></small>  #{entry}</p>")
-          $('#lang1-lyrics').append("<p><small><small>(#{time})</small></small>  #{that_entry}</p>")
-          $('.lang1-line').val('')
-          $('.lang2-line').val('')
-          $('.lang1-line').focus()
-          time_in_seconds = parseInt(time.slice(3,5)) + parseInt(time.slice(0,2))*60
-          $.post('/new_line', { 'line' : { 'lang1' : "#{that_entry}", 'lang2' : "#{entry}", 'time' : "#{time_in_seconds}", 'interpretation_id' : "#{window.interp_id}" , 'upvotes' : 0, 'downvotes' : 0  } }, (data) ->
-            console.log data.data )
-          window.section += 1
-
-  if window.translation_type == 'just_lang2'
-
-    $(".lang2-line").livequery ->
-      $(this).keyup (e) ->
-        if e.which == 13
-          if this.value?
-            entry = this.value
-            time = $("#current-loop-time").text()
-            $('#lang2-lyrics').append("<p><small><small>(#{time})</small></small>  #{entry}</p>")
-            $('.lang2-line').val('')
-            time_in_seconds = parseInt(time.slice(3,5)) + parseInt(time.slice(0,2))*60
-            $.post('/new_line', { 'line' : { 'lang1' : '', 'lang2' : "#{entry}", 'time' : "#{time_in_seconds}", 'interpretation_id' : "#{window.interp_id}" , 'upvotes' : 0, 'downvotes' : 0  } }, (data) ->
-              console.log data.data )
-          window.section += 1
 
 # DONE BUTTON RESPONSE
 
