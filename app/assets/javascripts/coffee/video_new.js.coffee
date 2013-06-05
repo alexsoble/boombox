@@ -1,17 +1,21 @@
 $ ->
 
   $("#select-language-box").hide()
+  $("#controls").hide() 
 
   # WHEN A NEW VIDEO URL GETS PASTED IN
 
-  # VALIDATING THE URL AGAINST YOUTUBE SYNTAX 
-
   $("#new-video-submit").keyup =>
     user_submit = $("#new-video-submit").val()
-    youtube_id = "#{user_submit}".replace "http://www.youtube.com/watch?v=", ""
+
+    # VALIDATING THE URL AGAINST YOUTUBE SYNTAX 
+    youtube_id = "#{user_submit}".replace 'http://www.youtube.com/watch?v=', ''
     window.youtube_id = "#{youtube_id}"
     if youtube_id.match(/&list/)
       youtube_id = youtube_id.slice(0,11)
+      window.youtube_id = "#{youtube_id}"
+    if youtube_id.match(/player_embedded/)
+      youtube_id = youtube_id.replace 'http://www.youtube.com/watch?feature=player_embedded&v=', ''
       window.youtube_id = "#{youtube_id}"
 
     if (window.keyup isnt 1) and (user_submit.match(/youtube/) isnt null)
@@ -38,15 +42,13 @@ $ ->
 
       $("#select-language-box").slideDown('slow')
 
-      $('#video-language-dropdown').html("
-      <br><br>
-      <h3>Nice choice.</h3>
-      <img src=http://img.youtube.com/vi/#{window.youtube_id}/2.jpg>
-      <br><br>
-      <h4>This video is in:</h4>
+      $('#video-language-dropdown').html("<br><br>
+      <p><i>Great! A few questions before we get started...</i></p>
+      <br>
+      <p>This video is in:</p>
       <ul class='nav nav-pills' id='video-language-options'>
-        <li class='dropdown center-pill'> 
-          <a data-toggle='dropdown' class='dropdown-toggle center-pill'>Select language<b class='caret'></b></a> 
+        <li class='dropdown'> 
+          <a class='btn btn-info dropdown-toggle center-pill' data-toggle='dropdown'>Select language<b class='caret'></b></a> 
           <ul class='dropdown-menu'>
             <li><a class='language-video-option' id='English'>English</a></li> 
             <li><a class='language-video-option' id='Chinese'>Chinese</a></li>
@@ -62,24 +64,24 @@ $ ->
             <li><a class='language-video-option' id='Persian'>Persian</a></li> 
             <li><a class='language-video-option' id='Hindi'>Hindi</a></li></ul></li></ul>")
       
-      $('#translation-language-dropdown').html('<p>I\'m translating it into:</p>
-        <ul class="nav nav-pills" id="translation-language-options">
-          <li class="dropdown center-pill">
-            <a href="#" data-toggle="dropdown" class="dropdown-toggle center-pill">Select language<b class="caret"></b></a> 
-              <ul class="dropdown-menu" id="menu1">
-              <li><a class="language-translation-option" id="English">English</a></li> 
-              <li><a class="language-translation-option" id="Chinese">Chinese</a></li>
-              <li><a class="language-translation-option" id="Korean">Korean</a></li> 
-              <li><a class="language-translation-option" id="Japanese">Japanese</a></li> 
-              <li><a class="language-translation-option" id="Spanish">Spanish</a></li> 
-              <li><a class="language-translation-option" id="French">French</a></li> 
-              <li><a class="language-translation-option" id="German">German</a></li> 
-              <li><a class="language-translation-option" id="Italian">Italian</a></li> 
-              <li><a class="language-translation-option" id="Norwegian">Norwegian</a></li> 
-              <li><a class="language-translation-option" id="Hebrew">Hebrew</a></li> 
-              <li><a class="language-translation-option" id="Arabic">Arabic</a></li> 
-              <li><a class="language-translation-option" id="Persian">Persian</a></li> 
-              <li><a class="language-translation-option" id="Hindi">Hindi</a></li></ul></li></ul>')
+      $('#translation-language-dropdown').html("<p>I\'m translating it into:</p>
+        <ul class='nav nav-pills' id='translation-language-options'>
+          <li class='dropdown'>
+            <a class='btn btn-info dropdown-toggle center-pill' data-toggle='dropdown'>Select language<b class='caret'></b></a> 
+              <ul class='dropdown-menu'>
+              <li><a class='language-translation-option' id='English'>English</a></li> 
+              <li><a class='language-translation-option' id='Chinese'>Chinese</a></li>
+              <li><a class='language-translation-option' id='Korean'>Korean</a></li> 
+              <li><a class='language-translation-option' id='Japanese'>Japanese</a></li> 
+              <li><a class='language-translation-option' id='Spanish'>Spanish</a></li> 
+              <li><a class='language-translation-option' id='French'>French</a></li> 
+              <li><a class='language-translation-option' id='German'>German</a></li> 
+              <li><a class='language-translation-option' id='Italian'>Italian</a></li> 
+              <li><a class='language-translation-option' id='Norwegian'>Norwegian</a></li> 
+              <li><a class='language-translation-option' id='Hebrew'>Hebrew</a></li> 
+              <li><a class='language-translation-option' id='Arabic'>Arabic</a></li> 
+              <li><a class='language-translation-option' id='Persian'>Persian</a></li> 
+              <li><a class='language-translation-option' id='Hindi'>Hindi</a></li></ul></li></ul>")
 
   # VIDEO LANGUAGE SELECTORS BEHAVIOR
 
@@ -113,47 +115,75 @@ $ ->
     $(this).click ->
       window.lang1 = $("#video-lang-choice").html()
       window.lang2 = this.id
-      $("#translation-language-options").html("<a class='btn btn-primary' id='translation-lang-choice'>#{lang2}</a>")
+      if window.lang1 != window.lang2
 
-      # TALK TO THE SERVER HERE
+        $("#translation-language-options").html("<a class='btn btn-primary' id='translation-lang-choice'>#{lang2}</a>")
 
-      $.post('/new_interp', { 'interpretation' : { 'youtube_id' : "#{window.youtube_id}" , 'lang1' : "#{lang1}", 'lang2' : "#{lang2}" } }, (data) ->
-          window.interp_id = data.data.id
-          console.log window.interp_id)
+        # TALK TO THE SERVER HERE
 
-      $("#select-language-box").slideDown()
+        $.post('/new_interp', { 'interpretation' : { 'youtube_id' : "#{window.youtube_id}" , 'lang1' : "#{lang1}", 'lang2' : "#{lang2}" } }, (data) ->
+            window.interp_id = data.data.id
+            console.log window.interp_id)
 
-      slowSplashPageContent = ->
-        $("#select-language-box").html('<br><br><h1 style="text-align: center;">Thanks!</h1><br><br>
-          <h2><i>A few things to know:</i></h2>
-          <table style="border-collapse: separate; border-spacing: 20px 20px;" border="0">
-            <tr><ol>
-              <td><li>Hit the pin when you hear the words start.</li></td>
-              <td class="style52"><a class="btn btn-info style52"><i class="icon-pushpin icon-2x"></i></a></td>
-            </tr>
-            <tr>
-              <td><li>When you hit the pin, the video will start looping.  The default loop is 4 seconds.  </li></td>
-              <td class="style52" style="text-align: center;"><h3 class="white">4</h3></td>
-            </tr>
-            <tr>
-              <td><li>Use this button to adjust the loop.</li></td>
-              <td class="style52"><a class="btn btn-info style52"><i class="icon-refresh icon-2x"></i></a></td>
-            </tr>
-            <tr>
-              <td><li>Use the forward button to skip to the next loop.</li></td>
-              <td class="style52"><a class="btn btn-info style52"><i class="icon-forward icon-2x"></i></a></td>
-            </ol><tr>
-          </table>
+        $("#video-language-dropdown").html("<br><br>
+          <p><i>Got it!  One more:</i></p>  
           <br>
-          <a class="btn btn-info" id="lets-get-going">Makes sense. Let\'s get going!</a>')
+          <div class='center-pill-wide'><ul class='nav nav-pills'>
+            <li><a id='just-lang2' class='translation-type-option'>I want to just write down just the #{window.lang2} translation, not the #{window.lang1}.</a></li>
+            <br><br><br><br><br>
+            <li><a id='lang1-and-lang2' class='translation-type-option'>I want to write down the #{window.lang2} and the #{window.lang1} side-by-side.</a></<ul></div>").slideDown()
+        $("#translation-language-dropdown").html('')
 
-      slowSplashPageContent()
+        slowSplashPageContent = ->
+          $("#select-language-box").html('<br><br>
+            <!-- <table style="border-collapse: separate; border-spacing: 15px 15px; margin: auto; width: 500px;" border="0">
+              <tr>
+                <td><strong>1.</strong> Hit the pin when the words start.</td>
+              </tr>
+              <tr>
+                <td><div class="style52"><i class="icon-pushpin icon-2x icon-style52" style="right: 10px;"></i></div></td>
+              </tr>
+              <tr>
+                <td><strong>2.</strong> When you hit the pin, the video will loop every 4 seconds.</td>
+              </tr>
+              <tr>                
+                <td><h3 class="style52">4s</h3></td>
+              </tr>
+              <tr>
+                <td><strong>3.</strong> Use this button to make the loop longer or shorter.</td>
+              </tr>
+              <tr>
+                <td><div class="style52"><i class="icon-refresh icon-2x icon-style52"></i></div></td>
+              </tr>
+              <tr>
+                <td><strong>4.</strong> The forward button skips ahead to the next loop.</td>
+              </tr>
+              <tr>
+                <td><div class="style52"><i class="icon-forward icon-2x icon-style52" style="right: 6px;"></i></div></td>
+              </tr>
+            </table>
+            <br> -->
+            <a class="btn btn-info btn-large center-pill-wide" id="lets-get-going">Okay, let\'s get going!</a>').slideDown()
+          $("#select-language-box").attr('id','splash-box')
+
+        $("#lang1-and-lang2").livequery ->
+          $(this).click ->
+            window.translation_type = 'lang1_and_lang2'
+
+        $("#just-lang2").livequery ->
+          $(this).click ->
+            window.translation_type = 'just_lang2'
+
+        $(".translation-type-option").livequery ->
+          $(this).click ->
+            slowSplashPageContent()
 
   # SPLASH PAGE HERE
 
   $("#lets-get-going").livequery ->
     $(this).click ->
-      $("#select-language-box").hide()
+
+      $("#splash-box").hide()
 
     # YOUTUBE PLAYER COMES IN HERE
 
@@ -174,27 +204,10 @@ $ ->
             onReady: onPlayerReady
             onStateChange: onPlayerStateChange)
 
-        $("#timer-toggle").livequery ->
-          $(this).click ->
-            $("#timer-box").toggle()
-
-        $("#rollover-toggle").livequery ->
-          $(this).click ->
-            if window.rollover_pause == false
-              window.rollover_pause = true
-
-        # MOUSE ROLLOVER PAUSE 
-
-        $('#outer-video-box').mouseenter(-> 
-          if window.rollover_pause == true
-            state = player.getPlayerState()
-            if state == 1
-              player.pauseVideo()
-            if state == 2
-              player.playVideo() )
+        window.player = player
 
       onPlayerReady = (event) ->
-        event.target.playVideo()
+        event.target.pauseVideo()
 
       window.section = 0 
       window.time = 0
@@ -211,6 +224,7 @@ $ ->
           seconds = '0' + seconds
         $(".timer-text").html(minutes + ":" + seconds)
 
+        # CALCULATING THE CURRENT LOOP START POINT IN INTEGER AND MM:SS FORMATS 
         current_loop_time = window.loop * window.section
         loop_minutes = Math.floor(current_loop_time / 60)
         if loop_minutes < 10
@@ -218,8 +232,19 @@ $ ->
         loop_seconds = current_loop_time - loop_minutes * 60
         if loop_seconds < 10
           loop_seconds = '0' + loop_seconds
+
+        # CALCULATING LOOP END POINT IN INTEGER AND MM:SS FORMATS 
+        current_loop_end = window.loop * (window.section + 1)
+        loop_end_minutes = Math.floor(current_loop_end / 60)
+        if loop_end_minutes < 10
+          loop_end_minutes = '0' + loop_end_minutes
+        loop_end_seconds = current_loop_end - (loop_end_minutes * 60)
+        if loop_end_seconds < 10
+          loop_end_seconds = '0' + loop_end_seconds
+
+        # DISPLAYING THE TIMING ABOVE THE TRANSLATION INPUT LINES 
         if window.loop != false
-          $(".current-loop-time").html(loop_minutes + ":" + loop_seconds)
+          $(".current-loop-time").html(loop_minutes + ":" + loop_seconds + " to " + loop_end_minutes + ":" + loop_end_seconds)
         else
           $(".current-loop-time").html(minutes + ":" + seconds)
 
@@ -237,17 +262,18 @@ $ ->
           setTimeout stopVideo, 6000
           done = true
 
-      # PLAYER SETTINGS
+      # PLAYER SETTINGS ADDED
 
-      $("#controls").html('
-        <div class="btn-group">
+      $("#controls").show()
+      $("#controls").append('
+        <div class="btn-group" id="settings-and-pin">
           <a class="btn btn-info dropdown-toggle" data-toggle="dropdown" id="settings"><i class="icon-cog icon-2x"></i></a></span>
             <ul class="dropdown-menu">
               <li><a id="timer-toggle">Turn big timer on/off</a></li>
               <li><a id="rollover-toggle">Pause video on mouse rollover</a></li></ul>
           <a class="btn btn-info" id="pin"><i class="icon-pushpin icon-2x"></i></a>
         </div>
-        <div class="btn-group">
+        <div class="btn-group" id="forward-and-backward">
           <a class="btn btn-info dropdown-toggle" data-toggle="dropdown" id="loop-length"><i class="icon-refresh icon-2x"></i></a></span>
           <ul class="dropdown-menu">
             <li><a id="no-loop">No loop</a></li>
@@ -257,22 +283,49 @@ $ ->
           <a class="btn btn-info" id="backward"><i class="icon-step-backward icon-2x"></i></a>
           <a class="btn btn-info" id="forward"><i class="icon-step-forward icon-2x"></i></a>
         </div>')
-      $("#loop-length").hide()
-      $("#backward").hide()
-      $("#forward").hide()
+      $("#controls").prepend('<p id="red-arrow-text">Click here when you <br>hear the words start!</p>')
+      $('#forward-and-backward').hide()
 
       delayedShow = -> 
         
-        $(".very-wide-box").slideDown('3000')
-
         # DONE, SHOW BUTTONS, TIMER BOX
+        
+        $(".very-wide-box").slideDown('')
 
         # $('.done-button').html('<div class="btn btn-info" id="done-button">Done</div>')
         # $('.save-button').html('<div class="btn btn-info" id="save-button">Save</div>')
         $('#timer-box').html('<div id="timer"><h2 class="timer-text" id="big-timer"></h2></div>')
         $('#timer-box').hide()
 
-      window.setTimeout(delayedShow, 3000)
+      window.setTimeout(delayedShow, 1500)
+
+      delayedPlay =->
+        window.player.playVideo()
+      window.setTimeout(delayedPlay, 3000)
+
+      $("#select-language-box").show()
+
+      # PLAYER SETTINGS DEFINED 
+
+      $("#pin").livequery ->
+        $(this).click -> 
+          $('#forward-and-backward').show()
+          $("#pin").attr('class', 'btn btn-warning')
+          window.section = window.time / 4
+          window.loop = 4
+          $('#timer-box').show()
+          $('#red-arrow').fadeOut(2000)
+          $('#red-arrow-text').fadeOut(2000)
+
+        # INPUT LINES COME IN HERE
+          if window.translation_type == 'just_lang2'
+            $('#lang2-input').html("<i class='left'>#{window.lang2}&nbsp;</i><small class='left'>(<small id='current-loop-time' class='current-loop-time'></small>)</small><div class='controls'><input type='text' class='input-xlarge lang2-line' id='1' size='40'></div>")
+            $('#lang1-box').parent().attr('class','')
+            $('#lang1-box').parent().hide()
+
+          if window.translation_type == 'lang1_and_lang2'
+            $('#lang1-input').html("<i class='left'>#{window.lang1}&nbsp;</i><small class='left'>(<small class='current-loop-time' ></small>)</small><div class='control-group'><div class='controls'><input type='text' class='input-xlarge lang1-line' id='1' size='40'></div></div>")
+            $('#lang2-input').html("<i class='left'>#{window.lang2}&nbsp;</i><small class='left'>(<small id='current-loop-time' class='current-loop-time'></small>)</small><div class='controls'><input type='text' class='input-xlarge lang2-line' id='1' size='40'></div>")
 
       $("#no-loop").livequery ->
         $(this).click ->
@@ -329,58 +382,78 @@ $ ->
           player.seekTo(window.loop * window.section, true)
           $("#looping-box").html(window.loop * window.section)
 
-      $("#pin").livequery ->
-        $(this).click -> 
-          $("#loop-length").show()
-          $("#backward").show()
-          $("#forward").show()
-          $("#pin").attr('class', 'btn btn-warning')
-          window.section = window.time / 4
-          window.loop = 4
-          $('#timer-box').show()
+      $("#timer-toggle").livequery ->
+        $(this).click ->
+          $("#timer-box").toggle()
 
-          # INPUT LINES COME IN HERE
+      $("#rollover-toggle").livequery ->
+        $(this).click ->
+          if window.rollover_pause == false
+            window.rollover_pause = true
 
-          $('#lang1-input').html("<i class='left'>#{window.lang1}&nbsp;</i><small class='left'>(<small class='current-loop-time' id='current-loop-time'></small>)</small><div class='control-group'><div class='controls'><input type='text' class='input-xlarge lang1-line' id='1' size='40'></div></div>")
-          $('#lang2-input').html("<i class='left'>#{window.lang2}&nbsp;</i><small class='left'>(<small class='current-loop-time'></small>)</small><div class='controls'><input type='text' class='input-xlarge lang2-line' id='1' size='40'></div>")
+        # MOUSE ROLLOVER PAUSE 
 
+        $('#outer-video-box').mouseenter(-> 
+          if window.rollover_pause == true
+            state = player.getPlayerState()
+            if state == 1
+              player.pauseVideo()
+            if state == 2
+              player.playVideo() )
 
   # MORE LINES (AND OH YEAH, SAVING LINES TO THE DATABASE)
 
-  $(".lang1-line").livequery ->
-    $(this).keyup (e) ->
-      e.preventDefault
-      if e.which == 13 and ($('.lang2-line').val() isnt '')
-        entry = this.value
-        that_entry = $('.lang2-line').val()
-        console.log "entry: #{entry}, that_entry: #{that_entry}"
-        time = $("#current-loop-time").text()
-        $('#lang1-lyrics').append("<p><small><small>(#{time})</small></small>  #{entry}</p>")
-        $('#lang2-lyrics').append("<p><small><small>(#{time})</small></small>  #{that_entry}</p>")
-        $('.lang1-line').val('')
-        $('.lang2-line').val('')
-        time_in_seconds = parseInt(time.slice(3,5)) + parseInt(time.slice(0,2))*60
-        console.log time_in_seconds
-        $.post('/new_line', { 'line' : { 'lang1' : "#{entry}", 'lang2' : "#{that_entry}", 'time' : "#{time_in_seconds}", 'interpretation_id' : "#{window.interp_id}" , 'upvotes' : 0, 'downvotes' : 0  } }, (data) ->
-          console.log data.data )
-        window.section += 1
+  if window.translation_type == 'lang1_and_lang2'
 
-  $(".lang2-line").livequery ->
-    $(this).keyup (e) ->
-      if e.which == 13 and ($('.lang1-line').val() isnt '')
-        entry = this.value
-        that_entry = $('.lang1-line').val()
-        console.log "entry: #{entry}, that_entry: #{that_entry}"
-        time = $("#current-loop-time").text()
-        $('#lang2-lyrics').append("<p><small><small>(#{time})</small></small>  #{entry}</p>")
-        $('#lang1-lyrics').append("<p><small><small>(#{time})</small></small>  #{that_entry}</p>")
-        $('.lang1-line').val('')
-        $('.lang2-line').val('')
-        time_in_seconds = parseInt(time.slice(3,5)) + parseInt(time.slice(0,2))*60
-        console.log time_in_seconds
-        $.post('/new_line', { 'line' : { 'lang1' : "#{that_entry}", 'lang2' : "#{entry}", 'time' : "#{time_in_seconds}", 'interpretation_id' : "#{window.interp_id}" , 'upvotes' : 0, 'downvotes' : 0  } }, (data) ->
-          console.log data.data )
-        window.section += 1
+    $(".lang1-line").livequery ->
+      $(this).keyup (e) ->
+        e.preventDefault
+        if e.which == 13 and ($('.lang2-line').val() isnt '')
+          entry = this.value
+          that_entry = $('.lang2-line').val()
+          console.log "entry: #{entry}, that_entry: #{that_entry}"
+          time = $("#current-loop-time").text()
+          $('#lang1-lyrics').append("<p><small><small>(#{time})</small></small>  #{entry}</p>")
+          $('#lang2-lyrics').append("<p><small><small>(#{time})</small></small>  #{that_entry}</p>")
+          $('.lang1-line').val('')
+          $('.lang2-line').val('')
+          time_in_seconds = parseInt(time.slice(3,5)) + parseInt(time.slice(0,2))*60
+          console.log time_in_seconds
+          $.post('/new_line', { 'line' : { 'lang1' : "#{entry}", 'lang2' : "#{that_entry}", 'time' : "#{time_in_seconds}", 'interpretation_id' : "#{window.interp_id}" , 'upvotes' : 0, 'downvotes' : 0  } }, (data) ->
+            console.log data.data )
+          window.section += 1
+
+    $(".lang2-line").livequery ->
+      $(this).keyup (e) ->
+        if e.which == 13 and ($('.lang1-line').val() isnt '')
+          entry = this.value
+          that_entry = $('.lang1-line').val()
+          console.log "entry: #{entry}, that_entry: #{that_entry}"
+          time = $("#current-loop-time").text()
+          $('#lang2-lyrics').append("<p><small><small>(#{time})</small></small>  #{entry}</p>")
+          $('#lang1-lyrics').append("<p><small><small>(#{time})</small></small>  #{that_entry}</p>")
+          $('.lang1-line').val('')
+          $('.lang2-line').val('')
+          $('.lang1-line').focus()
+          time_in_seconds = parseInt(time.slice(3,5)) + parseInt(time.slice(0,2))*60
+          $.post('/new_line', { 'line' : { 'lang1' : "#{that_entry}", 'lang2' : "#{entry}", 'time' : "#{time_in_seconds}", 'interpretation_id' : "#{window.interp_id}" , 'upvotes' : 0, 'downvotes' : 0  } }, (data) ->
+            console.log data.data )
+          window.section += 1
+
+  if window.translation_type == 'just_lang2'
+
+    $(".lang2-line").livequery ->
+      $(this).keyup (e) ->
+        if e.which == 13
+          if this.value?
+            entry = this.value
+            time = $("#current-loop-time").text()
+            $('#lang2-lyrics').append("<p><small><small>(#{time})</small></small>  #{entry}</p>")
+            $('.lang2-line').val('')
+            time_in_seconds = parseInt(time.slice(3,5)) + parseInt(time.slice(0,2))*60
+            $.post('/new_line', { 'line' : { 'lang1' : '', 'lang2' : "#{entry}", 'time' : "#{time_in_seconds}", 'interpretation_id' : "#{window.interp_id}" , 'upvotes' : 0, 'downvotes' : 0  } }, (data) ->
+              console.log data.data )
+          window.section += 1
 
 # DONE BUTTON RESPONSE
 

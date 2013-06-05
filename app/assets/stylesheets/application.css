@@ -23,7 +23,11 @@
 
 small { color: #9B59BB; }
 
-.pretty { color: #9B59BB; }
+.pretty-text { color: #9B59BB; }
+
+.pretty-background { background-color: #9B59BB; }
+
+.center { text-align: center; }
 
 body { position: relative;
   background-color: #fff;
@@ -33,30 +37,27 @@ body { position: relative;
 
 p { color: black; }
 
-td { color: black; }
-
-table { border-collapse: separate; 
-  border-spacing: 5px 20px; 
-  border: 1px;
-  border-color: white; }
-
 .white { color: white; }
 
 .visible { overflow: visible; }
 
 .quiet { display: none; }
 
-.style52 { width: 52px;
-  background-color: #9B59BB; 
-  height: 40px; }
+table { border-collapse: separate; 
+  border-spacing: 5px 20px; 
+  border: 1px;
+  border-color: white; }
+
+td { color: black;
+  text-align: center; }
+
 
 /*** INDEX PAGE (VIDEOS) ***/
 
 .video-thumb-box {
   width: 180px;
   margin-right: 40px;
-  float: left;
-}
+  float: left; }
 
 /*** NEW PAGE (VIDEOS) ***/
 
@@ -65,21 +66,21 @@ table { border-collapse: separate;
   text-align: center;
   height: 80px;
   position: relative;
-  overflow: visible;
-}
+  overflow: visible; }
+
 .language-option {
-  color: black;
-}
+  color: black; }
+
 .video-container {
   margin-left: 100px;
-  float: left;
-  }
+  float: left; }
+
 .lyrics-container {
   margin-left: 40px; 
   margin-top: 0px; 
   float: left; 
-  width: 300px;
-}
+  width: 300px; }
+
 #copy-and-paste-box {
   margin-top: 200px; }
 
@@ -89,57 +90,102 @@ table { border-collapse: separate;
   width: 142px;
   text-align: center; }
 
+.center-pill-wide {
+  margin-right: auto; 
+  margin-left: auto; 
+  width: 212px;
+  text-align: center; }
+
 .language-video-option {
   text-align: left; }
 
 .language-translation-option {
   text-align: left; }
 
+.style52 { width: 44px;
+  height: 44px; 
+  line-height: 44px;
+  background-color: #9B59BB; 
+  color: white;
+  overflow: hidden;
+  text-align: center; 
+  position: relative; 
+  margin: auto; }
+
+.icon-style52 {
+  top: 8px;
+  right: 8px;
+  position: absolute; }
+
 #timer-box {
   position: relative;
   z-index: 1;
   bottom: 250px;
-  right: 45px;
-}
+  right: 45px; }
+
 #timer {
   width: 90px;
   height: 90px;
   border-radius: 45px;
   background-color: #9B59BB;
-  text-align: center;
-}
+  text-align: center; }
+
 #big-timer {
   color: white;
-  line-height: 90px;
-}
+  line-height: 90px; }
+
 #select-language-box {
-  height: 320px;
+  height: 480px;
   width: 480px;
   margin-left: auto;
-  margin-right: auto;
-}
+  margin-right: auto; 
+  margin-top: 100px; }
+
+#splash-box {
+  height: 480px;
+  width: 480px;
+  margin-left: auto;
+  margin-right: auto; 
+  position: relative; }
+
+#lets-get-going {
+  position: absolute;
+  left: 120px; }
+
+#controls {
+  position: relative; }
+  
+#red-arrow {
+  position: absolute;
+  top: 50px;
+  left: 75px; }
+
+#red-arrow-text {
+  position: absolute;
+  top: 130px;
+  left: 240px; }
+
 #translation-language-options {
   margin-left: auto;
   margin-right: auto;
   width: 160px;
-  text-align: left;
-}
+  text-align: left; }
+
 #video-language-options {
   margin-left: auto;
   margin-right: auto;
   width: 160px;
-  text-align: left;
-}
+  text-align: left; }
+
 .text-padding {
   margin: 3px;
-  text-align: center;
-}
+  text-align: center; }
 
 /*** SHOW PAGE (VIDEOS) ***/
 
 .lyrics-box {
-  height: 60px;
-}
+  height: 60px; }
+
 .wide-lyrics-container {
   width: 420px;
   height: 60px;
@@ -147,8 +193,8 @@ table { border-collapse: separate;
   margin-top: 1px;
   margin-bottom: 1px;
   background-color: #0101DF;
-  border-top: 1px solid white 
-}
+  border-top: 1px solid white }
+
 .narrow-lyrics-container {
   width: 210px;
   height: 60px;
@@ -156,21 +202,20 @@ table { border-collapse: separate;
   margin-top: 1px;
   margin-bottom: 1px;
   background-color: #0101DF;
-  border-top: 1px solid white 
-}
+  border-top: 1px solid white }
+
 .lang2 {
-  background-color: #013ADF;
-}
+  background-color: #013ADF; }
+
 .button-container {
   background-color: white;
   float: right;
   width: 10px;
-  border-top: 2px solid white 
-}
+  border-top: 2px solid white }
+
 .lyrics {
   color: white;
-  text-align: center;
-}
+  text-align: center; }
 
 /*** STICKY FOOTER ***/
 
@@ -180,5 +225,4 @@ table { border-collapse: separate;
    bottom:0px;
    height:30px;
    width:100%;
-   background:#999;
-}
+   background:#999; }

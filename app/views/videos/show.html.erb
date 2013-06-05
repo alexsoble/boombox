@@ -33,16 +33,18 @@
 
   </div>
 
-  <div class="centerbox visible">
-  <div class="btn-group">
-    <a class="btn btn-info dropdown-toggle" data-toggle="dropdown" href="#"><i class="icon-cog icon"></i></a></span></a>
-    <ul class="dropdown-menu">
-      <li><a id="just-lang2">Show just <%= @interpretation.lang2 %></a></li>
-      <li><a id="lang1-and-lang2">Show <%= @video.lang1 %> and <%= @interpretation.lang2 %></a></li>
-      <li><a id="just-lang1">Show just <%= @video.lang1 %></a></li>
-    </ul>
-  </div>
-  </div>
+  <% if @lines_have_lang1 %>
+    <div class="centerbox visible">
+    <div class="btn-group">
+      <a class="btn btn-info dropdown-toggle" data-toggle="dropdown" href="#"><i class="icon-cog icon"></i></a></span></a>
+      <ul class="dropdown-menu">
+        <li><a id="just-lang2">Show just <%= @interpretation.lang2 %></a></li>
+        <li><a id="lang1-and-lang2">Show <%= @video.lang1 %> and <%= @interpretation.lang2 %></a></li>
+        <li><a id="just-lang1">Show just <%= @video.lang1 %></a></li>
+      </ul>
+    </div>
+    </div>
+  <% end %>
 
   <% else %>
 

@@ -2,7 +2,7 @@ class VideosController < ApplicationController
   require 'json'
   respond_to :html, :json
 
-  def create
+  def create=
 
     @youtube_id = params[:video][:youtube_id]
     if Video.where(:youtube_id => @youtube_id).blank? 
@@ -19,10 +19,26 @@ class VideosController < ApplicationController
 
     @video = Video.find_by_id(params[:id])
 
-    @interpretation = Interpretation.where(:video_id => @video.id).first
+    @interpretations = Interpretation.where(:video_id => @video.id).order("created_at ASC")
 
-    if @interpretation.present?
+    if @interpretations.present?
+
+      arr = Array.new 
+
+      @interpretations.each do |i|
+        l = Line.where(:interpretation_id => i.id).order("created_at ASC")
+        how_many_lines = l.length
+        arr << { :id => i.id, :length => how_many_lines }
+      end 
+      
+      arr = arr.sort_by { |hash| hash[:length] }.reverse
+      @interpretation = Interpretation.where(:id => arr.first[:id]).first
       @lines = Line.where(:interpretation_id => @interpretation.id).order("created_at ASC")
+      @lines_have_lang1 = false
+      @lines.all.each do |l|
+        if l.lang1.present? then @lines_have_lang1 = true end
+      end 
+
     end
     
   end 
