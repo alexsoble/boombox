@@ -3,8 +3,13 @@ Boombox::Application.routes.draw do
   root to: 'videos#index'
 
   get '/welcome' => 'videos#index'
+
+  get '/sign_in' => 'users#new'
+  get '/sign_out' => 'sessions#destroy'
+  get '/auth/twitter/callback' => 'sessions#create'
   
   resources :videos
+  resources :users
   
   post '/new_video' => 'videos#create'
   post '/new_interp' => 'interpretations#create'

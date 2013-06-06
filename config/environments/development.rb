@@ -34,4 +34,8 @@ Boombox::Application.configure do
 
   # Expands the lines which load the assets
   config.assets.debug = true
+
+  ENV["CONSUMER_KEY"] = 'pjd8j4GzUFLgz5n397vw';
+  ENV["CONSUMER_SECRET"] = 'rOxr1r94ZYx5tcbirxlwfJhndHVdJ6TCz0Njo4h7eM';
+
 end

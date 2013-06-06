@@ -134,7 +134,7 @@ $ ->
 
         # TALK TO THE SERVER HERE
 
-        $.post('/new_interp', { 'interpretation' : { 'youtube_id' : "#{window.youtube_id}" , 'lang1' : "#{lang1}", 'lang2' : "#{lang2}" } }, (data) ->
+        $.post('/new_interp', { 'interpretation' : { 'youtube_id' : "#{window.youtube_id}" , 'lang1' : "#{lang1}", 'lang2' : "#{lang2}", 'user_id' : "#{window.user}" } }, (data) ->
             window.interp_id = data.data.id
             console.log window.interp_id)
 

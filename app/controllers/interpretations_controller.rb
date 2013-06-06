@@ -6,6 +6,7 @@ class InterpretationsController < ApplicationController
     @youtube_id = params[:interpretation][:youtube_id]
     @lang1 = params[:interpretation][:lang1]
     @lang2 = params[:interpretation][:lang2]
+    @user_id = params[:interpretation][:user_id]
     @video = Video.where(:youtube_id => @youtube_id).first
 
     if @video.blank?
@@ -19,7 +20,7 @@ class InterpretationsController < ApplicationController
       # that's not good!
     end
 
-    @interp = Interpretation.create(:video_id => @video.id, :lang2 => @lang2)
+    @interp = Interpretation.create(:video_id => @video.id, :lang2 => @lang2, :user_id => @user_id)
 
     render :json => { :data => @interp }
 

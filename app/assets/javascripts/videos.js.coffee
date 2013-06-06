@@ -1,5 +1,7 @@
 $ -> 
 
+  window.user = parseInt($(".signed-in-user").attr('id'))
+
   $(".page-language-option").click (e) =>
     language_option = e.currentTarget.id
 

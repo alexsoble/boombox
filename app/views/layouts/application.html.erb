@@ -13,9 +13,30 @@
   <div class="navbar-inner" style="background-color: #9B59BB;">
     <div class="container" style="width: auto;">
       <a class="brand" href="/welcome">Heyu</a>
+        <% if current_user %>
+          <ul class="nav pull-right signed-in-user" id="<%= current_user.id %>">
+            <li><%= link_to "Signed in as #{current_user.name}", '/sign_in' %></li>
+            <li><%= link_to "Sign out", "/sign_out" %></li>
+          </ul>
+        <% else %>
+          <ul class="nav">
+            <li><%= link_to "Sign in", '/sign_in' %></li>
+          </ul>
+        <% end %>
     </div>
   </div>
 </div>
+
+<% unless flash.empty? %> 
+  <div class="row">
+    <div class="span12">
+      <div class="alert alert-success">
+        <%= notice %>
+      </div>
+    </div>
+  </div>
+<% end %>
+
 <%= yield %>
 <!-- <div id="footer">
   <div class="container">
