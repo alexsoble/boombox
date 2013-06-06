@@ -182,7 +182,7 @@ td { color: black;
   width: 480px;
   margin-left: auto;
   margin-right: auto; 
-  margin-top: 100px; }
+  margin-top: 60px; }
 
 #splash-box {
   height: 480px;
@@ -218,13 +218,13 @@ td { color: black;
   top: 130px;
   left: 295px; }
 
-#translation-language-options {
+#language-options {
   margin-left: auto;
   margin-right: auto;
   width: 160px;
   text-align: left; }
 
-#video-language-options {
+#request-options {
   margin-left: auto;
   margin-right: auto;
   width: 160px;

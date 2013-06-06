@@ -27,28 +27,30 @@ $ ->
     $("#select-language-box").slideDown('slow')
 
     if window.request == false
-      $('#translation-language-dropdown').html("<br><br><p>I\'m translating it into:</p>
-        <ul class='nav nav-pills' id='translation-language-options'>
+      $('#translation-language-dropdown').html("<br><br>
+        <p>I\'m translating it into:</p>
+        <ul class='nav nav-pills' id='language-options'>
           <li class='dropdown'>
             <a class='btn btn-info dropdown-toggle center-pill' data-toggle='dropdown'>Select language<b class='caret'></b></a> 
               <ul class='dropdown-menu'>
-              <li><a class='new-interp-language' id='English'>English</a></li> 
-              <li><a class='new-interp-language' id='Chinese'>Chinese</a></li>
-              <li><a class='new-interp-language' id='Korean'>Korean</a></li> 
-              <li><a class='new-interp-language' id='Japanese'>Japanese</a></li> 
-              <li><a class='new-interp-language' id='Spanish'>Spanish</a></li> 
-              <li><a class='new-interp-language' id='French'>French</a></li> 
-              <li><a class='new-interp-language' id='German'>German</a></li> 
-              <li><a class='new-interp-language' id='Italian'>Italian</a></li> 
-              <li><a class='new-interp-language' id='Norwegian'>Norwegian</a></li> 
-              <li><a class='new-interp-language' id='Hebrew'>Hebrew</a></li> 
-              <li><a class='new-interp-language' id='Arabic'>Arabic</a></li> 
-              <li><a class='new-interp-language' id='Persian'>Persian</a></li> 
-              <li><a class='new-interp-language' id='Hindi'>Hindi</a></li></ul></li></ul>")
+              <li><a class='interp-language' id='English'>English</a></li> 
+              <li><a class='interp-language' id='Chinese'>Chinese</a></li>
+              <li><a class='interp-language' id='Korean'>Korean</a></li> 
+              <li><a class='interp-language' id='Japanese'>Japanese</a></li> 
+              <li><a class='interp-language' id='Spanish'>Spanish</a></li> 
+              <li><a class='interp-language' id='French'>French</a></li> 
+              <li><a class='interp-language' id='German'>German</a></li> 
+              <li><a class='interp-language' id='Italian'>Italian</a></li> 
+              <li><a class='interp-language' id='Norwegian'>Norwegian</a></li> 
+              <li><a class='interp-language' id='Hebrew'>Hebrew</a></li> 
+              <li><a class='interp-language' id='Arabic'>Arabic</a></li> 
+              <li><a class='interp-language' id='Persian'>Persian</a></li> 
+              <li><a class='interp-language' id='Hindi'>Hindi</a></li></ul></li></ul>")
 
     if window.request == true
-      $('#translation-language-dropdown').html("<br><br><p>I\'d like a translation of this video into:</p>
-        <ul class='nav nav-pills' id='request-language-options'>
+      $('#translation-language-dropdown').html("<br><br>
+        <p>I\'d like a translation of this video into:</p>
+        <ul class='nav nav-pills' id='request-options'>
           <li class='dropdown'>
             <a class='btn btn-info dropdown-toggle center-pill' data-toggle='dropdown'>Select language<b class='caret'></b></a> 
               <ul class='dropdown-menu'>
@@ -144,34 +146,31 @@ $ ->
         $("#request-language-options").html("<a class='btn btn-primary'>#{window.lang2}</a>")
 
         # TALK TO THE SERVER HERE
-
         $.post('/new_request', { 'request' : { 'video_id' : "#{window.video_id}" , 'lang2' : "#{window.lang2}", 'user_id' : "#{window.user_id}" } }, (data) ->
             window.request_id = data.data.id)
+        $('#select-language-box').html('<h2>Thanks!<h2>')
+        $('#video-language-dropdown').html('')
 
-  $(".new-interp-language").livequery ->
+  $(".interp-language").livequery ->
     $(this).click ->
       window.lang2 = this.id
       if window.lang1 != window.lang2
 
         # TALK TO THE SERVER HERE
-
-        $.post('/new_interp', { 'interpretation' : { 'youtube_id' : "#{window.youtube_id}" , 'lang1' : "#{lang1}", 'lang2' : "#{lang2}", 'user_id' : "#{window.user}" } }, (data) ->
+        $.post('/new_interp', { 'interpretation' : { 'video_id' : "#{window.video_id}" , 'lang2' : "#{window.lang2}", 'user_id' : "#{window.user_id}" } }, (data) ->
             window.interp_id = data.data.id
             console.log window.interp_id)
+        $('#translation-language-dropdown').hide()
+        $('#video-language-dropdown').hide()
+        $('#copy-and-paste-box').parent().remove()
 
-        $("#video-language-dropdown").html("<br><br>
-          <p><i>Got it!  One more:</i></p>  
+        $("#select-language-box").html("<br><br>
+          <p class='center'><i>Got it!  Which would you prefer?</i></p>  
           <br>
           <div class='center-pill-wide'><ul class='nav nav-pills'>
             <li><a id='just-lang2' class='translation-type-option'>I want to write out just the #{window.lang2} translation.</a></li>
             <br><br><br><br>
             <li><a id='lang1-and-lang2' class='translation-type-option'>I want to write out the #{window.lang2} and the #{window.lang1} side-by-side.</a></<ul></div>").slideDown()
-        $("#translation-language-dropdown").html('')
-
-        slowSplashPageContent = ->
-          $("#select-language-box").html('<br><br>
-            <a class="btn btn-info btn-large center-pill-wide" id="lets-get-going">Okay, let\'s get going!</a>').slideDown()
-          $("#select-language-box").attr('id','splash-box')
 
         $("#lang1-and-lang2").livequery ->
           $(this).click ->
@@ -183,15 +182,19 @@ $ ->
 
         $(".translation-type-option").livequery ->
           $(this).click ->
-            slowSplashPageContent()
+            # $("#select-language-box").slideUp()
+            # replaceContents = ->
+            $("#select-language-box").html('<br><br>
+              <a class="btn btn-info btn-large center-pill-wide" id="lets-get-going">Okay, let\'s get going!</a>')
+            # window.setTimeout(replaceContents, 400)
+            # $("#select-language-box").slideDown()
 
-  # SPLASH PAGE HERE
+  # YOUTUBE PLAYER COMES IN HERE
 
   $("#lets-get-going").livequery ->
     $(this).click ->
-      $("#splash-box").hide()
-
-    # YOUTUBE PLAYER COMES IN HERE
+      $("#select-language-box").hide()
+      $("#video-language-dropdown").slideUp()
 
       player = null
       window.rollover_pause = false
