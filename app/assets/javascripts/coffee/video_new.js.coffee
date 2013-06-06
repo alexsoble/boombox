@@ -1,8 +1,8 @@
 $ ->
 
-  if window.location.search.match(/request=y/)
-    window.request = true
+  if window.location.search.match(/request=y/) then window.request = true else window.request = false
   $("#select-language-box").hide()
+  $("#title-box").hide()
   $("#controls").hide() 
 
   # YOUTUBE WINDOW STICKY ON SCROLL
@@ -14,6 +14,57 @@ $ ->
   $window.scroll ->
     video_box.toggleClass('sticky', $window.scrollTop() > video_top)
     lyrics_container.toggleClass('sticky', $window.scrollTop() > video_top)
+
+  # STEP TWO OF THE PROCESS (ONCE YOUTUBE ID, TITLE & LANG1 ARE IN)
+
+  step2 = -> 
+
+    window.title = $('#title-box').text()
+    $.post('/new_video', { 'video' : { 'youtube_id' : "#{window.youtube_id}", 'title' : "#{window.title}", 'lang1' : "#{window.lang1}" } }, (data) ->
+      console.log data, "json"
+      window.video_id = data.video.id)
+
+    $("#select-language-box").slideDown('slow')
+
+    if window.request == false
+      $('#translation-language-dropdown').html("<br><br><p>I\'m translating it into:</p>
+        <ul class='nav nav-pills' id='translation-language-options'>
+          <li class='dropdown'>
+            <a class='btn btn-info dropdown-toggle center-pill' data-toggle='dropdown'>Select language<b class='caret'></b></a> 
+              <ul class='dropdown-menu'>
+              <li><a class='new-interp-language' id='English'>English</a></li> 
+              <li><a class='new-interp-language' id='Chinese'>Chinese</a></li>
+              <li><a class='new-interp-language' id='Korean'>Korean</a></li> 
+              <li><a class='new-interp-language' id='Japanese'>Japanese</a></li> 
+              <li><a class='new-interp-language' id='Spanish'>Spanish</a></li> 
+              <li><a class='new-interp-language' id='French'>French</a></li> 
+              <li><a class='new-interp-language' id='German'>German</a></li> 
+              <li><a class='new-interp-language' id='Italian'>Italian</a></li> 
+              <li><a class='new-interp-language' id='Norwegian'>Norwegian</a></li> 
+              <li><a class='new-interp-language' id='Hebrew'>Hebrew</a></li> 
+              <li><a class='new-interp-language' id='Arabic'>Arabic</a></li> 
+              <li><a class='new-interp-language' id='Persian'>Persian</a></li> 
+              <li><a class='new-interp-language' id='Hindi'>Hindi</a></li></ul></li></ul>")
+
+    if window.request == true
+      $('#translation-language-dropdown').html("<br><br><p>I\'d like a translation of this video into:</p>
+        <ul class='nav nav-pills' id='request-language-options'>
+          <li class='dropdown'>
+            <a class='btn btn-info dropdown-toggle center-pill' data-toggle='dropdown'>Select language<b class='caret'></b></a> 
+              <ul class='dropdown-menu'>
+              <li><a class='request-language' id='English'>English</a></li> 
+              <li><a class='request-language' id='Chinese'>Chinese</a></li>
+              <li><a class='request-language' id='Korean'>Korean</a></li> 
+              <li><a class='request-language' id='Japanese'>Japanese</a></li> 
+              <li><a class='request-language' id='Spanish'>Spanish</a></li> 
+              <li><a class='request-language' id='French'>French</a></li> 
+              <li><a class='request-language' id='German'>German</a></li> 
+              <li><a class='request-language' id='Italian'>Italian</a></li> 
+              <li><a class='request-language' id='Norwegian'>Norwegian</a></li> 
+              <li><a class='request-language' id='Hebrew'>Hebrew</a></li> 
+              <li><a class='request-language' id='Arabic'>Arabic</a></li> 
+              <li><a class='request-language' id='Persian'>Persian</a></li> 
+              <li><a class='request-language' id='Hindi'>Hindi</a></li></ul></li></ul>")
 
   # WHEN A NEW VIDEO URL GETS PASTED IN
 
@@ -33,14 +84,14 @@ $ ->
       youtube_id = youtube_id.replace 'http://www.youtube.com/watch?feature=endscreen&NR=1&v=', ''
       window.youtube_id = "#{youtube_id}"
 
-    if (window.keyup isnt 1) and (user_submit.match(/youtube/) isnt null)
-      window.keyup = 1
+    if (window.keyup isnt 'done') and (user_submit.match(/youtube/) isnt null)
+      window.keyup = 'done'
 
       # GET TITLE FROM YOUTUBE
 
       getTitle = (data) ->
-        $('.very-wide-box').html("<h2>#{window.title}</h2>")
-        $(".very-wide-box").hide()
+        window.title = data.entry.title.$t
+        $('#title-box').html("<h2>#{window.title}</h2>")
 
       getTitleFromYouTube = (handleData) ->
         $.get('https://gdata.youtube.com/feeds/api/videos/' + youtube_id + '?v=2&alt=json', 
@@ -48,73 +99,59 @@ $ ->
             handleData(data) )
 
       getTitleFromYouTube(getTitle)
-
-      # ADDING THE VIDEO LANGUAGE SELECTORS        
-
+      
       $("#copy-and-paste-box").slideUp('slow')
-      $("#select-language-box").slideDown('slow')
 
-      $('#translation-language-dropdown').html("<br><br><p>I\'m translating it into:</p>
-        <ul class='nav nav-pills' id='translation-language-options'>
-          <li class='dropdown'>
-            <a class='btn btn-info dropdown-toggle center-pill' data-toggle='dropdown'>Select language<b class='caret'></b></a> 
-              <ul class='dropdown-menu'>
-              <li><a class='language-translation-option' id='English'>English</a></li> 
-              <li><a class='language-translation-option' id='Chinese'>Chinese</a></li>
-              <li><a class='language-translation-option' id='Korean'>Korean</a></li> 
-              <li><a class='language-translation-option' id='Japanese'>Japanese</a></li> 
-              <li><a class='language-translation-option' id='Spanish'>Spanish</a></li> 
-              <li><a class='language-translation-option' id='French'>French</a></li> 
-              <li><a class='language-translation-option' id='German'>German</a></li> 
-              <li><a class='language-translation-option' id='Italian'>Italian</a></li> 
-              <li><a class='language-translation-option' id='Norwegian'>Norwegian</a></li> 
-              <li><a class='language-translation-option' id='Hebrew'>Hebrew</a></li> 
-              <li><a class='language-translation-option' id='Arabic'>Arabic</a></li> 
-              <li><a class='language-translation-option' id='Persian'>Persian</a></li> 
-              <li><a class='language-translation-option' id='Hindi'>Hindi</a></li></ul></li></ul>")
+      if window.lang1 != undefined
+        step2()
 
-  # VIDEO LANGUAGE SELECTORS BEHAVIOR
+  # LANG1 SELECTOR 
 
-  $(".language-video-option").livequery ->
+  $(".video-language").livequery ->
     $(this).click ->
-      lang1 = this.id
-      $("#video-language-options").html("<a class='btn btn-info backtrack center-pill' id='video-lang-choice'>#{lang1}</a>")
+      window.lang1 = this.id
+      if window.title == undefined
+        $("#video-language-options").html("<a class='btn btn-info backtrack center-pill' id='video-lang-choice'>#{lang1}</a>")
+      else
+        step2()
 
   $('.backtrack#video-lang-choice').livequery ->
     $(this).click ->
       $('#video-language-dropdown').html('<p>This video is in:</p>
       <ul class="nav nav-pills" id="video-language-options">
         <li class="dropdown"> 
-          <a href="#" data-toggle="dropdown" class="dropdown-toggle center-pill">Select language<b class="caret"></b></a> 
+          <a data-toggle="dropdown" class="dropdown-toggle center-pill">Select language<b class="caret"></b></a> 
           <ul class="dropdown-menu" id="menu1">
-            <li><a class="language-video-option" id="English">English</a></li> 
-            <li><a class="language-video-option" id="Chinese">Chinese</a></li>
-            <li><a class="language-video-option" id="Korean">Korean</a></li> 
-            <li><a class="language-video-option" id="Japanese">Japanese</a></li> 
-            <li><a class="language-video-option" id="Spanish">Spanish</a></li> 
-            <li><a class="language-video-option" id="French">French</a></li> 
-            <li><a class="language-video-option" id="German">German</a></li> 
-            <li><a class="language-video-option" id="Italian">Italian</a></li> 
-            <li><a class="language-video-option" id="Norwegian">Norwegian</a></li> 
-            <li><a class="language-video-option" id="Hebrew">Hebrew</a></li> 
-            <li><a class="language-video-option" id="Arabic">Arabic</a></li> 
-            <li><a class="language-video-option" id="Persian">Persian</a></li> 
-            <li><a class="language-video-option" id="Hindi">Hindi</a></li></ul></li></ul>')
-        window.title = data.entry.title.$t
-        $.post('/new_video', { 'video' : { 'youtube_id' : "#{youtube_id}", 'title' : "#{window.title}", 'lang1' : "#{lang1}" } }, (data) ->
-          console.log data, "json")
+            <li><a class="video-language" id="English">English</a></li> 
+            <li><a class="video-language" id="Chinese">Chinese</a></li>
+            <li><a class="video-language" id="Korean">Korean</a></li> 
+            <li><a class="video-language" id="Japanese">Japanese</a></li> 
+            <li><a class="video-language" id="Spanish">Spanish</a></li> 
+            <li><a class="video-language" id="French">French</a></li> 
+            <li><a class="video-language" id="German">German</a></li> 
+            <li><a class="video-language" id="Italian">Italian</a></li> 
+            <li><a class="video-language" id="Norwegian">Norwegian</a></li> 
+            <li><a class="video-language" id="Hebrew">Hebrew</a></li> 
+            <li><a class="video-language" id="Arabic">Arabic</a></li> 
+            <li><a class="video-language" id="Persian">Persian</a></li> 
+            <li><a class="video-language" id="Hindi">Hindi</a></li></ul></li></ul>')
 
-      if window.request == true
-        window.yay = yay
-
-
-  $(".language-translation-option").livequery ->
+  $(".request-language").livequery ->
     $(this).click ->
-      window.lang1 = $("#video-lang-choice").html()
       window.lang2 = this.id
       if window.lang1 != window.lang2
 
-        $("#translation-language-options").html("<a class='btn btn-primary' id='translation-lang-choice'>#{lang2}</a>")
+        $("#request-language-options").html("<a class='btn btn-primary'>#{window.lang2}</a>")
+
+        # TALK TO THE SERVER HERE
+
+        $.post('/new_request', { 'request' : { 'video_id' : "#{window.video_id}" , 'lang2' : "#{window.lang2}", 'user_id' : "#{window.user_id}" } }, (data) ->
+            window.request_id = data.data.id)
+
+  $(".new-interp-language").livequery ->
+    $(this).click ->
+      window.lang2 = this.id
+      if window.lang1 != window.lang2
 
         # TALK TO THE SERVER HERE
 
@@ -152,7 +189,6 @@ $ ->
 
   $("#lets-get-going").livequery ->
     $(this).click ->
-
       $("#splash-box").hide()
 
     # YOUTUBE PLAYER COMES IN HERE

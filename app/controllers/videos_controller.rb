@@ -5,10 +5,18 @@ class VideosController < ApplicationController
   def create
 
     @youtube_id = params[:video][:youtube_id]
+    @lang1 = params[:video][:lang1]
     if Video.where(:youtube_id => @youtube_id).blank? 
       @video = Video.create(params[:video])
     else
-      @video = Video.where(:youtube_id => @youtube_id)
+      @video2 = Video.where(:youtube_id => @youtube_id).first
+      if @video2.lang1 != @lang1
+        @video = Video.create(params[:video])
+      end
+
+      # ^ You'll want to make this code better later on.  
+      # Right now it's just checking the first item in @video2 against lang1. 
+      # But thankfully this will probably be an uncommon situation. 
     end
 
     render :json => { :video => @video }

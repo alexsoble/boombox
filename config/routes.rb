@@ -13,6 +13,7 @@ Boombox::Application.routes.draw do
   resources :users
   
   post '/new_video' => 'videos#create'
+  post '/new_request' => 'requests#create'
   post '/new_interp' => 'interpretations#create'
   post '/new_line' => 'lines#create'
   
