@@ -21,6 +21,8 @@
   width: 420px; 
   overflow: scroll; }
 
+.narrow { width: 200px; }
+
 .video-box { height: 320px; }
 
 small { color: #9B59BB; }
@@ -57,9 +59,14 @@ td { color: black;
 /*** INDEX PAGE (VIDEOS) ***/
 
 .video-thumb-box {
-  width: 180px;
+  width: 140px;
+  height: 140px;
   margin-right: 40px;
   float: left; }
+
+#index-box {
+  margin: 40px;
+}
 
 /*** NEW PAGE (VIDEOS) ***/
 

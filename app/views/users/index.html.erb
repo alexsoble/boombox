@@ -1,0 +1,8 @@
+<div class="centerbox narrow">
+  <h2>Top translators:</h2>
+  <ol>
+    <% @top_ten_users.each do |u| %>
+      <li><%= u.name %></li>
+    <% end %>
+  </ol>
+</div>

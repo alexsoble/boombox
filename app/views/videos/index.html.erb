@@ -1,24 +1,15 @@
-<div style="float: left; margin-left: 100px; margin-top: 25px;">
-  <ul class="nav nav-pills">
-    <li class="dropdown">
-      <a class="dropdown-toggle" data-toggle="dropdown" href="#">Give me videos in... <b class="caret"></b></a>
-      <ul class="dropdown-menu" id="menu1">
-        <%= render 'language_dropdown_options' %>
-      </ul>
-    </li>
-  </ul>
-</div>
-<div style="float: right; margin-right: 40px; margin-top: 5px;">
-  <a class="btn btn-info btn-large" id="translate-button" onClick="parent.location='/videos/new'"><h3 class="white">Translate new video</h3></a>
-</div>
-<br>
-<div style="margin-top: 100px; margin-left: 100px; margin-right: 100px;">
+<div id="index-box">
   <% Video.all.each do |v| %>
     <div class="video-thumb-box <%= v.lang1 %>">
-      <strong><%= link_to "#{v.title}", video_url(v.id) %></strong>
+      <strong class="center"><%= link_to "#{v.title.slice(0,40)}", video_url(v.id) %></strong>
       <br>
-      <img src="http://img.youtube.com/vi/<%= v.youtube_id %>/2.jpg">
-      <br><br>
+      <img src="http://img.youtube.com/vi/<%= v.youtube_id %>/1.jpg">
     </div>
   <% end %>
+</div>
+<br>
+<div class="wrapper">
+  <div class="centerbox narrow">
+    <a class="btn btn-info btn-large" id="translate-button" onClick="parent.location='/videos/new'">Translate new video</a>
+  </div>
 </div>

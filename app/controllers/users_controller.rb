@@ -5,15 +5,14 @@ class UsersController < ApplicationController
   end 
 
   def index
-
-    
-    @top_ten_users
+ 
+    @top_ten_users = User.limit(10)
 
   end
 
   def show
 
-    @interpretations
+    @interpretations = interpretation.where(:user_id => @current_user.id).order("created_at ASC")
 
   end
   
