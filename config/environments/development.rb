@@ -37,5 +37,8 @@ Boombox::Application.configure do
 
   ENV["CONSUMER_KEY"] = 'pjd8j4GzUFLgz5n397vw';
   ENV["CONSUMER_SECRET"] = 'rOxr1r94ZYx5tcbirxlwfJhndHVdJ6TCz0Njo4h7eM';
+  
+  ENV['FACEBOOK_KEY'] = '?'
+  ENV['FACEBOOK_SECRET'] = '?'
 
 end

@@ -18,12 +18,10 @@
 
 .centerbox {  margin-right: auto; 
   margin-left: auto; 
-  width: 420px; 
+  width: 640px; 
   overflow: scroll; }
 
 .narrow { width: 200px; }
-
-.video-box { height: 320px; }
 
 small { color: #9B59BB; }
 
@@ -68,7 +66,7 @@ td { color: black;
   margin: 40px;
 }
 
-/*** NEW PAGE (VIDEOS) ***/
+                                          /*** NEW PAGE (VIDEOS) ***/
 
 .very-wide-box {
   width: 1000px;
@@ -215,33 +213,37 @@ td { color: black;
   margin: 3px;
   text-align: center; }
 
-/*** SHOW PAGE (VIDEOS) ***/
+                                          /*** SHOW PAGE (VIDEOS) ***/
 
-.lyrics { text-align: center; }
+.show-video-box { position: relative; 
+  overflow: visible; }
+
+.lyrics { text-align: center;
+  color: #FE781E; }
 
 .lyrics-box {
   height: 60px;
-  margin-top: 20px; }
+  margin-top: 20px; 
+  position: absolute;
+  bottom: 335px; }
 
 .wide-lyrics-container {
-  width: 420px;
+  width: 630px;
   height: 60px;
   float: left; 
   margin-top: 1px;
   margin-bottom: 1px;
-  background-color: white;
-  border-top: 1px solid white }
+  background: rgba(0,0,0,0);
+  border-top: 1px solid rgba(0,0,0,0); }
 
 .narrow-lyrics-container {
-  width: 210px;
+  width: 315px;
   height: 60px;
   float: left;
   margin-top: 1px;
   margin-bottom: 1px;
-  background-color: white;
-  border-top: 1px solid white }
-
-.lang2 { background-color: white; }
+  background: rgba(0,0,0,0);
+  border-top: 1px solid rgba(0,0,0,0); }
 
 .button-container {
   background-color: white;
