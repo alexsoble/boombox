@@ -1,5 +1,7 @@
 $ ->
 
+  if window.location.search.match(/request=y/)
+    window.request = true
   $("#select-language-box").hide()
   $("#controls").hide() 
 
@@ -34,13 +36,9 @@ $ ->
     if (window.keyup isnt 1) and (user_submit.match(/youtube/) isnt null)
       window.keyup = 1
 
-      # CREATE NEW VIDEO OBJECT IN DB
       # GET TITLE FROM YOUTUBE
 
       getTitle = (data) ->
-        window.title = data.entry.title.$t
-        $.post('/new_video', { 'video' : { 'youtube_id' : "#{youtube_id}", 'title' : "#{title}" } }, (data) ->
-          console.log data, "json")
         $('.very-wide-box').html("<h2>#{window.title}</h2>")
         $(".very-wide-box").hide()
 
@@ -53,31 +51,10 @@ $ ->
 
       # ADDING THE VIDEO LANGUAGE SELECTORS        
 
+      $("#copy-and-paste-box").slideUp('slow')
       $("#select-language-box").slideDown('slow')
 
-      $('#video-language-dropdown').html("<br><br>
-      <p><i>Great! A few questions before we get started...</i></p>
-      <br>
-      <p>This video is in:</p>
-      <ul class='nav nav-pills' id='video-language-options'>
-        <li class='dropdown'> 
-          <a class='btn btn-info dropdown-toggle center-pill' data-toggle='dropdown'>Select language<b class='caret'></b></a> 
-          <ul class='dropdown-menu'>
-            <li><a class='language-video-option' id='English'>English</a></li> 
-            <li><a class='language-video-option' id='Chinese'>Chinese</a></li>
-            <li><a class='language-video-option' id='Korean'>Korean</a></li> 
-            <li><a class='language-video-option' id='Japanese'>Japanese</a></li> 
-            <li><a class='language-video-option' id='Spanish'>Spanish</a></li> 
-            <li><a class='language-video-option' id='French'>French</a></li> 
-            <li><a class='language-video-option' id='German'>German</a></li> 
-            <li><a class='language-video-option' id='Italian'>Italian</a></li> 
-            <li><a class='language-video-option' id='Norwegian'>Norwegian</a></li> 
-            <li><a class='language-video-option' id='Hebrew'>Hebrew</a></li> 
-            <li><a class='language-video-option' id='Arabic'>Arabic</a></li> 
-            <li><a class='language-video-option' id='Persian'>Persian</a></li> 
-            <li><a class='language-video-option' id='Hindi'>Hindi</a></li></ul></li></ul>")
-      
-      $('#translation-language-dropdown').html("<p>I\'m translating it into:</p>
+      $('#translation-language-dropdown').html("<br><br><p>I\'m translating it into:</p>
         <ul class='nav nav-pills' id='translation-language-options'>
           <li class='dropdown'>
             <a class='btn btn-info dropdown-toggle center-pill' data-toggle='dropdown'>Select language<b class='caret'></b></a> 
@@ -123,6 +100,13 @@ $ ->
             <li><a class="language-video-option" id="Arabic">Arabic</a></li> 
             <li><a class="language-video-option" id="Persian">Persian</a></li> 
             <li><a class="language-video-option" id="Hindi">Hindi</a></li></ul></li></ul>')
+        window.title = data.entry.title.$t
+        $.post('/new_video', { 'video' : { 'youtube_id' : "#{youtube_id}", 'title' : "#{window.title}", 'lang1' : "#{lang1}" } }, (data) ->
+          console.log data, "json")
+
+      if window.request == true
+        window.yay = yay
+
 
   $(".language-translation-option").livequery ->
     $(this).click ->
@@ -149,33 +133,6 @@ $ ->
 
         slowSplashPageContent = ->
           $("#select-language-box").html('<br><br>
-            <!-- <table style="border-collapse: separate; border-spacing: 15px 15px; margin: auto; width: 500px;" border="0">
-              <tr>
-                <td><strong>1.</strong> Hit the pin when the words start.</td>
-              </tr>
-              <tr>
-                <td><div class="style52"><i class="icon-pushpin icon-2x icon-style52" style="right: 10px;"></i></div></td>
-              </tr>
-              <tr>
-                <td><strong>2.</strong> When you hit the pin, the video will loop every 4 seconds.</td>
-              </tr>
-              <tr>                
-                <td><h3 class="style52">4s</h3></td>
-              </tr>
-              <tr>
-                <td><strong>3.</strong> Use this button to make the loop longer or shorter.</td>
-              </tr>
-              <tr>
-                <td><div class="style52"><i class="icon-refresh icon-2x icon-style52"></i></div></td>
-              </tr>
-              <tr>
-                <td><strong>4.</strong> The forward button skips ahead to the next loop.</td>
-              </tr>
-              <tr>
-                <td><div class="style52"><i class="icon-forward icon-2x icon-style52" style="right: 6px;"></i></div></td>
-              </tr>
-            </table>
-            <br> -->
             <a class="btn btn-info btn-large center-pill-wide" id="lets-get-going">Okay, let\'s get going!</a>').slideDown()
           $("#select-language-box").attr('id','splash-box')
 

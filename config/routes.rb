@@ -8,6 +8,7 @@ Boombox::Application.routes.draw do
   get '/sign_out' => 'sessions#destroy'
   get '/auth/twitter/callback' => 'sessions#create'
   
+  get '/request/' => 'videos#request'
   resources :videos
   resources :users
   
