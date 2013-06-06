@@ -6,3 +6,9 @@ $ ->
     language_option = e.currentTarget.id
     $(".video-thumb-box").hide()
     $(".video-thumb-box.#{language_option}").show()
+
+  $('#new-translation-button').click ->
+    window.location = '/videos/new'
+
+  $('#request-translation-button').click ->
+    window.location = '/videos/request'

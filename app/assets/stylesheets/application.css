@@ -25,7 +25,7 @@
 
 small { color: #9B59BB; }
 
-.pretty-text { color: #9B59BB; }
+.pretty { color: #9B59BB; }
 
 .pretty-background { background-color: #9B59BB; }
 
@@ -53,8 +53,13 @@ table { border-collapse: separate;
 td { color: black;
   text-align: center; }
 
+.hr { height: 1px;
+  background: #9B59BB;
+  margin: 0px;}
+
 
                                           /*** INDEX PAGE (VIDEOS) ***/
+.span { height: 100px; }
 
 .video-thumb-box {
   width: 140px;
@@ -62,9 +67,25 @@ td { color: black;
   margin-right: 40px;
   float: left; }
 
-#index-box {
-  margin: 40px;
-}
+.index-button {
+  width: 140px;
+  height: 140px;
+  border-radius: 70px;
+  margin-right: 40px;
+  background-color: #9B59BB;
+  float: right;
+  position: relative; }
+
+.index-button-text { text-align: center; }
+
+.button-text-wrapper {
+  height: 100px;
+  width: 100px;
+  position: absolute;
+  left: 15%;
+  top: 38%; }
+
+
 
                                           /*** NEW PAGE (VIDEOS) ***/
 
