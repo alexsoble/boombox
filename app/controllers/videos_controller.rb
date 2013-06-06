@@ -53,7 +53,10 @@ class VideosController < ApplicationController
 
   def index
 
-    @translated_videos
+    # MOST RECENTLY TRANSLATED VIDEOS
+
+    @latest_translated_videos = Video.order('created_at DESC').limit(10)
+
 
     # TOP 10 REQUESTED VIDEOS
 
@@ -64,7 +67,7 @@ class VideosController < ApplicationController
       array << { :id => v.id, :number_of_requests => v.number_of_requests }
     end
 
-    array = array.sort_by { |hash| hash[:number_of_requests] }.reverse[0..20]
+    array = array.sort_by { |hash| hash[:number_of_requests] }.reverse[0..9]
     array.each do |h|
       @top_requested_videos << Video.find_by_id(h[:id])
     end

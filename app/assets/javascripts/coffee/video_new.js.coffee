@@ -38,9 +38,11 @@ $ ->
               <li><a class='interp-language' id='Korean'>Korean</a></li> 
               <li><a class='interp-language' id='Japanese'>Japanese</a></li> 
               <li><a class='interp-language' id='Spanish'>Spanish</a></li> 
+              <li><a class='interp-language' id='Portuguese'>Portuguese</a></li> 
               <li><a class='interp-language' id='French'>French</a></li> 
               <li><a class='interp-language' id='German'>German</a></li> 
               <li><a class='interp-language' id='Italian'>Italian</a></li> 
+              <li><a class='interp-language' id='Russian'>Russian</a></li> 
               <li><a class='interp-language' id='Norwegian'>Norwegian</a></li> 
               <li><a class='interp-language' id='Hebrew'>Hebrew</a></li> 
               <li><a class='interp-language' id='Arabic'>Arabic</a></li> 
@@ -59,9 +61,11 @@ $ ->
               <li><a class='request-language' id='Korean'>Korean</a></li> 
               <li><a class='request-language' id='Japanese'>Japanese</a></li> 
               <li><a class='request-language' id='Spanish'>Spanish</a></li> 
+              <li><a class='request-language' id='Portuguese'>Portuguese</a></li> 
               <li><a class='request-language' id='French'>French</a></li> 
               <li><a class='request-language' id='German'>German</a></li> 
               <li><a class='request-language' id='Italian'>Italian</a></li> 
+              <li><a class='request-language' id='Russian'>Russian</a></li> 
               <li><a class='request-language' id='Norwegian'>Norwegian</a></li> 
               <li><a class='request-language' id='Hebrew'>Hebrew</a></li> 
               <li><a class='request-language' id='Arabic'>Arabic</a></li> 
@@ -113,7 +117,7 @@ $ ->
     $(this).click ->
       window.lang1 = this.id
       if window.title == undefined
-        $("#video-language-options").html("<a class='btn btn-info backtrack center-pill' id='video-lang-choice'>#{lang1}</a>")
+        $("#language-options").html("<a class='btn btn-info backtrack center-pill' id='video-lang-choice'>#{lang1}</a>")
       else
         step2()
 
@@ -129,9 +133,11 @@ $ ->
             <li><a class="video-language" id="Korean">Korean</a></li> 
             <li><a class="video-language" id="Japanese">Japanese</a></li> 
             <li><a class="video-language" id="Spanish">Spanish</a></li> 
+            <li><a class="video-language" id="Spanish">Portuguese</a></li> 
             <li><a class="video-language" id="French">French</a></li> 
             <li><a class="video-language" id="German">German</a></li> 
             <li><a class="video-language" id="Italian">Italian</a></li> 
+            <li><a class="video-language" id="Russian">Russian</a></li> 
             <li><a class="video-language" id="Norwegian">Norwegian</a></li> 
             <li><a class="video-language" id="Hebrew">Hebrew</a></li> 
             <li><a class="video-language" id="Arabic">Arabic</a></li> 

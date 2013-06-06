@@ -3,7 +3,7 @@
   <div class="span11 offset1">
     <div class="row-fluid top-row">
       <div class="span10 span">
-        <h2 class="pretty">Translated videos</h2>
+        <h2>Ten most popular translations</h2>
         <hr id="hr">
       </div>
       <div class="span2 span">
@@ -15,13 +15,15 @@
       </div>
     </div>
     <div class="row-fluid">
-        <% Video.all.each do |v| %>
+      <div class="span10">
+        <% @latest_translated_videos.all.each do |v| %>
           <div class="video-thumb-box <%= v.lang1 %>">
             <strong class="center"><%= link_to "#{v.title.slice(0,32)}", video_url(v.id) %></strong>
             <br>
             <img src="http://img.youtube.com/vi/<%= v.youtube_id %>/1.jpg">
           </div>
         <% end %>
+      </div>
     </div>
   </div>
 </div>
@@ -33,25 +35,27 @@
   <div class="span11 offset1">
     <div class="row-fluid">
       <div class="span10 span">
-        <h2 class="pretty">Requested videos</h2>
+        <h2>Top ten requested videos</h2>
         <hr>
       </div>
       <div class="span2 span">
         <div class="index-button" id="request-translation-button">
           <div class="button-text-wrapper">
-            <p class="white index-button-text">Request a video</p>
+            <p class="white index-button-text">Request a YouTube video translation</p>
           </div>
         </div>
       </div>
     </div>
     <div class="row-fluid">
+      <div class="span10">
         <% @top_requested_videos.each do |v| %>
           <div class="video-thumb-box <%= v.lang1 %>">
-            <strong class="center"><%= link_to "#{v.title.slice(0,40)}", video_url(v.id) %></strong>
+            <strong class="center"><%= link_to "#{v.title.slice(0,38)}", video_url(v.id) %></strong>
             <br>
             <img src="http://img.youtube.com/vi/<%= v.youtube_id %>/1.jpg">
           </div>
         <% end %>
+      </div>
     </div>
   </div>
 </div>
