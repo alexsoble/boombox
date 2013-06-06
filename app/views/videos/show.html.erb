@@ -4,12 +4,12 @@
 <div class="show-video-box centerbox">
   <div id="show-video-box"></div>
     <% if @lines.present? %>
-      <div class="lyrics-box centerbox" id="lyrics">
+      <div class="lyrics-box centerbox top" id="lyrics">
         <% if @lines_have_lang1 %>    
           <% @lines.each do |l| %>
             <div class="narrow-lyrics-container lang1">
               <div class="text-container">
-                <strong><i><h2 class="lyrics"><%= l.lang1 %></h2></i></strong>
+                <strong></strong><strong><i><h2 class="lyrics"><%= l.lang1 %></h2></i></strong></strong>
               </div>
             </div>
             <div class="narrow-lyrics-container lang2" id="line-<%= l.time %>">
@@ -29,18 +29,33 @@
       </div>
     <% end %>
   </div>
-  <% if @lines_have_lang1 %>
     <div class="centerbox visible">
       <div class="btn-group">
         <a class="btn btn-info dropdown-toggle" data-toggle="dropdown"><i class="icon-cog icon icon-2x"></i></a></span></a>
         <ul class="dropdown-menu">
-          <li><a id="just-lang2">Show just <%= @interpretation.lang2 %></a></li>
-          <li><a id="lang1-and-lang2">Show <%= @video.lang1 %> and <%= @interpretation.lang2 %></a></li>
-          <li><a id="just-lang1">Show just <%= @video.lang1 %></a></li>
+          <% if @lines_have_lang1 %>
+            <li><a id="just-lang2">Show just <%= @interpretation.lang2 %></a></li>
+            <li><a id="lang1-and-lang2">Show <%= @video.lang1 %> and <%= @interpretation.lang2 %></a></li>
+            <li><a id="just-lang1">Show just <%= @video.lang1 %></a></li>
+            <li class="divider"></li>
+          <% end %>
+          <li class="dropdown-submenu">
+            <a tabindex="-1">Text color</a>
+            <ul class="dropdown-menu">
+              <li><a id="black">Black</a></li>
+              <li><a id="white">White</a></li>
+              <li><a id="sky">Sky</a></li>
+            </ul>
+          <li class="dropdown-submenu">
+            <a tabindex="-1">Text location</a>
+            <ul class="dropdown-menu">
+              <li><a id="video-top">Video top</a></li>
+              <li><a id="video-bottom">Video bottom</a></li>
+              <!--- <li><a id="sky">Below video</a></li> -->
+            </ul>
         </ul>
       </div>
     </div>
-  <% end %>
 <% else %>
   <div class="centerbox" style="text-align: center;"><h3>Nobody's translated this song yet. <%= link_to "Want to give it a try?", "/videos/new" %></h3></div>
 <% end %>

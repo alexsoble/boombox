@@ -12,7 +12,7 @@
  *= require_tree .
  */
 
-/*** MULTIPLE PAGES (VIDEOS) ***/
+                                          /*** MULTIPLE PAGES (VIDEOS) ***/
 
 ::-webkit-scrollbar { display: none; }
 
@@ -54,7 +54,7 @@ td { color: black;
   text-align: center; }
 
 
-/*** INDEX PAGE (VIDEOS) ***/
+                                          /*** INDEX PAGE (VIDEOS) ***/
 
 .video-thumb-box {
   width: 140px;
@@ -224,8 +224,11 @@ td { color: black;
 .lyrics-box {
   height: 60px;
   margin-top: 20px; 
-  position: absolute;
-  bottom: 335px; }
+  position: absolute; }
+
+.lyrics-box.top { bottom: 340px; }
+
+.lyrics-box.bottom { bottom: 100px; }
 
 .wide-lyrics-container {
   width: 630px;
@@ -235,6 +238,16 @@ td { color: black;
   margin-bottom: 1px;
   background: rgba(0,0,0,0);
   border-top: 1px solid rgba(0,0,0,0); }
+
+.wide-lyrics-container {
+  width: 630px;
+  height: 60px;
+  float: left; 
+  margin-top: 1px;
+  margin-bottom: 1px;
+  background: rgba(0,0,0,0);
+  border-top: 1px solid rgba(0,0,0,0); }
+
 
 .narrow-lyrics-container {
   width: 315px;
@@ -251,7 +264,12 @@ td { color: black;
   width: 10px;
   border-top: 2px solid white }
 
-/*** STICKY FOOTER ***/
+.black { color: black }
+.white { color: white }
+.sky { color: #0F82F5 }
+
+
+                                          /*** STICKY FOOTER ***/
 
 #footer {
    position:fixed;

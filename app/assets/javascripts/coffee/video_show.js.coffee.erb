@@ -49,6 +49,8 @@ $ ->
   counter = setInterval(countVideoPlayTime, 1000)
   done = false
 
+  # CONTROLS
+
   $("#lang1-and-lang2").parent().hide()
 
   $("#just-lang2").click ->
@@ -75,3 +77,21 @@ $ ->
     $("#just-lang1").parent().hide()
     $("#lang1-and-lang2").parent().show()
     $("#just-lang2").parent().show()
+
+  $('#black').click ->
+    $('.lyrics').each(->
+      $(this).attr('class','lyrics black'))
+
+  $('#white').click ->
+    $('.lyrics').each(->
+      $(this).attr('class','lyrics white'))
+
+  $('#sky').click ->
+    $('.lyrics').each(->
+      $(this).attr('class','lyrics sky'))
+
+  $('#video-top').click ->
+    $('#lyrics').attr('class','lyrics-box centerbox top')
+
+  $('#video-bottom').click ->
+    $('#lyrics').attr('class','lyrics-box centerbox bottom')
