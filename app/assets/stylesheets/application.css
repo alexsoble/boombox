@@ -77,15 +77,19 @@ td { color: black;
   float: right;
   position: relative; }
 
+.index-button:hover { background-color: #8D46B0 }
+
 .index-button-text { text-align: center; }
 
 .button-text-wrapper {
   height: 100px;
   width: 100px;
   position: absolute;
-  left: 15%;
-  top: 35%; }
+  left: 15%; }
 
+.button-text-wrapper#new-translation-button { top: 40%; }
+
+.button-text-wrapper#request-translation-button { top: 30%; }
 
 
                                           /*** NEW PAGE (VIDEOS) ***/
@@ -183,7 +187,8 @@ td { color: black;
   width: 480px;
   margin-left: auto;
   margin-right: auto; 
-  margin-top: 60px; }
+  margin-top: 60px; 
+  text-align: center; }
 
 #splash-box {
   height: 480px;

@@ -21,8 +21,8 @@ $ ->
 
     window.title = $('#title-box').text()
     $.post('/new_video', { 'video' : { 'youtube_id' : "#{window.youtube_id}", 'title' : "#{window.title}", 'lang1' : "#{window.lang1}" } }, (data) ->
-      console.log data, "json"
-      window.video_id = data.video.id)
+      console.log data
+      window.video_id = data.video.id )
 
     $("#select-language-box").slideDown('slow')
 
@@ -116,15 +116,14 @@ $ ->
   $(".video-language").livequery ->
     $(this).click ->
       window.lang1 = this.id
-      if window.title == undefined
-        $("#language-options").html("<a class='btn btn-info backtrack center-pill' id='video-lang-choice'>#{lang1}</a>")
-      else
+      $("#language-options").html("<a class='btn btn-info backtrack center-pill' id='video-lang-choice'>#{lang1}</a>")
+      if window.title != undefined
         step2()
 
   $('.backtrack#video-lang-choice').livequery ->
     $(this).click ->
       $('#video-language-dropdown').html('<p>This video is in:</p>
-      <ul class="nav nav-pills" id="video-language-options">
+      <ul class="nav nav-pills" id="language-options">
         <li class="dropdown"> 
           <a data-toggle="dropdown" class="dropdown-toggle center-pill">Select language<b class="caret"></b></a> 
           <ul class="dropdown-menu" id="menu1">
@@ -154,7 +153,14 @@ $ ->
         # TALK TO THE SERVER HERE
         $.post('/new_request', { 'request' : { 'video_id' : "#{window.video_id}" , 'lang2' : "#{window.lang2}", 'user_id' : "#{window.user_id}" } }, (data) ->
             window.request_id = data.data.id)
-        $('#select-language-box').html('<h2>Thanks!<h2>')
+
+        $('#select-language-box').html("
+          <h2>Request submitted!</h2>
+          <br>
+          <p>#{window.title} into #{window.lang2}</p>
+          <br>
+          <a href='/welcome?#{window.lang1}'>Browse other videos in #{window.lang1}?</a>")
+
         $('#video-language-dropdown').html('')
 
   $(".interp-language").livequery ->

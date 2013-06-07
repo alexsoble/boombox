@@ -9,8 +9,7 @@ class UsersController < ApplicationController
   end
 
   def show
-    @interpretations = interpretation.where(:user_id => @current_user.id).order("created_at ASC")
-
+    @interpretations = Interpretation.where(:user_id => @current_user.id).order("created_at ASC")
   end
 
   def new
