@@ -1,4 +1,5 @@
 class User < ActiveRecord::Base
+  has_secure_password
 
   def self.from_omniauth(auth)
     where(auth.slice("provider", "uid")).first || create_from_omniauth(auth)
@@ -12,4 +13,8 @@ class User < ActiveRecord::Base
     end
   end
 
+  attr_accessible :email, :name, :password, :password_confirmation
+
+  validates_uniqueness_of :email, :name
+  
 end

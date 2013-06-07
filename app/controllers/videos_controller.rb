@@ -55,8 +55,15 @@ class VideosController < ApplicationController
 
     # MOST RECENTLY TRANSLATED VIDEOS
 
-    @latest_translated_videos = Video.order('created_at DESC').limit(10)
+    @latest_translated_videos = Array.new
 
+    Video.order('created_at DESC').each do |v|
+      if v.number_of_interpretations > 0
+        @latest_translated_videos << v
+      end 
+    end
+    
+    @latest_translated_videos = @latest_translated_videos[0..9]
 
     # TOP 10 REQUESTED VIDEOS
 
@@ -64,7 +71,9 @@ class VideosController < ApplicationController
     @top_requested_videos = Array.new
 
     Video.order("created_at ASC").each do |v|
-      array << { :id => v.id, :number_of_requests => v.number_of_requests }
+      if v.number_of_interpretations == 0
+        array << { :id => v.id, :number_of_requests => v.number_of_requests }
+      end
     end
 
     array = array.sort_by { |hash| hash[:number_of_requests] }.reverse[0..9]

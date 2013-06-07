@@ -16,7 +16,7 @@
     </div>
     <div class="row-fluid">
       <div class="span10">
-        <% @latest_translated_videos.all.each do |v| %>
+        <% @latest_translated_videos.each do |v| %>
           <div class="video-thumb-box <%= v.lang1 %>">
             <strong class="center"><%= link_to "#{v.title.slice(0,32)}", video_url(v.id) %></strong>
             <br>

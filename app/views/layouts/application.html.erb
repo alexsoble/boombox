@@ -5,9 +5,7 @@
   <%= stylesheet_link_tag    "application", :media => "all" %>
   <%= javascript_include_tag "application" %>
   <%= javascript_include_tag "bootstrap.min.css" %>
-  <% if action_name == 'index' || 'new' || 'show' %>
-    <%= javascript_include_tag "coffee/video_#{action_name}" %>
-  <% end %>
+  <%= javascript_include_tag "coffee/#{controller_name}_#{action_name}" %>
   <%= csrf_meta_tags %>
 </head>
 <body>

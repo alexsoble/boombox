@@ -5,12 +5,14 @@ Boombox::Application.routes.draw do
   get '/welcome' => 'videos#index'
 
   get '/sign_in' => 'users#new'
+  get '/sign_up' => 'users#join'
   get '/sign_out' => 'sessions#destroy'
-  get '/auth/twitter/callback' => 'sessions#create'
+  get '/auth/:provider/callback' => 'sessions#create'
   
   get '/request/' => 'videos#request'
   resources :videos
   resources :users
+  resources :sessions
   
   post '/new_video' => 'videos#create'
   post '/new_request' => 'requests#create'

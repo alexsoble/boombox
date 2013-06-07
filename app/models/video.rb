@@ -7,4 +7,10 @@ class Video < ActiveRecord::Base
     Request.where(:video_id => self.id).length
   end
 
+  def number_of_interpretations
+    Interpretation.where(:video_id => self.id).length
+  end
+
+  validates_presence_of :title, :youtube_id, :lang1
+
 end
