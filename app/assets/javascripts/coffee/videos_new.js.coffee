@@ -196,8 +196,7 @@ $ ->
           $(this).click ->
             # $("#select-language-box").slideUp()
             # replaceContents = ->
-            $("#select-language-box").html('<br><br>
-              <a class="btn btn-info btn-large center-pill-wide" id="lets-get-going">Okay, let\'s get going!</a>')
+            $("#select-language-box").html('<br><br><br><br><br><a class="btn btn-info btn-large center-pill-wide" id="lets-get-going">Okay, let\'s get going!</a>')
             # window.setTimeout(replaceContents, 400)
             # $("#select-language-box").slideDown()
 
@@ -205,7 +204,7 @@ $ ->
 
   $("#lets-get-going").livequery ->
     $(this).click ->
-      $("#select-language-box").hide()
+      $("#select-language-box").remove()
       $("#video-language-dropdown").slideUp()
 
       player = null
@@ -297,7 +296,7 @@ $ ->
           <ul class="dropdown-menu">
             <li><a id="no-loop">No loop</a></li>
             <li><a id="loop-2">2 seconds</a></li>
-            <li><a id="loop-4">4 seconds</a></li>
+            <li><a id="loop-4"><strong>4 seconds</strong></a></li>
             <li><a id="loop-8">8 seconds</a></li></ul>
           <a class="btn btn-info" id="backward"><i class="icon-step-backward icon-2x"></i></a>
           <a class="btn btn-info" id="forward"><i class="icon-step-forward icon-2x"></i></a>
@@ -341,7 +340,7 @@ $ ->
             console.log "New red arrow!!!"
             $('#red-arrow').attr('class','shift-right').attr('style','display: inline;')
             $('#red-arrow-text').attr('class','shift-right').attr('style','display: inline;')
-            $('#red-arrow-text').html('Use these tools to find the best loop for your video.')
+            $('#red-arrow-text').html('Use these settings to find the best loop for your video.')
             redArrowFade = ->
               console.log "Red arrow fade!!!"
               $('#red-arrow').fadeOut(2000)
