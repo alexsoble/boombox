@@ -13,6 +13,7 @@ Boombox::Application.routes.draw do
   resources :videos
   resources :users
   resources :sessions
+  resources :interpretations
   
   post '/new_video' => 'videos#create'
   post '/new_request' => 'requests#create'

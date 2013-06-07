@@ -160,7 +160,7 @@ $ ->
           <br>
           <p>#{window.title} into #{window.lang2}</p>
           <br>
-          <a href='/welcome?#{window.lang1}'>Browse other videos in #{window.lang1}?</a>")
+          Browse other videos in <a href='/interpretations?lang=#{window.lang1}'>#{window.lang1}</a> or <a href='/interpretations?lang=#{window.lang2}'>#{window.lang2}?</a>")
 
         $('#video-language-dropdown').html('')
 

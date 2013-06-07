@@ -1,5 +1,5 @@
 class InterpretationsController < ApplicationController
-  respond_to :json
+  respond_to :json, :html
 
   def create 
   
@@ -10,6 +10,13 @@ class InterpretationsController < ApplicationController
 
     render :json => { :data => @interp }
 
-    end
+  end
+
+  def index
+
+    @interps = Interpretation.order('created_at DESC').limit(100)
+    @language_filter = params[:lang]
+  
+  end
 
 end

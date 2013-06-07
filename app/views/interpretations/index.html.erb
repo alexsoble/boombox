@@ -1,0 +1,35 @@
+<br>
+<div class="row-fluid">
+  <div class="span11 offset1">
+    <div class="row-fluid">
+      <div class="span10">
+        <% if @language_filter.present? %>
+          <% @interps.each do |i| %>
+            <% if i.lang1 == @language_filter %>
+              <div class="video-thumb-box">
+                <strong class="center"><%= link_to "#{i.video.title.slice(0,32)}", video_url(i.video.id) %></strong>
+                <br>
+                <%= image_tag "http://img.youtube.com/vi/#{i.video.youtube_id}/1.jpg" %>
+              </div>
+            <% end %>
+          <% end %>
+        <% else %>
+          <% @interps.each do |i| %>
+            <div class="video-thumb-box">
+              <strong class="center"><%= link_to "#{i.video.title.slice(0,32)}", video_url(i.video.id) %></strong>
+              <br>
+              <%= image_tag "http://img.youtube.com/vi/#{i.video.youtube_id}/1.jpg" %>
+            </div>
+          <% end %>
+        <% end %>
+      </div>
+      <div class="span2 span">
+        <div class="index-button">
+          <div class="button-text-wrapper" id="new-translation-button">
+            <p class="white index-button-text">Translate new video</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
