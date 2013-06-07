@@ -34,7 +34,7 @@
       </ul>
       <% if current_user %>
         <ul class="nav pull-right signed-in-user" id="<%= current_user.id %>">
-          <li><%= link_to "Signed in as #{current_user.name}", '/sign_in' %></li>
+          <li><%= link_to "Signed in as #{current_user.name}", user_url(current_user) %></li>
           <li><%= link_to "Sign out", "/sign_out" %></li>
         </ul>
       <% else %>

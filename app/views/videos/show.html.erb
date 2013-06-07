@@ -54,7 +54,7 @@
           </ul>
       </ul>
     </div>
-    <div style="position: absolute; right: 2%; top: 20%;"><strong><i>Translated by <%= if @user == 'anon' then 'anonymous' else @user.name end %></i></strong></div>
+    <div style="position: absolute; right: 2%; top: 30%;"><i class="h3"><i>Translated by <%= if @user == 'anon' then 'anonymous' else link_to "#{@user.name}", user_url(@user) end %></i></div>
   </div>
 <% else %>
   <div class="centerbox" style="text-align: center;"><h3>Nobody's translated this song yet. <%= link_to "Want to give it a try?", "/videos/new" %></h3></div>

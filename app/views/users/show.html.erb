@@ -1,11 +1,13 @@
-<div class="centerbox narrow">
-  <h2>My videos:</h2>
-  <% @interpretation.all.each do |i| %>
-   <% v = Video.find_by_id(i.video_id).title %>
-    <div class="video-thumb-box <%= v.lang1 %>">
-      <strong class="center"><%= link_to "#{v.title.slice(0,32)}", video_url(v.id) %></strong>
-      <br>
-      <img src="http://img.youtube.com/vi/<%= v.youtube_id %>/1.jpg">
-    </div>
-  <% end %>
+<div class="centerbox center">
+  <h2><%= @user.name %>'s translations:</h2>
+  <div class="centerbox thumb-box-width">
+    <% @interpretation.all.each do |i| %>
+     <% v = Video.find_by_id(i.video_id) %>
+      <div class="video-thumb-box center">
+        <strong class="center"><%= link_to "#{v.title.slice(0,32)}", video_url(v.id) %></strong>
+        <br>
+        <img src="http://img.youtube.com/vi/<%= v.youtube_id %>/1.jpg">
+      </div>
+    <% end %>
+  </div>  
 </div>

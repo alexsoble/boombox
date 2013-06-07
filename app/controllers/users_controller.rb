@@ -1,6 +1,6 @@
 class UsersController < ApplicationController
 
-  def join
+  def new
     @user = User.new
   end 
 
@@ -9,10 +9,8 @@ class UsersController < ApplicationController
   end
 
   def show
-    @interpretations = Interpretation.where(:user_id => @current_user.id).order("created_at ASC")
-  end
-
-  def new
+    @user = User.find_by_id(params[:id])
+    @interpretation = Interpretation.where(:user_id => @user.id).order("created_at ASC")
   end
 
   def create

@@ -1,20 +1,30 @@
 <div class="centerbox center">
-  <h2>You're doing great work.</h2>
-  <p>Breaking down walls between languages and cultures is important stuff. <br> You deserve credit for it.</p>
-  <p>Here are a few ways to sign in:</p>
-    <li><b><a href="#" id="sign-in">Sign in with Heyu.</a></li>
-    <li>Not a member? <%= link_to "Join for free", '/sign_up' %>.</li>
-    <li><%= link_to "Sign in with Twitter", "/auth/twitter" %>.</li>
-    <br>
-      <%= form_tag sessions_path do %>
-      <p>
-        <%= label_tag :email %>
-        <%= text_field_tag :email, params[:email] %>
-      </p>
-      <p>
-        <%= label_tag :password %>
-        <%= password_field_tag :password %>
-      </p>
-      <p class="button"><%= submit_tag "Log in" %></p>
+  <h2>Welcome aboard!</h2>
+  <br>
+  <%= form_for @user do |f| %>
+    <% if @user.errors.any? %>
+      <div class="error_messages">
+        <h2>Form is invalid</h2>
+        <ul>
+          <% @user.errors.full_messages.each do |message| %>
+            <li><%= message %></li>
+          <% end %>
+        </ul>
+      </div>
     <% end %>
+
+    <div class="field">
+      <%= f.label :username %><%= f.text_field :name %>
+    </div>
+    <div class="field">
+      <%= f.label :email %><%= f.text_field :email %>
+    </div>
+    <div class="field">
+      <%= f.label :password %><%= f.password_field :password %>
+    </div>
+    <div class="field">
+      <%= f.label :password_confirmation %><%= f.password_field :password_confirmation %>
+    </div>
+    <div class="actions"><%= f.submit "Sign Up" %></div>
+  <% end %>
 </div>

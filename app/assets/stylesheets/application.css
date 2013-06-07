@@ -41,6 +41,8 @@ body { position: relative;
 
 p { color: black; }
 
+.h3 { font-size: 22px; color: black; }
+
 .white { color: white; }
 
 .visible { overflow: visible; }
@@ -67,7 +69,10 @@ td { color: black;
   width: 140px;
   height: 140px;
   margin-right: 40px;
+  margin-top: 20px;
   float: left; }
+
+.thumb-box-width { width: 140px; }
 
 .index-button {
   width: 140px;
@@ -239,10 +244,16 @@ td { color: black;
 
                                           /*** SHOW PAGE (VIDEOS) ***/
 
-.show-video-box { position: relative; 
-  overflow: visible;  }
+.black { color: black }
+.white { color: white; }
+/*
+  -webkit-text-stroke-width: 1px;
+  -webkit-text-stroke-color: black; 
+*/
+.sky { color: #0F82F5 }
 
-.centerbox.show-video-box { 
+.show-video-box { position: relative; 
+  overflow: visible;
   text-align: left; }
 
 .lyrics { text-align: center;
@@ -276,7 +287,6 @@ td { color: black;
   background: rgba(0,0,0,0);
   border-top: 1px solid rgba(0,0,0,0); }
 
-
 .narrow-lyrics-container {
   width: 315px;
   height: 60px;
@@ -291,10 +301,6 @@ td { color: black;
   float: right;
   width: 10px;
   border-top: 2px solid white }
-
-.black { color: black }
-.white { color: white }
-.sky { color: #0F82F5 }
 
 
                                           /*** STICKY FOOTER ***/

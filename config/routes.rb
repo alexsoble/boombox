@@ -4,8 +4,8 @@ Boombox::Application.routes.draw do
 
   get '/welcome' => 'videos#index'
 
-  get '/sign_in' => 'users#new'
-  get '/sign_up' => 'users#join'
+  get '/sign_up' => 'users#new'
+  get '/sign_in' => 'sessions#new'
   get '/sign_out' => 'sessions#destroy'
   get '/auth/:provider/callback' => 'sessions#create'
   
