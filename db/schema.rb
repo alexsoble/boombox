@@ -11,14 +11,15 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130607010840) do
+ActiveRecord::Schema.define(:version => 20130607132236) do
 
   create_table "interpretations", :force => true do |t|
     t.string   "lang2"
     t.integer  "video_id"
-    t.datetime "created_at", :null => false
-    t.datetime "updated_at", :null => false
+    t.datetime "created_at",                    :null => false
+    t.datetime "updated_at",                    :null => false
     t.integer  "user_id"
+    t.boolean  "published",  :default => false
   end
 
   create_table "lines", :force => true do |t|

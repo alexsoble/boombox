@@ -45,6 +45,12 @@ class VideosController < ApplicationController
         if l.lang1.present? then @lines_have_lang1 = true end
       end 
 
+      if @interpretation.user_id == 0
+        @user = 'anon'
+      else
+        @user = User.find_by_id(@interpretation.user_id)
+      end
+
     end
     
   end 

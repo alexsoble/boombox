@@ -79,6 +79,7 @@ $ ->
 
     # VALIDATING THE URL AGAINST YOUTUBE SYNTAX 
     youtube_id = "#{user_submit}".replace 'http://www.youtube.com/watch?v=', ''
+    youtube_id = youtube_id.replace 'https://www.youtube.com/watch?v=', ''
     window.youtube_id = "#{youtube_id}"
     if youtube_id.match(/&list/)
       youtube_id = youtube_id.slice(0,11)
@@ -324,7 +325,7 @@ $ ->
 
       $("#select-language-box").show()
 
-      # PLAYER SETTINGS DEFINED 
+      # WHEN THE USER HITS THE PIN
 
       $("#pin").livequery ->
         $(this).click -> 
@@ -335,6 +336,12 @@ $ ->
           $('#timer-box').show()
           $('#red-arrow').fadeOut(2000)
           $('#red-arrow-text').fadeOut(2000)
+
+          # FIRST LINE FOR THE QUIET TIME AT THE FRONT OF THE VIDEO
+          time = $("#current-loop-time").text()
+          time_in_seconds = parseInt(time.slice(3,5)) + parseInt(time.slice(0,2))*60
+          $.post('/new_line', { 'line' : { 'lang1' : '', 'lang2' : '', 'time' : "#{time_in_seconds}", 'interpretation_id' : "#{window.interp_id}" , 'upvotes' : 0, 'downvotes' : 0  } }, (data) ->
+                    console.log data.data )
 
           newRedArrow = ->
             console.log "New red arrow!!!"
@@ -371,6 +378,8 @@ $ ->
                   $.post('/new_line', { 'line' : { 'lang1' : "#{entry}", 'lang2' : "#{that_entry}", 'time' : "#{time_in_seconds}", 'interpretation_id' : "#{window.interp_id}" , 'upvotes' : 0, 'downvotes' : 0  } }, (data) ->
                     console.log data.data )
                   window.section += 1
+                  $('.done-button').html('<div class="btn btn-info" id="done-button">Done</div>')
+                  $('.save-button').html('<div class="btn btn-info" id="save-button">Save</div>')
 
             $(".lang2-line").livequery ->
               $(this).keyup (e) ->
@@ -388,6 +397,8 @@ $ ->
                   $.post('/new_line', { 'line' : { 'lang1' : "#{that_entry}", 'lang2' : "#{entry}", 'time' : "#{time_in_seconds}", 'interpretation_id' : "#{window.interp_id}" , 'upvotes' : 0, 'downvotes' : 0  } }, (data) ->
                     console.log data.data )
                   window.section += 1
+                  $('.done-button').html('<div class="btn btn-info" id="done-button">Done</div>')
+                  $('.save-button').html('<div class="btn btn-info" id="save-button">Save</div>')
 
           if window.translation_type == 'just_lang2'
 
@@ -404,6 +415,8 @@ $ ->
                     $.post('/new_line', { 'line' : { 'lang1' : '', 'lang2' : "#{entry}", 'time' : "#{time_in_seconds}", 'interpretation_id' : "#{window.interp_id}" , 'upvotes' : 0, 'downvotes' : 0  } }, (data) ->
                       console.log data.data )
                   window.section += 1
+                  $('.done-button').html('<div class="btn btn-info" id="done-button">Done</div>')
+                  $('.save-button').html('<div class="btn btn-info" id="save-button">Save</div>')
 
         # INPUT LINES COME IN HERE
 
@@ -497,10 +510,5 @@ $ ->
 # DONE BUTTON RESPONSE
 
   $("#done-button").livequery ->
-    $(this).click -> 
-      # video_lang = $("#video-lang-choice").click()
-      # console.log video_lang
-      # translation_lang = $("#translation-lang-choice").click()
-      # console.log translation_lang
-      
+    $(this).click ->  
       # window.location.href = "http://localhost:3000/welcome/?video_lang=#{video_lang}&translation_lang=#{translation_lang}"

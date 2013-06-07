@@ -19,8 +19,9 @@
 .centerbox {  margin-right: auto; 
   margin-left: auto; 
   width: 640px; 
-  overflow: scroll; 
-  text-align: center; }
+  overflow: scroll; }
+
+.relative { position: relative; }
 
 .narrow { width: 200px; }
 
@@ -239,10 +240,14 @@ td { color: black;
                                           /*** SHOW PAGE (VIDEOS) ***/
 
 .show-video-box { position: relative; 
-  overflow: visible; }
+  overflow: visible;  }
+
+.centerbox.show-video-box { 
+  text-align: left; }
 
 .lyrics { text-align: center;
-  color: #FE781E; }
+  color: white; 
+  font-size: 22px; }
 
 .lyrics-box {
   height: 60px;
