@@ -5,7 +5,11 @@
   <%= stylesheet_link_tag    "application", :media => "all" %>
   <%= javascript_include_tag "application" %>
   <%= javascript_include_tag "bootstrap.min.css" %>
-  <%= javascript_include_tag "coffee/#{controller_name}_#{action_name}" %>
+  <% if controller_name != "interpretations" %>
+    <%= javascript_include_tag "coffee/#{controller_name}_#{action_name}" %>
+  <% else %>
+    <%= javascript_include_tag "coffee/videos_#{action_name}" %>
+  <% end %>
   <%= csrf_meta_tags %>
 </head>
 <body>

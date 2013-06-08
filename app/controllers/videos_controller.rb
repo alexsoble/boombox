@@ -27,6 +27,8 @@ class VideosController < ApplicationController
 
     @interpretations = Interpretation.where(:video_id => @video.id).order("created_at ASC")
 
+    # LOGIC TO FIND THE INTERPRETATION WITH THE MOST LINES
+
     if @interpretations.present?
 
       arr = Array.new 

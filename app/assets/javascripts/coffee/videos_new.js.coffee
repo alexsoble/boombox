@@ -343,12 +343,10 @@ $ ->
                     console.log data.data )
 
           newRedArrow = ->
-            console.log "New red arrow!!!"
             $('#red-arrow').attr('class','shift-right').attr('style','display: inline;')
             $('#red-arrow-text').attr('class','shift-right').attr('style','display: inline;')
             $('#red-arrow-text').html('Use these settings to find the best loop for your video.')
             redArrowFade = ->
-              console.log "Red arrow fade!!!"
               $('#red-arrow').fadeOut(2000)
               $('#red-arrow-text').fadeOut(2000)
             window.setTimeout(redArrowFade, 5000) 
@@ -418,7 +416,7 @@ $ ->
                   $('.save-button').html('<div class="btn btn-info" id="save-button">Saving...</div>')
                   delayedShowSaved = ->
                     $('.save-button').html('<div class="btn btn-info" id="save-button">Saved</div>')
-                  window.setTimeout(delayedShowSaved, 1000)
+                  window.setTimeout(delayedShowSaved, 600)
 
         # INPUT LINES COME IN HERE
 
@@ -515,3 +513,4 @@ $ ->
     $(this).click ->
       $.post('/publish', { 'interpretation' : { 'id' : "#{window.interp_id}" } }, (data) ->
         console.log data.data )
+      window.location.href = "/interpretations/#{window.interp_id}"
