@@ -171,8 +171,7 @@ $ ->
 
         # TALK TO THE SERVER HERE
         $.post('/new_interp', { 'interpretation' : { 'video_id' : "#{window.video_id}" , 'lang2' : "#{window.lang2}", 'user_id' : "#{window.user_id}" } }, (data) ->
-            window.interp_id = data.data.id
-            console.log window.interp_id)
+            window.interp_id = data.data.id )
         $('#translation-language-dropdown').hide()
         $('#video-language-dropdown').hide()
         $('#copy-and-paste-box').parent().remove()
@@ -379,7 +378,7 @@ $ ->
                     console.log data.data )
                   window.section += 1
                   $('.done-button').html('<div class="btn btn-info" id="done-button">Done</div>')
-                  $('.save-button').html('<div class="btn btn-info" id="save-button">Save</div>')
+                  $('.save-button').html('<div class="btn btn-info" id="save-button">Save</div>').effect('highlight')
 
             $(".lang2-line").livequery ->
               $(this).keyup (e) ->
@@ -398,7 +397,7 @@ $ ->
                     console.log data.data )
                   window.section += 1
                   $('.done-button').html('<div class="btn btn-info" id="done-button">Done</div>')
-                  $('.save-button').html('<div class="btn btn-info" id="save-button">Save</div>')
+                  $('.save-button').html('<div class="btn btn-info" id="save-button">Save</div>').effect('highlight')
 
           if window.translation_type == 'just_lang2'
 
@@ -416,7 +415,10 @@ $ ->
                       console.log data.data )
                   window.section += 1
                   $('.done-button').html('<div class="btn btn-info" id="done-button">Done</div>')
-                  $('.save-button').html('<div class="btn btn-info" id="save-button">Save</div>')
+                  $('.save-button').html('<div class="btn btn-info" id="save-button">Saving...</div>')
+                  delayedShowSaved = ->
+                    $('.save-button').html('<div class="btn btn-info" id="save-button">Saved</div>')
+                  window.setTimeout(delayedShowSaved, 1000)
 
         # INPUT LINES COME IN HERE
 
@@ -510,5 +512,6 @@ $ ->
 # DONE BUTTON RESPONSE
 
   $("#done-button").livequery ->
-    $(this).click ->  
-      # window.location.href = "http://localhost:3000/welcome/?video_lang=#{video_lang}&translation_lang=#{translation_lang}"
+    $(this).click ->
+      $.post('/publish', { 'interpretation' : { 'id' : "#{window.interp_id}" } }, (data) ->
+        console.log data.data )

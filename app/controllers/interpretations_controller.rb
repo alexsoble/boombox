@@ -19,4 +19,13 @@ class InterpretationsController < ApplicationController
   
   end
 
+  def publish 
+
+    @interp = Interpretation.find_by_id(params[:interpretation][:id])
+    @interp.published = true
+    @interp.save
+
+    @requests = Request.where(:video_id == @interp.video.id)
+    # Send the relevant user an Alert here
+
 end
