@@ -284,75 +284,44 @@ $ ->
 
       # PLAYER SETTINGS ADDED
 
-      $("#controls").append('<div class="btn-group" id="settings-and-pin">
-          <a class="btn btn-info dropdown-toggle" data-toggle="dropdown" id="settings"><i class="icon-cog icon-2x"></i></a></span>
-            <ul class="dropdown-menu">
-              <li><a id="timer-toggle">Turn big timer on/off</a></li>
-              <li><a id="rollover-toggle">Pause video on mouse rollover</a></li></ul>
-          <a class="btn btn-info" id="pin"><i class="icon-pushpin icon-2x"></i></a>
-        </div>
-        <div class="btn-group" id="forward-and-backward">
-          <a class="btn btn-info dropdown-toggle" data-toggle="dropdown" id="loop-length"><i class="icon-refresh icon-2x"></i></a></span>
-          <ul class="dropdown-menu">
-            <li><a id="no-loop">No loop</a></li>
-            <li><a id="loop-2">2 seconds</a></li>
-            <li><a id="loop-4"><strong>4 seconds</strong></a></li>
-            <li><a id="loop-8">8 seconds</a></li></ul>
-          <a class="btn btn-info" id="backward"><i class="icon-step-backward icon-2x"></i></a>
-          <a class="btn btn-info" id="forward"><i class="icon-step-forward icon-2x"></i></a>
+      $("#controls").append('<br><div class="btn-group relative" id="settings-and-start">
+          <a class="btn btn-info btn-large center-pill" id="start" style="position: absolute; left: 108px;">Start translating</a>
         </div>')
-      $("#controls").prepend('<p id="red-arrow-text">Click here when the words start. Let\'s get translating!</p>')
-      $("#red-arrow-text").hide()
+      
+      # DONE, SHOW BUTTONS, TIMER BOX
 
       delayedShow = -> 
-        
-        # DONE, SHOW BUTTONS, TIMER BOX
-        
+                
         $(".very-wide-box").slideDown('')
-
         window.player.playVideo()
-
-        # $('.done-button').html('<div class="btn btn-info" id="done-button">Done</div>')
-        # $('.save-button').html('<div class="btn btn-info" id="save-button">Save</div>')
         $('#timer-box').html('<div id="timer"><h2 class="timer-text" id="big-timer"></h2></div>')
         $('#timer-box').hide()
         $("#controls").show()
-        $("#red-arrow-text").show().effect('highlight',[],2000)
-        $('#forward-and-backward').hide()
+        $("#controls").prepend('<div id="red-arrow-text-box"><p><strong>Click when you hear the words start!</strong></p></div>')
 
       window.setTimeout(delayedShow, 1500)
+      
+      # PRESSING START
 
-      $("#select-language-box").show()
-
-      # WHEN THE USER HITS THE PIN
-
-      $("#pin").livequery ->
+      $("#start").livequery ->
         $(this).click -> 
-          $('#forward-and-backward').show()
-          $("#pin").attr('class', 'btn btn-warning')
-          window.section = window.time / 4
-          window.loop = 4
+          $(this).remove()
           $('#timer-box').show()
-          $('#red-arrow').fadeOut(2000)
-          $('#red-arrow-text').fadeOut(2000)
+          $("#controls").append('
+            <div class="btn-group" id="loop-settings">
+              <a class="btn btn-info off" id="play-in-loops">Play video in loops?</a>
+              <a class="btn btn-info" id="loop-2">2s</a>
+              <a class="btn btn-info" id="loop-4">4s</a>
+              <a class="btn btn-info" id="loop-8">8s</i></a>
+            </div>')
+          $('#red-arrow-text-box').fadeOut(1500)
+          $('#red-arrow').fadeOut(1500)
 
           # FIRST LINE FOR THE QUIET TIME AT THE FRONT OF THE VIDEO
           time = $("#current-loop-time").text()
           time_in_seconds = parseInt(time.slice(3,5)) + parseInt(time.slice(0,2))*60
           $.post('/new_line', { 'line' : { 'lang1' : '', 'lang2' : '', 'time' : "#{time_in_seconds}", 'interpretation_id' : "#{window.interp_id}" , 'upvotes' : 0, 'downvotes' : 0  } }, (data) ->
                     console.log data.data )
-
-          newRedArrow = ->
-            $('#red-arrow').attr('class','shift-right').attr('style','display: inline;')
-            $('#red-arrow-text').attr('class','shift-right').attr('style','display: inline;')
-            $('#red-arrow-text').html('Use these settings to find the best loop for your video.')
-            redArrowFade = ->
-              $('#red-arrow').fadeOut(2000)
-              $('#red-arrow-text').fadeOut(2000)
-            window.setTimeout(redArrowFade, 5000) 
-            $('#red-arrow').show()
-            $('#red-arrow-text').show()
-          window.setTimeout(newRedArrow, 3000)
 
           # LOGIC FOR THE INPUT LINES
 
@@ -421,60 +390,78 @@ $ ->
         # INPUT LINES COME IN HERE
 
           if window.translation_type == 'just_lang2'
-            $('#lang2-input').html("<i class='left'>#{window.lang2}&nbsp;</i><small class='left'>(<small id='current-loop-time' class='current-loop-time'></small>)</small><br><div class='control-group'><div class='controls'><input type='text' class='input-xlarge lang2-line'></div></div>")
+            $('#lang2-input').html("<div><i class='left'>#{window.lang2}&nbsp;</i>
+              <small class='left'>(<small id='current-loop-time' class='current-loop-time'></small>)</small></div>
+              <br>
+              <div class='control-group'>
+                <div class='controls'>
+                  <input type='text' class='input-xlarge lang2-line'>
+                </div>
+              </div>")
 
             # AND WIDTHS GET ADJUSTED DEPENDING ON IF ONE OR BOTH LANGUAGES ARE BEING TRANSCRIBED
             $('#lang1-box').parent().attr('class','')
             $('#lang2-box').parent().attr('class','lyrics-container wide')
 
           if window.translation_type == 'lang1_and_lang2'
-            $('#lang1-input').html("<i class='left'>#{window.lang1}&nbsp;</i><small class='left'>(<small class='current-loop-time'></small>)</small><div class='control-group'><div class='controls'><input type='text' class='input-xlarge lang1-line'></div></div>")
-            $('#lang2-input').html("<i class='left'>#{window.lang2}&nbsp;</i><small class='left'>(<small id='current-loop-time' class='current-loop-time'></small>)</small><div class='controls'><input type='text' class='input-xlarge lang2-line'></div>")
+            $('#lang1-input').html("<div><i class='left'>#{window.lang1}&nbsp;</i>
+              <small class='left'>(<small class='current-loop-time'></small>)</small></div>
+              <br>
+              <div class='control-group'>
+                <div class='controls'>
+                  <input type='text' class='input-xlarge lang1-line'>
+                </div>
+              </div>")
+            $('#lang2-input').html("<div><i class='left'>#{window.lang2}&nbsp;</i><small class='left'>
+              (<small id='current-loop-time' class='current-loop-time'></small>)</small></div>
+              <br>
+              <div class='controls'>
+                <input type='text' class='input-xlarge lang2-line'>
+              </div>")
 
       # LOGIC FOR THE CONTROLS PANEL
 
-      $("#no-loop").livequery ->
+      $("#play-in-loops").livequery -> 
         $(this).click ->
-          window.loop = false
-          $("#no-loop").html('<strong>No loop</strong>')
-          $("#loop-2").html('2 seconds')
-          $("#loop-4").html('4 seconds')
-          $("#loop-8").html('8 seconds')
-          $("#forward").hide()
-          $("#backward").hide()
+          if $(this).attr('class') == 'btn btn-info off'
+            $(this).attr('class', 'btn btn-warning on')
+            $(this).html('<i>Playing video in loops</i>')
+            $("#loop-4").attr('class','btn btn-warning')
+            window.section = window.time / 4
+            window.loop = 4
+            console.log "I think that the button has been turned off?!?"
+          else
+            $(this).attr('class', 'btn btn-info off')
+            $(this).text('Play video in loops?')
+            $("#loop-2").attr('class','btn btn-info')
+            $("#loop-4").attr('class','btn btn-info')
+            $("#loop-8").attr('class','btn btn-info')
+            window.loop = false
+            console.log "I think that the button has been turned on?!?"
 
       $("#loop-2").livequery ->
         $(this).click ->
           window.loop = 2
           window.section = window.time / 2
-          $("#no-loop").html('No loop')
-          $("#loop-2").html('<strong>2 seconds</strong>')
-          $("#loop-4").html('4 seconds')
-          $("#loop-8").html('8 seconds')
-          $("#forward").show()
-          $("#backward").show()
+          $("#loop-2").attr('class','btn btn-warning')
+          $("#loop-4").attr('class','btn btn-info')
+          $("#loop-8").attr('class','btn btn-info')
 
       $("#loop-4").livequery ->
         $(this).click ->
           window.loop = 4
           window.section = window.time / 4
-          $("#no-loop").html('No loop')
-          $("#loop-2").html('2 seconds')
-          $("#loop-4").html('<strong>4 seconds</strong>')
-          $("#loop-8").html('8 seconds')
-          $("#forward").show()
-          $("#backward").show()
+          $("#loop-2").attr('class','btn btn-info')
+          $("#loop-4").attr('class','btn btn-warning')
+          $("#loop-8").attr('class','btn btn-info')
 
       $("#loop-8").livequery ->
         $(this).click ->
           window.loop = 8
           window.section = window.time / 8
-          $("#no-loop").html('No loop')
-          $("#loop-2").html('2 seconds')
-          $("#loop-4").html('4 seconds')
-          $("#loop-8").html('<strong>8 seconds</strong>')
-          $("#forward").show()
-          $("#backward").show()
+          $("#loop-2").attr('class','btn btn-info')
+          $("#loop-4").attr('class','btn btn-info')
+          $("#loop-8").attr('class','btn btn-warning')
 
       $("#forward").livequery ->
         $(this).click -> 

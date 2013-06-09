@@ -41,7 +41,7 @@ body { position: relative;
 
 p { color: black; }
 
-.h3 { font-size: 22px; color: black; }
+.h3 { font-size: 20px; }
 
 .white { color: white; }
 
@@ -172,21 +172,17 @@ td { color: black;
   right: 8px;
   position: absolute; }
 
-#timer-box {
-  position: relative;
-  z-index: 1;
-  bottom: 250px;
-  right: 45px; }
+#timer-box { position: absolute;
+  left: 35px;
+  top: 235px; }
 
-#timer {
-  width: 90px;
+#timer {  width: 90px;
   height: 90px;
   border-radius: 45px;
   background-color: #9B59BB;
   text-align: center; }
 
-#big-timer {
-  color: white;
+#big-timer {  color: white;
   line-height: 90px; }
 
 #select-language-box {
@@ -209,23 +205,15 @@ td { color: black;
   
 #red-arrow {
   position: absolute;
-  top: 50px;
-  left: 75px; }
+  top: 40px;
+  left: 320px; }
 
-#red-arrow.shift-right {
+#red-arrow-text-box {
   position: absolute;
-  top: 50px;
-  left: 130px; }
-
-#red-arrow-text {
-  position: absolute;
-  top: 130px;
-  left: 240px; }
-
-#red-arrow-text.shift-right {
-  position: absolute;
-  top: 130px;
-  left: 295px; }
+  top: 25px;
+  left: 365px;
+  height: 20px; 
+  width: 200px; }
 
 #language-options {
   margin-left: auto;
@@ -247,10 +235,6 @@ td { color: black;
 
 .black { color: black }
 .white { color: white; }
-/*
-  -webkit-text-stroke-width: 1px;
-  -webkit-text-stroke-color: black; 
-*/
 .sky { color: #0F82F5 }
 
 .show-video-box { position: relative; 
@@ -289,11 +273,10 @@ td { color: black;
   border-top: 1px solid rgba(0,0,0,0); }
 
 .narrow-lyrics-container {
-  width: 500px;
+  width: 280px;
   height: 60px;
   float: left;
-  margin-top: 1px;
-  margin-bottom: 1px;
+  margin: 10px;
   background: rgba(0,0,0,0);
   border-top: 1px solid rgba(0,0,0,0); }
 
