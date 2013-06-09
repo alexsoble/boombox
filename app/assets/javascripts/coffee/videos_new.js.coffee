@@ -277,10 +277,11 @@ $ ->
       done = false
 
       onPlayerStateChange = (event) ->
-        stopVideo -> player.stopVideo()
-        if event.data is YT.PlayerState.PLAYING and not done
-          setTimeout stopVideo, 6000
-          done = true
+        if event.data == YT.PlayerState.PAUSED
+          exact_time = player.getCurrentTime()
+          window.time = Math.round(exact_time)
+          console.log window.time + "<---- window.time!"
+          window.section = window.time / window.loop
 
       # PLAYER SETTINGS ADDED
 
@@ -429,7 +430,6 @@ $ ->
             $("#loop-4").attr('class','btn btn-warning')
             window.section = window.time / 4
             window.loop = 4
-            console.log "I think that the button has been turned off?!?"
           else
             $(this).attr('class', 'btn btn-info off')
             $(this).text('Play video in loops?')
@@ -437,7 +437,6 @@ $ ->
             $("#loop-4").attr('class','btn btn-info')
             $("#loop-8").attr('class','btn btn-info')
             window.loop = false
-            console.log "I think that the button has been turned on?!?"
 
       $("#loop-2").livequery ->
         $(this).click ->
