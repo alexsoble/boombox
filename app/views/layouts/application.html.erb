@@ -2,7 +2,6 @@
 <html>
 <head>
   <title>( Heyu )</title>
-  <link href='http://fonts.googleapis.com/css?family=Lato:700' rel='stylesheet' type='text/css'>
   <%= stylesheet_link_tag    "application", :media => "all" %>
   <%= javascript_include_tag "application" %>
   <%= javascript_include_tag "bootstrap.min.css" %>
@@ -76,5 +75,9 @@
     </ul>
   </div>
 </footer> -->
+
+<%= content_tag "div", id: "user-id", data: { user: if current_user then current_user.id else 'logged-out' end } do %>
+<% end %>
+
 </body>
 </html>

@@ -1,13 +1,34 @@
 <div class="centerbox center">
+
+<% if @published %>
   <h2><%= @user.name %>'s translations:</h2>
   <div class="centerbox thumb-box-width">
-    <% @interpretation.all.each do |i| %>
-     <% v = Video.find_by_id(i.video_id) %>
+    <% @published.all.each do |i| %>
+     <% v = i.video %>
       <div class="video-thumb-box center">
-        <strong class="center"><%= link_to "#{v.title.slice(0,32)}", video_url(v.id) %></strong>
+        <strong class="center"><%= link_to "#{v.title.slice(0,32)}", interpretation_url(i) %></strong>
+        <br>
+        <img src="http://img.youtube.com/vi/<%= v.youtube_id %>/1.jpg">
+      </div>
+    <% end %>
+  </div>
+<% end %>
+
+<br>
+<br>
+
+<% if @drafts %>
+  <h2><i>Drafts:</i></h2>
+  <div class="centerbox thumb-box-width">
+    <% @drafts.all.each do |d| %>
+     <% v = d.video %>
+      <div class="video-thumb-box center">
+        <strong class="center"><%= link_to "#{v.title.slice(0,32)}", interpretation_url(d) %></strong>
         <br>
         <img src="http://img.youtube.com/vi/<%= v.youtube_id %>/1.jpg">
       </div>
     <% end %>
   </div>  
+<% end %>
+
 </div>

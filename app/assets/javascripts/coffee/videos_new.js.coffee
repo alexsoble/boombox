@@ -503,10 +503,20 @@ $ ->
             if state == 2
               player.playVideo() )
 
-# DONE BUTTON RESPONSE
+# DONE/SAVE BUTTONS
 
   $("#done-button").livequery ->
     $(this).click ->
-      $.post('/publish', { 'interpretation' : { 'id' : "#{window.interp_id}" } }, (data) ->
-        console.log data.data )
-      window.location.href = "/interpretations/#{window.interp_id}"
+      if $("#user-id").attr('data-user') != "logged-out"
+        $.post('/publish', { 'interpretation' : { 'id' : "#{window.interp_id}" } }, (data) ->
+          console.log data.data )
+        window.location.href = "/interpretations/#{window.interp_id}"
+      else
+        window.location.href = "/sign_up"
+
+  $("#save-button").livequery ->
+    $(this).click ->
+      if $("#user-id").attr('data-user') != "logged-out"
+        window.location.href = "/users/#{$("#user-id").attr('data-user')}"
+      else
+        window.location.href = "/sign_up"
