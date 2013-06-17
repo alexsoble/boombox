@@ -1,0 +1,44 @@
+.lyrics { text-align: center;
+  font-family: 'Helvetica', sans-serif;
+  font-size: 22px; 
+  text-shadow: 2px 2px 2px black }
+
+.black { color: black; text-shadow: 2px 2px 2px white }
+.white { color: white; text-shadow: 2px 2px 2px black }
+.sky { color: #0F82F5; text-shadow: 2px 2px 2px black }
+
+.show-video-box { position: relative; 
+  overflow: visible;
+  text-align: left; }
+
+.lyrics-box {
+  height: 60px;
+  width: 630px;
+  margin-top: 0px; 
+  position: absolute; 
+  background: rgba(0, 152, 219, .3); }
+
+.lyrics-box.top { bottom: 340px; }
+
+.lyrics-box.bottom { bottom: 80px; }
+
+.lyrics-box.below { bottom: -80px; }
+
+.wide-lyrics-container {
+  width: 630px;
+  height: 60px;
+  float: left; 
+  margin-top: 1px;
+  margin-bottom: 1px; }
+
+.narrow-lyrics-container {
+  width: 280px;
+  height: 60px;
+  float: left;
+  margin: 10px; }
+
+.button-container {
+  background-color: white;
+  float: right;
+  width: 10px;
+  border-top: 2px solid white }

@@ -2,6 +2,7 @@
 <html>
 <head>
   <title>( Heyu )</title>
+  <link href='http://fonts.googleapis.com/css?family=Lato:700' rel='stylesheet' type='text/css'>
   <%= stylesheet_link_tag    "application", :media => "all" %>
   <%= javascript_include_tag "application" %>
   <%= javascript_include_tag "bootstrap.min.css" %>
@@ -13,11 +14,10 @@
   <%= csrf_meta_tags %>
 </head>
 <body>
-
 <div class="navbar navbar-inverse">
   <div class="navbar-inner" style="background-color: #9B59BB;">
     <div class="container" style="width: auto;">
-      <a class="brand" href="/welcome">( Heyu )</a>
+      <a class="brand" href="/welcome">Heyu</i></a>
       <ul class="nav" id="main-menu-left">
         <% if controller_name == 'videos' && action_name == 'index' %>
           <li class="dropdown">

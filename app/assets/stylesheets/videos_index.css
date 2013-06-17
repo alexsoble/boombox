@@ -1,0 +1,34 @@
+.span { height: 100px; }
+
+.video-thumb-box {
+  width: 140px;
+  height: 140px;
+  margin-right: 40px;
+  margin-top: 20px;
+  float: left; }
+
+.thumb-box-width { width: 140px; }
+
+.index-button {
+  width: 140px;
+  height: 140px;
+  border-radius: 70px;
+  margin-right: 40px;
+  background-color: #9B59BB;
+  float: right;
+  position: relative; }
+
+.index-button:hover { background-color: #8D46B0;
+  cursor: hand; cursor: pointer; }
+
+.index-button-text { text-align: center; }
+
+.button-text-wrapper {
+  height: 100px;
+  width: 100px;
+  position: absolute;
+  left: 15%; }
+
+.button-text-wrapper#new-translation-button { top: 40%; }
+
+.button-text-wrapper#request-translation-button { top: 30%; }

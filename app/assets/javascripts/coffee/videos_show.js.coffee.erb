@@ -31,7 +31,6 @@ $ ->
 
     scroll = (array, time) ->
       time_div = 'line-' + time
-      console.log "Time: " + time + ", Array: " + array
       if array.indexOf(time_div) > -1
         $("#lyrics").scrollTo ('#' + time_div), 2000
 
@@ -94,3 +93,6 @@ $ ->
 
   $('#video-bottom').click ->
     $('#lyrics').attr('class','lyrics-box centerbox bottom')
+
+  $('#video-below').click ->
+    $('#lyrics').attr('class','lyrics-box centerbox below')

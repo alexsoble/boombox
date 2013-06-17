@@ -280,7 +280,6 @@ $ ->
         if event.data == YT.PlayerState.PAUSED
           exact_time = player.getCurrentTime()
           window.time = Math.round(exact_time)
-          console.log window.time + "<---- window.time!"
           window.section = window.time / window.loop
 
       # PLAYER SETTINGS ADDED
@@ -317,6 +316,15 @@ $ ->
             </div>')
           $('#red-arrow-text-box').fadeOut(1500)
           $('#red-arrow').fadeOut(1500)
+          newRedArrowText = ->
+            $('#red-arrow-text-box').fadeIn()
+            $('#red-arrow').fadeIn()
+            $('#red-arrow-text-box').html('<br><p><strong>Tip: Playing the video in loops makes it <i>waaay</i> easier to translate.</p></strong>')
+            $('#red-arrow').replaceWith('<img alt="red_arrow_flipped" id="red-arrow" src="/assets/red_arrow_flipped.png">')
+            $('#red-arrow').attr('class','shifted')
+            $('#red-arrow-text-box').attr('class','shifted')
+          window.setTimeout(newRedArrowText, 1600)
+          window.player.pauseVideo()
 
           # FIRST LINE FOR THE QUIET TIME AT THE FRONT OF THE VIDEO
           time = $("#current-loop-time").text()
@@ -341,7 +349,6 @@ $ ->
                   $('.lang1-line').val('')
                   $('.lang2-line').val('')
                   time_in_seconds = parseInt(time.slice(3,5)) + parseInt(time.slice(0,2))*60
-                  console.log time_in_seconds
                   $.post('/new_line', { 'line' : { 'lang1' : "#{entry}", 'lang2' : "#{that_entry}", 'time' : "#{time_in_seconds}", 'interpretation_id' : "#{window.interp_id}" , 'upvotes' : 0, 'downvotes' : 0  } }, (data) ->
                     console.log data.data )
                   window.section += 1
@@ -430,6 +437,9 @@ $ ->
             $("#loop-4").attr('class','btn btn-warning')
             window.section = window.time / 4
             window.loop = 4
+            window.player.playVideo()
+            $('#red-arrow-text-box').fadeOut(1500)
+            $('#red-arrow').fadeOut(1500)
           else
             $(this).attr('class', 'btn btn-info off')
             $(this).text('Play video in loops?')

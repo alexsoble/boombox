@@ -1,0 +1,132 @@
+.very-wide-box {
+  width: 1000px;
+  text-align: center;
+  height: 80px;
+  position: relative;
+  overflow: visible; }
+
+#outer-video-box { overflow: visible; }
+
+#outer-video-box.sticky { 
+  position: fixed; 
+  bottom: 210px; }
+
+#copy-and-paste-box {
+  margin-top: 150px; }
+
+.language-option {
+  color: black; }
+
+.video-container {
+  margin-left: 80px;
+  margin-right: 60px;
+  float: left; }
+
+.lyrics-container {
+  margin-left: 5px; 
+  margin-top: 5px; 
+  float: left; 
+  width: 380px; }
+
+.lyrics-container.sticky {
+  margin-left: 555px; }
+
+.lyrics-container.wide { 
+  width: 600px;
+  margin-left: 40px; 
+  margin-top: 0px; 
+  float: left; }
+
+.center-pill {
+  margin-right: auto; 
+  margin-left: auto; 
+  width: 142px;
+  text-align: center; }
+
+.center-pill-wide {
+  margin-right: auto; 
+  margin-left: auto; 
+  width: 212px;
+  text-align: center; }
+
+.language-video-option {
+  text-align: left; }
+
+.language-translation-option {
+  text-align: left; }
+
+.style52 { width: 44px;
+  height: 44px; 
+  line-height: 44px;
+  background-color: #9B59BB; 
+  color: white;
+  overflow: hidden;
+  text-align: center; 
+  position: relative; 
+  margin: auto; }
+
+.icon-style52 {
+  top: 8px;
+  right: 8px;
+  position: absolute; }
+
+#timer-box { position: absolute;
+  left: 35px;
+  top: 235px; }
+
+#timer {  width: 90px;
+  height: 90px;
+  border-radius: 45px;
+  background-color: #9B59BB;
+  text-align: center; }
+
+#big-timer {  color: white;
+  line-height: 90px; }
+
+#select-language-box {
+  height: 480px;
+  width: 480px;
+  margin-left: auto;
+  margin-right: auto; 
+  margin-top: 60px; 
+  text-align: center; }
+
+#splash-box {
+  height: 480px;
+  width: 480px;
+  margin-left: auto;
+  margin-right: auto; 
+  position: relative; }
+
+#controls {
+  position: relative; }
+  
+#red-arrow {  position: absolute; top: 40px; left: 320px; }
+#red-arrow.shifted { left: 290px; }
+
+#red-arrow-text-box {
+  position: absolute;
+  top: 25px;
+  left: 365px;
+  height: 20px; 
+  width: 200px; }
+#red-arrow-text-box.shifted { left: 335px; }
+
+#language-options {
+  margin-left: auto;
+  margin-right: auto;
+  width: 160px;
+  text-align: left; }
+
+#request-options {
+  margin-left: auto;
+  margin-right: auto;
+  width: 160px;
+  text-align: left; }
+
+.text-padding {
+  margin: 3px;
+  text-align: center; }
+
+#loop-settings { position: absolute; 
+  left: -5px; }
