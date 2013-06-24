@@ -21,7 +21,8 @@
 .index-button:hover { background-color: #8D46B0;
   cursor: hand; cursor: pointer; }
 
-.index-button-text { text-align: center; }
+.index-button-text { text-align: center; 
+  color: white; }
 
 .button-text-wrapper {
   height: 100px;

@@ -512,7 +512,8 @@ $ ->
           console.log data.data )
         window.location.href = "/interpretations/#{window.interp_id}"
       else
-        window.location.href = "/sign_up"
+        $('.save-button').hide()
+        $('.done-button').html("<p><a href='/sign_up?interp=#{window.interp_id}'><strong>Sign up for Heyu?</strong></a> That way your username will appear alongside your translation. Get props for excellent work!<br><br> Otherwise, <a href='/interpretations/#{window.interp_id}'>submit your translation anonymously.</a>")
 
   $("#save-button").livequery ->
     $(this).click ->

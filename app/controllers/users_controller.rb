@@ -9,6 +9,7 @@ class UsersController < ApplicationController
 
   def new
     @user = User.new
+    @interp = params[:interp]
   end 
 
   def index
@@ -18,7 +19,14 @@ class UsersController < ApplicationController
   def create
     @user = User.new(params[:user])
     if @user.save
-      redirect_to root_url, :notice => "Signed up!"
+      if params['data-interp'].blank?
+        redirect_to root_url, :notice => "Signed up!"
+      else
+        @interp = Interpretation.find_by_id(params['data-interp'])
+        @interp.user_id = @user.id
+        @interp.save
+        redirect_to interpretation_url(@interp)
+      end
     else
       render "new"
     end

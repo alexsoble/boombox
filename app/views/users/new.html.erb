@@ -1,7 +1,9 @@
 <div class="centerbox center">
   <h2>Welcome aboard!</h2>
   <br>
-  <%= form_for @user do |f| %>
+
+  <%= form_for(@user, :url => { :controller => :users, :action => :create, 'data-interp' => @interp }) do |f| %>
+
     <% if @user.errors.any? %>
       <div class="error_messages">
         <h2 class="red"><i>Oops, let's try that again.</i></h2>
