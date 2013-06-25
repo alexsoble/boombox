@@ -1,6 +1,6 @@
 .lyrics { text-align: center;
   font-family: 'Helvetica', sans-serif;
-  font-size: 22px; 
+  font-size: 20px; 
   text-shadow: 2px 2px 2px black }
 
 .black { color: black; text-shadow: 2px 2px 2px white }
@@ -11,14 +11,15 @@
   overflow: visible;
   text-align: left; }
 
-.lyrics-box {
+.lyrics-box { background: rgba(0, 0, 0, .3);
   height: 60px;
   width: 630px;
   margin-top: 0px; 
-  position: absolute; 
-  background: rgba(0, 152, 219, .3); }
+  position: absolute; }
 
-.lyrics-box.top { bottom: 340px; }
+.text-container { margin-top: 10px; margin-bottom: 10px; }
+
+.lyrics-box.top { bottom: 365px; }
 
 .lyrics-box.bottom { bottom: 80px; }
 
