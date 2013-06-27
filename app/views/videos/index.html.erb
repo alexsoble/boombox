@@ -3,19 +3,24 @@
   <div class="span11 offset1">
     <div class="row-fluid top-row">
       <div class="span10 span">
-        <h2>Ten most popular translations</h2>
+        <h2>Popular translations</h2>
         <hr id="hr">
       </div>
       <div class="span2 span">
+        <br>
         <div class="index-button">
           <div class="button-text-wrapper" id="new-translation-button">
             <p class="index-button-text">Translate new video</p>
+            <div class="controls">
+              <input type="text" class="short-text-box" id="new-video-submit" length="10px">
+            </div>
+            <p class="index-button-text tiny">Copy the URL from YouTube above.</p>
           </div>
         </div>
       </div>
     </div>
     <div class="row-fluid">
-      <div class="span10">
+      <div class="span9">
         <% @latest_translated_videos.each do |v| %>
           <div class="video-thumb-box <%= v.lang1 %>">
             <strong class="center"><%= link_to "#{v.title.slice(0,32)}", video_url(v.id) %></strong>
@@ -38,9 +43,13 @@
         <hr>
       </div>
       <div class="span2 span">
+        <br>
         <div class="index-button">
           <div class="button-text-wrapper" id="request-translation-button">
-            <p class="index-button-text">Request a YouTube video translation</p>
+            <p class="index-button-text">Request a translation</p>
+            <div class="controls">
+              <input type="text" class="short-text-box" id="new-video-submit" length="10px">
+            </div>
           </div>
         </div>
       </div>

@@ -91,6 +91,9 @@ class VideosController < ApplicationController
 
   def new
 
+    @interp = Interpretation.find_by_id(params[:interp])
+    @video = @interp.video
+    
   end
 
 end

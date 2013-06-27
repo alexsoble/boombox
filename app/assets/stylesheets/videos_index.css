@@ -9,27 +9,22 @@
 
 .thumb-box-width { width: 140px; }
 
-.index-button {
-  width: 140px;
-  height: 140px;
-  border-radius: 70px;
+.index-button { float: right;
+  width: 220px;
+  height: 120px;
   margin-right: 40px;
   background-color: #9B59BB;
-  float: right;
-  position: relative; }
+  position: relative;
+  border-radius: 10px; }
 
-.index-button:hover { background-color: #8D46B0;
-  cursor: hand; cursor: pointer; }
+.button-text-wrapper { margin: 20px; }
 
-.index-button-text { text-align: center; 
-  color: white; }
+.short-text-box { width: 165px; }
 
-.button-text-wrapper {
-  height: 100px;
-  width: 100px;
-  position: absolute;
-  left: 15%; }
+.index-button-text { text-align: center; color: white; }
 
-.button-text-wrapper#new-translation-button { top: 40%; }
+.tiny { font-size: 10px; }
 
-.button-text-wrapper#request-translation-button { top: 30%; }
+ul.ui-autocomplete.ui-menu { background-color: white; list-style-type: none; } 
+
+li.ui-autocomplete.ui-menu { color: black; } 

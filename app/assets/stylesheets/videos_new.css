@@ -55,21 +55,6 @@
 .language-translation-option {
   text-align: left; }
 
-.style52 { width: 44px;
-  height: 44px; 
-  line-height: 44px;
-  background-color: #9B59BB; 
-  color: white;
-  overflow: hidden;
-  text-align: center; 
-  position: relative; 
-  margin: auto; }
-
-.icon-style52 {
-  top: 8px;
-  right: 8px;
-  position: absolute; }
-
 #timer-box { position: absolute;
   left: 35px;
   top: 235px; }
@@ -91,22 +76,16 @@
   margin-top: 60px; 
   text-align: center; }
 
-#splash-box {
-  height: 480px;
-  width: 480px;
-  margin-left: auto;
-  margin-right: auto; 
-  position: relative; }
+#controls { position: relative; }
 
-#controls {
-  position: relative; }
+.rounded { margin: 5px; border-radius: 10px !important; }
   
-#red-arrow {  position: absolute; top: 40px; left: 320px; }
+#red-arrow {  position: absolute; top: 110px; left: 320px; }
 #red-arrow.shifted { left: 290px; }
 
 #red-arrow-text-box {
   position: absolute;
-  top: 25px;
+  top: 90px;
   left: 365px;
   height: 20px; 
   width: 200px; }

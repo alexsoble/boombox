@@ -5,8 +5,113 @@ $ ->
     $(".video-thumb-box").hide()
     $(".video-thumb-box.#{language_option}").show()
 
-  $('#new-translation-button').click ->
-    window.location = '/videos/new'
+  availableTags = [ "English", "Dutch", "Afrikaans"
+    "Chinese (Mandarin)", "Chinese (Cantonese)", "Japanese", "Korean"
+    "Vietnamese", "Thai", "Burmese"
+    "French", "Spanish", "Portuguese", "Italian"
+    "Russian", "Polish", "Czech"
+    "German", "Greek"
+    "Norwegian", "Swedish", "Danish", "Finnish", "Icelandic"
+    "Hebrew", "Arabic", "Persian", "Pashto", "Turkish"
+    "Hindi", "Bengali", "Gujarati", "Punjabi", "Telugu", "Tamil", "Marathi", "Urdu", "Malayalam"
+    "Swahili", "Yoruba", "Xhosa", "Somali", "Amharic"
+    "Javanese", "Malay" ]
 
-  $('#request-translation-button').click ->
-    window.location = '/videos/new?request=y'
+  $('#lang1-input').livequery ->
+    $('#lang1-input').autocomplete(
+      source: (request, response) ->
+        matches = $.map(availableTags, (tag) ->
+          tag  if tag.toUpperCase().indexOf(request.term.toUpperCase()) is 0)
+        response matches
+      messages: {
+        noResults: '',
+        results: '' })
+
+  $('#lang2-input').livequery ->
+    $('#lang2-input').autocomplete(
+      source: (request, response) ->
+        matches = $.map(availableTags, (tag) ->
+          tag  if tag.toUpperCase().indexOf(request.term.toUpperCase()) is 0)
+        response matches
+      messages: {
+        noResults: '',
+        results: '' })
+
+  $('#new-video-submit').keyup ->
+    user_submit = $("#new-video-submit").val()
+
+    # VALIDATING THE URL AGAINST YOUTUBE SYNTAX 
+    youtube_id = "#{user_submit}".replace 'http://www.youtube.com/watch?v=', ''
+    youtube_id = youtube_id.replace 'https://www.youtube.com/watch?v=', ''
+    window.youtube_id = "#{youtube_id}"
+    if youtube_id.match(/&list/)
+      youtube_id = youtube_id.slice(0,11)
+      window.youtube_id = "#{youtube_id}"
+    if youtube_id.match(/player_embedded/)
+      youtube_id = youtube_id.replace 'http://www.youtube.com/watch?feature=player_embedded&v=', ''
+      window.youtube_id = "#{youtube_id}"
+    if youtube_id.match(/endscreen/)
+      youtube_id = youtube_id.replace 'http://www.youtube.com/watch?feature=endscreen&NR=1&v=', ''
+      window.youtube_id = "#{youtube_id}"
+
+    if (window.keyup isnt 'done') and (user_submit.match(/youtube/) isnt null)
+      window.keyup = 'done'
+
+      # GET TITLE FROM YOUTUBE
+
+      getTitle = (data) ->
+        window.title = data.entry.title.$t
+
+      getTitleFromYouTube = (handleData) ->
+        $.get('https://gdata.youtube.com/feeds/api/videos/' + youtube_id + '?v=2&alt=json', 
+          (data) ->
+            handleData(data) )
+
+      getTitleFromYouTube(getTitle)
+
+      # ASK USER TO ENTER LANG1 
+
+      $('#new-translation-button').html("
+        <p class='index-button-text'>My video's original language is...</p>
+        <div class='ui-widget'>
+          <input id='lang1-input' class='short-text-box'/>
+        </div>
+        <div id='title-box'></div>")
+
+  $('#lang1-input').livequery ->
+    $(this).keyup (e) ->
+      e.preventDefault
+      if e.which == 13
+        input = $('#lang1-input').val()
+        if availableTags.indexOf(input) > -1
+
+        # ADD NEW VIDEO TO DATABASE HERE
+
+          window.lang1 = $('#lang1-input').val()
+          $.post('/new_video', { 'video' : { 'youtube_id' : "#{window.youtube_id}", 'title' : "#{window.title}", 'lang1' : "#{window.lang1}" } }, (data) ->
+            console.log data
+            window.video_id = data.video.id )
+
+        # PROMPT USER TO ENTER LANG2
+
+          $('#new-translation-button').html("
+            <p class='index-button-text'>I want to translate this video into...</p>
+            <div class='ui-widget'>
+              <input id='lang2-input' class='short-text-box'/>
+            </div>")
+
+  $('#lang2-input').livequery ->
+    $(this).keyup (e) ->
+      e.preventDefault
+      if e.which == 13
+
+        input = $('#lang2-input').val()
+        if availableTags.indexOf(input) > -1
+
+          window.lang2 = $('#lang2-input').val()
+          if window.lang1 != window.lang2
+            $.post('/new_interp', { 'interpretation' : { 'video_id' : "#{window.video_id}" , 'lang2' : "#{window.lang2}", 'user_id' : "#{window.user_id}" } }, (data) ->
+              console.log "data: " + data
+              window.interp = data.data.id
+              console.log "window.interp inside: " + window.interp
+              window.location = "/videos/new?interp=#{window.interp}" )
