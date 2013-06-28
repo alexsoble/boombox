@@ -19,6 +19,13 @@
   border-radius: 10px;
   position: absolute; }
 
+.lyrics-box.small { 
+  height: 40px;
+  width: 405px;
+  top: 7px;
+  left: 7px;
+  border-radius: 7px; }
+
 .text-container { margin-top: 10px; margin-bottom: 10px; }
 
 .lyrics-box.top { bottom: 365px; }

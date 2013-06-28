@@ -1,7 +1,11 @@
 <div class="centerbox center">
 
-<% if @published %>
-  <h2><%= @user.name %>'s translations:</h2>
+<% if @published.present? %>
+  <% if current_user && @user.id == current_user.id %>
+      <h2><i>My translations</i></h2>
+    <% else %>
+      <h2><i><%= @user.name %>'s translations:</i></h2>
+  <% end %>
   <div class="centerbox thumb-box-width">
     <% @published.all.each do |i| %>
      <% v = i.video %>
@@ -12,23 +16,27 @@
       </div>
     <% end %>
   </div>
+<% else %>
+  <br><br><h3>No completed translations... yet!</h3>
 <% end %>
 
 <br>
 <br>
 
-<% if @drafts %>
-  <h2><i>Drafts:</i></h2>
-  <div class="centerbox thumb-box-width">
-    <% @drafts.all.each do |d| %>
-     <% v = d.video %>
-      <div class="video-thumb-box center">
-        <strong class="center"><%= link_to "#{v.title.slice(0,32)}", interpretation_url(d) %></strong>
-        <br>
-        <img src="http://img.youtube.com/vi/<%= v.youtube_id %>/1.jpg">
-      </div>
-    <% end %>
-  </div>  
+<% if current_user && @user.id == current_user.id %>
+  <% if @drafts %>
+    <h2><i>My drafts</i></h2>
+    <div class="centerbox thumb-box-width">
+      <% @drafts.all.each do |d| %>
+       <% v = d.video %>
+        <div class="video-thumb-box center">
+          <strong class="center"><%= link_to "#{v.title.slice(0,32)}", edit_interpretation_url(d) %></strong>
+          <br>
+          <img src="http://img.youtube.com/vi/<%= v.youtube_id %>/1.jpg">
+        </div>
+      <% end %>
+    </div>  
+  <% end %>
 <% end %>
 
 </div>

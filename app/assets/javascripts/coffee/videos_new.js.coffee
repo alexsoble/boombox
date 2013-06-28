@@ -4,10 +4,6 @@ $ ->
   lang1 = $('#lang1').html()
   lang2 = $('#lang2').html()
   interp_id = $('#interp-id').html()
-  if $('#user-id').attr('data-user') isnt 'logged-out'
-    window.user_id = $('#user-id').attr('data-user')
-  else
-    window.user_id = null
 
   $('#title-box').hide()
   $('#red-arrow').hide()
@@ -375,7 +371,13 @@ $ ->
       if $("#user-id").attr('data-user') != "logged-out"
         window.location.href = "/users/#{$("#user-id").attr('data-user')}"
       else
-        window.location.href = "/sign_up"
+        $('.save-button').hide()
+        $('.done-button').html("<p><a href='/sign_up?interp=#{interp_id}'><strong>Sign up for Heyu</strong></a> to save your translation.<br><br><a href='#' id='go-back'>Go back.</a>")
+
+  $("#go-back").livequery -> 
+    $(this).click -> 
+        $('.save-button').show()
+        $('.done-button').html('<div class="btn btn-info" id="done-button">Done</div>')
 
 # YOUTUBE WINDOW STICKY ON SCROLL
 

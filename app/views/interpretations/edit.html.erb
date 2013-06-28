@@ -26,15 +26,36 @@
 
     <div class="row-fluid">
 
-      <div class="span3">
-        <div class="lyrics-container">
-          <div id="lang1-box">    
-            <div id="lang1-lyrics"></div>
-            <div id="lang1-input"></div>
+      <% if @lang1_and_lang2 %>
+
+        <div class="span3">
+          <div class="lyrics-container">
+            <div id="lang1-box">    
+              <div id="lang1-lyrics">
+                <% @lines.each do |l| %>
+                  <p><small><small>(<%= l.time %>)</small></small> <%= l.lang1 %></p>
+                <% end %>
+              </div>
+              <div id="lang1-input"></div>
+            </div>
           </div>
         </div>
-      </div>
 
+        <div class="span3">
+          <div class="lyrics-container">
+            <div id="lang2-box">
+              <div id="lang2-lyrics"></div>
+              <div id="lang2-input"></div>
+            </div>
+          </div>
+          <div class="lyrics-container">
+            <div class="done-button" style="float: left;"></div>
+            <div class="save-button" style="float: left; margin-left: 20px;"></div>
+          </div>
+        </div>
+
+      <% else %>
+      
       <div class="span3">
         <div class="lyrics-container">
           <div id="lang2-box">
@@ -47,9 +68,9 @@
           <div class="save-button" style="float: left; margin-left: 20px;"></div>
         </div>
       </div>
+      <% end %>
 
     </div>
-
 
   </div>
 

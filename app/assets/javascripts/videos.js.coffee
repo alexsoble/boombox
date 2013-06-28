@@ -1,5 +1,10 @@
 $ -> 
 
+  if $('#user-id').attr('data-user') isnt 'logged-out'
+    window.user_id = $('#user-id').attr('data-user')
+  else
+    window.user_id = null
+
   window.user_id = parseInt($(".signed-in-user").attr('id'))
 
   $(".page-language-option").click (e) =>

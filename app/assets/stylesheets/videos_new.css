@@ -5,7 +5,7 @@
   position: relative;
   overflow: visible; }
 
-#outer-video-box { overflow: visible; }
+#outer-video-box { overflow: visible; position: relative; }
 
 #outer-video-box.sticky { 
   position: fixed; 

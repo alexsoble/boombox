@@ -26,6 +26,9 @@ $ ->
       messages: {
         noResults: '',
         results: '' })
+    $('#lang1-input').keydown (e) -> 
+      if e.which == 40
+        console.log "TRIGGER!!!!"
 
   $('#lang2-input').livequery ->
     $('#lang2-input').autocomplete(

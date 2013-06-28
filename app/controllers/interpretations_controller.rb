@@ -2,37 +2,38 @@ class InterpretationsController < ApplicationController
   respond_to :json, :html
 
   def create 
-
     @interp = Interpretation.create(params[:interpretation])
-
     render :json => { :data => @interp }
-
   end
 
   def index
-
     @interps = Interpretation.order('created_at DESC').limit(100)
     @language_filter = params[:lang]
-  
+  end
+
+  def edit
+    @interp = Interpretation.find_by_id(params[:id])
+    @video = @interp.video
+    @lines = Line.where(:interpretation_id => @interp.id).order("created_at ASC")
+    @lines.each do |l|
+      if l.lang1.present? then @lang1_and_lang2 = true end
+    end
   end
 
   def show
+    @interp = Interpretation.find_by_id(params[:id])
+    @lines = Line.where(:interpretation_id => @interp.id).order("created_at ASC")
 
-      @interp = Interpretation.find_by_id(params[:id])
-      @lines = Line.where(:interpretation_id => @interp.id).order("created_at ASC")
+    @lines_have_lang1 = false
+    @lines.all.each do |l|
+      if l.lang1.present? then @lines_have_lang1 = true end
+    end 
 
-      @lines_have_lang1 = false
-      @lines.all.each do |l|
-        if l.lang1.present? then @lines_have_lang1 = true end
-      end 
-
-      if @interp.user_id == 0
-        @user = 'anon'
-      else
-        @user = User.find_by_id(@interp.user_id)
-      end
-
-
+    if @interp.user_id == 0
+      @user = 'anon'
+    else
+      @user = User.find_by_id(@interp.user_id)
+    end
   end
 
   def publish 
