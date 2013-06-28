@@ -16,6 +16,7 @@ $ ->
       events:
         onReady: onPlayerReady
         onStateChange: onPlayerStateChange)
+    window.player = player
 
   onPlayerReady = (event) ->
     event.target.playVideo()

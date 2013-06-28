@@ -227,7 +227,7 @@ $ ->
             $('.lang1-line').val('')
             $('.lang2-line').val('')
             time_in_seconds = parseInt(time.slice(3,5)) + parseInt(time.slice(0,2))*60
-            $.post('/new_line', { 'line' : { 'lang1' : "#{entry}", 'lang2' : "#{that_entry}", 'time' : "#{time_in_seconds}", 'interpretation_id' : "#{window.interp_id}" , 'upvotes' : 0, 'downvotes' : 0  } }, (data) ->
+            $.post('/new_line', { 'line' : { 'lang1' : "#{entry}", 'lang2' : "#{that_entry}", 'time' : "#{time_in_seconds}", 'interpretation_id' : "#{interp_id}" , 'upvotes' : 0, 'downvotes' : 0  } }, (data) ->
               console.log data.data )
             window.section += 1
             $('.done-button').html('<div class="btn btn-info" id="done-button">Done</div>')
@@ -246,7 +246,7 @@ $ ->
             $('.lang2-line').val('')
             $('.lang1-line').focus()
             time_in_seconds = parseInt(time.slice(3,5)) + parseInt(time.slice(0,2))*60
-            $.post('/new_line', { 'line' : { 'lang1' : "#{that_entry}", 'lang2' : "#{entry}", 'time' : "#{time_in_seconds}", 'interpretation_id' : "#{window.interp_id}" , 'upvotes' : 0, 'downvotes' : 0  } }, (data) ->
+            $.post('/new_line', { 'line' : { 'lang1' : "#{that_entry}", 'lang2' : "#{entry}", 'time' : "#{time_in_seconds}", 'interpretation_id' : "#{interp_id}" , 'upvotes' : 0, 'downvotes' : 0  } }, (data) ->
               console.log data.data )
             window.section += 1
             $('.done-button').html('<div class="btn btn-info" id="done-button">Done</div>')
@@ -363,12 +363,12 @@ $ ->
   $("#done-button").livequery ->
     $(this).click ->
       if $("#user-id").attr('data-user') != "logged-out"
-        $.post('/publish', { 'interpretation' : { 'id' : "#{window.interp_id}" } }, (data) ->
+        $.post('/publish', { 'interpretation' : { 'id' : "#{interp_id}" } }, (data) ->
           console.log data.data )
         window.location.href = "/interpretations/#{interp_id}"
       else
         $('.save-button').hide()
-        $('.done-button').html("<p><a href='/sign_up?interp=#{window.interp_id}'><strong>Sign up for Heyu?</strong></a> That way your username will appear alongside your translation. Get props for excellent work!<br><br> Otherwise, <a href='/interpretations/#{window.interp_id}'>submit your translation anonymously.</a>")
+        $('.done-button').html("<p><a href='/sign_up?interp=#{interp_id}'><strong>Sign up for Heyu?</strong></a> That way your username will appear alongside your translation. Get props for excellent work!<br><br> Otherwise, <a href='/interpretations/#{interp_id}'>submit your translation anonymously.</a>")
 
   $("#save-button").livequery ->
     $(this).click ->
