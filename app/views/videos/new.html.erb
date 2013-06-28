@@ -3,11 +3,12 @@
 
 <div class="row-fluid">
 
-  <div class="span6">
+  <div class="span5">
 
     <div id="outer-video-box" class="video-container">
       <div id="new-video-box"></div>
       <div id="timer-box"></div>
+      <div id="loop-settings"></div>
     </div>
 
     <div id="select-language-box">
@@ -18,32 +19,42 @@
 
   </div> 
 
-  <div class="span6">
+  <div class="span7">
     
     <div id="controls"><%= image_tag("red_arrow.png", :id => 'red-arrow') %></div></div>
 
-    <div class="lyrics-container">
-      <div id="lang1-box">    
-        <div id="lang1-lyrics"></div>
-        <div id="lang1-input"></div>
+    <div class="row-fluid">
+
+      <div class="span3">
+        <div class="lyrics-container">
+          <div id="lang1-box">    
+            <div id="lang1-lyrics"></div>
+            <div id="lang1-input"></div>
+          </div>
+        </div>
       </div>
-    </div>
-    <div class="lyrics-container">
-      <div id="lang2-box">
-        <div id="lang2-lyrics"></div>
-        <div id="lang2-input"></div>
+
+      <div class="span3">
+        <div class="lyrics-container">
+          <div id="lang2-box">
+            <div id="lang2-lyrics"></div>
+            <div id="lang2-input"></div>
+          </div>
+        </div>
+        <div class="lyrics-container">
+          <div class="done-button" style="float: left;"></div>
+          <div class="save-button" style="float: left; margin-left: 20px;"></div>
+        </div>
       </div>
+
     </div>
-    <br>
-    <div class="lyrics-container">
-      <div class="done-button" style="float: left;"></div>
-      <div class="save-button" style="float: left; margin-left: 20px;"></div>
-    </div>
+
 
   </div>
 
 </div>
 
 <div id="youtube-id" class="quiet"><%= @video.youtube_id %></div>
+<div id="interp-id" class="quiet"><%= @interp.id %></div>
 <div id="lang1" class="quiet"><%= @video.lang1 %></div>
 <div id="lang2" class="quiet"><%= @interp.lang2 %></div>

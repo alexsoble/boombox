@@ -3,6 +3,7 @@ $ ->
   youtube_id = $('#youtube-id').html()
   lang1 = $('#lang1').html()
   lang2 = $('#lang2').html()
+  interp_id = $('#interp-id').html()
   if $('#user-id').attr('data-user') isnt 'logged-out'
     window.user_id = $('#user-id').attr('data-user')
   else
@@ -46,7 +47,7 @@ $ ->
 
   window.section = 0 
   window.time = 0
-  window.loop = false
+  window.loop = 'none_yet'
 
   countVideoPlayTime = ->
     exact_time = player.getCurrentTime()
@@ -107,51 +108,98 @@ $ ->
     $(this).click -> 
       window.player.pauseVideo()
 
-      $(this).remove()
-      $('#timer-box').show()
-      $("#controls").html("
-        <h3><i>So. How are we doing this translation?</i></h3>
-          <label class='checkbox'>
-            <input type='checkbox' id='lang1-and-lang2'>I want to write down the #{lang1} and #{lang2} side-by-side.
-          </label>
-          <label class='checkbox'>
-            <input type='checkbox' id='just-lang2'>I want to just write down the #{lang2}.
-          </label>
-          <br>
-          <h3><i>It's hard to translate at the same speed as the video.</i></h3>
-          <label class='checkbox'>
-            <input type='checkbox' id='normal'>Play the video at normal pace.
-          </label>
-          <label class='checkbox'>
-            <input type='checkbox' id='loops'>Play it in loops.
-          </label>
-        <div class='btn-group' id='loop-settings'>
-          <br>
-          <a class='btn btn-info rounded' id='loop-2'>2s</a>
-          <a class='btn btn-info rounded' id='loop-4'>4s</a>
-          <a class='btn btn-info rounded' id='loop-8'>8s</i></a>
-        </div>")
-      $('#red-arrow-text-box').fadeOut(1500)
-      $('#red-arrow').fadeOut(1500)
-      newRedArrowText = ->
-        $('#red-arrow-text-box').fadeIn()
-        $('#red-arrow').fadeIn()
-        $('#red-arrow-text-box').html('<br><p><strong>We\'ll play the video in 4-second loops for you. That makes translating easier and gives you more time to type.</p></strong>')
-        $('#red-arrow').replaceWith('<img alt="red_arrow_flipped" id="red-arrow" src="/assets/red_arrow_flipped.png">')
-        $('#red-arrow').attr('class','shifted')
-        $('#red-arrow-text-box').attr('class','shifted')
-      window.setTimeout(newRedArrowText, 1600)
-
       # FIRST LINE FOR THE QUIET TIME AT THE FRONT OF THE VIDEO
       time = $("#current-loop-time").text()
       time_in_seconds = parseInt(time.slice(3,5)) + parseInt(time.slice(0,2))*60
-      $.post('/new_line', { 'line' : { 'lang1' : '', 'lang2' : '', 'time' : "#{time_in_seconds}", 'interpretation_id' : "#{window.interp_id}" , 'upvotes' : 0, 'downvotes' : 0  } }, (data) ->
+      $.post('/new_line', { 'line' : { 'lang1' : '', 'lang2' : '', 'time' : "#{time_in_seconds}", 'interpretation_id' : "#{interp_id}" , 'upvotes' : 0, 'downvotes' : 0  } }, (data) ->
         console.log data.data )
 
-    # INPUT LINES COME IN HERE
+      $(this).remove()
+      $('#timer-box').show()
+      $("#controls").html("
+      <div>
+        <h3>Heads up: It's hard to translate at the same speed as the video.</h3>
+        <label class='checkbox'>
+          <input type='checkbox' id='yes-loops'>Yeah. Play each section of the video in a loop until I'm done translating it.
+        </label>
+        <label class='checkbox'>
+          <input type='checkbox' id='no-loops'>I'm a pro. Play the video without looping.
+        </label>
+      </div>")
 
-      if window.translation_type == 'just_lang2'
-        $('#lang2-input').html("<div><i class='left'>#{window.lang2}&nbsp;</i>
+  $("#yes-loops").livequery ->
+    $(this).click -> 
+      window.section = window.time / 4
+      window.loop = 4
+      window.player.playVideo()
+      $(this).parent().parent().fadeOut()
+      $('#loop-settings').html("
+        <div class='btn-group' id='loop-settings'>
+          <br>
+          <a class='btn btn-warning rounded' id='playing-in-loops'><i>Playing video in loops</i></a>
+          <a class='btn btn-info rounded' id='loop-2'>2s</a>
+          <a class='btn btn-warning rounded' id='loop-4'>4s</a>
+          <a class='btn btn-info rounded' id='loop-8'>8s</i></a>
+        </div>")
+      step2()
+
+  $("#no-loops").livequery ->
+    $(this).click -> 
+      window.loop = false
+      window.player.playVideo()
+      $(this).parent().parent().fadeOut()
+      step2()
+
+  step2 = ->
+    $("#controls").html("
+      <div>
+        <h3>One more question.</h3>
+        <label class='checkbox'>
+          <input type='checkbox' id='lang1-and-lang2'>I want to write down the #{lang1} and #{lang2} side-by-side.
+        </label>
+        <label class='checkbox'>
+          <input type='checkbox' id='just-lang2'>I want to just write down the #{lang2} translation.
+        </label>
+      </div>")
+
+  $("#lang1-and-lang2").livequery ->
+    $(this).click -> 
+      window.translation_type = 'lang1_and_lang2'
+      $(this).parent().parent().fadeOut()
+      step3()
+
+  $("#just-lang2").livequery -> 
+    $(this).click ->
+      window.translation_type = 'just_lang2'
+      $(this).parent().parent().fadeOut()
+      step3()
+
+  step3 = ->
+
+    $('.span7').remove()
+  
+    if window.translation_type == 'lang1_and_lang2'
+
+      $('#lang1-input').html("<div><i class='left'>#{lang1}&nbsp;</i>
+        <small class='left'>(<small class='current-loop-time'></small>)</small></div>
+        <br>
+        <div class='control-group'>
+          <div class='controls'>
+            <input type='text' class='input-xlarge lang1-line'>
+          </div>
+        </div>")
+      $('#lang2-input').html("<div><i class='left'>#{lang2}&nbsp;</i>
+        <small class='left'>(<small id='current-loop-time' class='current-loop-time'></small>)</small></div>
+        <br>
+        <div class='controls'>
+          <input type='text' class='input-xlarge lang2-line'>
+        </div>")
+
+
+    if window.translation_type == 'just_lang2'
+
+      $('#lang2-input').html("
+        <div><i class='left'>#{lang2}&nbsp;</i>
           <small class='left'>(<small id='current-loop-time' class='current-loop-time'></small>)</small></div>
           <br>
           <div class='control-group'>
@@ -160,134 +208,124 @@ $ ->
             </div>
           </div>")
 
-        # AND WIDTHS GET ADJUSTED DEPENDING ON IF ONE OR BOTH LANGUAGES ARE BEING TRANSCRIBED
-        $('#lang1-box').parent().attr('class','')
-        $('#lang2-box').parent().attr('class','lyrics-container wide')
+      $('#lang1-box').parent().parent().remove()
 
-      if window.translation_type == 'lang1_and_lang2'
-        $('#lang1-input').html("<div><i class='left'>#{window.lang1}&nbsp;</i>
-          <small class='left'>(<small class='current-loop-time'></small>)</small></div>
-          <br>
-          <div class='control-group'>
-            <div class='controls'>
-              <input type='text' class='input-xlarge lang1-line'>
-            </div>
-          </div>")
-        $('#lang2-input').html("<div><i class='left'>#{window.lang2}&nbsp;</i><small class='left'>
-          (<small id='current-loop-time' class='current-loop-time'></small>)</small></div>
-          <br>
-          <div class='controls'>
-            <input type='text' class='input-xlarge lang2-line'>
-          </div>")
+    # LOGIC FOR THE INPUT LINES
 
-      # LOGIC FOR THE INPUT LINES
+    if window.translation_type == 'lang1_and_lang2'
 
-      if window.translation_type == 'lang1_and_lang2'
+      $(".lang1-line").livequery ->
+        $(this).keyup (e) ->
+          e.preventDefault
+          if e.which == 13 and ($('.lang2-line').val() isnt '')
+            entry = this.value
+            that_entry = $('.lang2-line').val()
+            console.log "entry: #{entry}, that_entry: #{that_entry}"
+            time = $("#current-loop-time").text()
+            $('#lang1-lyrics').append("<p><small><small>(#{time})</small></small>  #{entry}</p>")
+            $('#lang2-lyrics').append("<p><small><small>(#{time})</small></small>  #{that_entry}</p>")
+            $('.lang1-line').val('')
+            $('.lang2-line').val('')
+            time_in_seconds = parseInt(time.slice(3,5)) + parseInt(time.slice(0,2))*60
+            $.post('/new_line', { 'line' : { 'lang1' : "#{entry}", 'lang2' : "#{that_entry}", 'time' : "#{time_in_seconds}", 'interpretation_id' : "#{window.interp_id}" , 'upvotes' : 0, 'downvotes' : 0  } }, (data) ->
+              console.log data.data )
+            window.section += 1
+            $('.done-button').html('<div class="btn btn-info" id="done-button">Done</div>')
+            $('.save-button').html('<div class="btn btn-info" id="save-button">Save</div>').effect('highlight')
 
-        $(".lang1-line").livequery ->
-          $(this).keyup (e) ->
-            e.preventDefault
-            if e.which == 13 and ($('.lang2-line').val() isnt '')
-              entry = this.value
-              that_entry = $('.lang2-line').val()
-              console.log "entry: #{entry}, that_entry: #{that_entry}"
-              time = $("#current-loop-time").text()
-              $('#lang1-lyrics').append("<p><small><small>(#{time})</small></small>  #{entry}</p>")
-              $('#lang2-lyrics').append("<p><small><small>(#{time})</small></small>  #{that_entry}</p>")
-              $('.lang1-line').val('')
-              $('.lang2-line').val('')
-              time_in_seconds = parseInt(time.slice(3,5)) + parseInt(time.slice(0,2))*60
-              $.post('/new_line', { 'line' : { 'lang1' : "#{entry}", 'lang2' : "#{that_entry}", 'time' : "#{time_in_seconds}", 'interpretation_id' : "#{window.interp_id}" , 'upvotes' : 0, 'downvotes' : 0  } }, (data) ->
-                console.log data.data )
-              window.section += 1
-              $('.done-button').html('<div class="btn btn-info" id="done-button">Done</div>')
-              $('.save-button').html('<div class="btn btn-info" id="save-button">Save</div>').effect('highlight')
+      $(".lang2-line").livequery ->
+        $(this).keyup (e) ->
+          if e.which == 13 and ($('.lang1-line').val() isnt '')
+            entry = this.value
+            that_entry = $('.lang1-line').val()
+            console.log "entry: #{entry}, that_entry: #{that_entry}"
+            time = $("#current-loop-time").text()
+            $('#lang2-lyrics').append("<p><small><small>(#{time})</small></small>  #{entry}</p>")
+            $('#lang1-lyrics').append("<p><small><small>(#{time})</small></small>  #{that_entry}</p>")
+            $('.lang1-line').val('')
+            $('.lang2-line').val('')
+            $('.lang1-line').focus()
+            time_in_seconds = parseInt(time.slice(3,5)) + parseInt(time.slice(0,2))*60
+            $.post('/new_line', { 'line' : { 'lang1' : "#{that_entry}", 'lang2' : "#{entry}", 'time' : "#{time_in_seconds}", 'interpretation_id' : "#{window.interp_id}" , 'upvotes' : 0, 'downvotes' : 0  } }, (data) ->
+              console.log data.data )
+            window.section += 1
+            $('.done-button').html('<div class="btn btn-info" id="done-button">Done</div>')
+            $('.save-button').html('<div class="btn btn-info" id="save-button">Saving...</div>')
+            delayedShowSaved = ->
+              $('.save-button').html('<div class="btn btn-info" id="save-button">Saved</div>')
+            window.setTimeout(delayedShowSaved, 600)
 
-        $(".lang2-line").livequery ->
-          $(this).keyup (e) ->
-            if e.which == 13 and ($('.lang1-line').val() isnt '')
-              entry = this.value
-              that_entry = $('.lang1-line').val()
-              console.log "entry: #{entry}, that_entry: #{that_entry}"
+    if window.translation_type == 'just_lang2'
+
+      $(".lang2-line").livequery ->
+        $(this).keyup (e) ->
+          if e.which == 13
+            entry = this.value
+            console.log entry
+            if entry isnt ''
               time = $("#current-loop-time").text()
               $('#lang2-lyrics').append("<p><small><small>(#{time})</small></small>  #{entry}</p>")
-              $('#lang1-lyrics').append("<p><small><small>(#{time})</small></small>  #{that_entry}</p>")
-              $('.lang1-line').val('')
               $('.lang2-line').val('')
-              $('.lang1-line').focus()
               time_in_seconds = parseInt(time.slice(3,5)) + parseInt(time.slice(0,2))*60
-              $.post('/new_line', { 'line' : { 'lang1' : "#{that_entry}", 'lang2' : "#{entry}", 'time' : "#{time_in_seconds}", 'interpretation_id' : "#{window.interp_id}" , 'upvotes' : 0, 'downvotes' : 0  } }, (data) ->
+              $.post('/new_line', { 'line' : { 'lang1' : '', 'lang2' : "#{entry}", 'time' : "#{time_in_seconds}", 'interpretation_id' : "#{interp_id}" , 'upvotes' : 0, 'downvotes' : 0  } }, (data) ->
                 console.log data.data )
-              window.section += 1
-              $('.done-button').html('<div class="btn btn-info" id="done-button">Done</div>')
-              $('.save-button').html('<div class="btn btn-info" id="save-button">Save</div>').effect('highlight')
-
-      if window.translation_type == 'just_lang2'
-
-        $(".lang2-line").livequery ->
-          $(this).keyup (e) ->
-            if e.which == 13
-              entry = this.value
-              console.log entry
-              if entry != ''
-                time = $("#current-loop-time").text()
-                $('#lang2-lyrics').append("<p><small><small>(#{time})</small></small>  #{entry}</p>")
-                $('.lang2-line').val('')
-                time_in_seconds = parseInt(time.slice(3,5)) + parseInt(time.slice(0,2))*60
-                $.post('/new_line', { 'line' : { 'lang1' : '', 'lang2' : "#{entry}", 'time' : "#{time_in_seconds}", 'interpretation_id' : "#{window.interp_id}" , 'upvotes' : 0, 'downvotes' : 0  } }, (data) ->
-                  console.log data.data )
-              window.section += 1
-              $('.done-button').html('<div class="btn btn-info" id="done-button">Done</div>')
-              $('.save-button').html('<div class="btn btn-info" id="save-button">Saving...</div>')
-              delayedShowSaved = ->
-                $('.save-button').html('<div class="btn btn-info" id="save-button">Saved</div>')
-              window.setTimeout(delayedShowSaved, 600)
-
+            window.section += 1
+            $('.done-button').html('<div class="btn btn-info" id="done-button">Done</div>')
+            $('.save-button').html('<div class="btn btn-info" id="save-button">Saving...</div>')
+            delayedShowSaved = ->
+              $('.save-button').html('<div class="btn btn-info" id="save-button">Saved</div>')
+            window.setTimeout(delayedShowSaved, 600)
 
   # LOGIC FOR THE CONTROLS PANEL
 
-  $("#play-in-loops").livequery -> 
+  $('#playing-in-loops').livequery -> 
     $(this).click ->
-      if $(this).attr('class') == 'btn btn-info off'
-        $(this).attr('class', 'btn btn-warning on')
-        $(this).html('<i>Playing video in loops</i>')
-        $("#loop-4").attr('class','btn btn-warning')
-        window.section = window.time / 4
-        window.loop = 4
-        window.player.playVideo()
-        $('#red-arrow-text-box').fadeOut(1500)
-        $('#red-arrow').fadeOut(1500)
-      else
-        $(this).attr('class', 'btn btn-info off')
-        $(this).text('Play video in loops?')
-        $("#loop-2").attr('class','btn btn-info')
-        $("#loop-4").attr('class','btn btn-info')
-        $("#loop-8").attr('class','btn btn-info')
+      if $(this).attr('class') == 'btn btn-warning rounded'
+        console.log "Turning loops off."
+        $(this).attr('class','btn btn-info rounded')
+        $(this).html('Playing without loops')
         window.loop = false
+        $("#loop-2").attr('class','btn btn-info rounded')
+        $("#loop-4").attr('class','btn btn-info rounded')
+        $("#loop-8").attr('class','btn btn-info rounded')
+      else
+        console.log "Turning loops on."
+        $(this).attr('class','btn btn-warning rounded')
+        $(this).html('<i>Playing video in loops</i>')
+        window.loop = 4
+        $("#loop-2").attr('class','btn btn-info rounded')
+        $("#loop-4").attr('class','btn btn-warning rounded')
+        $("#loop-8").attr('class','btn btn-info rounded')
 
   $("#loop-2").livequery ->
     $(this).click ->
       window.loop = 2
       window.section = window.time / 2
-      $("#loop-2").attr('class','btn btn-warning')
-      $("#loop-4").attr('class','btn btn-info')
-      $("#loop-8").attr('class','btn btn-info')
+      $("#playing-in-loops").attr('class','btn btn-warning rounded')
+      $("#playing-in-loops").html('<i>Playing video in loops</i>')
+      $("#loop-2").attr('class','btn btn-warning rounded')
+      $("#loop-4").attr('class','btn btn-info rounded')
+      $("#loop-8").attr('class','btn btn-info rounded')
 
   $("#loop-4").livequery ->
     $(this).click ->
       window.loop = 4
       window.section = window.time / 4
-      $("#loop-2").attr('class','btn btn-info')
-      $("#loop-4").attr('class','btn btn-warning')
-      $("#loop-8").attr('class','btn btn-info')
+      $("#playing-in-loops").attr('class','btn btn-warning rounded')
+      $("#playing-in-loops").html('<i>Playing video in loops</i>')
+      $("#loop-2").attr('class','btn btn-info rounded')
+      $("#loop-4").attr('class','btn btn-warning rounded')
+      $("#loop-8").attr('class','btn btn-info rounded')
 
   $("#loop-8").livequery ->
     $(this).click ->
       window.loop = 8
       window.section = window.time / 8
-      $("#loop-2").attr('class','btn btn-info')
-      $("#loop-4").attr('class','btn btn-info')
-      $("#loop-8").attr('class','btn btn-warning')
+      $("#playing-in-loops").attr('class','btn btn-warning rounded')
+      $("#playing-in-loops").html('<i>Playing video in loops</i>')
+      $("#loop-2").attr('class','btn btn-info rounded')
+      $("#loop-4").attr('class','btn btn-info rounded')
+      $("#loop-8").attr('class','btn btn-warning rounded')
 
   $("#forward").livequery ->
     $(this).click -> 
@@ -327,7 +365,7 @@ $ ->
       if $("#user-id").attr('data-user') != "logged-out"
         $.post('/publish', { 'interpretation' : { 'id' : "#{window.interp_id}" } }, (data) ->
           console.log data.data )
-        window.location.href = "/interpretations/#{window.interp_id}"
+        window.location.href = "/interpretations/#{interp_id}"
       else
         $('.save-button').hide()
         $('.done-button').html("<p><a href='/sign_up?interp=#{window.interp_id}'><strong>Sign up for Heyu?</strong></a> That way your username will appear alongside your translation. Get props for excellent work!<br><br> Otherwise, <a href='/interpretations/#{window.interp_id}'>submit your translation anonymously.</a>")
@@ -348,4 +386,3 @@ $ ->
   $window.scroll ->
     video_box.toggleClass('sticky', $window.scrollTop() > video_top)
     lyrics_container.toggleClass('sticky', $window.scrollTop() > video_top)
-
