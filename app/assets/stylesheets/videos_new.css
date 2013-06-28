@@ -56,8 +56,8 @@
   text-align: left; }
 
 #timer-box { position: absolute;
-  left: 35px;
-  top: 235px; }
+  left: -45px;
+  top: 90px; }
 
 #timer {  width: 90px;
   height: 90px;
