@@ -64,7 +64,10 @@ $ ->
 
       getTitle = (data) ->
         window.title = data.entry.title.$t
-        $('#new-translation-button').html("<p class='index-button-text'>#{window.title}</div></p>")
+        $('#new-translation-button').html("
+          <div class='button-text-wrapper'>
+            <p class='index-button-text'>#{window.title}</div></p>
+          </div>")
 
       getTitleFromYouTube = (handleData) ->
         $.get('https://gdata.youtube.com/feeds/api/videos/' + youtube_id + '?v=2&alt=json', 
@@ -75,19 +78,18 @@ $ ->
 
       # ASK USER TO ENTER LANG1 
 
+      $('#new-translation-button').attr('style','height: 85px; background-color: blue;')
       $('#new-translation-button').after("
-        <br>
-        <br>
         <div class='index-button' id='lang1-button'>
           <div class='button-text-wrapper'>
-            <p class='index-button-text'>My video's original language is...</p>
+            <p class='index-button-text'>The video's original language is...</p>
             <div class='ui-widget'>
               <input id='lang1-input' class='short-text-box'/>
             </div>
           </div>
         </div>")
-
-      $('#new-translation-button').parent().attr('style','height: 85px;')
+      $('#lang1-button').hide()
+      $('#lang1-button').slideDown()
 
   $('#lang1-input').livequery ->
     $(this).keyup (e) ->
@@ -105,6 +107,11 @@ $ ->
 
         # PROMPT USER TO ENTER LANG2
 
+          $('#lang1-button').html("
+            <div class='button-text-wrapper'>
+              <p class='index-button-text'>Original language: #{window.lang1}</div></p>
+            </div>")
+          $('#lang1-button').attr('style','height: 85px; background-color: blue;')
           $('#lang1-button').after("
             <br>
             <br>

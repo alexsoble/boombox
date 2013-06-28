@@ -10,9 +10,11 @@
 .thumb-box-width { width: 140px; }
 
 .index-button { float: right;
+  right: 0px;
   width: 220px;
   height: 120px;
   margin-right: 40px;
+  margin-bottom: 20px;
   background-color: #9B59BB;
   position: relative;
   border-radius: 10px; }
