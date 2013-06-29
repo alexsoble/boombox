@@ -49,4 +49,10 @@ class InterpretationsController < ApplicationController
 
   end
 
+  def destroy
+    @interp = Interpretation.find_by_id(params[:id])
+    @interp.destroy
+    redirect_to '/welcome'
+  end
+
 end

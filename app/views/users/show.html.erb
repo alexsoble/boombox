@@ -13,6 +13,9 @@
         <strong class="center"><%= link_to "#{v.title.slice(0,32)}", interpretation_url(i) %></strong>
         <br>
         <img src="http://img.youtube.com/vi/<%= v.youtube_id %>/1.jpg">
+        <%= link_to "Edit Translation", edit_interpretation_url(i) %>
+        <br>
+        <%= link_to "Delete", interpretation_url(i), :method => :delete %>
       </div>
     <% end %>
   </div>
