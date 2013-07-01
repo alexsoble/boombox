@@ -9,7 +9,15 @@
       <div class="lyrics-box small"></div>
       <div id="new-video-box"></div>
       <div id="timer-box"></div>
-      <div id="loop-settings"></div>
+      <div id="loop-settings">
+        <div class='btn-group' id='loop-settings'>
+          <br>
+          <a class='btn btn-warning rounded' id='playing-in-loops'><i>Playing video in loops</i></a>
+          <a class='btn btn-info rounded' id='loop-2'>2s</a>
+          <a class='btn btn-warning rounded' id='loop-4'>4s</a>
+          <a class='btn btn-info rounded' id='loop-8'>8s</i></a>
+        </div>
+      </div>
     </div>
 
     <div id="select-language-box">
@@ -59,12 +67,13 @@
         <div class="span3">
           <div class="lyrics-container">
             <div id="lang2-box">
-              <div id="lang2-lyrics"></div>
+              <div id="lang2-lyrics">
                 <% @lines.each do |l| %>
                   <% if l.lang2.present? %> 
                     <div class="edit-line" id="<%= l.id %>"><p><%= l.lang2 %></p></div>
                   <% end %>
                 <% end %>
+              </div>
               <div id="lang2-input">
                 <div>
                   <i class='left'><%= @lang2 %>&nbsp;</i>
@@ -108,3 +117,4 @@
 <div id="interp-id" class="quiet"><%= @interp.id %></div>
 <div id="lang1" class="quiet"><%= @video.lang1 %></div>
 <div id="lang2" class="quiet"><%= @interp.lang2 %></div>
+<div id="translation-type" class="quiet"><%= if @lang1_and_lang2 then 'lang1_and_lang2' else 'just_lang2' end %></div>

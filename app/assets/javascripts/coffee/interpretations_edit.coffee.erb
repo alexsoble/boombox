@@ -30,7 +30,7 @@ $ ->
 
   window.section = 0 
   window.time = 0
-  window.loop = 'none_yet'
+  window.loop = false
 
   countVideoPlayTime = ->
     exact_time = player.getCurrentTime()
@@ -86,3 +86,143 @@ $ ->
   window.setTimeout(delayedShow, 1000)
 
   $('.edit-line').hover(console.log "!!!!")
+ 
+
+  # COPIED OVER FROM VIDEO-NEW COFFEE
+  # LOGIC FOR THE INPUT LINES
+
+  if $('#translation-type').html() == 'lang1_and_lang2'
+
+    $(".lang1-line").livequery ->
+      $(this).keyup (e) ->
+        e.preventDefault
+        if e.which == 13 and ($('.lang2-line').val() isnt '')
+          entry = this.value
+          that_entry = $('.lang2-line').val()
+          console.log "entry: #{entry}, that_entry: #{that_entry}"
+          time = $("#current-loop-time").text()
+          $('#lang1-lyrics').append("<p><small><small>(#{time})</small></small>  #{entry}</p>")
+          $('#lang2-lyrics').append("<p><small><small>(#{time})</small></small>  #{that_entry}</p>")
+          $('.lang1-line').val('')
+          $('.lang2-line').val('')
+          time_in_seconds = parseInt(time.slice(3,5)) + parseInt(time.slice(0,2))*60
+          $.post('/new_line', { 'line' : { 'lang1' : "#{entry}", 'lang2' : "#{that_entry}", 'time' : "#{time_in_seconds}", 'interpretation_id' : "#{interp_id}" , 'upvotes' : 0, 'downvotes' : 0  } }, (data) ->
+            console.log data.data )
+          window.section += 1
+          $('.done-button').html('<div class="btn btn-info" id="done-button">Done</div>')
+          $('.save-button').html('<div class="btn btn-info" id="save-button">Save</div>').effect('highlight')
+
+    $(".lang2-line").livequery ->
+      $(this).keyup (e) ->
+        if e.which == 13 and ($('.lang1-line').val() isnt '')
+          entry = this.value
+          that_entry = $('.lang1-line').val()
+          console.log "entry: #{entry}, that_entry: #{that_entry}"
+          time = $("#current-loop-time").text()
+          $('#lang2-lyrics').append("<p><small><small>(#{time})</small></small>  #{entry}</p>")
+          $('#lang1-lyrics').append("<p><small><small>(#{time})</small></small>  #{that_entry}</p>")
+          $('.lang1-line').val('')
+          $('.lang2-line').val('')
+          $('.lang1-line').focus()
+          time_in_seconds = parseInt(time.slice(3,5)) + parseInt(time.slice(0,2))*60
+          $.post('/new_line', { 'line' : { 'lang1' : "#{that_entry}", 'lang2' : "#{entry}", 'time' : "#{time_in_seconds}", 'interpretation_id' : "#{interp_id}" , 'upvotes' : 0, 'downvotes' : 0  } }, (data) ->
+            console.log data.data )
+          window.section += 1
+          $('.done-button').html('<div class="btn btn-info" id="done-button">Done</div>')
+          $('.save-button').html('<div class="btn btn-info" id="save-button">Saving...</div>')
+          delayedShowSaved = ->
+            $('.save-button').html('<div class="btn btn-info" id="save-button">Saved</div>')
+          window.setTimeout(delayedShowSaved, 600)
+
+  if $('#translation-type').html() == 'just_lang2'
+
+    $(".lang2-line").livequery ->
+      $(this).keyup (e) ->
+        if e.which == 13
+          entry = this.value
+          console.log entry
+          if entry isnt ''
+            time = $("#current-loop-time").text()
+            $('#lang2-lyrics').append("<p><small><small>(#{time})</small></small>  #{entry}</p>")
+            $('.lang2-line').val('')
+            time_in_seconds = parseInt(time.slice(3,5)) + parseInt(time.slice(0,2))*60
+            $.post('/new_line', { 'line' : { 'lang1' : '', 'lang2' : "#{entry}", 'time' : "#{time_in_seconds}", 'interpretation_id' : "#{interp_id}" , 'upvotes' : 0, 'downvotes' : 0  } }, (data) ->
+              console.log data.data )
+          window.section += 1
+          $('.done-button').html('<div class="btn btn-info" id="done-button">Done</div>')
+          $('.save-button').html('<div class="btn btn-info" id="save-button">Saving...</div>')
+          delayedShowSaved = ->
+            $('.save-button').html('<div class="btn btn-info" id="save-button">Saved</div>')
+          window.setTimeout(delayedShowSaved, 600)
+
+  # LOGIC FOR CONTROLS
+
+  $('#playing-in-loops').livequery -> 
+    $(this).click ->
+      if $(this).attr('class') == 'btn btn-warning rounded'
+        console.log "Turning loops off."
+        $(this).attr('class','btn btn-info rounded')
+        $(this).html('Playing without loops')
+        window.loop = false
+        $("#loop-2").attr('class','btn btn-info rounded')
+        $("#loop-4").attr('class','btn btn-info rounded')
+        $("#loop-8").attr('class','btn btn-info rounded')
+      else
+        console.log "Turning loops on."
+        $(this).attr('class','btn btn-warning rounded')
+        $(this).html('<i>Playing video in loops</i>')
+        window.loop = 4
+        $("#loop-2").attr('class','btn btn-info rounded')
+        $("#loop-4").attr('class','btn btn-warning rounded')
+        $("#loop-8").attr('class','btn btn-info rounded')
+
+  $("#loop-2").livequery ->
+    $(this).click ->
+      window.loop = 2
+      window.section = window.time / 2
+      $("#playing-in-loops").attr('class','btn btn-warning rounded')
+      $("#playing-in-loops").html('<i>Playing video in loops</i>')
+      $("#loop-2").attr('class','btn btn-warning rounded')
+      $("#loop-4").attr('class','btn btn-info rounded')
+      $("#loop-8").attr('class','btn btn-info rounded')
+
+  $("#loop-4").livequery ->
+    $(this).click ->
+      window.loop = 4
+      window.section = window.time / 4
+      $("#playing-in-loops").attr('class','btn btn-warning rounded')
+      $("#playing-in-loops").html('<i>Playing video in loops</i>')
+      $("#loop-2").attr('class','btn btn-info rounded')
+      $("#loop-4").attr('class','btn btn-warning rounded')
+      $("#loop-8").attr('class','btn btn-info rounded')
+
+  $("#loop-8").livequery ->
+    $(this).click ->
+      window.loop = 8
+      window.section = window.time / 8
+      $("#playing-in-loops").attr('class','btn btn-warning rounded')
+      $("#playing-in-loops").html('<i>Playing video in loops</i>')
+      $("#loop-2").attr('class','btn btn-info rounded')
+      $("#loop-4").attr('class','btn btn-info rounded')
+      $("#loop-8").attr('class','btn btn-warning rounded')
+
+  $("#forward").livequery ->
+    $(this).click -> 
+      window.section += 1
+      player.seekTo(window.loop * window.section, true)
+      $("#looping-box").html(window.loop * window.section)
+
+  $("#backward").livequery ->
+    $(this).click -> 
+      window.section -= 1
+      player.seekTo(window.loop * window.section, true)
+      $("#looping-box").html(window.loop * window.section)
+
+  $("#timer-toggle").livequery ->
+    $(this).click ->
+      $("#timer-box").toggle()
+
+  $("#rollover-toggle").livequery ->
+    $(this).click ->
+      if window.rollover_pause == false
+        window.rollover_pause = true
