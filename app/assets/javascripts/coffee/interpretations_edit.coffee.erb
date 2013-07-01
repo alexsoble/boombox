@@ -4,3 +4,85 @@ $ ->
   lang1 = $('#lang1').html()
   lang2 = $('#lang2').html()
   interp_id = $('#interp-id').html()
+
+# YOUTUBE PLAYER COMES IN HERE
+
+  player = null
+  window.rollover_pause = false
+
+  tag = document.createElement("script")
+  tag.src = "https://www.youtube.com/iframe_api"
+  firstScriptTag = document.getElementsByTagName("script")[0]
+  firstScriptTag.parentNode.insertBefore tag, firstScriptTag
+
+  window.onYouTubeIframeAPIReady = ->
+    player = new YT.Player("new-video-box",
+      height: "315"
+      width: "420"
+      videoId: youtube_id
+      events:
+        onReady: onPlayerReady
+        onStateChange: onPlayerStateChange)
+    window.player = player 
+
+  onPlayerReady = (event) ->
+    event.target.pauseVideo()
+
+  window.section = 0 
+  window.time = 0
+  window.loop = 'none_yet'
+
+  countVideoPlayTime = ->
+    exact_time = player.getCurrentTime()
+    window.time = Math.round(exact_time)
+    minutes = Math.floor(window.time / 60)
+    if minutes < 10
+      minutes = '0' + minutes
+    seconds = window.time - minutes * 60
+    if seconds < 10
+      seconds = '0' + seconds
+    $(".timer-text").html(minutes + ":" + seconds)
+
+    # CALCULATING THE CURRENT LOOP START POINT IN INTEGER AND MM:SS FORMATS 
+    current_loop_time = window.loop * window.section
+    loop_minutes = Math.floor(current_loop_time / 60)
+    if loop_minutes < 10
+      loop_minutes = '0' + loop_minutes
+    loop_seconds = current_loop_time - loop_minutes * 60
+    if loop_seconds < 10
+      loop_seconds = '0' + loop_seconds
+
+    # CALCULATING LOOP END POINT IN INTEGER AND MM:SS FORMATS 
+    current_loop_end = window.loop * (window.section + 1)
+    loop_end_minutes = Math.floor(current_loop_end / 60)
+    if loop_end_minutes < 10
+      loop_end_minutes = '0' + loop_end_minutes
+    loop_end_seconds = current_loop_end - (loop_end_minutes * 60)
+    if loop_end_seconds < 10
+      loop_end_seconds = '0' + loop_end_seconds
+
+    # DISPLAYING THE TIMING ABOVE THE TRANSLATION INPUT LINES 
+    if window.loop != false
+      $(".current-loop-time").html(loop_minutes + ":" + loop_seconds + " to " + loop_end_minutes + ":" + loop_end_seconds)
+    else
+      $(".current-loop-time").html(minutes + ":" + seconds)
+
+    # LOOPING HAPPENS HERE
+    if window.loop != false
+      if exact_time > (window.loop) * (window.section + 1) - .25
+        player.seekTo(window.loop * window.section, true)
+
+  counter = setInterval(countVideoPlayTime, 500)
+  done = false
+
+  onPlayerStateChange = (event) ->
+    if event.data == YT.PlayerState.PAUSED
+      exact_time = player.getCurrentTime()
+      window.time = Math.round(exact_time)
+      window.section = window.time / window.loop
+
+  delayedShow = -> 
+    window.player.playVideo()
+  window.setTimeout(delayedShow, 1000)
+
+  $('.edit-line').hover(console.log "!!!!")

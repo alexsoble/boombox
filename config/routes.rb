@@ -8,7 +8,8 @@ Boombox::Application.routes.draw do
   get '/sign_in' => 'sessions#new'
   get '/sign_out' => 'sessions#destroy'
   get '/auth/:provider/callback' => 'sessions#create'
-  
+  get 'philosophy' => 'pages#philosophy'
+
   get '/request/' => 'videos#request'
   resources :videos
   resources :users

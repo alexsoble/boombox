@@ -41,17 +41,20 @@ class VideosController < ApplicationController
       
       arr = arr.sort_by { |hash| hash[:length] }.reverse
       @interpretation = Interpretation.where(:id => arr.first[:id]).first
-      @lines = Line.where(:interpretation_id => @interpretation.id).order("created_at ASC")
-      @lines_have_lang1 = false
-      @lines.all.each do |l|
-        if l.lang1.present? then @lines_have_lang1 = true end
-      end 
 
-      if @interpretation.user_id == 0
-        @user = 'anon'
-      else
-        @user = User.find_by_id(@interpretation.user_id)
-      end
+      redirect_to "/interpretations/#{@interpretation.id}"      
+
+      # @lines = Line.where(:interpretation_id => @interpretation.id).order("created_at ASC")
+      # @lines_have_lang1 = false
+      # @lines.all.each do |l|
+      #   if l.lang1.present? then @lines_have_lang1 = true end
+      # end 
+
+      # if @interpretation.user_id == 0
+      #   @user = 'anon'
+      # else
+      #   @user = User.find_by_id(@interpretation.user_id)
+      # end
 
     end
     

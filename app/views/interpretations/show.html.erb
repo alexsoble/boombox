@@ -60,8 +60,11 @@
       <% else %> 
         <% if current_user %>
           <% if current_user.id == @user.id %>
-            <%= link_to "you", user_url(@user) %>.</i>
-            <h3><i><%= link_to "Edit translation", edit_interpretation_url(@interp) %></i></h3>
+            <%= link_to "you", user_url(@user) %>!</i>
+            <br>
+            <a href="#">Share translation</a>
+            <br>
+            <%= link_to "Edit translation", edit_interpretation_url(@interp) %></i></h3>
           <% else %>
             <%= link_to "#{@user.name}", user_url(@user) %></i>
           <% end %>

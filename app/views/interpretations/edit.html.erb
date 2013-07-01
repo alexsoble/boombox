@@ -22,7 +22,7 @@
 
   <div class="span7">
     
-    <div id="controls"><%= image_tag("red_arrow.png", :id => 'red-arrow') %></div></div>
+    <div id="controls"></div></div>
 
     <div class="row-fluid">
 
@@ -33,10 +33,25 @@
             <div id="lang1-box">    
               <div id="lang1-lyrics">
                 <% @lines.each do |l| %>
-                  <p><small><small>(<%= l.time %>)</small></small> <%= l.lang1 %></p>
+                  <% if l.lang1.present? %>
+                    <% if l.time < 60 %>
+                      <div class="edit-line" id="<%= l.id %>"><p><small><small>(00:<%= l.time %>)</small></small> <%= l.lang1 %></p></div>
+                    <% else %>
+                      <div class="edit-line" id="<%= l.id %>"><p><small><small>(<%= l.time / 60 %>:<%= l.time % 60%>)</small></small> <%= l.lang1 %></p></div>
+                    <% end %>
+                  <% end %>
                 <% end %>
               </div>
-              <div id="lang1-input"></div>
+              <div id="lang1-input">
+                <div><i class='left'><%= @lang1 %>&nbsp;</i>
+                  <small class='left'>(<small class='current-loop-time'></small>)</small></div>
+                  <br>
+                  <div class='control-group'>
+                  <div class='controls'>
+                    <input type='text' class='input-xlarge lang1-line'>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -45,7 +60,20 @@
           <div class="lyrics-container">
             <div id="lang2-box">
               <div id="lang2-lyrics"></div>
-              <div id="lang2-input"></div>
+                <% @lines.each do |l| %>
+                  <% if l.lang2.present? %> 
+                    <div class="edit-line" id="<%= l.id %>"><p><%= l.lang2 %></p></div>
+                  <% end %>
+                <% end %>
+              <div id="lang2-input">
+                <div>
+                  <i class='left'><%= @lang2 %>&nbsp;</i>
+                  <small class='left'>(<small id='current-loop-time' class='current-loop-time'></small>)</small></div>
+                  <br>
+                  <div class='controls'>
+                    <input type='text' class='input-xlarge lang2-line'>
+                </div>
+              </div>
             </div>
           </div>
           <div class="lyrics-container">
