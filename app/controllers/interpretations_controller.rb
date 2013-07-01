@@ -52,6 +52,10 @@ class InterpretationsController < ApplicationController
   def destroy
     @interp = Interpretation.find_by_id(params[:id])
     @interp.destroy
+    @lines = Line.where(:interpretation_id => @interp.id).order("created_at ASC")
+    @lines.each do |l|
+      l.destroy
+    end
     redirect_to '/welcome'
   end
 

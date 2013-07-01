@@ -68,6 +68,7 @@ $ ->
           <div class='button-text-wrapper'>
             <p class='index-button-text'>#{window.title}</div></p>
           </div>")
+        $('#request-translation-button').parent().hide()
 
       getTitleFromYouTube = (handleData) ->
         $.get('https://gdata.youtube.com/feeds/api/videos/' + youtube_id + '?v=2&alt=json', 
