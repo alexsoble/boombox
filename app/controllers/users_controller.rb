@@ -19,6 +19,7 @@ class UsersController < ApplicationController
   def create
     @user = User.new(params[:user])
     if @user.save
+      session[:user_id] = @user.id
       if params['data-interp'].blank?
         redirect_to root_url, :notice => "Signed up!"
       else
