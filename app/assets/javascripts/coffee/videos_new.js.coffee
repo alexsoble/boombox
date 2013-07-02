@@ -357,32 +357,38 @@ $ ->
         formatted_time
 
       if window.editing_line isnt 'on'
+
         $(this).parent().parent().append("
           <div id='editing-div'>
             <div id='slider'></div>
-            <div id='revise-timing-done'>(<a href='#' id='editing-line-done'>done</a>)</div>
+            <div id='revise-timing-done'><div class='btn btn-info btn-small rounded' id='editing-line-done'>Done!</div></div>
             <br>
           </div>")
+
         window.this_editing_time = $('#editing-div').parent().children(":first").children(":first")
         old_start_time = parseInt($('#slider').parent().parent().attr('data-time'))
         old_end_time = parseInt($('#slider').parent().parent().attr('data-time')) + parseInt($('#slider').parent().parent().attr('data-duration'))
+        old_midpoint = Math.round((old_start_time + old_end_time) / 2)
+        console.log "old start time: #{old_start_time}, old end time: #{old_end_time}"
+
         $('#slider').slider(
           range: true
-          min: 0
-          max: 12
-          step: 1
-          if old_end_time < 12
-            values: [ old_start_time, old_end_time ]
+          if old_end_time > 5
+            min: old_midpoint - 5
           else
-            values: [ 0, old_end_time - old_start_time ]
+            min: 0
+          max: old_midpoint + 6
+          step: 1
+          values: [ old_start_time, old_end_time ]
           slide: (event, ui) ->
-            console.log parseInt($(this).parent().parent().attr('data-time')) + ui.values[0]
             formatted_start_time = formatTime(ui.values[0])
+            window.new_start_time = ui.values[0]
             formatted_end_time = formatTime(ui.values[1])
+            window.new_end_time = ui.values[1]
             window.this_editing_time.html("(#{formatted_start_time} to #{formatted_end_time})")
             window.first_handle.html("<p><small><small>#{formatted_start_time}</small></small></p>")
-            window.second_handle.html("<p><small><small>#{formatted_end_time}</small></small></p>")
-          )
+            window.second_handle.html("<p><small><small>#{formatted_end_time}</small></small></p>"))
+
         window.first_handle = $(".ui-slider-handle:eq(0)")
         window.first_handle.html("<p><small><small>#{formatTime(old_start_time)}</small></small></p>")
         window.second_handle = $(".ui-slider-handle:eq(1)")
@@ -393,7 +399,13 @@ $ ->
   $('#editing-line-done').livequery ->
     $(this).click ->
       line_id = $(this).parent().parent().parent().attr('data-line-id')
-      text_to_update = $(this).parent().parent().parent().attr('data-time')
+      line_to_update = $(this).parent().parent().parent()
+      $.post('/update_line', { 'line' : { 'time' : "#{window.new_start_time}", 'duration' : "#{window.new_end_time - window.new_start_time}", 'id' : "#{line_id}" } }, (data) ->
+        updated_time = data.data.time
+        updated_duration = data.data.duration
+        line_to_update.attr('data-time', "#{updated_time}")
+        line_to_update.attr('data-duration', "#{updated_duration}")
+        console.log "updated time: #{updated_time}, updated duration: #{updated_duration}" )
       $(this).parent().parent().slideUp()
       $(this).parent().parent().remove()
       window.editing_line = 'off'

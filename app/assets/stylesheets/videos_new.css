@@ -78,9 +78,10 @@
 
 #controls { position: relative; }
 
-#slider { width: 150px; float: left; }
+#slider { width: 150px; float: left; margin-top: 6px; }
 .ui-slider-handle { width: 30px!important; }
 #revise-timing-done { float: left; }
+#editing-line-done { margin-left: 5px; }
 
 .rounded { margin-right: 10px; border-radius: 10px !important; }
   
