@@ -365,7 +365,10 @@ $ ->
             <br>
           </div>")
 
-        window.this_editing_time = $('#editing-div').parent().children(":first").children(":first")
+        id = $('#editing-div').parent().attr('data-line-id')
+        window.this_editing_time = $("[data-line-id=#{id}]:eq(0)").children(":first").children(":first")
+        window.that_editing_time = $("[data-line-id=#{id}]:eq(1)").children(":first").children(":first")
+
         old_start_time = parseInt($('#slider').parent().parent().attr('data-time'))
         old_end_time = parseInt($('#slider').parent().parent().attr('data-time')) + parseInt($('#slider').parent().parent().attr('data-duration'))
         old_midpoint = Math.round((old_start_time + old_end_time) / 2)
@@ -382,10 +385,11 @@ $ ->
           values: [ old_start_time, old_end_time ]
           slide: (event, ui) ->
             formatted_start_time = formatTime(ui.values[0])
-            window.new_start_time = ui.values[0]
             formatted_end_time = formatTime(ui.values[1])
+            window.new_start_time = ui.values[0]
             window.new_end_time = ui.values[1]
             window.this_editing_time.html("(#{formatted_start_time} to #{formatted_end_time})")
+            window.that_editing_time.html("(#{formatted_start_time} to #{formatted_end_time})")
             window.first_handle.html("<p><small><small>#{formatted_start_time}</small></small></p>")
             window.second_handle.html("<p><small><small>#{formatted_end_time}</small></small></p>"))
 
