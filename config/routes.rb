@@ -21,5 +21,5 @@ Boombox::Application.routes.draw do
   post '/publish' => 'interpretations#publish'
   post '/new_request' => 'requests#create'
   post '/new_line' => 'lines#create'
-
+  post '/update_line' => 'lines#update' 
 end

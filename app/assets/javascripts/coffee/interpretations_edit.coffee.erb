@@ -4,6 +4,7 @@ $ ->
   lang1 = $('#lang1').html()
   lang2 = $('#lang2').html()
   interp_id = $('#interp-id').html()
+  window.editing_line = 'off' 
 
 # YOUTUBE PLAYER COMES IN HERE
 
@@ -85,10 +86,33 @@ $ ->
     window.player.playVideo()
   window.setTimeout(delayedShow, 1000)
 
-  $('.edit-line').hover(console.log "!!!!")
+  $('.edit-line').hover(
+    ->
+      $(this).attr('style','background-color: yellow;')
+    -> 
+      $(this).attr('style','background-color: white;'))
  
+  $('.edit-line').livequery ->
+    $(this).click ->
+      if window.editing_line isnt 'on'
+        $(this).attr('class','clicked')
+        $(this).html("
+          <div class='control-group'>
+            <div class='controls'>
+              <input type='text' class='input-xlarge edit-line-lang1'>
+            </div>
+          </div>")
+        window.editing_line = 'on'
 
-  # COPIED OVER FROM VIDEO-NEW COFFEE
+  $(".edit-line-lang1").livequery ->
+    $(this).keyup (e) ->
+      e.preventDefault
+      if e.which == 13
+        entry = this.value
+        console.log "entry: #{entry}"
+        $.post('/update_line', { 'line' : { 'lang1' : "#{entry}" } }, (data) ->
+          console.log data.data )
+
   # LOGIC FOR THE INPUT LINES
 
   if $('#translation-type').html() == 'lang1_and_lang2'
@@ -143,9 +167,9 @@ $ ->
           console.log entry
           if entry isnt ''
             time = $("#current-loop-time").text()
+            time_in_seconds = parseInt(time.slice(3,5)) + parseInt(time.slice(0,2))*60
             $('#lang2-lyrics').append("<p><small><small>(#{time})</small></small>  #{entry}</p>")
             $('.lang2-line').val('')
-            time_in_seconds = parseInt(time.slice(3,5)) + parseInt(time.slice(0,2))*60
             $.post('/new_line', { 'line' : { 'lang1' : '', 'lang2' : "#{entry}", 'time' : "#{time_in_seconds}", 'interpretation_id' : "#{interp_id}" , 'upvotes' : 0, 'downvotes' : 0  } }, (data) ->
               console.log data.data )
           window.section += 1
@@ -226,3 +250,12 @@ $ ->
     $(this).click ->
       if window.rollover_pause == false
         window.rollover_pause = true
+
+  # SLIDER
+
+  $("#slider").slider({
+      value: 4,
+      min: 0,
+      max: 12,
+      step: 1,
+      height: 10 })

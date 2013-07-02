@@ -136,6 +136,10 @@ $ ->
           <a class='btn btn-info rounded' id='loop-2'>2s</a>
           <a class='btn btn-warning rounded' id='loop-4'>4s</a>
           <a class='btn btn-info rounded' id='loop-8'>8s</i></a>
+          <br>
+          <br>
+          <a class='btn btn-info rounded' id='backward'><i class='icon-step-backward'></i> Skip backward</a>
+          <a class='btn btn-info rounded' id='forward'>Skip forward <i class='icon-step-forward'></i></a>
         </div>")
       step2()
 
@@ -191,7 +195,6 @@ $ ->
           <input type='text' class='input-xlarge lang2-line'>
         </div>")
 
-
     if window.translation_type == 'just_lang2'
 
       $('#lang2-input').html("
@@ -218,13 +221,14 @@ $ ->
             that_entry = $('.lang2-line').val()
             console.log "entry: #{entry}, that_entry: #{that_entry}"
             time = $("#current-loop-time").text()
-            $('#lang1-lyrics').append("<p><small><small>(#{time})</small></small>  #{entry}</p>")
-            $('#lang2-lyrics').append("<p><small><small>(#{time})</small></small>  #{that_entry}</p>")
-            $('.lang1-line').val('')
-            $('.lang2-line').val('')
             time_in_seconds = parseInt(time.slice(3,5)) + parseInt(time.slice(0,2))*60
             $.post('/new_line', { 'line' : { 'lang1' : "#{entry}", 'lang2' : "#{that_entry}", 'time' : "#{time_in_seconds}", 'interpretation_id' : "#{interp_id}" , 'upvotes' : 0, 'downvotes' : 0  } }, (data) ->
-              console.log data.data )
+              line_id = data.data.id 
+              $('#lang1-lyrics').append("<p data-line-id=#{line_id} data-time=#{time_in_seconds}><small><small class='edit-duration'>(#{time})</small></small>  <span class='edit-line-lang1'>#{entry}</span></p>")
+              )
+            $('#lang2-lyrics').append("<p><small><small class='edit-duration'>(#{time})</small></small>  <span class='edit-line-lang2'>#{that_entry}</span></p>")
+            $('.lang1-line').val('')
+            $('.lang2-line').val('')
             window.section += 1
             $('.done-button').html('<div class="btn btn-info" id="done-button">Done</div>')
             $('.save-button').html('<div class="btn btn-info" id="save-button">Save</div>').effect('highlight')
@@ -236,15 +240,16 @@ $ ->
             that_entry = $('.lang1-line').val()
             console.log "entry: #{entry}, that_entry: #{that_entry}"
             time = $("#current-loop-time").text()
-            $('#lang2-lyrics').append("<p><small><small>(#{time})</small></small>  #{entry}</p>")
-            $('#lang1-lyrics').append("<p><small><small>(#{time})</small></small>  #{that_entry}</p>")
+            time_in_seconds = parseInt(time.slice(3,5)) + parseInt(time.slice(0,2))*60
+            $.post('/new_line', { 'line' : { 'lang1' : "#{that_entry}", 'lang2' : "#{entry}", 'time' : "#{time_in_seconds}", 'interpretation_id' : "#{interp_id}" , 'upvotes' : 0, 'downvotes' : 0  } }, (data) ->
+              line_id = data.data.id 
+              $('#lang1-lyrics').append("<p data-line-id=#{line_id} data-time=#{time_in_seconds}><small><small class='edit-duration'>(#{time})</small></small>  <span class='edit-line-lang1'>#{that_entry}</span></p>")
+              )
+            window.section += 1
+            $('#lang2-lyrics').append("<p><small><small class='edit-duration'>(#{time})</small></small>  <span class='edit-line-lang2'>#{entry}</span></p>")
             $('.lang1-line').val('')
             $('.lang2-line').val('')
             $('.lang1-line').focus()
-            time_in_seconds = parseInt(time.slice(3,5)) + parseInt(time.slice(0,2))*60
-            $.post('/new_line', { 'line' : { 'lang1' : "#{that_entry}", 'lang2' : "#{entry}", 'time' : "#{time_in_seconds}", 'interpretation_id' : "#{interp_id}" , 'upvotes' : 0, 'downvotes' : 0  } }, (data) ->
-              console.log data.data )
-            window.section += 1
             $('.done-button').html('<div class="btn btn-info" id="done-button">Done</div>')
             $('.save-button').html('<div class="btn btn-info" id="save-button">Saving...</div>')
             delayedShowSaved = ->
@@ -260,7 +265,7 @@ $ ->
             console.log entry
             if entry isnt ''
               time = $("#current-loop-time").text()
-              $('#lang2-lyrics').append("<p><small><small>(#{time})</small></small>  #{entry}</p>")
+              $('#lang2-lyrics').append("<p><small><small class='edit-duration'>(#{time})</small></small>  <span class='edit-line-lan2'>#{entry}</span></p>")
               $('.lang2-line').val('')
               time_in_seconds = parseInt(time.slice(3,5)) + parseInt(time.slice(0,2))*60
               $.post('/new_line', { 'line' : { 'lang1' : '', 'lang2' : "#{entry}", 'time' : "#{time_in_seconds}", 'interpretation_id' : "#{interp_id}" , 'upvotes' : 0, 'downvotes' : 0  } }, (data) ->
@@ -271,6 +276,112 @@ $ ->
             delayedShowSaved = ->
               $('.save-button').html('<div class="btn btn-info" id="save-button">Saved</div>')
             window.setTimeout(delayedShowSaved, 600)
+
+  # REVISING TIME/DURATION OF LINES
+
+  $('.edit-duration').livequery ->
+    $(this).hover(
+      ->
+        $(this).attr('style','background-color: yellow;')
+      -> 
+        $(this).attr('style','background-color: white;'))
+
+    $(this).click ->
+      if window.editing_line isnt 'on'
+        html = $(this).html().replace /\(/, ""
+        html = html.replace /\)/, ""
+        $(this).parent().parent().append("
+          <div id ='editing-div'>
+            <a href='#'><i class='icon-arrow-left' id='start-time-left'></i></a>/<a href='#'><i class='icon-arrow-right' id='start-time-right'></i></a>
+            #{html}
+            <a href='#'><i class='icon-arrow-left' id='end-time-left'></i></a>/<a href='#'><i class='icon-arrow-right' id='end-time-right'></i></a>
+            (<a href='#' id='editing-line-done'>done</a>)
+          </div>")
+        $('#editing-div').hide().slideDown('fast')
+      window.editing_line = 'on'
+
+  $('#start-time-left').livequery -> 
+    $(this).click ->
+      current_time = parseInt($('#start-time-left').parent().parent().parent().attr('data-time'))
+      line_id = $('#start-time-left').parent().parent().parent().attr('data-line-id')
+      console.log "current time: #{current_time}, line id: #{line_id}"
+      if current_time > 0
+        new_time = current_time - 1 
+        $.post('/update_line', { 'line' : { 'time' : "#{new_time}", 'id' : "#{line_id}" } }, (data) ->
+          updated_time = data.data.time
+          duration = data.data.duration
+          if updated_time < 60
+            if updated_time < 10
+              formatted_updated_time = "00:0#{updated_time}"
+            else
+              formatted_updated_time = "00:#{updated_time}"
+          else
+            formatted_updated_time = "#{updated_time}"
+          $('#start-time-left').parent().parent().parent().attr('data-time',"#{updated_time}")
+          $('#start-time-left').parent().parent().html("
+            <div id ='editing-div'>
+              <a href='#'><i class='icon-arrow-left' id='start-time-left'></i></a>/<a href='#'><i class='icon-arrow-right' id='start-time-right'></i></a>
+              #{updated_time}
+              <a href='#'><i class='icon-arrow-left' id='end-time-left'></i></a>/<a href='#'><i class='icon-arrow-right' id='end-time-right'></i></a>
+              (<a href='#' id='editing-line-done'>done</a>)
+            </div>")
+          console.log updated_time )
+
+  $('#start-time-right').livequery -> 
+    $(this).click ->
+      current_time = parseInt($('#start-time-right').parent().parent().parent().attr('data-time'))
+      line_id = $('#start-time-right').parent().parent().parent().attr('data-line-id')
+      new_time = current_time + 1 
+      $.post('/update_line', { 'line' : { 'time' : "#{new_time}", 'id' : "#{line_id}" } }, (data) ->
+        updated_time = data.data.time
+        $('#start-time-right').parent().parent().parent().attr('data-time',"#{updated_time}")
+        console.log updated_time )
+
+
+  $('#end-time-left').livequery -> 
+  $('#end-time-right').livequery -> 
+
+  $('#editing-line-done').livequery ->
+    $(this).click ->
+      $(this).parent().slideUp()
+      $(this).parent().remove()
+      window.editing_line = 'off'
+
+  # REVISING LINE CONTENT 
+
+  $('.edit-line-lang1').livequery ->
+    $(this).hover(
+      -> $(this).attr('style','background-color: yellow;')
+      -> $(this).attr('style','background-color: white;'))
+
+  $('.edit-line-lang2').livequery ->
+    $(this).hover(
+      -> $(this).attr('style','background-color: yellow;')
+      -> $(this).attr('style','background-color: white;'))
+ 
+  $('.edit-line-lang1').livequery ->
+    $(this).click ->
+      if window.editing_line isnt 'on'
+        html = $(this).text()
+        $(this).html("
+          <div class='control-group'>
+            <div class='controls'>
+              <input type='text' class='input-xlarge' id='edit-line-lang1' value=#{html}>
+            </div>
+          </div>")
+        window.editing_line = 'on'
+
+  $('#edit-line-lang1').livequery ->
+    $(this).keyup (e) ->
+      e.preventDefault
+      if e.which == 13 and this.value isnt ''
+        entry = this.value
+        line_id = $('#edit-line-lang1').parent().parent().parent().parent().attr('data-line-id')
+        $.post('/update_line', { 'line' : { 'lang1' : "#{entry}", 'id' : "#{line_id}" } }, (data) ->
+          updated_lang1 = data.data.lang1
+          $('.edit-line-lang1').html("#{updated_lang1}"
+          console.log updated_lang1 ))
+        window.editing_line = 'off'
 
   # LOGIC FOR THE CONTROLS PANEL
 
