@@ -224,8 +224,9 @@ $ ->
             time_in_seconds = parseInt(time.slice(3,5)) + parseInt(time.slice(0,2))*60
             $.post('/new_line', { 'line' : { 'lang1' : "#{entry}", 'lang2' : "#{that_entry}", 'time' : "#{time_in_seconds}", 'interpretation_id' : "#{interp_id}" , 'upvotes' : 0, 'downvotes' : 0  } }, (data) ->
               line_id = data.data.id 
-              $('#lang1-lyrics').append("<p data-line-id=#{line_id} data-time=#{time_in_seconds}><small><small class='edit-duration'>(#{time})</small></small>  <span class='edit-line-lang1'>#{entry}</span></p>")
-              $('#lang2-lyrics').append("<p data-line-id=#{line_id}><small><small class='edit-duration'>(#{time})</small></small>  <span class='edit-line-lang2'>#{that_entry}</span></p>"))
+              duration = data.data.duration
+              $('#lang1-lyrics').append("<p data-line-id=#{line_id} data-time=#{time_in_seconds} data-duration=#{duration}><small><small class='edit-duration'>(#{time})</small></small>  <span class='edit-line-lang1'>#{entry}</span></p>")
+              $('#lang2-lyrics').append("<p data-line-id=#{line_id} data-time=#{time_in_seconds} data-duration=#{duration}><small><small class='edit-duration'>(#{time})</small></small>  <span class='edit-line-lang2'>#{that_entry}</span></p>"))
             $('.lang1-line').val('')
             $('.lang2-line').val('')
             window.section += 1
@@ -242,8 +243,9 @@ $ ->
             time_in_seconds = parseInt(time.slice(3,5)) + parseInt(time.slice(0,2))*60
             $.post('/new_line', { 'line' : { 'lang1' : "#{that_entry}", 'lang2' : "#{entry}", 'time' : "#{time_in_seconds}", 'interpretation_id' : "#{interp_id}" , 'upvotes' : 0, 'downvotes' : 0  } }, (data) ->
               line_id = data.data.id 
-              $('#lang1-lyrics').append("<p data-line-id=#{line_id} data-time=#{time_in_seconds}><small><small class='edit-duration'>(#{time})</small></small>  <span class='edit-line-lang1'>#{that_entry}</span></p>")
-              $('#lang2-lyrics').append("<p data-line-id=#{line_id}><small><small class='edit-duration'>(#{time})</small></small>  <span class='edit-line-lang2'>#{entry}</span></p>"))
+              duration = data.data.duration
+              $('#lang1-lyrics').append("<p data-line-id=#{line_id} data-time=#{time_in_seconds} data-duration=#{duration}><small><small class='edit-duration'>(#{time})</small></small>  <span class='edit-line-lang1'>#{that_entry}</span></p>")
+              $('#lang2-lyrics').append("<p data-line-id=#{line_id} data-time=#{time_in_seconds} data-duration=#{duration}><small><small class='edit-duration'>(#{time})</small></small>  <span class='edit-line-lang2'>#{entry}</span></p>"))
             window.section += 1
             $('.lang1-line').val('')
             $('.lang2-line').val('')
@@ -275,76 +277,6 @@ $ ->
               $('.save-button').html('<div class="btn btn-info" id="save-button">Saved</div>')
             window.setTimeout(delayedShowSaved, 600)
 
-  # REVISING TIME/DURATION OF LINES
-
-  $('.edit-duration').livequery ->
-    $(this).hover(
-      ->
-        $(this).attr('style','background-color: yellow;')
-      -> 
-        $(this).attr('style','background-color: white;'))
-
-    $(this).click ->
-      if window.editing_line isnt 'on'
-        html = $(this).html().replace /\(/, ""
-        html = html.replace /\)/, ""
-        $(this).parent().parent().append("
-          <div id ='editing-div'>
-            <a href='#'><i class='icon-arrow-left' id='start-time-left'></i></a>/<a href='#'><i class='icon-arrow-right' id='start-time-right'></i></a>
-            #{html}
-            <a href='#'><i class='icon-arrow-left' id='end-time-left'></i></a>/<a href='#'><i class='icon-arrow-right' id='end-time-right'></i></a>
-            (<a href='#' id='editing-line-done'>done</a>)
-          </div>")
-        $('#editing-div').hide().slideDown('fast')
-      window.editing_line = 'on'
-
-  $('#start-time-left').livequery -> 
-    $(this).click ->
-      current_time = parseInt($('#start-time-left').parent().parent().parent().attr('data-time'))
-      line_id = $('#start-time-left').parent().parent().parent().attr('data-line-id')
-      console.log "current time: #{current_time}, line id: #{line_id}"
-      if current_time > 0
-        new_time = current_time - 1 
-        $.post('/update_line', { 'line' : { 'time' : "#{new_time}", 'id' : "#{line_id}" } }, (data) ->
-          updated_time = data.data.time
-          duration = data.data.duration
-          if updated_time < 60
-            if updated_time < 10
-              formatted_updated_time = "00:0#{updated_time}"
-            else
-              formatted_updated_time = "00:#{updated_time}"
-          else
-            formatted_updated_time = "#{updated_time}"
-          $('#start-time-left').parent().parent().parent().attr('data-time',"#{updated_time}")
-          $('#start-time-left').parent().parent().html("
-            <div id ='editing-div'>
-              <a href='#'><i class='icon-arrow-left' id='start-time-left'></i></a>/<a href='#'><i class='icon-arrow-right' id='start-time-right'></i></a>
-              #{updated_time}
-              <a href='#'><i class='icon-arrow-left' id='end-time-left'></i></a>/<a href='#'><i class='icon-arrow-right' id='end-time-right'></i></a>
-              (<a href='#' id='editing-line-done'>done</a>)
-            </div>")
-          console.log updated_time )
-
-  $('#start-time-right').livequery -> 
-    $(this).click ->
-      current_time = parseInt($('#start-time-right').parent().parent().parent().attr('data-time'))
-      line_id = $('#start-time-right').parent().parent().parent().attr('data-line-id')
-      new_time = current_time + 1 
-      $.post('/update_line', { 'line' : { 'time' : "#{new_time}", 'id' : "#{line_id}" } }, (data) ->
-        updated_time = data.data.time
-        $('#start-time-right').parent().parent().parent().attr('data-time',"#{updated_time}")
-        console.log updated_time )
-
-
-  $('#end-time-left').livequery -> 
-  $('#end-time-right').livequery -> 
-
-  $('#editing-line-done').livequery ->
-    $(this).click ->
-      $(this).parent().slideUp()
-      $(this).parent().remove()
-      window.editing_line = 'off'
-
   # REVISING LINE CONTENT 
 
   $('.edit-line-lang1').livequery ->
@@ -364,9 +296,10 @@ $ ->
         $(this).html("
           <div class='control-group'>
             <div class='controls'>
-              <input type='text' class='input-xlarge' id='edit-line-lang1' value=#{html}>
+              <input type='text' class='input-xlarge' id='edit-line-lang1'>
             </div>
           </div>")
+        $('#edit-line-lang1').val(html)
         window.editing_line = 'on'
 
   $('#edit-line-lang1').livequery ->
@@ -389,9 +322,10 @@ $ ->
         $(this).html("
           <div class='control-group'>
             <div class='controls'>
-              <input type='text' class='input-xlarge' id='edit-line-lang2' value=#{html}>
+              <input type='text' class='input-xlarge' id='edit-line-lang2'>
             </div>
           </div>")
+        $('#edit-line-lang2').val(html)
         window.editing_line = 'on'
 
   $('#edit-line-lang2').livequery ->
@@ -406,6 +340,63 @@ $ ->
           text_to_update.html("#{updated_lang2}")
           console.log updated_lang2 )
         window.editing_line = 'off'
+
+  # REVISING TIME/DURATION OF LINES
+
+  $('.edit-duration').livequery ->
+    $(this).hover(
+      -> $(this).attr('style','background-color: yellow;')
+      -> $(this).attr('style','background-color: white;'))
+
+    $(this).click ->
+
+      formatTime = (time) ->
+        if time <= 9 then formatted_time = "00:0" + time
+        if 9 < time <= 59 then formatted_time = "00:" + time
+        if 60 <= time then formatted_time = (time)/60 + ":" + (time)%60
+        formatted_time
+
+      if window.editing_line isnt 'on'
+        $(this).parent().parent().append("
+          <div id='editing-div'>
+            <div id='slider'></div>
+            <div id='revise-timing-done'>(<a href='#' id='editing-line-done'>done</a>)</div>
+            <br>
+          </div>")
+        window.this_editing_time = $('#editing-div').parent().children(":first").children(":first")
+        old_start_time = parseInt($('#slider').parent().parent().attr('data-time'))
+        old_end_time = parseInt($('#slider').parent().parent().attr('data-time')) + parseInt($('#slider').parent().parent().attr('data-duration'))
+        $('#slider').slider(
+          range: true
+          min: 0
+          max: 12
+          step: 1
+          if old_end_time < 12
+            values: [ old_start_time, old_end_time ]
+          else
+            values: [ 0, old_end_time - old_start_time ]
+          slide: (event, ui) ->
+            console.log parseInt($(this).parent().parent().attr('data-time')) + ui.values[0]
+            formatted_start_time = formatTime(ui.values[0])
+            formatted_end_time = formatTime(ui.values[1])
+            window.this_editing_time.html("(#{formatted_start_time} to #{formatted_end_time})")
+            window.first_handle.html("<p><small><small>#{formatted_start_time}</small></small></p>")
+            window.second_handle.html("<p><small><small>#{formatted_end_time}</small></small></p>")
+          )
+        window.first_handle = $(".ui-slider-handle:eq(0)")
+        window.first_handle.html("<p><small><small>#{formatTime(old_start_time)}</small></small></p>")
+        window.second_handle = $(".ui-slider-handle:eq(1)")
+        window.second_handle.html("<p><small><small>#{formatTime(old_end_time)}</small></small></p>")
+        $('#editing-div').hide().slideDown('fast')
+      window.editing_line = 'on'
+
+  $('#editing-line-done').livequery ->
+    $(this).click ->
+      line_id = $(this).parent().parent().parent().attr('data-line-id')
+      text_to_update = $(this).parent().parent().parent().attr('data-time')
+      $(this).parent().parent().slideUp()
+      $(this).parent().parent().remove()
+      window.editing_line = 'off'
 
   # LOGIC FOR THE CONTROLS PANEL
 

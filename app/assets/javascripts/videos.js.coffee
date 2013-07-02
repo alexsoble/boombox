@@ -15,3 +15,5 @@ $ ->
 
     if language_option is "english-page"
       $("#translate-button").html("Translate new video")
+
+  $('#slider').slider()

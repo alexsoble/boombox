@@ -78,6 +78,10 @@
 
 #controls { position: relative; }
 
+#slider { width: 150px; float: left; }
+.ui-slider-handle { width: 30px!important; }
+#revise-timing-done { float: left; }
+
 .rounded { margin-right: 10px; border-radius: 10px !important; }
   
 #red-arrow {  position: absolute; top: 110px; left: 320px; }
