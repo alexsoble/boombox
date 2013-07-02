@@ -10,7 +10,8 @@
         <br>
         <div class="index-button" id="new-translation-button">
           <div class="button-text-wrapper">
-            <p class="index-button-text">Translate new video</p>
+            <p class="index-button-text">Translate a<br>new video<br></p>
+            <%= image_tag "youtube-logo.png", style: 'float: right;' %>
             <div class="controls">
               <input type="text" class="short-text-box" id="new-video-submit" length="10px">
             </div>
@@ -43,12 +44,14 @@
       </div>
       <div class="span2 span">
         <br>
-        <div class="index-button">
-          <div class="button-text-wrapper" id="request-translation-button">
-            <p class="index-button-text">Request a translation</p>
+        <div class="index-button" id="request-translation-button">
+          <div class="button-text-wrapper">
+            <p class="index-button-text">Request a<br> translation</p>
+            <%= image_tag "youtube-logo.png", style: 'float: right;' %>
             <div class="controls">
               <input type="text" class="short-text-box" id="new-video-submit" length="10px">
             </div>
+            <p class="index-button-text tiny">Copy the URL from YouTube above.</p>
           </div>
         </div>
       </div>

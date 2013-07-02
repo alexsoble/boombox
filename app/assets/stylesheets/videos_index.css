@@ -12,7 +12,7 @@
 .index-button { float: right;
   right: 0px;
   width: 220px;
-  height: 120px;
+  height: 140px;
   margin-right: 40px;
   margin-bottom: 20px;
   background-color: #9B59BB;
@@ -21,9 +21,9 @@
 
 .button-text-wrapper { margin: 20px; }
 
-.short-text-box { width: 165px; }
+.index-button-text { text-align: center; color: white; float: left; }
 
-.index-button-text { text-align: center; color: white; }
+.short-text-box { width: 165px; }
 
 .tiny { font-size: 10px; }
 

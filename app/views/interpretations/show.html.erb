@@ -54,7 +54,7 @@
           </ul>
       </ul>
     </div>
-    <div style="position: absolute; right: 2%; top: 30%;"><h3><i>Translated by 
+    <div style="position: absolute; right: 2%;"><h3><i>Translated by 
       <% if @user == 'anon' %>
         anonymous
       <% else %> 
@@ -72,7 +72,10 @@
           <%= link_to "#{@user.name}", user_url(@user) %></i>
         <% end %>
       <% end %>
+      <br>
+      <a href="https://twitter.com/share" class="twitter-share-button" data-lang="en" data-size="large" data-text="Check out this video I found on Heyu! <%= @url %>" data-hashtags="<%= @interp.lang1 %>,<%= @interp.lang2 %>,Languages">Tweet this Translation</a>
     </div>
+    <div class="fb-like" data-send="false" data-width="450" data-show-faces="true" data-font="arial"></div>
   </div>
 <% else %>
   <div class="centerbox" style="text-align: center;"><h3>Nobody's translated this song yet. <%= link_to "Want to give it a try?", "/videos/new" %></h3></div>

@@ -24,9 +24,8 @@ class VideosController < ApplicationController
   def show 
 
     @video = Video.find_by_id(params[:id])
-
     @interpretations = Interpretation.where(:video_id => @video.id).order("created_at ASC")
-
+    
     # LOGIC TO FIND THE INTERPRETATION WITH THE MOST LINES
 
     if @interpretations.present?
@@ -43,18 +42,6 @@ class VideosController < ApplicationController
       @interpretation = Interpretation.where(:id => arr.first[:id]).first
 
       redirect_to "/interpretations/#{@interpretation.id}"      
-
-      # @lines = Line.where(:interpretation_id => @interpretation.id).order("created_at ASC")
-      # @lines_have_lang1 = false
-      # @lines.all.each do |l|
-      #   if l.lang1.present? then @lines_have_lang1 = true end
-      # end 
-
-      # if @interpretation.user_id == 0
-      #   @user = 'anon'
-      # else
-      #   @user = User.find_by_id(@interpretation.user_id)
-      # end
 
     end
     

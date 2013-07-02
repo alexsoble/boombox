@@ -25,6 +25,7 @@ class InterpretationsController < ApplicationController
   def show
     @interp = Interpretation.find_by_id(params[:id])
     @lines = Line.where(:interpretation_id => @interp.id).order("created_at ASC")
+    @url = request.url
 
     @lines_have_lang1 = false
     @lines.all.each do |l|
