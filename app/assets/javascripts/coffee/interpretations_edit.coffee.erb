@@ -87,10 +87,8 @@ $ ->
   window.setTimeout(delayedShow, 1000)
 
   $('.edit-line').hover(
-    ->
-      $(this).attr('style','background-color: yellow;')
-    -> 
-      $(this).attr('style','background-color: white;'))
+    -> $(this).attr('style','background-color: yellow;')
+    -> $(this).attr('style','background-color: white;'))
  
   $('.edit-line').livequery ->
     $(this).click ->

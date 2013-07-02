@@ -18,7 +18,7 @@ class LinesController < ApplicationController
       @line.save
     end
     if @update[:lang2].present?
-      @line.time = @update[:lang2]
+      @line.lang2 = @update[:lang2]
       @line.save
     end
     render :json => { :data => @line }

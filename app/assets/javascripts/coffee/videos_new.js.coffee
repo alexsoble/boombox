@@ -225,8 +225,7 @@ $ ->
             $.post('/new_line', { 'line' : { 'lang1' : "#{entry}", 'lang2' : "#{that_entry}", 'time' : "#{time_in_seconds}", 'interpretation_id' : "#{interp_id}" , 'upvotes' : 0, 'downvotes' : 0  } }, (data) ->
               line_id = data.data.id 
               $('#lang1-lyrics').append("<p data-line-id=#{line_id} data-time=#{time_in_seconds}><small><small class='edit-duration'>(#{time})</small></small>  <span class='edit-line-lang1'>#{entry}</span></p>")
-              )
-            $('#lang2-lyrics').append("<p><small><small class='edit-duration'>(#{time})</small></small>  <span class='edit-line-lang2'>#{that_entry}</span></p>")
+              $('#lang2-lyrics').append("<p data-line-id=#{line_id}><small><small class='edit-duration'>(#{time})</small></small>  <span class='edit-line-lang2'>#{that_entry}</span></p>"))
             $('.lang1-line').val('')
             $('.lang2-line').val('')
             window.section += 1
@@ -244,9 +243,8 @@ $ ->
             $.post('/new_line', { 'line' : { 'lang1' : "#{that_entry}", 'lang2' : "#{entry}", 'time' : "#{time_in_seconds}", 'interpretation_id' : "#{interp_id}" , 'upvotes' : 0, 'downvotes' : 0  } }, (data) ->
               line_id = data.data.id 
               $('#lang1-lyrics').append("<p data-line-id=#{line_id} data-time=#{time_in_seconds}><small><small class='edit-duration'>(#{time})</small></small>  <span class='edit-line-lang1'>#{that_entry}</span></p>")
-              )
+              $('#lang2-lyrics').append("<p data-line-id=#{line_id}><small><small class='edit-duration'>(#{time})</small></small>  <span class='edit-line-lang2'>#{entry}</span></p>"))
             window.section += 1
-            $('#lang2-lyrics').append("<p><small><small class='edit-duration'>(#{time})</small></small>  <span class='edit-line-lang2'>#{entry}</span></p>")
             $('.lang1-line').val('')
             $('.lang2-line').val('')
             $('.lang1-line').focus()
@@ -377,10 +375,36 @@ $ ->
       if e.which == 13 and this.value isnt ''
         entry = this.value
         line_id = $('#edit-line-lang1').parent().parent().parent().parent().attr('data-line-id')
+        text_to_update = $('#edit-line-lang1').parent().parent().parent()
         $.post('/update_line', { 'line' : { 'lang1' : "#{entry}", 'id' : "#{line_id}" } }, (data) ->
           updated_lang1 = data.data.lang1
-          $('.edit-line-lang1').html("#{updated_lang1}"
-          console.log updated_lang1 ))
+          text_to_update.html("#{updated_lang1}")
+          console.log updated_lang1 )
+        window.editing_line = 'off'
+
+  $('.edit-line-lang2').livequery ->
+    $(this).click ->
+      if window.editing_line isnt 'on'
+        html = $(this).text()
+        $(this).html("
+          <div class='control-group'>
+            <div class='controls'>
+              <input type='text' class='input-xlarge' id='edit-line-lang2' value=#{html}>
+            </div>
+          </div>")
+        window.editing_line = 'on'
+
+  $('#edit-line-lang2').livequery ->
+    $(this).keyup (e) ->
+      e.preventDefault
+      if e.which == 13 and this.value isnt ''
+        entry = this.value
+        line_id = $('#edit-line-lang2').parent().parent().parent().parent().attr('data-line-id')
+        text_to_update = $('#edit-line-lang2').parent().parent().parent()
+        $.post('/update_line', { 'line' : { 'lang2' : "#{entry}", 'id' : "#{line_id}" } }, (data) ->
+          updated_lang2 = data.data.lang2
+          text_to_update.html("#{updated_lang2}")
+          console.log updated_lang2 )
         window.editing_line = 'off'
 
   # LOGIC FOR THE CONTROLS PANEL
