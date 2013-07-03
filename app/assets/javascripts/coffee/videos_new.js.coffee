@@ -4,6 +4,7 @@ $ ->
   lang1 = $('#lang1').html()
   lang2 = $('#lang2').html()
   interp_id = $('#interp-id').html()
+  action_name = $('#action-name').html()
 
   formatTime = (time) ->
     time = Math.floor(time)
@@ -17,18 +18,20 @@ $ ->
       if 9 < time%60 <= 59 then formatted_time = Math.floor((time)/60) + ":" + (time)%60
     formatted_time
 
-  $('#title-box').hide()
-  $('#red-arrow').hide()
-  $('#title-box').slideDown('5000')
-  $('#timer-box').html('<div id="timer"><h2 class="timer-text" id="big-timer"></h2></div>')
-  $('#timer-box').hide()
-  $("#controls").append('<br><div class="btn-group relative" id="settings-and-start">
-      <br><br><br><br>
-      <a class="btn btn-info btn-large center-pill rounded" id="start" style="position: absolute; left: 108px;">Start translating</a>
-    </div>')
-  $("#controls").prepend('<div id="red-arrow-text-box"><p><strong>Click here when <br> the words start!</strong></p></div>')
-  $("#controls").fadeIn('slow')
-  $('#red-arrow').fadeIn('slow')
+  if action_name isnt 'edit'
+
+    $('#title-box').hide()
+    $('#red-arrow').hide()
+    $('#title-box').slideDown('5000')
+    $('#timer-box').html('<div id="timer"><h2 class="timer-text" id="big-timer"></h2></div>')
+    $('#timer-box').hide()
+    $("#controls").append('<br><div class="btn-group relative" id="settings-and-start">
+        <br><br><br><br>
+        <a class="btn btn-info btn-large center-pill rounded" id="start" style="position: absolute; left: 108px;">Start translating</a>
+      </div>')
+    $("#controls").prepend('<div id="red-arrow-text-box"><p><strong>Click here when <br> the words start!</strong></p></div>')
+    $("#controls").fadeIn('slow')
+    $('#red-arrow').fadeIn('slow')
 
 # YOUTUBE PLAYER COMES IN HERE
 
@@ -115,6 +118,11 @@ $ ->
         </label>
       </div>")
 
+  if action_name is 'edit'
+    window.section = window.time / 4
+    window.loop = 4
+    window.translation_type = 'lang1_and_lang2'
+
   $("#yes-loops").livequery ->
     $(this).click -> 
       window.section = window.time / 4
@@ -147,6 +155,7 @@ $ ->
     helloArray['Turkish'] = 'Merhaba'
     helloArray['Hebrew'] = 'שלום'
     helloArray['Dutch'] = 'Hallo'
+    helloArray['German'] = 'Guten Tag'
     helloArray['Afrikaans'] = 'Hallo'
     helloArray['Norwegian'] = 'Hei'
     helloArray['English'] = 'Hello'

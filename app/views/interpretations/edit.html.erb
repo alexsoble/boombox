@@ -11,12 +11,17 @@
       <div id="timer-box"></div>
       <div id="slider"></div>
       <div id="loop-settings">
-        <div class='btn-group' id='loop-settings'>
+        <br>
+        <a class='btn btn-info btn-small rounded' id='loop-status'>Playing in 4-second loops.</a>
+        <div id='loop-slider'></div>
+        <br>
+        <br>
+        <div class='btn-group'>
+          <a class='btn btn-info btn-small rounded' id='backward-loop'><i class='icon-step-backward'></i> 1 loop</a>
+          <a class='btn btn-info btn-small rounded' id='forward-loop'>1 loop <i class='icon-step-forward'></i></a>
           <br>
-          <a class='btn btn-warning rounded' id='playing-in-loops'><i>Playing video in loops</i></a>
-          <a class='btn btn-info rounded' id='loop-2'>2s</a>
-          <a class='btn btn-warning rounded' id='loop-4'>4s</a>
-          <a class='btn btn-info rounded' id='loop-8'>8s</i></a>
+          <a class='btn btn-info btn-small rounded' id='backward-s' style='width: 48px;'><i class='icon-step-backward'></i> 1 sec. </a>
+          <a class='btn btn-info btn-small rounded' id='forward-s' style='width: 48px;'>1 sec.  <i class='icon-step-forward'></i></a>
         </div>
       </div>
     </div>
@@ -44,9 +49,9 @@
                 <% @lines.each do |l| %>
                   <% if l.lang1.present? %>
                     <% if l.time < 60 %>
-                      <div class="edit-line" id="<%= l.id %>"><p><small><small>(00:<%= l.time %>)</small></small> <%= l.lang1 %></p></div>
+                      <div class="edit-line" id="<%= l.id %>"><p><small><small>(<%= l.formatted_time %>)</small></small> <%= l.lang1 %></p></div>
                     <% else %>
-                      <div class="edit-line" id="<%= l.id %>"><p><small><small>(<%= l.time / 60 %>:<%= l.time % 60%>)</small></small> <%= l.lang1 %></p></div>
+                      <div class="edit-line" id="<%= l.id %>"><p><small><small>(<%= l.formatted_time %>)</small></small> <%= l.lang1 %></p></div>
                     <% end %>
                   <% end %>
                 <% end %>
@@ -119,3 +124,4 @@
 <div id="lang1" class="quiet"><%= @video.lang1 %></div>
 <div id="lang2" class="quiet"><%= @interp.lang2 %></div>
 <div id="translation-type" class="quiet"><%= if @lang1_and_lang2 then 'lang1_and_lang2' else 'just_lang2' end %></div>
+<div id="action-name" class="quiet"><%= action_name %></div>

@@ -7,6 +7,8 @@
   <%= javascript_include_tag "bootstrap.min.css" %>
   <% if controller_name == "interpretations" && action_name == "show" %>
     <%= javascript_include_tag "coffee/videos_#{action_name}" %>
+  <% elsif controller_name == "interpretations" && action_name == "edit" %>
+    <%= javascript_include_tag "coffee/videos_new" %>
   <% else %>
     <%= javascript_include_tag "coffee/#{controller_name}_#{action_name}" %>
   <% end %>
