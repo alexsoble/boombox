@@ -127,39 +127,59 @@ $ ->
     $(this).click -> 
       window.section = window.time / 4
       window.loop = 4
-      window.player.playVideo()
       $(this).parent().parent().fadeOut()
-      $('#loop-settings').html("
-        <div class='btn-group' id='loop-settings'>
-          <br>
-          <a class='btn btn-warning rounded' id='playing-in-loops'><i>Playing video in loops</i></a>
-          <a class='btn btn-info rounded' id='loop-2'>2s</a>
-          <a class='btn btn-warning rounded' id='loop-4'>4s</a>
-          <a class='btn btn-info rounded' id='loop-8'>8s</i></a>
-          <br>
-          <br>
-          <a class='btn btn-info rounded' id='backward'><i class='icon-step-backward'></i> Skip backward</a>
-          <a class='btn btn-info rounded' id='forward'>Skip forward <i class='icon-step-forward'></i></a>
-        </div>")
       step2()
 
   $("#no-loops").livequery ->
     $(this).click -> 
-      window.loop = false
-      window.player.playVideo()
       $(this).parent().parent().fadeOut()
       step2()
 
   step2 = ->
+
+    # HELLO ARRAY
+
+    helloArray = []
+    helloArray['Spanish'] = 'Hola'
+    helloArray['French'] = 'Bonjour'
+    helloArray['Italian'] = 'Ciao'
+    helloArray['Portuguese'] = 'Oi'
+    helloArray['Romanian'] = 'Bună ziua'
+    helloArray['Catalan'] = 'Hola'
+    helloArray['Korean'] = '안녕하세요'
+    helloArray['Chinese'] = '你好'
+    helloArray['Japanese'] = 'こんにちは'
+    helloArray['Arabic'] = 'سلام'
+    helloArray['Persian'] = 'سلام'
+    helloArray['Urdu'] = 'سلام'
+    helloArray['Turkish'] = 'Merhaba'
+    helloArray['Hebrew'] = 'שלום'
+    helloArray['Dutch'] = 'Hallo'
+    helloArray['Afrikaans'] = 'Hallo'
+    helloArray['Norwegian'] = 'Hei'
+    helloArray['English'] = 'Hello'
+    helloArray['Danish'] = 'Hej'
+    helloArray['Icelandic'] = 'Halló'
+
     $("#controls").html("
       <div>
         <h3>One more question.</h3>
-        <label class='checkbox'>
-          <input type='checkbox' id='lang1-and-lang2'>I want to write down the #{lang1} and #{lang2} side-by-side.
-        </label>
-        <label class='checkbox'>
-          <input type='checkbox' id='just-lang2'>I want to just write down the #{lang2} translation.
-        </label>
+        <div style='margin: 30px;'>
+          <label class='checkbox'>
+            <input type='checkbox' id='lang1-and-lang2'>I want to write down the #{lang1} and #{lang2} side-by-side.
+          <br>
+          <div style='float: left; margin-left: 100px; margin-top: 25px;'><i>#{lang1}</i>: <br> #{helloArray[lang1]}</div>
+          <div style='float: left; margin-left: 100px; margin-top: 25px;'><i>#{lang2}</i>: <br> #{helloArray[lang2]}</div>
+          </label>
+          <br>
+        </div>
+        <br>
+        <div style='margin: 30px;'>
+          <label class='checkbox'>
+            <input type='checkbox' id='just-lang2'>I want to just write down the #{lang2} translation.
+          </label>
+          <br>
+        </div>
       </div>")
 
   $("#lang1-and-lang2").livequery ->
@@ -173,8 +193,30 @@ $ ->
       window.translation_type = 'just_lang2'
       $(this).parent().parent().fadeOut()
       step3()
-
+  
   step3 = ->
+
+    window.player.playVideo()
+
+    if window.loop == false
+      step4()
+
+    if window.loop isnt false
+      $('#loop-settings').html("
+        <div class='btn-group' id='loop-settings'>
+          <br>
+          <a class='btn btn-warning rounded' id='playing-in-loops'><i>Playing video in loops</i></a>
+          <a class='btn btn-info rounded' id='loop-2'>2s</a>
+          <a class='btn btn-warning rounded' id='loop-4'>4s</a>
+          <a class='btn btn-info rounded' id='loop-8'>8s</i></a>
+          <br>
+          <br>
+          <a class='btn btn-info rounded' id='backward'><i class='icon-step-backward'></i> Skip backward</a>
+          <a class='btn btn-info rounded' id='forward'>Skip forward <i class='icon-step-forward'></i></a>
+        </div>")
+      step4()
+
+  step4 = ->
 
     $('.span7').remove()
   
