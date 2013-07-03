@@ -36,10 +36,11 @@ body { position: relative;
   margin: 0 auto; }
 
 .left { float: left; }
+.right { float: right; }
 
 p { color: black; }
 
-h3 { font-size: 18px !important; }
+h3 { font-size: 18px !important; line-height: 22px !important }
 
 .white { color: white; }
 

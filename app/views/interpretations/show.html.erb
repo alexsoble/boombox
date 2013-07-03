@@ -54,28 +54,54 @@
           </ul>
       </ul>
     </div>
-    <div style="position: absolute; right: 2%;"><h3><i>Translated by 
+    <div class="right">
+      <h3>Translated by 
       <% if @user == 'anon' %>
         anonymous
       <% else %> 
         <% if current_user %>
           <% if current_user.id == @user.id %>
-            <%= link_to "you", user_url(@user) %>!</i>
-            <br>
-            <a href="#">Share translation</a>
-            <br>
-            <%= link_to "Edit translation", edit_interpretation_url(@interp) %></i></h3>
+            <%= link_to "you", user_url(@user) %>!</h3>
+            <div><i><%= link_to "Edit translation", edit_interpretation_url(@interp) %>.</i></div>
           <% else %>
-            <%= link_to "#{@user.name}", user_url(@user) %></i>
+            <%= link_to "#{@user.name}", user_url(@user) %>.</h3>
           <% end %>
         <% else %>
-          <%= link_to "#{@user.name}", user_url(@user) %></i>
+          <%= link_to "#{@user.name}", user_url(@user) %>.</h3>
         <% end %>
       <% end %>
-      <br>
-      <a href="https://twitter.com/share" class="twitter-share-button" data-lang="en" data-size="large" data-text="Check out this video I found on Heyu! <%= @url %>" data-hashtags="<%= @interp.lang1 %>,<%= @interp.lang2 %>,Languages">Tweet this Translation</a>
     </div>
-    <div class="fb-like" data-send="false" data-width="450" data-show-faces="true" data-font="arial"></div>
+    <br>
+    <br>
+    <div class="right" style="margin-right: 10px;">
+      <% if current_user %>
+        <% if current_user.id == @user.id %>
+            Show off your translation:
+            <br>
+            <a href="https://twitter.com/share" class="twitter-share-button" data-lang="en" data-size="large" data-text="[Don't tweet this just yet...] Check out this video I translated! <%= @url %>" data-hashtags="<%= @interp.lang1 %>,<%= @interp.lang2 %>,Languages">Tweet this Translation</a>
+            <br>
+            <div class="fb-like" data-send="false" data-width="75" data-layout="button_count" data-show-faces="true" data-font="arial"></div>
+            <br>
+            <i class="icon-envelope icon icon"></i><%= link_to "  E-mail", "" %>
+          <% else %>
+            Share this translation:
+            <br>
+            <a href="https://twitter.com/share" class="twitter-share-button" data-lang="en" data-size="large" data-text="[Don't tweet this just yet...] Check out this video I found on Heyu! <%= @url %>" data-hashtags="<%= @interp.lang1 %>,<%= @interp.lang2 %>,Languages">Tweet this Translation</a>
+            <br>
+            <div class="fb-like" data-send="false" data-width="75" data-layout="button_count" data-show-faces="true" data-font="arial"></div>
+            <br>
+            <i class="icon-envelope icon icon"></i><%= link_to "  E-mail", "" %>
+          <% end %>
+      <% else %>
+        <i>Share this translation:</i>
+        <br>
+        <a href="https://twitter.com/share" class="twitter-share-button" data-lang="en" data-size="medium" data-text="[Don't tweet this just yet...] Check out this video I found on Heyu! <%= @url %>" data-hashtags="<%= @interp.lang1 %>,<%= @interp.lang2 %>,Languages">Tweet this Translation</a>
+        <br>
+        <div class="fb-like" data-send="false" data-width="75" data-layout="button_count" data-show-faces="true" data-font="arial"></div>
+        <br>
+        <i class="icon-envelope icon icon"></i><%= link_to "  E-mail", "" %>
+      <% end %>
+    </div>
   </div>
 <% else %>
   <div class="centerbox" style="text-align: center;"><h3>Nobody's translated this song yet. <%= link_to "Want to give it a try?", "/videos/new" %></h3></div>
