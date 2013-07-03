@@ -203,8 +203,8 @@ $ ->
           <a class='btn btn-info btn-small rounded' id='backward-loop'><i class='icon-step-backward'></i> 1 loop</a>
           <a class='btn btn-info btn-small rounded' id='forward-loop'>1 loop <i class='icon-step-forward'></i></a>
           <br>
-          <a class='btn btn-info btn-small rounded' id='backward-s'><i class='icon-step-backward'></i> 1 sec. </a>
-          <a class='btn btn-info btn-small rounded' id='forward-s'>1 sec.  <i class='icon-step-forward'></i></a>
+          <a class='btn btn-info btn-small rounded' id='backward-s' style='width: 48px;'><i class='icon-step-backward'></i> 1 sec. </a>
+          <a class='btn btn-info btn-small rounded' id='forward-s' style='width: 48px;'>1 sec.  <i class='icon-step-forward'></i></a>
         </div>")
       $('#loop-slider').slider(
         min: 2
@@ -225,6 +225,26 @@ $ ->
 
   # LOGIC FOR THE CONTROLS 
 
+  $("#forward-loop").livequery ->
+    $(this).click -> 
+      window.section += 1
+      player.seekTo(window.loop * window.section, true)
+
+  $("#backward-loop").livequery ->
+    $(this).click -> 
+      window.section -= 1
+      player.seekTo(window.loop * window.section, true)
+
+  $("#forward-s").livequery ->
+    $(this).click -> 
+      time = window.player.getCurrentTime()
+      player.seekTo(time + 1)
+
+  $("#backward-s").livequery ->
+    $(this).click -> 
+      time = window.player.getCurrentTime()
+      player.seekTo(time - 1)
+
   $('#loop-status').livequery -> 
     $(this).click ->
       if $(this).attr('class') == 'btn btn-warning rounded'
@@ -243,18 +263,6 @@ $ ->
         $("#loop-2").attr('class','btn btn-info rounded')
         $("#loop-4").attr('class','btn btn-warning rounded')
         $("#loop-8").attr('class','btn btn-info rounded')
-
-  $("#forward").livequery ->
-    $(this).click -> 
-      window.section += 1
-      player.seekTo(window.loop * window.section, true)
-      $("#looping-box").html(window.loop * window.section)
-
-  $("#backward").livequery ->
-    $(this).click -> 
-      window.section -= 1
-      player.seekTo(window.loop * window.section, true)
-      $("#looping-box").html(window.loop * window.section)
 
   step4 = ->
 
