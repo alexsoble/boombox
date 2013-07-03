@@ -5,6 +5,18 @@ $ ->
   lang2 = $('#lang2').html()
   interp_id = $('#interp-id').html()
 
+  formatTime = (time) ->
+    time = Math.floor(time)
+    if time <= 9 then formatted_time = "00:0" + time
+    if 9 < time <= 59 then formatted_time = "00:" + time
+    if 60 <= time < 540
+      if time%60 <= 9 then formatted_time = "0" + Math.floor((time)/60) + ":0" + (time)%60
+      if 9 < time%60 <= 59 then formatted_time = "0" + Math.floor((time)/60) + ":" + (time)%60
+    if 540 <= time < 3600
+      if time%60 <= 9 then formatted_time = Math.floor((time)/60) + ":0" + (time)%60
+      if 9 < time%60 <= 59 then formatted_time = Math.floor((time)/60) + ":" + (time)%60
+    formatted_time
+
   $('#title-box').hide()
   $('#red-arrow').hide()
   $('#title-box').slideDown('5000')
@@ -39,7 +51,7 @@ $ ->
     window.player = player 
 
   onPlayerReady = (event) ->
-    event.target.pauseVideo()
+    event.target.playVideo()
 
   window.section = 0 
   window.time = 0
@@ -47,36 +59,16 @@ $ ->
 
   countVideoPlayTime = ->
     exact_time = player.getCurrentTime()
-    window.time = Math.round(exact_time)
+    window.time = Math.floor(exact_time)
     minutes = Math.floor(window.time / 60)
-    if minutes < 10
-      minutes = '0' + minutes
-    seconds = window.time - minutes * 60
-    if seconds < 10
-      seconds = '0' + seconds
-    $(".timer-text").html(minutes + ":" + seconds)
+    $(".timer-text").html(formatTime(window.time))
 
-    # CALCULATING THE CURRENT LOOP START POINT IN INTEGER AND MM:SS FORMATS 
     current_loop_time = window.loop * window.section
-    loop_minutes = Math.floor(current_loop_time / 60)
-    if loop_minutes < 10
-      loop_minutes = '0' + loop_minutes
-    loop_seconds = current_loop_time - loop_minutes * 60
-    if loop_seconds < 10
-      loop_seconds = '0' + loop_seconds
-
-    # CALCULATING LOOP END POINT IN INTEGER AND MM:SS FORMATS 
     current_loop_end = window.loop * (window.section + 1)
-    loop_end_minutes = Math.floor(current_loop_end / 60)
-    if loop_end_minutes < 10
-      loop_end_minutes = '0' + loop_end_minutes
-    loop_end_seconds = current_loop_end - (loop_end_minutes * 60)
-    if loop_end_seconds < 10
-      loop_end_seconds = '0' + loop_end_seconds
 
     # DISPLAYING THE TIMING ABOVE THE TRANSLATION INPUT LINES 
     if window.loop != false
-      $(".current-loop-time").html(loop_minutes + ":" + loop_seconds + " to " + loop_end_minutes + ":" + loop_end_seconds)
+      $(".current-loop-time").html(formatTime(current_loop_time) + " to " + formatTime(current_loop_end))
     else
       $(".current-loop-time").html(minutes + ":" + seconds)
 
@@ -160,10 +152,10 @@ $ ->
     helloArray['English'] = 'Hello'
     helloArray['Danish'] = 'Hej'
     helloArray['Icelandic'] = 'Halló'
+    console.log helloArray
 
     $("#controls").html("
-      <div>
-        <h3>One more question.</h3>
+        <h3>One more question...</h3>
         <div style='margin: 30px;'>
           <label class='checkbox'>
             <input type='checkbox' id='lang1-and-lang2'>I want to write down the #{lang1} and #{lang2} side-by-side.
@@ -179,8 +171,7 @@ $ ->
             <input type='checkbox' id='just-lang2'>I want to just write down the #{lang2} translation.
           </label>
           <br>
-        </div>
-      </div>")
+        </div>")
 
   $("#lang1-and-lang2").livequery ->
     $(this).click -> 
@@ -203,18 +194,67 @@ $ ->
 
     if window.loop isnt false
       $('#loop-settings').html("
-        <div class='btn-group' id='loop-settings'>
+        <br>
+        <a class='btn btn-info btn-small rounded' id='loop-status'>Playing in 4-second loops.</a>
+        <div id='loop-slider'></div>
+        <br>
+        <br>
+        <div class='btn-group'>
+          <a class='btn btn-info btn-small rounded' id='backward-loop'><i class='icon-step-backward'></i> 1 loop</a>
+          <a class='btn btn-info btn-small rounded' id='forward-loop'>1 loop <i class='icon-step-forward'></i></a>
           <br>
-          <a class='btn btn-warning rounded' id='playing-in-loops'><i>Playing video in loops</i></a>
-          <a class='btn btn-info rounded' id='loop-2'>2s</a>
-          <a class='btn btn-warning rounded' id='loop-4'>4s</a>
-          <a class='btn btn-info rounded' id='loop-8'>8s</i></a>
-          <br>
-          <br>
-          <a class='btn btn-info rounded' id='backward'><i class='icon-step-backward'></i> Skip backward</a>
-          <a class='btn btn-info rounded' id='forward'>Skip forward <i class='icon-step-forward'></i></a>
+          <a class='btn btn-info btn-small rounded' id='backward-s'><i class='icon-step-backward'></i> 1 sec. </a>
+          <a class='btn btn-info btn-small rounded' id='forward-s'>1 sec.  <i class='icon-step-forward'></i></a>
         </div>")
+      $('#loop-slider').slider(
+        min: 2
+        max: 12
+        step: 1
+        value: 4
+        slide: (event, ui) ->
+          loopLength = ui.value
+          console.log loopLength
+          window.loop = loopLength
+          window.section = window.time / loopLength
+          $("#loop-status").html("Playing in #{ui.value} second loops.")
+          window.loop_handle.html("#{ui.value}")
+        )
+      window.loop_handle = $(".ui-slider-handle:eq(0)")
+      window.loop_handle.html("4")
       step4()
+
+  # LOGIC FOR THE CONTROLS 
+
+  $('#loop-status').livequery -> 
+    $(this).click ->
+      if $(this).attr('class') == 'btn btn-warning rounded'
+        console.log "Turning loops off."
+        $(this).attr('class','btn btn-info rounded')
+        $(this).html('Playing without loops')
+        window.loop = false
+        $("#loop-2").attr('class','btn btn-info rounded')
+        $("#loop-4").attr('class','btn btn-info rounded')
+        $("#loop-8").attr('class','btn btn-info rounded')
+      else
+        console.log "Turning loops on."
+        $(this).attr('class','btn btn-warning rounded')
+        $(this).html('<i>Playing video in loops</i>')
+        window.loop = 4
+        $("#loop-2").attr('class','btn btn-info rounded')
+        $("#loop-4").attr('class','btn btn-warning rounded')
+        $("#loop-8").attr('class','btn btn-info rounded')
+
+  $("#forward").livequery ->
+    $(this).click -> 
+      window.section += 1
+      player.seekTo(window.loop * window.section, true)
+      $("#looping-box").html(window.loop * window.section)
+
+  $("#backward").livequery ->
+    $(this).click -> 
+      window.section -= 1
+      player.seekTo(window.loop * window.section, true)
+      $("#looping-box").html(window.loop * window.section)
 
   step4 = ->
 
@@ -392,12 +432,6 @@ $ ->
 
     $(this).click ->
 
-      formatTime = (time) ->
-        if time <= 9 then formatted_time = "00:0" + time
-        if 9 < time <= 59 then formatted_time = "00:" + time
-        if 60 <= time then formatted_time = (time)/60 + ":" + (time)%60
-        formatted_time
-
       if window.editing_line isnt 'on'
 
         $(this).parent().parent().append("
@@ -435,9 +469,9 @@ $ ->
             window.first_handle.html("<p><small><small>#{formatted_start_time}</small></small></p>")
             window.second_handle.html("<p><small><small>#{formatted_end_time}</small></small></p>"))
 
-        window.first_handle = $(".ui-slider-handle:eq(0)")
+        window.first_handle = $(".ui-slider-handle:eq(1)")
         window.first_handle.html("<p><small><small>#{formatTime(old_start_time)}</small></small></p>")
-        window.second_handle = $(".ui-slider-handle:eq(1)")
+        window.second_handle = $(".ui-slider-handle:eq(2)")
         window.second_handle.html("<p><small><small>#{formatTime(old_end_time)}</small></small></p>")
         $('#editing-div').hide().slideDown('fast')
       window.editing_line = 'on'
@@ -456,68 +490,7 @@ $ ->
       $(this).parent().parent().remove()
       window.editing_line = 'off'
 
-  # LOGIC FOR THE CONTROLS PANEL
-
-  $('#playing-in-loops').livequery -> 
-    $(this).click ->
-      if $(this).attr('class') == 'btn btn-warning rounded'
-        console.log "Turning loops off."
-        $(this).attr('class','btn btn-info rounded')
-        $(this).html('Playing without loops')
-        window.loop = false
-        $("#loop-2").attr('class','btn btn-info rounded')
-        $("#loop-4").attr('class','btn btn-info rounded')
-        $("#loop-8").attr('class','btn btn-info rounded')
-      else
-        console.log "Turning loops on."
-        $(this).attr('class','btn btn-warning rounded')
-        $(this).html('<i>Playing video in loops</i>')
-        window.loop = 4
-        $("#loop-2").attr('class','btn btn-info rounded')
-        $("#loop-4").attr('class','btn btn-warning rounded')
-        $("#loop-8").attr('class','btn btn-info rounded')
-
-  $("#loop-2").livequery ->
-    $(this).click ->
-      window.loop = 2
-      window.section = window.time / 2
-      $("#playing-in-loops").attr('class','btn btn-warning rounded')
-      $("#playing-in-loops").html('<i>Playing video in loops</i>')
-      $("#loop-2").attr('class','btn btn-warning rounded')
-      $("#loop-4").attr('class','btn btn-info rounded')
-      $("#loop-8").attr('class','btn btn-info rounded')
-
-  $("#loop-4").livequery ->
-    $(this).click ->
-      window.loop = 4
-      window.section = window.time / 4
-      $("#playing-in-loops").attr('class','btn btn-warning rounded')
-      $("#playing-in-loops").html('<i>Playing video in loops</i>')
-      $("#loop-2").attr('class','btn btn-info rounded')
-      $("#loop-4").attr('class','btn btn-warning rounded')
-      $("#loop-8").attr('class','btn btn-info rounded')
-
-  $("#loop-8").livequery ->
-    $(this).click ->
-      window.loop = 8
-      window.section = window.time / 8
-      $("#playing-in-loops").attr('class','btn btn-warning rounded')
-      $("#playing-in-loops").html('<i>Playing video in loops</i>')
-      $("#loop-2").attr('class','btn btn-info rounded')
-      $("#loop-4").attr('class','btn btn-info rounded')
-      $("#loop-8").attr('class','btn btn-warning rounded')
-
-  $("#forward").livequery ->
-    $(this).click -> 
-      window.section += 1
-      player.seekTo(window.loop * window.section, true)
-      $("#looping-box").html(window.loop * window.section)
-
-  $("#backward").livequery ->
-    $(this).click -> 
-      window.section -= 1
-      player.seekTo(window.loop * window.section, true)
-      $("#looping-box").html(window.loop * window.section)
+  # OLD STUFF...  MAYBE NOT USELESS THOUGH? 
 
   $("#timer-toggle").livequery ->
     $(this).click ->
