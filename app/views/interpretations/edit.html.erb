@@ -9,27 +9,7 @@
       <div class="lyrics-box small"></div>
       <div id="new-video-box"></div>
       <div id="timer-box"></div>
-      <div id="slider"></div>
-      <div id="loop-settings">
-        <br>
-        <a class='btn btn-info btn-small rounded' id='loop-status'>Playing in 4-second loops.</a>
-        <div id='loop-slider'></div>
-        <br>
-        <br>
-        <div class='btn-group'>
-          <a class='btn btn-info btn-small rounded' id='backward-loop'><i class='icon-step-backward'></i> 1 loop</a>
-          <a class='btn btn-info btn-small rounded' id='forward-loop'>1 loop <i class='icon-step-forward'></i></a>
-          <br>
-          <a class='btn btn-info btn-small rounded' id='backward-s' style='width: 48px;'><i class='icon-step-backward'></i> 1 sec. </a>
-          <a class='btn btn-info btn-small rounded' id='forward-s' style='width: 48px;'>1 sec.  <i class='icon-step-forward'></i></a>
-        </div>
-      </div>
-    </div>
-
-    <div id="select-language-box">
-      <div class="text-padding">
-        <div id="translation-language-dropdown"></div>
-      </div>
+      <div id="loop-settings"></div>
     </div>
 
   </div> 
@@ -48,7 +28,7 @@
               <div id="lang1-lyrics">
                 <% @lines.each do |l| %>
                   <% if l.lang1.present? %>
-                    <p data-line-id=<%= l.id %> data-time=<%= l.time %> data-duration=<%= l.duration %><small><small class='edit-duration'>(<%= l.formatted_time %>)</small></small>  <span class='edit-line-lang1'><%= l.lang1 %></span></p>
+                    <p data-line-id=<%= l.id %> data-time=<%= l.time %> data-duration=<%= l.duration %><small><small class='edit-duration'>(<%= l.formatted_time %> to <%= l.formatted_end_time %>)</small></small>  <span class='edit-line-lang1'><%= l.lang1 %></span></p>
                   <% end %>
                 <% end %>
               </div>

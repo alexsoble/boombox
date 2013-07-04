@@ -19,7 +19,7 @@
 
 .video-container {
   margin-left: 80px;
-  margin-right: 60px;
+  margin-right: 40px;
   float: left; }
 
 .lyrics-container {
@@ -67,14 +67,6 @@
 
 #big-timer {  color: white;
   line-height: 90px; }
-
-#select-language-box {
-  height: 480px;
-  width: 480px;
-  margin-left: auto;
-  margin-right: auto; 
-  margin-top: 60px; 
-  text-align: center; }
 
 #controls { position: relative; }
 

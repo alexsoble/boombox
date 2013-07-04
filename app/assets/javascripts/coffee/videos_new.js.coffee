@@ -198,8 +198,6 @@ $ ->
   
   step3 = ->
 
-    window.player.playVideo()
-
     if window.loop == false
       step4()
 
@@ -233,6 +231,11 @@ $ ->
       window.loop_handle = $(".ui-slider-handle:eq(0)")
       window.loop_handle.html("4")
       step4()
+    
+    window.player.playVideo()
+
+  if action_name is 'edit'
+    step3()
 
   # LOGIC FOR THE CONTROLS 
 
