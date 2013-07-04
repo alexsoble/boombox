@@ -28,7 +28,7 @@
               <div id="lang1-lyrics">
                 <% @lines.each do |l| %>
                   <% if l.lang1.present? %>
-                    <p data-line-id=<%= l.id %> data-time=<%= l.time %> data-duration=<%= l.duration %><small><small class='edit-duration'>(<%= l.formatted_time %> to <%= l.formatted_end_time %>)</small></small>  <span class='edit-line-lang1'><%= l.lang1 %></span></p>
+                    <p data-line-id=<%= l.id %> data-time=<%= l.time %> data-duration=<%= l.duration %>><small><small class='edit-duration'>(<%= l.formatted_time %> to <%= l.formatted_end_time %>)</small></small>  <span class='edit-line-lang1'><%= l.lang1 %></span></p>
                   <% end %>
                 <% end %>
               </div>
@@ -52,7 +52,7 @@
               <div id="lang2-lyrics">
                 <% @lines.each do |l| %>
                   <% if l.lang2.present? %> 
-                    <p data-line-id=<%= l.id %> data-time=<%= l.time %> data-duration=<%= l.duration %><small><small class='edit-duration'>(<%= l.formatted_time %>)</small></small>  <span class='edit-line-lang1'><%= l.lang2 %></span></p>
+                    <p data-line-id=<%= l.id %> data-time=<%= l.time %> data-duration=<%= l.duration %>><small><small class='edit-duration'>(<%= l.formatted_time %>)</small></small>  <span class='edit-line-lang1'><%= l.lang2 %></span></p>
                   <% end %>
                 <% end %>
               </div>
