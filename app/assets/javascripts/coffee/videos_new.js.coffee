@@ -361,22 +361,19 @@ $ ->
 
   $('#loop-status').livequery -> 
     $(this).click ->
-      if $(this).attr('class') == 'btn btn-warning rounded'
-        console.log "Turning loops off."
-        $(this).attr('class','btn btn-info rounded')
-        $(this).html('Playing without loops')
-        window.loop = false
-        $("#loop-2").attr('class','btn btn-info rounded')
-        $("#loop-4").attr('class','btn btn-info rounded')
-        $("#loop-8").attr('class','btn btn-info rounded')
-      else
-        console.log "Turning loops on."
-        $(this).attr('class','btn btn-warning rounded')
-        $(this).html('<i>Playing video in loops</i>')
-        window.loop = 4
-        $("#loop-2").attr('class','btn btn-info rounded')
-        $("#loop-4").attr('class','btn btn-warning rounded')
-        $("#loop-8").attr('class','btn btn-info rounded')
+      $(this).html("Playing without loops.")
+      $(this).attr('id','loop-status-off')
+      $('#loop-slider').slideUp()
+      window.loop = false
+      console.log "Turning loops off."
+
+  $('#loop-status-off').livequery -> 
+    $(this).click ->
+      $(this).html("Playing in 4-second loops.")
+      $(this).attr('id','loop-status')
+      $('#loop-slider').slideDown()
+      window.loop = 4
+      console.log "Turning loops on."
 
   # REVISING LINE CONTENT 
 

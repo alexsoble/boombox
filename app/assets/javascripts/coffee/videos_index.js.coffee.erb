@@ -20,6 +20,9 @@ $ ->
     "Javanese", "Malay", "Indonesian"
     "Kazakh", "Tajik", "Tibetan", "Uyghur", "Uzbek" ]
 
+  availableTags.sort (a,b) ->
+    return if a >= b then 1 else -1
+
   $('#lang1-input').livequery ->
     $('#lang1-input').autocomplete(
       source: (request, response) ->
@@ -28,10 +31,8 @@ $ ->
         response matches
       messages: {
         noResults: '',
-        results: '' })
-    $('#lang1-input').keydown (e) -> 
-      if e.which == 40
-        console.log "TRIGGER!!!!"
+        results: '' }
+      minLength: 0 )
 
   $('#lang2-input').livequery ->
     $('#lang2-input').autocomplete(
@@ -41,7 +42,8 @@ $ ->
         response matches
       messages: {
         noResults: '',
-        results: '' })
+        results: '' }
+      minLength: 0 )
 
   $('#new-video-submit').keyup ->
     user_submit = $("#new-video-submit").val()

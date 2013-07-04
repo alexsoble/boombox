@@ -27,6 +27,8 @@
 
 .tiny { font-size: 10px; }
 
+.ui-autocomplete { max-height: 300px; overflow-y: auto; overflow-x: hidden; }
+
 ul.ui-autocomplete.ui-menu { background-color: white; list-style-type: none; } 
 
 li.ui-autocomplete.ui-menu { color: black; } 
