@@ -1,15 +1,3 @@
-                        <li><a class="<%= type %>" id='English'>English</a></li> 
-                        <li><a class="<%= type %>" id='Chinese'>Chinese</a></li>
-                        <li><a class="<%= type %>" id='Korean'>Korean</a></li> 
-                        <li><a class="<%= type %>" id='Japanese'>Japanese</a></li> 
-                        <li><a class="<%= type %>" id='Spanish'>Spanish</a></li> 
-                        <li><a class="<%= type %>" id='Portuguese'>Portuguese</a></li> 
-                        <li><a class="<%= type %>" id='French'>French</a></li> 
-                        <li><a class="<%= type %>" id='German'>German</a></li> 
-                        <li><a class="<%= type %>" id='Italian'>Italian</a></li> 
-                        <li><a class="<%= type %>" id='Russian'>Russian</a></li> 
-                        <li><a class="<%= type %>" id='Norwegian'>Norwegian</a></li> 
-                        <li><a class="<%= type %>" id='Hebrew'>Hebrew</a></li> 
-                        <li><a class="<%= type %>" id='Arabic'>Arabic</a></li> 
-                        <li><a class="<%= type %>" id='Persian'>Persian</a></li> 
-                        <li><a class="<%= type %>" id='Hindi'>Hindi</a></li>
+<% translated_video_languages.each do |t| %>
+                        <li><a class="<%= type %>" id='<%= t %>'><%= t %></a></li> 
+<% end %>
