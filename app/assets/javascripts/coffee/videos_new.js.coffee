@@ -77,8 +77,10 @@ $ ->
 
     # LOOPING HAPPENS HERE
     if window.loop != false
-      if exact_time > (window.loop) * (window.section + 1) - .25
+      looping = ->
         player.seekTo(window.loop * window.section, true)
+      if exact_time > (window.loop) * (window.section + 1) - .25 
+        window.setTimeout(looping, 800)
 
   counter = setInterval(countVideoPlayTime, 500)
   done = false
@@ -246,13 +248,13 @@ $ ->
 
   $("#forward-s").livequery ->
     $(this).click -> 
-      time = window.player.getCurrentTime()
-      player.seekTo(time + 1)
+      player.seekTo((window.loop * window.section) + 1)
+      window.section = window.section + 1/(window.loop)
 
   $("#backward-s").livequery ->
     $(this).click -> 
-      time = window.player.getCurrentTime()
-      player.seekTo(time - 1)
+      player.seekTo((window.loop * window.section) - 1)
+      window.section = window.section - 1/(window.loop)
 
   $('#loop-status').livequery -> 
     $(this).click ->
