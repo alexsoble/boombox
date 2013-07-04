@@ -19,7 +19,7 @@
   position: relative;
   border-radius: 10px; }
 
-.button-text-wrapper { margin: 20px; }
+.button-text-wrapper { margin: 20px; width: 180px; text-align: center; }
 
 .index-button-text { text-align: center; color: white; float: left; }
 

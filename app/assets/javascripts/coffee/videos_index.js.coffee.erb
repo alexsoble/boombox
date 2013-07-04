@@ -23,8 +23,8 @@ $ ->
   availableTags.sort (a,b) ->
     return if a >= b then 1 else -1
 
-  $('#lang1-input').livequery ->
-    $('#lang1-input').autocomplete(
+  $('.lang1-input').livequery ->
+    $('.lang1-input').autocomplete(
       source: (request, response) ->
         matches = $.map(availableTags, (tag) ->
           tag  if tag.toUpperCase().indexOf(request.term.toUpperCase()) is 0)
@@ -34,8 +34,8 @@ $ ->
         results: '' }
       minLength: 0 )
 
-  $('#lang2-input').livequery ->
-    $('#lang2-input').autocomplete(
+  $('.lang2-input').livequery ->
+    $('.lang2-input').autocomplete(
       source: (request, response) ->
         matches = $.map(availableTags, (tag) ->
           tag  if tag.toUpperCase().indexOf(request.term.toUpperCase()) is 0)
@@ -45,8 +45,10 @@ $ ->
         results: '' }
       minLength: 0 )
 
-  $('#new-video-submit').keyup ->
-    user_submit = $("#new-video-submit").val()
+  $('.new-video-input').keyup ->
+    user_submit = $(this).val()
+    window.type = $(this).attr('id')
+    console.log type
 
     # VALIDATING THE URL AGAINST YOUTUBE SYNTAX 
     youtube_id = "#{user_submit}".replace 'http://www.youtube.com/watch?v=', ''
@@ -67,81 +69,137 @@ $ ->
 
       # GET TITLE FROM YOUTUBE
 
-      getTitle = (data) ->
+      getTitle = (data, type) ->
         window.title = data.entry.title.$t
-        $('#new-translation-button').html("
-          <div class='button-text-wrapper'>
-            <p class='index-button-text'>#{window.title}</div></p>
-          </div>")
-        $('#request-translation-button').parent().hide()
+        if window.type is 'new-video-submit'
+          $('#request-translation-button').parent().hide()
+          $('#new-translation-button').html("
+            <div class='button-text-wrapper'>
+              <p class='index-button-text'>#{window.title}</p>
+            </div>")
+        if window.type is 'new-video-request'
+          $('#request-translation-button').html("
+            <div class='button-text-wrapper'>
+              <p class='index-button-text'>#{window.title}</p>
+            </div>")
 
       getTitleFromYouTube = (handleData) ->
         $.get('https://gdata.youtube.com/feeds/api/videos/' + youtube_id + '?v=2&alt=json', 
           (data) ->
-            handleData(data) )
+            handleData(data, window.type) )
 
       getTitleFromYouTube(getTitle)
 
       # ASK USER TO ENTER LANG1 
 
-      $('#new-translation-button').attr('style','height: 85px; background-color: blue;')
-      $('#new-translation-button').after("
-        <div class='index-button' id='lang1-button'>
-          <div class='button-text-wrapper'>
-            <p class='index-button-text'>The video's original language is...</p>
-            <div class='ui-widget'>
-              <input id='lang1-input' class='short-text-box'/>
+      if window.type is 'new-video-submit'
+        $('#new-translation-button').attr('style','height: 85px; background-color: blue;')
+        $('#new-translation-button').after("
+          <div class='index-button' id='lang1-button'>
+            <div class='button-text-wrapper'>
+              <p class='index-button-text'>The video's original language is...</p>
+              <div class='ui-widget'>
+                <input id='lang1-input-translate' class='lang1-input short-text-box'/>
+              </div>
             </div>
-          </div>
-        </div>")
-      $('#lang1-button').hide()
-      $('#lang1-button').slideDown()
+          </div>")
+        $('.lang1-button').hide()
+        $('.lang1-button').slideDown()
 
-  $('#lang1-input').livequery ->
+      if window.type is 'new-video-request'
+        $('#request-translation-button').attr('style','height: 85px; background-color: blue;')
+        $('#request-translation-button').after("
+          <div class='index-button' id='lang1-button'>
+            <div class='button-text-wrapper'>
+              <p class='index-button-text'>The video's original language is...</p>
+              <div class='ui-widget'>
+                <input id='lang1-input-request' class='lang1-input short-text-box'/>
+              </div>
+            </div>
+          </div>")
+        $('.lang1-button').hide()
+        $('.lang1-button').slideDown()
+
+  $('.lang1-input').livequery ->
     $(this).keyup (e) ->
       e.preventDefault
       if e.which == 13
-        input = $('#lang1-input').val()
+        input = $(this).val()
         if availableTags.indexOf(input) > -1
 
         # ADD NEW VIDEO TO DATABASE HERE
 
-          window.lang1 = $('#lang1-input').val()
+          window.lang1 = input
           $.post('/new_video', { 'video' : { 'youtube_id' : "#{window.youtube_id}", 'title' : "#{window.title}", 'lang1' : "#{window.lang1}" } }, (data) ->
             console.log data
             window.video_id = data.video.id )
 
         # PROMPT USER TO ENTER LANG2
 
-          $('#lang1-button').html("
-            <div class='button-text-wrapper'>
-              <p class='index-button-text'>Original language: <br>#{window.lang1}</div></p>
-            </div>")
-          $('#lang1-button').attr('style','height: 85px; background-color: blue;')
-          $('#lang1-button').after("
-            <br>
-            <br>
-            <div class='index-button' id='lang1-button'>
-              <div class='button-text-wrapper'>
-                <p class='index-button-text'>I want to translate this video into...</p>
-                  <div class='ui-widget'>
-                    <input id='lang2-input' class='short-text-box'/>
+          if window.type is 'new-video-submit'
+            $('#lang1-button').slideUp()
+            $('#lang1-button').after("
+              <br>
+              <br>
+              <div class='index-button' id='lang1-button'>
+                <div class='button-text-wrapper'>
+                  <p class='index-button-text'>I want to translate this video into...</p>
+                    <div class='ui-widget'>
+                      <input class='lang2-input short-text-box'/>
+                    </div>
                   </div>
-                </div>
-              </div>")
+                </div>")
 
-  $('#lang2-input').livequery ->
+          if window.type is 'new-video-request'
+            $('#lang1-button').slideUp()
+            $('#lang1-button').after("
+              <br>
+              <br>
+              <div class='index-button' id='lang1-button'>
+                <div class='button-text-wrapper'>
+                  <p class='index-button-text'>I want to request a translation into...</p>
+                    <div class='ui-widget'>
+                      <input id='lang2-input-request' class='lang2-input short-text-box'/>
+                    </div>
+                  </div>
+                </div>")
+
+  $('.lang2-input').livequery ->
     $(this).keyup (e) ->
       e.preventDefault
       if e.which == 13
 
-        input = $('#lang2-input').val()
+        input = $(this).val()
         if availableTags.indexOf(input) > -1
 
-          window.lang2 = $('#lang2-input').val()
-          if window.lang1 != window.lang2
-            $.post('/new_interp', { 'interpretation' : { 'video_id' : "#{window.video_id}" , 'lang2' : "#{window.lang2}", 'user_id' : "#{window.user_id}" } }, (data) ->
-              console.log "data: " + data
-              window.interp = data.data.id
-              console.log "window.interp inside: " + window.interp
-              window.location = "/videos/new?interp=#{window.interp}" )
+          if window.type is 'new-video-submit'
+            window.lang2 = input
+            if window.lang1 isnt window.lang2
+              $.post('/new_interp', { 'interpretation' : { 'video_id' : "#{window.video_id}" , 'lang2' : "#{window.lang2}", 'user_id' : "#{window.user_id}" } }, (data) ->
+                window.interp = data.data.id
+                window.location = "/videos/new?interp=#{window.interp}" )
+
+          if window.type is 'new-video-request'
+            window.lang2 = input
+            if window.lang1 isnt window.lang2
+              $.post('/new_request', { 'request' : { 'video_id' : "#{window.video_id}" , 'lang2' : "#{window.lang2}", 'user_id' : "#{window.user_id}" } }, (data) ->
+                console.log data
+                lang2_input = $('#lang2-input-request').parent().parent().parent()
+                lang2_input.html("<div class='button-text-wrapper' id='request-submitted'><p class='index-button-text'>Request submitted! (<u><span id='request-start-over'>New.</span></u>)</p></div>")
+                lang2_input.attr('style','background-color: blue; height: 60px;')
+                )
+
+  $('#request-start-over').livequery ->
+    $(this).click ->
+      $('#request-translation-button').html('
+        <div class="button-text-wrapper">
+          <p class="index-button-text">Request a<br> translation</p>
+          <img alt="Youtube-logo" src="/assets/youtube-logo.png" style="float: right;" />
+          <div class="controls">
+            <input type="text" class="short-text-box new-video-input" id="new-video-request">
+          </div>
+          <p class="index-button-text tiny">Copy the URL from YouTube above.</p>
+        </div>')
+      $('#request-translation-button').attr('style','height: 140px; background-color: #9B59BB;')
+      $('#request-submitted').parent().slideUp()
+
