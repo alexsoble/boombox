@@ -67,6 +67,11 @@ $ ->
     if (window.keyup isnt 'done') and (user_submit.match(/youtube/) isnt null)
       window.keyup = 'done'
 
+      if window.type is 'new-video-submit'
+        $('#new-translation-button').attr('style','height: 85px; background-color: blue;').hide()
+      if window.type is 'new-video-request'
+        $('#request-translation-button').attr('style','height: 85px; background-color: blue;').hide()
+
       # GET TITLE FROM YOUTUBE
 
       getTitle = (data, type) ->
@@ -76,12 +81,12 @@ $ ->
           $('#new-translation-button').html("
             <div class='button-text-wrapper'>
               <p class='index-button-text'>#{window.title}</p>
-            </div>")
+            </div>").slideDown()
         if window.type is 'new-video-request'
           $('#request-translation-button').html("
             <div class='button-text-wrapper'>
               <p class='index-button-text'>#{window.title}</p>
-            </div>")
+            </div>").slideDown()
 
       getTitleFromYouTube = (handleData) ->
         $.get('https://gdata.youtube.com/feeds/api/videos/' + youtube_id + '?v=2&alt=json', 
@@ -93,7 +98,6 @@ $ ->
       # ASK USER TO ENTER LANG1 
 
       if window.type is 'new-video-submit'
-        $('#new-translation-button').attr('style','height: 85px; background-color: blue;')
         $('#new-translation-button').after("
           <div class='index-button' id='lang1-button'>
             <div class='button-text-wrapper'>

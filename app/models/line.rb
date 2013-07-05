@@ -35,7 +35,7 @@ class Line < ActiveRecord::Base
     elsif 60 <= time && time < 540
       if time%60 <= 9
        formatted_time = "0" + ((time)/60).to_s + ":0" + ((time)%60).to_s
-      elsif 9 < time%60 <= 59 
+      elsif 9 < time%60 && time%60 <= 59 
        formatted_time = "0" + ((time)/60).to_s + ":" + ((time)%60).to_s 
      end
     elsif 540 <= time && time < 3600 
