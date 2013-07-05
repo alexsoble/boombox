@@ -14,8 +14,9 @@
         <br>
         <img src="http://img.youtube.com/vi/<%= v.youtube_id %>/1.jpg">
       </div>
-      <%= link_to "Edit", edit_interpretation_url(i) %> //  <%= link_to "Delete", interpretation_url(i), :method => :delete %>
+      <%= link_to "Edit", edit_interpretation_url(i) %> // <%= link_to "Delete", interpretation_url(i), :method => :delete %>
     <% end %>
+    <br>
   </div>
 <% else %>
   <br><br><h3>No completed translations... yet!</h3>
