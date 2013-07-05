@@ -123,7 +123,6 @@ $ ->
     window.section = window.time / 4
     window.loop = 4
     window.translation_type = 'lang1_and_lang2'
-    window.player.playVideo()
 
   $("#yes-loops").livequery ->
     $(this).click -> 
