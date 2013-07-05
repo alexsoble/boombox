@@ -70,8 +70,14 @@
 
 #controls { position: relative; }
 
+#loop-settings { 
+  width: 200px; 
+  float: right;
+  margin-right: -40px;
+  border: 2px #9B59BB }
+
 #slider { width: 150px; float: left; margin-top: 6px; }
-#loop-slider { width: 222px; float: right; margin: 6px; }
+#loop-slider { width: 150px; float: left; margin: 6px; }
 .ui-slider-handle { width: 30px!important; text-align: center; }
 
 #revise-timing-done { float: left; }

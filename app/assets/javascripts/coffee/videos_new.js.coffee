@@ -76,12 +76,12 @@ $ ->
 
     # LOOPING HAPPENS HERE
     if window.loop isnt false
-      looping = ->
+      loopNow = ->
         player.seekTo(window.loop * window.section, true)
       if exact_time > (window.loop) * (window.section + 1) - .25 
-        window.setTimeout(looping, 800)
+        window.setTimeout(loopNow, 400)
 
-  counter = setInterval(countVideoPlayTime, 300)
+  counter = setInterval(countVideoPlayTime, 800)
   done = false
 
   onPlayerStateChange = (event) ->
@@ -196,7 +196,9 @@ $ ->
       step3()
   
   step4 = ->
-    console.log "Step 4 is occurring!!"
+
+    window.player.playVideo()
+
     $('.span7').remove()
   
     if window.translation_type == 'lang1_and_lang2' and action_name isnt 'edit'
@@ -229,6 +231,7 @@ $ ->
           </div>")
 
       $('#lang1-box').parent().parent().remove()
+
 
     # LOGIC FOR THE INPUT LINES
 
@@ -311,11 +314,11 @@ $ ->
         <br>
         <br>
         <div class='btn-group'>
-          <a class='btn btn-info btn-small rounded' id='backward-loop'><i class='icon-step-backward'></i> 1 loop</a>
-          <a class='btn btn-info btn-small rounded' id='forward-loop'>1 loop <i class='icon-step-forward'></i></a>
+          <a class='btn btn-info btn-small rounded' id='backward-loop' style='width: 55px;'><i class='icon-step-backward'></i> 1 loop</a>
+          <a class='btn btn-info btn-small rounded' id='forward-loop' style='width: 55px;'>1 loop <i class='icon-step-forward'></i></a>
           <br>
-          <a class='btn btn-info btn-small rounded' id='backward-s' style='width: 48px;'><i class='icon-step-backward'></i> 1 sec. </a>
-          <a class='btn btn-info btn-small rounded' id='forward-s' style='width: 48px;'>1 sec.  <i class='icon-step-forward'></i></a>
+          <a class='btn btn-info btn-small rounded' id='backward-s' style='width: 55px;'><i class='icon-step-backward'></i> 1 sec. </a>
+          <a class='btn btn-info btn-small rounded' id='forward-s' style='width: 55px;'>1 sec.  <i class='icon-step-forward'></i></a>
         </div>")
       $('#loop-slider').slider(
         min: 2
