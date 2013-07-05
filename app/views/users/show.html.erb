@@ -13,10 +13,8 @@
         <strong class="center"><%= link_to "#{v.title.slice(0,32)}", interpretation_url(i) %></strong>
         <br>
         <img src="http://img.youtube.com/vi/<%= v.youtube_id %>/1.jpg">
-        <%= link_to "Edit Translation", edit_interpretation_url(i) %>
-        <br>
-        <%= link_to "Delete", interpretation_url(i), :method => :delete %>
       </div>
+      <%= link_to "Edit", edit_interpretation_url(i) %> //  <%= link_to "Delete", interpretation_url(i), :method => :delete %>
     <% end %>
   </div>
 <% else %>
@@ -32,11 +30,12 @@
     <div class="centerbox thumb-box-width">
       <% @drafts.all.each do |d| %>
        <% v = d.video %>
-        <div class="video-thumb-box center">
-          <strong class="center"><%= link_to "#{v.title.slice(0,32)}", edit_interpretation_url(d) %></strong>
-          <br>
-          <img src="http://img.youtube.com/vi/<%= v.youtube_id %>/1.jpg">
-        </div>
+          <div class="video-thumb-box center">
+            <strong class="center"><%= link_to "#{v.title.slice(0,32)}", interpretation_url(d) %></strong>
+            <br>
+            <img src="http://img.youtube.com/vi/<%= v.youtube_id %>/1.jpg">
+          </div>
+        <%= link_to "Edit", edit_interpretation_url(d) %> //  <%= link_to "Delete", interpretation_url(d), :method => :delete %>
       <% end %>
     </div>  
   <% end %>
