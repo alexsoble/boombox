@@ -63,7 +63,6 @@ $ ->
   countVideoPlayTime = ->
     exact_time = player.getCurrentTime()
     window.time = Math.floor(exact_time)
-    minutes = Math.floor(window.time / 60)
     $(".timer-text").html(formatTime(window.time))
 
     current_loop_time = window.loop * window.section
@@ -76,13 +75,13 @@ $ ->
       $(".current-loop-time").html(minutes + ":" + seconds)
 
     # LOOPING HAPPENS HERE
-    if window.loop != false
+    if window.loop isnt false
       looping = ->
         player.seekTo(window.loop * window.section, true)
       if exact_time > (window.loop) * (window.section + 1) - .25 
         window.setTimeout(looping, 800)
 
-  counter = setInterval(countVideoPlayTime, 500)
+  counter = setInterval(countVideoPlayTime, 300)
   done = false
 
   onPlayerStateChange = (event) ->
@@ -171,8 +170,8 @@ $ ->
           <label class='checkbox'>
             <input type='checkbox' id='lang1-and-lang2'>I want to write down the #{lang1} and #{lang2} side-by-side.
           <br>
-          <div style='float: left; margin-left: 100px; margin-top: 25px;'><i>#{lang1}</i>: <br> #{helloArray[lang1]}</div>
-          <div style='float: left; margin-left: 100px; margin-top: 25px;'><i>#{lang2}</i>: <br> #{helloArray[lang2]}</div>
+          <div style='float: left; margin-left: 100px; margin-top: 25px;'><i>#{lang1}</i>: <br> <strong>#{helloArray[lang1]}!</strong></div>
+          <div style='float: left; margin-left: 100px; margin-top: 25px;'><i>#{lang2}</i>: <br> <strong>#{helloArray[lang2]}!</strong></div>
           </label>
           <br>
         </div>
