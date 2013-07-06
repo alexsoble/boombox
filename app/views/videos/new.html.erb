@@ -46,11 +46,7 @@
 
   </div>
 
-
-
 </div>
 
-<div id="youtube-id" class="quiet"><%= @video.youtube_id %></div>
-<div id="interp-id" class="quiet"><%= @interp.id %></div>
-<div id="lang1" class="quiet"><%= @video.lang1 %></div>
-<div id="lang2" class="quiet"><%= @interp.lang2 %></div>
+<div id="data" class="quiet" data-youtube-id=<%= @video.youtube_id %> data-interp-id=<%= @interp.id %> data-lang-one=<%= @video.lang1 %> data-lang-two=<%= @interp.lang2 %> data-translation-type=<%= if @lang1_and_lang2 then 'lang1_and_lang2' else 'just_lang2' end %> data-action-name=<%= action_name %>></div>
+

@@ -1,10 +1,12 @@
 $ ->
 
-  youtube_id = $('#youtube-id').html()
-  lang1 = $('#lang1').html()
-  lang2 = $('#lang2').html()
-  interp_id = $('#interp-id').html()
-  action_name = $('#action-name').html()
+  youtube_id = $('#data').attr('data-youtube-id')
+  lang1 = $('#data').attr('data-lang-one')
+  lang2 = $('#data').attr('data-lang-two')
+  interp_id = $('#data').attr('data-interp-id')
+  action_name = $('#data').attr('data-action-name')
+  translation_type = $('#data').attr('data-translation-type')
+  console.log youtube_id + " " + lang1 + " " + lang2 + " " + interp_id + " " + action_name + " "+ translation_type
 
   formatTime = (time) ->
     time = Math.floor(time)
@@ -58,8 +60,11 @@ $ ->
 
   window.section = 0 
   window.time = 0
-  window.loop = 'none_yet'
-
+  if action_name is 'new'
+    window.loop = 'none_yet'
+  if action_name is 'edit'
+    window.loop = false
+    
   countVideoPlayTime = ->
     exact_time = player.getCurrentTime()
     window.time = Math.floor(exact_time)
@@ -69,10 +74,10 @@ $ ->
     current_loop_end = window.loop * (window.section + 1)
 
     # DISPLAYING THE TIMING ABOVE THE TRANSLATION INPUT LINES 
-    if window.loop != false
+    if window.loop isnt false
       $(".current-loop-time").html(formatTime(current_loop_time) + " to " + formatTime(current_loop_end))
     else
-      $(".current-loop-time").html(minutes + ":" + seconds)
+      $(".current-loop-time").html(formatTime(window.time))
 
     # LOOPING HAPPENS HERE
     if window.loop isnt false
@@ -114,7 +119,7 @@ $ ->
       </div>")
 
   if action_name is 'edit'
-    window.translation_type = 'lang1_and_lang2'
+    window.translation_type = translation_type
 
   $("#yes-loops").livequery ->
     $(this).click -> 
@@ -162,8 +167,8 @@ $ ->
           <label class='checkbox'>
             <input type='checkbox' id='lang1-and-lang2'>I want to write down the #{lang1} and #{lang2} side-by-side.
           <br>
-          <div style='float: left; margin-left: 100px; margin-top: 25px;'><i>#{lang1}</i>: <br> <strong>#{helloArray[lang1]}!</strong></div>
-          <div style='float: left; margin-left: 100px; margin-top: 25px;'><i>#{lang2}</i>: <br> <strong>#{helloArray[lang2]}!</strong></div>
+          <div style='float: left; margin-left: 100px; margin-top: 25px;'><i>#{lang1}</i>: <br> <strong>#{helloArray[lang1]}</strong></div>
+          <div style='float: left; margin-left: 100px; margin-top: 25px;'><i>#{lang2}</i>: <br> <strong>#{helloArray[lang2]}</strong></div>
           </label>
           <br>
         </div>
@@ -295,38 +300,34 @@ $ ->
 
   step3 = ->
 
-    if window.loop == false
-      step4()
-
-    if window.loop isnt false
-      $('#loop-settings').html("
+    $('#loop-settings').html("
+      <br>
+      <a class='btn btn-info btn-small rounded' id='loop-status'>Playing in 4-second loops.</a>
+      <div id='loop-slider'></div>
+      <br>
+      <br>
+      <div class='btn-group'>
+        <a class='btn btn-info btn-small rounded' id='backward-loop' style='width: 55px;'><i class='icon-step-backward'></i> 1 loop</a>
+        <a class='btn btn-info btn-small rounded' id='forward-loop' style='width: 55px;'>1 loop <i class='icon-step-forward'></i></a>
         <br>
-        <a class='btn btn-info btn-small rounded' id='loop-status'>Playing in 4-second loops.</a>
-        <div id='loop-slider'></div>
-        <br>
-        <br>
-        <div class='btn-group'>
-          <a class='btn btn-info btn-small rounded' id='backward-loop' style='width: 55px;'><i class='icon-step-backward'></i> 1 loop</a>
-          <a class='btn btn-info btn-small rounded' id='forward-loop' style='width: 55px;'>1 loop <i class='icon-step-forward'></i></a>
-          <br>
-          <a class='btn btn-info btn-small rounded' id='backward-s' style='width: 55px;'><i class='icon-step-backward'></i> 1 sec. </a>
-          <a class='btn btn-info btn-small rounded' id='forward-s' style='width: 55px;'>1 sec.  <i class='icon-step-forward'></i></a>
-        </div>")
-      $('#loop-slider').slider(
-        min: 2
-        max: 12
-        step: 1
-        value: 4
-        slide: (event, ui) ->
-          loopLength = ui.value
-          window.loop = loopLength
-          window.section = window.time / loopLength
-          $("#loop-status").html("Playing in #{ui.value} second loops.")
-          window.loop_handle.html("#{ui.value}")
-        )
-      window.loop_handle = $(".ui-slider-handle:eq(0)")
-      window.loop_handle.html("4")
-      step4()
+        <a class='btn btn-info btn-small rounded' id='backward-s' style='width: 55px;'><i class='icon-step-backward'></i> 1 sec. </a>
+        <a class='btn btn-info btn-small rounded' id='forward-s' style='width: 55px;'>1 sec.  <i class='icon-step-forward'></i></a>
+      </div>")
+    $('#loop-slider').slider(
+      min: 2
+      max: 12
+      step: 1
+      value: 4
+      slide: (event, ui) ->
+        loopLength = ui.value
+        window.loop = loopLength
+        window.section = window.time / loopLength
+        $("#loop-status").html("Playing in #{ui.value} second loops.")
+        window.loop_handle.html("#{ui.value}")
+      )
+    window.loop_handle = $(".ui-slider-handle:eq(0)")
+    window.loop_handle.html("4")
+    step4()
     
   if action_name is 'edit'
     step3()

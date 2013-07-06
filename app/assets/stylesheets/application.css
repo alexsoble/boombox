@@ -12,8 +12,6 @@
  *= require_tree .
  */
 
-::-webkit-scrollbar { display: none; }
-
 .centerbox {  margin-right: auto; 
   margin-left: auto; 
   width: 640px; 
