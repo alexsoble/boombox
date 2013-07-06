@@ -4,7 +4,9 @@ class ApplicationController < ActionController::Base
   def translated_video_languages
     arr = []
     Video.order("created_at ASC").each do |v|
-      arr << v.lang1
+      if arr.grep(v.lang1).blank? && v.lang1 != 'undefined'
+        arr << v.lang1
+      end
     end
     arr
   end 

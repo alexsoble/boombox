@@ -26,7 +26,15 @@
   margin-left: 5px; 
   margin-top: 5px; 
   float: left; 
-  width: 380px; }
+  width: 300px; }
+
+#lang1-lyrics {
+  height: 380px;
+  overflow-y: scroll; }
+
+#lang2-lyrics {
+  height: 380px;
+  overflow-y: scroll; }
 
 .lyrics-container.sticky {
   margin-left: 555px; }
