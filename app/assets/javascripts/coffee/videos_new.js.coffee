@@ -100,12 +100,6 @@ $ ->
     $(this).click -> 
       window.player.pauseVideo()
 
-      # FIRST LINE FOR THE QUIET TIME AT THE FRONT OF THE VIDEO
-      time = $("#current-loop-time").text()
-      time_in_seconds = parseInt(time.slice(3,5)) + parseInt(time.slice(0,2))*60
-      $.post('/new_line', { 'line' : { 'lang1' : '', 'lang2' : '', 'time' : "#{time_in_seconds}", 'interpretation_id' : "#{interp_id}" , 'upvotes' : 0, 'downvotes' : 0  } }, (data) ->
-        console.log data.data )
-
       $(this).remove()
       $('#timer-box').show()
       $("#controls").html("
@@ -120,8 +114,6 @@ $ ->
       </div>")
 
   if action_name is 'edit'
-    window.section = window.time / 4
-    window.loop = 4
     window.translation_type = 'lang1_and_lang2'
 
   $("#yes-loops").livequery ->
@@ -232,7 +224,6 @@ $ ->
           </div>")
 
       $('#lang1-box').parent().parent().remove()
-
 
     # LOGIC FOR THE INPUT LINES
 

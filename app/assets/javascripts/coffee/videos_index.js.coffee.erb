@@ -187,10 +187,17 @@ $ ->
             window.lang2 = input
             if window.lang1 isnt window.lang2
               $.post('/new_request', { 'request' : { 'video_id' : "#{window.video_id}" , 'lang2' : "#{window.lang2}", 'user_id' : "#{window.user_id}" } }, (data) ->
-                console.log data
+                video = data.video
+                console.log video
                 lang2_input = $('#lang2-input-request').parent().parent().parent()
                 lang2_input.html("<div class='button-text-wrapper' id='request-submitted'><p class='index-button-text'>Request submitted! (<u><span id='request-start-over'>New.</span></u>)</p></div>")
                 lang2_input.attr('style','background-color: blue; height: 60px;')
+                $('#requested-videos').prepend("
+                  <div class='video-thumb-box #{video.lang1}'>
+                  <strong class='center'> <a href='http://www.heyuvideo.com/videos/#{video.id}'>#{video.title.slice(0,38)}</a></strong>
+                  <br>
+                  <img src='http://img.youtube.com/vi/#{video.youtube_id}/1.jpg'>
+                  </div>")
                 )
 
   $('#request-start-over').livequery ->

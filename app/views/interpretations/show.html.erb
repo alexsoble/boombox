@@ -4,26 +4,23 @@
   <div id="show-video-box"></div>
     <% if @lines.present? %>
       <div class="lyrics-box centerbox top" id="lyrics">
-        <% if @lines_have_lang1 %>    
+      <% if @lines_have_lang1 %>    
+          <div class="narrow-lyrics-container lang1">
+            <div class="text-container"></div>
+          </div>
+          <div class="narrow-lyrics-container lang2">
+            <div class="text-container"></div>
+          </div>
           <% @lines.each do |l| %>
-            <div class="narrow-lyrics-container lang1">
-              <div class="text-container">
-                <p class="lyrics white"><%= l.lang1 %></p>
-              </div>
-            </div>
-            <div class="narrow-lyrics-container lang2" id="line-<%= l.time %>">
-              <div class="text-container">
-                <p class="lyrics white"><%= l.lang2 %></p>
-              </div>
-            </div>
+            <p class="lyrics quiet" id="lang1-<%= l.time %>" data-duration=<%= l.duration %>><%= l.lang1 %></p>
+            <p class="lyrics quiet" id="lang2-<%= l.time %>" data-duration=<%= l.duration %>><%= l.lang2 %></p>
           <% end %>
       <% else %>
+        <div class="wide-lyrics-container lang2">
+          <div class="text-container">
+        </div>
         <% @lines.each do |l| %>
-          <div class="wide-lyrics-container lang2" id="line-<%= l.time %>">
-            <div class="text-container">
-                <p class="lyrics white"><%= l.lang2 %></p>
-            </div>
-          </div>
+          <p class="lyrics quiet" id="lang2-<%= l.time %>" data-duration=<%= l.duration %>><%= l.lang2 %></p>
         <% end %>
       </div>
     <% end %>
@@ -63,6 +60,8 @@
           <% if current_user.id == @user.id %>
             you!</h3>
             <div><i><%= link_to "Edit translation", edit_interpretation_url(@interp) %>.</i></div>
+            <br>
+            <br>
           <% else %>
             <%= link_to "#{@user.name}", user_url(@user) %>.</h3>
           <% end %>
@@ -78,7 +77,7 @@
         <% if current_user.id == @user.id %>
             Show off your translation:
             <br>
-            <a href="https://twitter.com/share" class="twitter-share-button" data-lang="en" data-size="large" data-text="[Don't tweet this just yet...] Check out this video I translated! <%= @url %>" data-hashtags="<%= @interp.lang1 %>,<%= @interp.lang2 %>,Languages">Tweet this Translation</a>
+            <a href="https://twitter.com/share" class="twitter-share-button" data-lang="en" data-size="medium" data-text="[Don't tweet this just yet...] Check out this video I translated! <%= @url %>" data-hashtags="<%= @interp.lang1 %>,<%= @interp.lang2 %>,Languages">Tweet this Translation</a>
             <br>
             <div class="fb-like" data-send="false" data-width="75" data-layout="button_count" data-show-faces="true" data-font="arial"></div>
             <br>
@@ -86,7 +85,7 @@
           <% else %>
             Share this translation:
             <br>
-            <a href="https://twitter.com/share" class="twitter-share-button" data-lang="en" data-size="large" data-text="[Don't tweet this just yet...] Check out this video I found on Heyu! <%= @url %>" data-hashtags="<%= @interp.lang1 %>,<%= @interp.lang2 %>,Languages">Tweet this Translation</a>
+            <a href="https://twitter.com/share" class="twitter-share-button" data-lang="en" data-size="medium" data-text="[Don't tweet this just yet...] Check out this video I found on Heyu! <%= @url %>" data-hashtags="<%= @interp.lang1 %>,<%= @interp.lang2 %>,Languages">Tweet this Translation</a>
             <br>
             <div class="fb-like" data-send="false" data-width="75" data-layout="button_count" data-show-faces="true" data-font="arial"></div>
             <br>
@@ -95,7 +94,7 @@
       <% else %>
         <i>Share this translation:</i>
         <br>
-        <a href="https://twitter.com/share" class="twitter-share-button" data-lang="en" data-size="medium" data-text="[Don't tweet this just yet...] Check out this video I found on Heyu! <%= @url %>" data-hashtags="<%= @interp.lang1 %>,<%= @interp.lang2 %>,Languages">Tweet this Translation</a>
+        <a href="https://twitter.com/shabre" class="twitter-share-button" data-lang="en" data-size="medium" data-text="[Don't tweet this just yet...] Check out this video I found on Heyu! <%= @url %>" data-hashtags="<%= @interp.lang1 %>,<%= @interp.lang2 %>,Languages">Tweet this Translation</a>
         <br>
         <div class="fb-like" data-send="false" data-width="75" data-layout="button_count" data-show-faces="true" data-font="arial"></div>
         <br>

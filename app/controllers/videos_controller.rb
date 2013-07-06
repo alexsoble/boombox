@@ -61,14 +61,15 @@ class VideosController < ApplicationController
     
     @latest_translated_videos = @latest_translated_videos[0..9]
 
-    # TOP 10 REQUESTED VIDEOS
+    # TOP 10 REQUESTES
 
     array = Array.new
     @top_requested_videos = Array.new
 
-    Video.order("created_at ASC").each do |v|
-      if v.number_of_interpretations == 0
-        array << { :id => v.id, :number_of_requests => v.number_of_requests }
+    Request.order("created_at ASC").each do |r|
+      @video = Video.find_by_id(r.video_id)
+      if @video.number_of_interpretations == 0
+        array << { :id => @video.id, :number_of_requests => @video.number_of_requests }
       end
     end
 

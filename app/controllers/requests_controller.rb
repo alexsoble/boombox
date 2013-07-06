@@ -2,11 +2,9 @@ class RequestsController < ApplicationController
   respond_to :json
 
   def create
-
     @request = Request.create(params[:request])
-
-    render :json => { :data => @request }
-
+    @video = @request.video
+    render :json => { :request => @request, :video => @video }
   end
 
 end

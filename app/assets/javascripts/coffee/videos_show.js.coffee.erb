@@ -2,6 +2,8 @@ player = null
 
 $ ->
 
+  $('#lyrics').hide()
+
   tag = document.createElement("script")
   tag.src = "https://www.youtube.com/iframe_api"
   firstScriptTag = document.getElementsByTagName("script")[0]
@@ -24,16 +26,26 @@ $ ->
   countVideoPlayTime = ->
     array_builder = ->
       arr = []
-      lyrics = $(".lang2")
+      lyrics = $(".lyrics")
       jQuery.each lyrics, ->
         id = $(this).attr("id")
         arr.push id
       arr
 
     scroll = (array, time) ->
-      time_div = 'line-' + time
-      if array.indexOf(time_div) > -1
-        $("#lyrics").scrollTo ('#' + time_div), 2000
+      time_id = 'lang2-' + time
+      if array.indexOf(time_id) > -1
+        if $('#lyrics').attr('style') == "display: none;"
+          $('#lyrics').slideDown()
+        lang1 = $("#lang1-#{time}").html()
+        lang2 = $("#lang2-#{time}").html()
+        duration = $("#lang2-#{time}").attr('data-duration')
+        $("#lyrics").children().eq(0).html("<p class='lyrics white'>#{lang1}</p>").hide().slideDown('slow')
+        $("#lyrics").children().eq(1).html("<p class='lyrics white'>#{lang2}</p>").hide().slideDown('slow')
+        slideUpLyrics = -> 
+          $("#lyrics").children().eq(0).child().slideUp('slow')
+          $("#lyrics").children().eq(1).child().slideUp('slow')
+        window.setTimeout(slideUpLyrics, duration * 1000)
 
     exact_time = player.getCurrentTime()
     time = Math.round(exact_time)
