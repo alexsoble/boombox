@@ -62,32 +62,21 @@ $ ->
 
   # CONTROLS
 
-  $("#lang1-and-lang2").parent().hide()
-
   $("#just-lang2").click ->
     $(".lang2").slideDown()
     $(".lang1").slideUp()
     $(".lang2").attr("class", "wide-lyrics-container lang2")
-    $("#just-lang2").parent().hide()
-    $("#lang1-and-lang2").parent().show()
-    $("#just-lang1").parent().show()
 
   $("#lang1-and-lang2").click ->
     $(".lang1").slideDown()
     $(".lang2").slideDown()
     $(".lang1").attr("class", "narrow-lyrics-container lang1")
     $(".lang2").attr("class", "narrow-lyrics-container lang2")
-    $("#lang1-and-lang2").parent().hide()
-    $("#just-lang1").parent().show()
-    $("#just-lang2").parent().show()
 
   $("#just-lang1").click ->
     $(".lang1").slideDown()
     $(".lang2").slideUp()
     $(".lang1").attr("class", "wide-lyrics-container lang1")
-    $("#just-lang1").parent().hide()
-    $("#lang1-and-lang2").parent().show()
-    $("#just-lang2").parent().show()
 
   $('#black').click ->
     $('.lyrics').each(->

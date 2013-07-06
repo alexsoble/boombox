@@ -12,6 +12,8 @@
  *= require_tree .
  */
 
+body { overflow-y: scroll; }
+
 .centerbox {  margin-right: auto; 
   margin-left: auto; 
   width: 640px; 

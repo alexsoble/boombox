@@ -33,7 +33,7 @@ class InterpretationsController < ApplicationController
     end 
 
     if @interp.user_id == 0
-      @user = 'anon'
+      @user = 'anon' 
     else
       @user = User.find_by_id(@interp.user_id)
     end
