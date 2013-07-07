@@ -12,6 +12,7 @@ class InterpretationsController < ApplicationController
   end
 
   def edit
+    
     @interp = Interpretation.find_by_id(params[:id])
     @lang2 = @interp.lang2
     @video = @interp.video

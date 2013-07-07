@@ -64,6 +64,7 @@ $ ->
     window.loop = 'none_yet'
   if action_name is 'edit'
     window.loop = false
+  window.got_volume = false
     
   countVideoPlayTime = ->
     exact_time = player.getCurrentTime()
@@ -82,11 +83,33 @@ $ ->
     # LOOPING HAPPENS HERE
     if window.loop isnt false
       loopNow = ->
-        player.seekTo(window.loop * window.section, true)
-      if exact_time > (window.loop) * (window.section + 1) - .25 
-        window.setTimeout(loopNow, 400)
+        loopingNow = ->
+          player.seekTo(window.loop * window.section, true)
+          player.setVolume(window.volume)
+          player.pauseVideo()
+          startUpAgain = ->
+            player.playVideo()
+            window.got_volume = false
+          window.setTimeout(startUpAgain, 1200)
+        window.setTimeout(loopingNow, 1000)
+      fadeOut = ->
+        if window.got_volume == false
+          window.volume = player.getVolume()
+          console.log "volume: " + window.volume
+          window.got_volume = true
+          halfVolume = 0.5 * window.volume
+          quarterVolume = 0.25 * window.volume
+          tinyVolume = 0.1 * window.volume
+          player.setVolume(halfVolume)
+          softAndSlow = ->
+            player.setVolume(quarterVolume)
+          window.setTimeout(softAndSlow, 500)
+      if exact_time > (window.loop) * (window.section + 1)
+        fadeOut()
+        loopNow()
+        console.log "window.got_volume: " + window.got_volume
 
-  counter = setInterval(countVideoPlayTime, 800)
+  counter = setInterval(countVideoPlayTime, 1500)
   done = false
 
   onPlayerStateChange = (event) ->

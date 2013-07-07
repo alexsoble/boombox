@@ -29,15 +29,12 @@
   width: 300px; }
 
 #lang1-lyrics {
-  height: 380px;
+  max-height: 380px;
   overflow-y: scroll; }
 
 #lang2-lyrics {
-  height: 380px;
+  max-height: 380px;
   overflow-y: scroll; }
-
-.lyrics-container.sticky {
-  margin-left: 555px; }
 
 .lyrics-container.wide { 
   width: 600px;
