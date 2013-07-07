@@ -21,20 +21,6 @@
       <a class="brand" href="/welcome"><i class="icon-music"></i>  Heyu <i class="icon-music"></i></a>
       <ul class="nav" id="main-menu-left">
         <li><a href="/philosophy">Philosophy</a></li>
-        <% if controller_name == 'videos' && action_name == 'index' %>
-          <li class="dropdown">
-            <a class="dropdown-toggle" data-toggle="dropdown">Show videos in...</a>
-            <ul class="dropdown-menu">
-              <%= render :partial => 'videos/language_dropdown_options', :locals => {:type => 'language-index-option'} %>
-            </ul>
-          </li>
-          <li class="dropdown">
-            <a class="dropdown-toggle" data-toggle="dropdown">Show requests for...</a>
-              <ul class="dropdown-menu">
-              <%= render :partial => 'videos/language_dropdown_options', :locals => {:type => 'language-request-option'} %>
-              </ul>
-          </li>
-        <% end %>
       </ul>
       <% if current_user %>
         <ul class="nav pull-right signed-in-user" id="<%= current_user.id %>">

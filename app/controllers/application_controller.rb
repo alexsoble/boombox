@@ -12,6 +12,17 @@ class ApplicationController < ActionController::Base
   end 
   helper_method :translated_video_languages
 
+  def requested_video_languages
+    arr = []
+    Request.order("created_at ASC").each do |r|
+      if arr.grep(r.lang2).blank? && r.lang2 != 'undefined'
+        arr << r.lang2
+      end
+    end
+    arr
+  end 
+  helper_method :requested_video_languages
+
   private
 
   def current_user

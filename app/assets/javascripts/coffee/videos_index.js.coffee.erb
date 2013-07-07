@@ -2,8 +2,13 @@ $ ->
 
   $(".language-index-option").click (e) =>
     language_option = e.currentTarget.id
-    $(".video-thumb-box").hide()
-    $(".video-thumb-box.#{language_option}").show()
+    $(".video-thumb-box.interp").hide()
+    $(".video-thumb-box.interp.#{language_option}").show()
+
+  $(".language-request-option").click (e) =>
+    language_option = e.currentTarget.id
+    $(".video-thumb-box.request").hide()
+    $(".video-thumb-box.request.#{language_option}").show()
 
   availableTags = [ "English", "Dutch", "Afrikaans"
     "Chinese (Mandarin)", "Cantonese", "Japanese", "Korean"

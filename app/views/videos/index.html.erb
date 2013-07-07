@@ -1,10 +1,18 @@
 <br>
 <div class="row-fluid">
   <div class="span11 offset1">
-    <div class="row-fluid top-row">
+    <div class="row-fluid">
       <div class="span10 span">
-        <h2>Popular translations</h2>
-        <hr id="hr">
+        <ul class="nav nav-pills">
+          <div class="btn btn-info rounded">
+            <li class="dropdown">
+              <a class="dropdown-toggle" data-toggle="dropdown"><h3 style="color: white;">Show videos in...</h3></a>
+              <ul class="dropdown-menu">
+                <%= render :partial => 'videos/language_dropdown_options' %>
+              </ul>
+            </li>
+          </div>
+        </ul>
       </div>
       <div class="span2 span">
         <br>
@@ -23,7 +31,7 @@
     <div class="row-fluid">
       <div class="span9">
         <% @latest_translated_videos.each do |v| %>
-          <div class="video-thumb-box <%= v.lang1 %>">
+          <div class="video-thumb-box interp <%= v.lang1 %>">
             <strong class="center"><%= link_to "#{v.title.slice(0,32)}", video_url(v.id) %></strong>
             <br>
             <%= image_tag "http://img.youtube.com/vi/#{v.youtube_id}/1.jpg" %>
@@ -35,12 +43,21 @@
 </div>
 <br>
 <br>
+<br>
 <div class="row-fluid">
   <div class="span11 offset1">
     <div class="row-fluid">
       <div class="span10 span">
-        <h2>Top ten requested videos</h2>
-        <hr>
+        <ul class="nav nav-pills">
+          <div class="btn btn-info rounded">
+            <li class="dropdown">
+              <a class="dropdown-toggle" data-toggle="dropdown"><h3 style="color: white;">Show requests for...</h3></a>
+              <ul class="dropdown-menu">
+              <%= render :partial => 'videos/request_dropdown_options' %>
+              </ul>
+            </li>
+          </div>
+        </ul>
       </div>
       <div class="span2 span">
         <br>
@@ -60,7 +77,7 @@
       <div class="span10">
         <div id="requested-videos">
           <% @top_requested_videos.each do |v| %>
-            <div class="video-thumb-box <%= v.lang1 %>">
+            <div class="video-thumb-box request <%= v.lang1 %>">
               <strong class="center"><%= link_to "#{v.title.slice(0,38)}", video_url(v.id) %></strong>
               <br>
               <img src="http://img.youtube.com/vi/<%= v.youtube_id %>/1.jpg">
