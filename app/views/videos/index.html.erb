@@ -83,7 +83,7 @@
       <div class="span10">
         <div id="requested-videos">
           <% @top_requested_videos.each do |v| %>
-            <div class="video-thumb-box request <%= v.lang1 %>">
+            <div class="video-thumb-box request" data-lang-one=<%= v.lang1 %>>
               <strong class="center"><%= link_to "#{v.title.slice(0,38)}", video_url(v.id) %></strong>
               <br>
               <img src="http://img.youtube.com/vi/<%= v.youtube_id %>/1.jpg">

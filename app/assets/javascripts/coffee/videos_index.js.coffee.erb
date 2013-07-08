@@ -6,7 +6,8 @@ $ ->
     $(".video-thumb-box.interp.#{language_option}").show()
 
   $(".language-request-option").click (e) =>
-    language_option = e.currentTarget.id
+    lang1 = $(this).attr('data-lang-one')
+    lang2 = $(this).attr('data-lang-two')
     $(".video-thumb-box.request").hide()
     $(".video-thumb-box.request.#{language_option}").show()
 

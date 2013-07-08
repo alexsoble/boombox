@@ -50,7 +50,7 @@ $ ->
     exact_time = player.getCurrentTime()
     time = Math.round(exact_time)
     arr = array_builder()
-    do_scroll = scroll(arr, time + 1)
+    do_scroll = scroll(arr, time)
 
   onPlayerStateChange = (event) ->
     if event.data is YT.PlayerState.PLAYING and not done
