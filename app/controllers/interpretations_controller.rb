@@ -12,14 +12,19 @@ class InterpretationsController < ApplicationController
   end
 
   def edit
-    
+
     @interp = Interpretation.find_by_id(params[:id])
+    @user = User.find_by_id(@interp.user_id)
     @lang2 = @interp.lang2
     @video = @interp.video
     @lang1 = @video.lang1
     @lines = Line.where(:interpretation_id => @interp.id).order("created_at ASC")
     @lines.each do |l|
       if l.lang1.present? then @lang1_and_lang2 = true end
+    end
+
+    unless @user.id == current_user.id
+      redirect_to home_path
     end
   end
 
@@ -61,6 +66,11 @@ class InterpretationsController < ApplicationController
       l.destroy
     end
     redirect_to '/welcome'
+  end
+
+  def get_by_language
+    # send the most popoular 20 videos that match whatever lang is sent in via AJAX
+    # send the title and youtube_id along with so it can get displayed in the index page
   end
 
 end

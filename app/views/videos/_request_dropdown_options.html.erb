@@ -1,3 +1,5 @@
 <% requested_video_languages.each do |r| %>
-              <li style='float: left; width: 160px;'><a href='#' class="language-request-option" id='<%= r %>' style='text-align: left;'><%= r %></a></li> 
+  <% lang1 = r.keys.first %>
+    <% lang2 = r[key] %>
+              <li style='float: left; width: 160px;'><a href='#' class="language-request-option" id='<%= r %>' style='text-align: left;'><%= lang1 %> &rarr; <%= lang2 %></a></li> 
 <% end %>

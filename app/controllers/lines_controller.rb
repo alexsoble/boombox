@@ -27,9 +27,14 @@ class LinesController < ApplicationController
       @line.lang2 = @update[:lang2]
       @line.save
     end
-
     render :json => { :data => @line }
 
+  end
+
+  def previous
+    # find the previous line -- it's the one with the highest "time" that's lower than the line just entered
+    # update its duration -- it's equal to the difference between the two lines' start times
+    # render back the data
   end
 
 end

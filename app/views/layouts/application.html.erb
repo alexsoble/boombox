@@ -45,11 +45,8 @@
     </div>
   </div>
 <% end %>
-
 <%= yield %>
-
 <%= content_tag "div", id: "user-id", data: { user: if current_user then current_user.id else 'logged-out' end } do %>
 <% end %>
-
 </body>
 </html>

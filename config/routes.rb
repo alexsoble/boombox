@@ -22,4 +22,8 @@ Boombox::Application.routes.draw do
   post '/new_request' => 'requests#create'
   post '/new_line' => 'lines#create'
   post '/update_line' => 'lines#update' 
+  post '/previous_line' => 'lines#previous'
+  get '/requests_by_language' => 'requests#get_by_language'
+  get '/interps_by_language' => 'interpretations#get_by_language'
+
 end

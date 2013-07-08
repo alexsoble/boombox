@@ -314,6 +314,8 @@ $ ->
               time_in_seconds = parseInt(time.slice(3,5)) + parseInt(time.slice(0,2))*60
               $.post('/new_line', { 'line' : { 'lang1' : '', 'lang2' : "#{entry}", 'time' : "#{time_in_seconds}", 'duration' : "#{window.loop}", 'interpretation_id' : "#{interp_id}" , 'upvotes' : 0, 'downvotes' : 0  } }, (data) ->
                 console.log data.data )
+              $.post('/previous_line', { 'time' : "#{time_in_seconds}" }, (data) ->
+                console.log data.data )
             window.section += 1
             $('.done-button').html('<div class="btn btn-info" id="done-button">Done</div>')
             $('.save-button').html('<div class="btn btn-info" id="save-button">Saving...</div>')

@@ -5,8 +5,6 @@ $ ->
   else
     window.user_id = null
 
-  window.user_id = parseInt($(".signed-in-user").attr('id'))
-
   $(".page-language-option").click (e) =>
     language_option = e.currentTarget.id
 
@@ -15,5 +13,3 @@ $ ->
 
     if language_option is "english-page"
       $("#translate-button").html("Translate new video")
-
-  $('#slider').slider()

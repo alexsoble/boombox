@@ -3,9 +3,9 @@ class ApplicationController < ActionController::Base
 
   def translated_video_languages
     arr = []
-    Video.order("created_at ASC").each do |v|
-      if arr.grep(v.lang1).blank? && v.lang1 != 'undefined'
-        arr << v.lang1
+    Interpretation.order("created_at ASC").each do |i|
+      if arr.grep(i.lang1).blank? && i.lang1 != 'undefined'
+        arr << i.lang1
       end
     end
     arr
@@ -16,7 +16,7 @@ class ApplicationController < ActionController::Base
     arr = []
     Request.order("created_at ASC").each do |r|
       if arr.grep(r.lang2).blank? && r.lang2 != 'undefined'
-        arr << r.lang2
+        arr << { r.lang1 => r.lang2 }
       end
     end
     arr
