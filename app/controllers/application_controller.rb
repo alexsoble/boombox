@@ -15,7 +15,7 @@ class ApplicationController < ActionController::Base
   def requested_video_languages
     arr = []
     Request.order("created_at ASC").each do |r|
-      if arr.grep(r.lang2).blank? && r.lang2 != 'undefined'
+      if arr.grep({ r.lang1 => r.lang2 }).blank? && r.lang2 != 'undefined' && r.lang1 != 'undefined'
         arr << { r.lang1 => r.lang2 }
       end
     end
