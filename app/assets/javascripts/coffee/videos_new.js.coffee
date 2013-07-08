@@ -259,6 +259,9 @@ $ ->
 
       $(".lang1-line").livequery ->
         $(this).keyup (e) ->
+          entry = this.value
+          console.log entry
+          $('.lyrics-box.small').children().eq(0).html("<p class='white'>#{entry}</p>")
           e.preventDefault
           if e.which == 13 and ($('.lang2-line').val() isnt '')
             entry = this.value
@@ -278,7 +281,11 @@ $ ->
             $('.save-button').html('<div class="btn btn-info" id="save-button">Save</div>').effect('highlight')
 
       $(".lang2-line").livequery ->
+        $(this).keydown (e) ->
         $(this).keyup (e) ->
+          entry = this.value
+          console.log entry
+          $('.lyrics-box.small').children().eq(1).html("<p class='white'>#{entry}</p>")
           if e.which == 13 and ($('.lang1-line').val() isnt '')
             entry = this.value
             that_entry = $('.lang1-line').val()
@@ -417,6 +424,9 @@ $ ->
               <input type='text' class='input-xlarge' id='edit-line-lang1'>
             </div>
           </div>")
+        id = $(this).parent().attr('data-line-id')
+        $(this).parent().children(":first").children(":first").after("
+          <span id='add-delete'> <a id='add-line-lang1' data-line-id=#{id}> &uarr; add line </a> // <a id='delete-line' data-line-id=#{id}>delete line &darr;</a></span>")
         $('#edit-line-lang1').val(html)
         window.editing_line = 'on'
 
@@ -432,6 +442,7 @@ $ ->
           text_to_update.html("#{updated_lang1}")
           console.log updated_lang1 
           $(this).parent().parent().parent().attr('style','background-color: white;') )
+        $('#add-delete').remove()
         window.editing_line = 'off'
 
   $('.edit-line-lang2').livequery ->
@@ -444,6 +455,9 @@ $ ->
               <input type='text' class='input-xlarge' id='edit-line-lang2'>
             </div>
           </div>")
+        id = $(this).parent().attr('data-line-id')
+        $(this).parent().children(":first").children(":first").after("
+          <span id='add-delete'> <a id='add-line-lang1' data-line-id=#{id}> &uarr; add line </a> // <a id='delete-line' data-line-id=#{id}>delete line &darr;</a></span>")
         $('#edit-line-lang2').val(html)
         window.editing_line = 'on'
 
@@ -460,6 +474,16 @@ $ ->
           console.log updated_lang2
           $(this).parent().parent().parent().attr('style','background-color: white;') )
         window.editing_line = 'off'
+
+  $('#delete-line').livequery ->
+    $(this).click ->
+      line_id = $(this).attr('data-line-id')
+      $.post('/delete_line', { 'line' : { 'id' : "#{line_id}" } } )
+      $(this).parent().parent().parent().slideUp()
+      delayedRemove = ->
+        $(this).parent().parent().parent().remove()
+      window.setTimeout(delayedRemove, 1000)
+      window.editing_line = 'off'
 
   # REVISING TIME/DURATION OF LINES
 

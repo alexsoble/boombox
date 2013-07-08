@@ -8,7 +8,9 @@ Boombox::Application.routes.draw do
   get '/sign_in' => 'sessions#new'
   get '/sign_out' => 'sessions#destroy'
   get '/auth/:provider/callback' => 'sessions#create'
-  get 'philosophy' => 'pages#philosophy'
+  get '/philosophy' => 'pages#philosophy'
+  get '/survey' => 'pages#survey'
+  get '/help' => 'pages#help'
 
   get '/request/' => 'videos#request'
   resources :videos
@@ -22,6 +24,7 @@ Boombox::Application.routes.draw do
   post '/new_request' => 'requests#create'
   post '/new_line' => 'lines#create'
   post '/update_line' => 'lines#update' 
+  post '/delete_line' => 'lines#destroy'
   post '/previous_line' => 'lines#previous'
   get '/requests_by_language' => 'requests#get_by_language'
   get '/interps_by_language' => 'interpretations#get_by_language'

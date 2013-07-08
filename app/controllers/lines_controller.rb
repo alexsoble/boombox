@@ -37,4 +37,11 @@ class LinesController < ApplicationController
     # render back the data
   end
 
+  def destroy
+    @line = Line.find_by_id(params[:line][:id])
+    @line.destroy
+    @line.save
+    render :json => { :data => @line }
+  end
+
 end

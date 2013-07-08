@@ -42,6 +42,23 @@
   margin-top: 0px; 
   float: left; }
 
+/* SMALL LYRICS CONTAINER FOR THE VIDEO AS IT'S EDITED */
+
+.lyrics-box.small { 
+  height: 40px;
+  width: 405px;
+  top: 7px;
+  left: 7px;
+  border-radius: 7px; }
+
+.small-lyrics-container {
+  width: 180px;
+  height: 30px;
+  float: left;
+  margin: 4px; }
+
+  /* ---------------------------- */
+
 .center-pill {
   margin-right: auto; 
   margin-left: auto; 
