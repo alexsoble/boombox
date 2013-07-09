@@ -296,16 +296,19 @@ $ ->
               duration = data.data.duration
               $('#lang1-lyrics').append("<p data-line-id=#{line_id} data-time=#{time_in_seconds} data-duration=#{duration}><small><small class='edit-duration'>(#{time})</small></small>  <span class='edit-line-lang1'>#{that_entry}</span></p>")
               $('#lang2-lyrics').append("<p data-line-id=#{line_id} data-time=#{time_in_seconds} data-duration=#{duration}><small><small class='edit-duration'>(#{time})</small></small>  <span class='edit-line-lang2'>#{entry}</span></p>")
+              $('#lang1-lyrics').scrollTo('100%')
+              $('#lang2-lyrics').scrollTo('100%')
               console.log data)
             window.section += 1
-            $('.lang1-line').val('')
-            $('.lang2-line').val('')
-            $('.lang1-line').focus()
-            $('.done-button').html('<div class="btn btn-info" id="done-button">Done</div>')
-            $('.save-button').html('<div class="btn btn-info" id="save-button">Saving...</div>')
-            delayedShowSaved = ->
-              $('.save-button').html('<div class="btn btn-info" id="save-button">Saved</div>')
-            window.setTimeout(delayedShowSaved, 600)
+            if action_name isnt 'edit'
+              $('.lang1-line').val('')
+              $('.lang2-line').val('')
+              $('.lang1-line').focus()
+              $('.done-button').html('<div class="btn btn-info" id="done-button">Done</div>')
+              $('.save-button').html('<div class="btn btn-info" id="save-button">Saving...</div>')
+              delayedShowSaved = ->
+                $('.save-button').html('<div class="btn btn-info" id="save-button">Saved</div>')
+              window.setTimeout(delayedShowSaved, 600)
 
     if window.translation_type == 'just_lang2'
 
@@ -583,7 +586,7 @@ $ ->
         window.location.href = "/interpretations/#{interp_id}"
       else
         $('.save-button').hide()
-        $('.done-button').html("<p><a href='/sign_up?interp=#{interp_id}'><strong>Sign up for Heyu?</strong></a> That way your username will appear alongside your translation. Get props for excellent work!<br><br> Otherwise, <a href='/interpretations/#{interp_id}'>submit your translation anonymously.</a>")
+        $('.done-button').html("<p><a href='/sign_up?interp=#{interp_id}'><strong>Sign up for Heyu?</strong></a> That way your username will appear alongside your translation. Get props for excellent work!<br><br>If you've already signed up, be sure to <a href='/sign_in?interp=#{interp_id}'><strong>sign in</strong></a>.<br><br>Otherwise, <a href='/interpretations/#{interp_id}'>submit your translation anonymously.</a>")
 
   $("#save-button").livequery ->
     $(this).click ->

@@ -43,8 +43,9 @@ $ ->
         $("#lyrics").children().eq(0).html("<p class='lyrics white'>#{lang1}</p>").hide().slideDown(800)
         $("#lyrics").children().eq(1).html("<p class='lyrics white'>#{lang2}</p>").hide().slideDown(800)
         slideUpLyrics = -> 
-          $("#lyrics").children().eq(0).child().slideUp('slow')
-          $("#lyrics").children().eq(1).child().slideUp('slow')
+          console.log "sliding up"
+          $("#lyrics").children().eq(0).slideUp('slow')
+          $("#lyrics").children().eq(1).slideUp('slow')
         window.setTimeout(slideUpLyrics, duration * 1000)
 
     exact_time = player.getCurrentTime()
