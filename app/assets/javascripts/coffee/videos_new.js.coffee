@@ -66,13 +66,6 @@ $ ->
     window.loop = false
   window.got_volume = false
   
-  arr = []
-  lyrics = $(".lyrics")
-  jQuery.each lyrics, ->
-    id = $(this).attr("id")
-    arr.push id
-  arr
-
   countVideoPlayTime = ->
     exact_time = player.getCurrentTime()
     window.time = Math.floor(exact_time)
@@ -116,15 +109,21 @@ $ ->
         loopNow()
         console.log "window.got_volume: " + window.got_volume
 
+    arr = []
+    lyrics = $(".editing-lyrics")
+    jQuery.each lyrics, ->
+      id = $(this).attr("id")
+      arr.push id
+    arr
+
     # SCROLLING HAPPENS HERE
     scroll = (array, time) ->
       time_id = 'lang2-' + time
       if array.indexOf(time_id) > -1
-        console.log "trigger!"
         if $('#lyrics').attr('style') == "display: none;"
           $('#lyrics').slideDown()
-        lang1 = $("#lang1-#{time}").html()
-        lang2 = $("#lang2-#{time}").html()
+        lang1 = $("#lang1-#{time}").children().eq(1).html()
+        lang2 = $("#lang2-#{time}").children().eq(1).html()
         duration = $("#lang2-#{time}").attr('data-duration')
         $("#lyrics").children().eq(0).html("<p class='lyrics white'>#{lang1}</p>").hide().slideDown(800)
         $("#lyrics").children().eq(1).html("<p class='lyrics white'>#{lang2}</p>").hide().slideDown(800)
@@ -134,8 +133,7 @@ $ ->
           $("#lyrics").children().eq(1).slideUp()
         window.setTimeout(slideUpLyrics, ((duration + 1) * 1000))
 
-    time = window.time
-    do_scroll = scroll(arr, time)
+    do_scroll = scroll(arr, window.time)
 
   counter = setInterval(countVideoPlayTime, 1000)
   done = false
