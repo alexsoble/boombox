@@ -71,8 +71,8 @@
             </div>
           </div>
           <div class="lyrics-container">
-            <div class="done-button" style="float: left;"></div>
-            <div class="save-button" style="float: left; margin-left: 20px;"></div>
+            <div class="publish-button" style="float: left;"></div>
+            <div class="preview-button" style="float: left; margin-left: 20px;"></div>
           </div>
         </div>
 
@@ -86,8 +86,8 @@
           </div>
         </div>
         <div class="lyrics-container">
-          <div class="done-button" style="float: left;"></div>
-          <div class="save-button" style="float: left; margin-left: 20px;"></div>
+          <div class="publish-button" style="float: left;"></div>
+          <div class="preview-button" style="float: left; margin-left: 20px;"></div>
         </div>
       </div>
       <% end %>
@@ -98,4 +98,4 @@
 
 </div>
 
-<div id="data" class="quiet" data-youtube-id=<%= @video.youtube_id %> data-interp-id=<%= @interp.id %> data-lang-one=<%= @video.lang1 %> data-lang-two=<%= @interp.lang2 %> data-translation-type=<%= if @lang1_and_lang2 then 'lang1_and_lang2' else 'just_lang2' end %> data-action-name=<%= action_name %>></div>
+<div id="data" class="quiet" data-youtube-id=<%= @video.youtube_id %> data-interp-id=<%= @interp.id %> data-lang-one=<%= @video.lang1 %> data-lang-two=<%= @interp.lang2 %> data-translation-type=<%= if @lang1_and_lang2 then 'lang1_and_lang2' else 'just_lang2' end %> data-action-name=<%= action_name %> data-published=<%= @published %>></div>

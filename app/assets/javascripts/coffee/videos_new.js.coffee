@@ -6,6 +6,7 @@ $ ->
   interp_id = $('#data').attr('data-interp-id')
   action_name = $('#data').attr('data-action-name')
   translation_type = $('#data').attr('data-translation-type')
+  published = $('#data').attr('data-published')
   console.log youtube_id + " " + lang1 + " " + lang2 + " " + interp_id + " " + action_name + " "+ translation_type
 
   formatTime = (time) ->
@@ -21,7 +22,6 @@ $ ->
     formatted_time
 
   if action_name isnt 'edit'
-
     $('#title-box').hide()
     $('#red-arrow').hide()
     $('#title-box').slideDown('5000')
@@ -34,6 +34,11 @@ $ ->
     $("#controls").prepend('<div id="red-arrow-text-box"><p><strong>Click here when <br> the words start!</strong></p></div>')
     $("#controls").fadeIn('slow')
     $('#red-arrow').fadeIn('slow')
+  if action_name is 'edit' and published is 'false'
+    $('.publish-button').html('<div class="btn btn-info" id="publish-button">Publish!</div>')
+    $('.preview-button').html('<div class="btn btn-info" id="preview-button">Preview</div>')
+  if action_name is 'edit' and published is 'true'
+    $('.publish-button').html('<div class="btn btn-info" id="publish-button">Update</div>')
 
 # YOUTUBE PLAYER COMES IN HERE
 
@@ -305,8 +310,8 @@ $ ->
             $('.lang1-line').val('')
             $('.lang2-line').val('')
             window.section += 1
-            $('.done-button').html('<div class="btn btn-info" id="done-button">Done</div>')
-            $('.save-button').html('<div class="btn btn-info" id="save-button">Save</div>').effect('highlight')
+            $('.publish-button').html('<div class="btn btn-info" id="publish-button">Publish!</div>')
+            $('.preview-button').html('<div class="btn btn-info" id="preview-button">Preview</div>').effect('highlight')
 
       $(".lang2-line").livequery ->
         $(this).keydown (e) ->
@@ -334,11 +339,8 @@ $ ->
               $('.lang1-line').val('')
               $('.lang2-line').val('')
               $('.lang1-line').focus()
-              $('.done-button').html('<div class="btn btn-info" id="done-button">Done</div>')
-              $('.save-button').html('<div class="btn btn-info" id="save-button">Saving...</div>')
-              delayedShowSaved = ->
-                $('.save-button').html('<div class="btn btn-info" id="save-button">Saved</div>')
-              window.setTimeout(delayedShowSaved, 600)
+              $('.publish-button').html('<div class="btn btn-info" id="publish-button">Publish!</div>')
+              $('.preview-button').html('<div class="btn btn-info" id="preview-button">Preview</div>').effect('highlight')
 
     if window.translation_type == 'just_lang2'
 
@@ -357,8 +359,8 @@ $ ->
               $.post('/previous_line', { 'time' : "#{time_in_seconds}" }, (data) ->
                 console.log data.data )
             window.section += 1
-            $('.done-button').html('<div class="btn btn-info" id="done-button">Done</div>')
-            $('.save-button').html('<div class="btn btn-info" id="save-button">Saving...</div>')
+            $('.publish-button').html('<div class="btn btn-info" id="publish-button">Publish!</div>')
+            $('.preview-button').html('<div class="btn btn-info" id="preview-button">Preview</div>')
             delayedShowSaved = ->
               $('.save-button').html('<div class="btn btn-info" id="save-button">Saved</div>')
             window.setTimeout(delayedShowSaved, 600)
@@ -608,28 +610,19 @@ $ ->
 
 # DONE/SAVE BUTTONS
 
-  $("#done-button").livequery ->
+  $("#publish-button").livequery ->
     $(this).click ->
       if $("#user-id").attr('data-user') != "logged-out"
         $.post('/publish', { 'interpretation' : { 'id' : "#{interp_id}" } }, (data) ->
           console.log data.data )
         window.location.href = "/interpretations/#{interp_id}"
       else
-        $('.save-button').hide()
-        $('.done-button').html("<p><a href='/sign_up?interp=#{interp_id}'><strong>Sign up for Heyu?</strong></a> That way your username will appear alongside your translation. Get props for excellent work!<br><br>If you've already signed up, be sure to <a href='/sign_in?interp=#{interp_id}'><strong>sign in</strong></a>.<br><br>Otherwise, <a href='/interpretations/#{interp_id}'>submit your translation anonymously.</a>")
+        $('.preview-button').hide()
+        $('.publish-button').html("<p><a href='/sign_up?interp=#{interp_id}'><strong>Sign up for Heyu?</strong></a> That way your username will appear alongside your translation. Get props for excellent work!<br><br>If you've already signed up, be sure to <a href='/sign_in?interp=#{interp_id}'><strong>sign in</strong></a>.<br><br>Otherwise, <a href='/interpretations/#{interp_id}'>submit your translation anonymously.</a>")
 
-  $("#save-button").livequery ->
+  $("#preview-button").livequery ->
     $(this).click ->
-      if $("#user-id").attr('data-user') != "logged-out"
-        window.location.href = "/users/#{$("#user-id").attr('data-user')}"
-      else
-        $('.save-button').hide()
-        $('.done-button').html("<p><a href='/sign_up?interp=#{interp_id}'><strong>Sign up for Heyu</strong></a> to save your translation.<br><br><a href='#' id='go-back'>Go back.</a>")
-
-  $("#go-back").livequery -> 
-    $(this).click -> 
-        $('.save-button').show()
-        $('.done-button').html('<div class="btn btn-info" id="done-button">Done</div>')
+      window.location.href = "/interpretations/#{interp_id}"
 
 # YOUTUBE WINDOW STICKY ON SCROLL
 
