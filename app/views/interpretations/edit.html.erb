@@ -6,7 +6,7 @@
   <div class="span5">
 
     <div id="outer-video-box" class="video-container">
-      <div class="lyrics-box small">
+      <div class="lyrics-box small" id="lyrics">
         <div class="small-lyrics-container lang1"></div>
         <div class="small-lyrics-container lang2"></div>
       </div>
@@ -75,6 +75,11 @@
             <div class="save-button" style="float: left; margin-left: 20px;"></div>
           </div>
         </div>
+
+        <% @lines.each do |l| %>
+          <p class="lyrics quiet" id="lang1-<%= l.time %>" data-duration=<%= l.duration %>><%= l.lang1 %></p>
+          <p class="lyrics quiet" id="lang2-<%= l.time %>" data-duration=<%= l.duration %>><%= l.lang2 %></p>
+        <% end %>
 
       <% else %>
       

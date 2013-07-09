@@ -74,9 +74,9 @@ $ ->
       window.keyup = 'done'
 
       if window.type is 'new-video-submit'
-        $('#new-translation-button').attr('style','height: 85px; background-color: blue;').hide()
+        $('#new-translation-button').attr('style','height: 85px; background-color: blue;')
       if window.type is 'new-video-request'
-        $('#request-translation-button').attr('style','height: 85px; background-color: blue;').hide()
+        $('#request-translation-button').attr('style','height: 85px; background-color: blue;')
 
       # GET TITLE FROM YOUTUBE
 
@@ -87,7 +87,16 @@ $ ->
           $('#new-translation-button').html("
             <div class='button-text-wrapper'>
               <p class='index-button-text'>#{window.title}</p>
-            </div>").slideDown()
+            </div>
+            <div id='lang1-button'>
+              <div class='button-text-wrapper'>
+                <p class='index-button-text' style='font-size: 15px'>The video\'s original language is...</p>
+                <div class='ui-widget'>
+                  <input id='lang1-input-translate' class='lang1-input short-text-box'/>
+                </div>
+              </div>
+            </div>")
+          $('.index-button-text').hide().slideDown('2000')
         if window.type is 'new-video-request'
           $('#request-translation-button').html("
             <div class='button-text-wrapper'>
@@ -104,24 +113,14 @@ $ ->
       # ASK USER TO ENTER LANG1 
 
       if window.type is 'new-video-submit'
-        $('#new-translation-button').after("
-          <div class='index-button' id='lang1-button'>
-            <div class='button-text-wrapper'>
-              <p class='index-button-text'>The video's original language is...</p>
-              <div class='ui-widget'>
-                <input id='lang1-input-translate' class='lang1-input short-text-box'/>
-              </div>
-            </div>
-          </div>")
-        $('.lang1-button').hide()
-        $('.lang1-button').slideDown()
+        $('#new-translation-button')
 
       if window.type is 'new-video-request'
         $('#request-translation-button').attr('style','height: 85px; background-color: blue;')
         $('#request-translation-button').after("
           <div class='index-button' id='lang1-button'>
             <div class='button-text-wrapper'>
-              <p class='index-button-text'>The video's original language is...</p>
+              <p class='index-button-text' style='font-size: 15px'>The video's original language is...</p>
               <div class='ui-widget'>
                 <input id='lang1-input-request' class='lang1-input short-text-box'/>
               </div>
@@ -147,18 +146,15 @@ $ ->
         # PROMPT USER TO ENTER LANG2
 
           if window.type is 'new-video-submit'
-            $('#lang1-button').slideUp()
-            $('#lang1-button').after("
-              <br>
-              <br>
-              <div class='index-button' id='lang1-button'>
+            $('#lang1-button').hide()
+            $('#lang1-button').html("
                 <div class='button-text-wrapper'>
-                  <p class='index-button-text'>I want to translate this video into...</p>
+                  <p class='index-button-text smaller' style='font-size: 15px'>I want to translate this video into...</p>
                     <div class='ui-widget'>
                       <input class='lang2-input short-text-box'/>
                     </div>
-                  </div>
-                </div>")
+                  </div>")
+            $('#lang1-button').slideDown()
 
           if window.type is 'new-video-request'
             $('#lang1-button').slideUp()

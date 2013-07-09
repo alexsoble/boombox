@@ -9,23 +9,27 @@
 
 .thumb-box-width { width: 140px; }
 
-.index-button { float: right;
-  right: 0px;
-  width: 220px;
-  min-height: 140px;
-  margin-right: 40px;
-  margin-bottom: 20px;
+.index-button {  width: 600px;
+  min-height: 100px;
+  margin-right: auto;
+  margin-left: auto;
   background-color: #9B59BB;
   position: relative;
   border-radius: 10px; }
 
-.button-text-wrapper { margin: 20px; width: 180px; text-align: center; }
+.button-text-wrapper { 
+  padding-left: 30px; 
+  padding-top: 30px; 
+  text-align: center; 
+  width: 270px; 
+  position: relative;
+  float: left; }
 
-.index-button-text { text-align: center; color: white; float: left; }
+.index-button-text { color: white; font-size: 18px; line-height: 18px; float: left; }
+.smaller { font-size: 15px !important ; }
+.tiny { font-size: 13px; }
 
-.short-text-box { width: 165px; }
-
-.tiny { font-size: 10px; }
+.short-text-box { width: 165px; position: relative; left: -12px; top: 1px; }
 
 .ui-autocomplete { max-height: 300px; overflow-y: auto; overflow-x: hidden; }
 

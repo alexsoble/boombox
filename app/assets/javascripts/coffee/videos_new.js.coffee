@@ -65,7 +65,14 @@ $ ->
   if action_name is 'edit'
     window.loop = false
   window.got_volume = false
-    
+  
+  arr = []
+  lyrics = $(".lyrics")
+  jQuery.each lyrics, ->
+    id = $(this).attr("id")
+    arr.push id
+  arr
+
   countVideoPlayTime = ->
     exact_time = player.getCurrentTime()
     window.time = Math.floor(exact_time)
@@ -109,7 +116,28 @@ $ ->
         loopNow()
         console.log "window.got_volume: " + window.got_volume
 
-  counter = setInterval(countVideoPlayTime, 1500)
+    # SCROLLING HAPPENS HERE
+    scroll = (array, time) ->
+      time_id = 'lang2-' + time
+      if array.indexOf(time_id) > -1
+        console.log "trigger!"
+        if $('#lyrics').attr('style') == "display: none;"
+          $('#lyrics').slideDown()
+        lang1 = $("#lang1-#{time}").html()
+        lang2 = $("#lang2-#{time}").html()
+        duration = $("#lang2-#{time}").attr('data-duration')
+        $("#lyrics").children().eq(0).html("<p class='lyrics white'>#{lang1}</p>").hide().slideDown(800)
+        $("#lyrics").children().eq(1).html("<p class='lyrics white'>#{lang2}</p>").hide().slideDown(800)
+        slideUpLyrics = -> 
+          console.log "sliding up"
+          $("#lyrics").children().eq(0).slideUp()
+          $("#lyrics").children().eq(1).slideUp()
+        window.setTimeout(slideUpLyrics, ((duration + 1) * 1000))
+
+    time = window.time
+    do_scroll = scroll(arr, time)
+
+  counter = setInterval(countVideoPlayTime, 1000)
   done = false
 
   onPlayerStateChange = (event) ->
@@ -273,6 +301,8 @@ $ ->
               duration = data.data.duration
               $('#lang1-lyrics').append("<p data-line-id=#{line_id} data-time=#{time_in_seconds} data-duration=#{duration}><small><small class='edit-duration'>(#{time})</small></small>  <span class='edit-line-lang1'>#{entry}</span></p>")
               $('#lang2-lyrics').append("<p data-line-id=#{line_id} data-time=#{time_in_seconds} data-duration=#{duration}><small><small class='edit-duration'>(#{time})</small></small>  <span class='edit-line-lang2'>#{that_entry}</span></p>")
+              $('.lyrics-box.small').children().eq(0).html("")
+              $('.lyrics-box.small').children().eq(1).html("")
               console.log data)
             $('.lang1-line').val('')
             $('.lang2-line').val('')
@@ -296,6 +326,8 @@ $ ->
               duration = data.data.duration
               $('#lang1-lyrics').append("<p data-line-id=#{line_id} data-time=#{time_in_seconds} data-duration=#{duration}><small><small class='edit-duration'>(#{time})</small></small>  <span class='edit-line-lang1'>#{that_entry}</span></p>")
               $('#lang2-lyrics').append("<p data-line-id=#{line_id} data-time=#{time_in_seconds} data-duration=#{duration}><small><small class='edit-duration'>(#{time})</small></small>  <span class='edit-line-lang2'>#{entry}</span></p>")
+              $('.lyrics-box.small').children().eq(0).html("")
+              $('.lyrics-box.small').children().eq(1).html("")
               $('#lang1-lyrics').scrollTo('100%')
               $('#lang2-lyrics').scrollTo('100%')
               console.log data)
@@ -342,11 +374,11 @@ $ ->
       <br>
       <br>
       <div class='btn-group'>
-        <a class='btn btn-info btn-small rounded' id='backward-loop' style='width: 55px;'><i class='icon-step-backward'></i> 1 loop</a>
-        <a class='btn btn-info btn-small rounded' id='forward-loop' style='width: 55px;'>1 loop <i class='icon-step-forward'></i></a>
+        <a class='btn btn-info btn-small rounded' id='backward-loop' style='width: 55px;'>&#8592; 1 loop</a>
+        <a class='btn btn-info btn-small rounded' id='forward-loop' style='width: 55px;'>1 loop &#8594;</a>
         <br>
-        <a class='btn btn-info btn-small rounded' id='backward-s' style='width: 55px;'><i class='icon-step-backward'></i> 1 sec. </a>
-        <a class='btn btn-info btn-small rounded' id='forward-s' style='width: 55px;'>1 sec.  <i class='icon-step-forward'></i></a>
+        <a class='btn btn-info btn-small rounded' id='backward-s' style='width: 55px;'>&#8592;</i> 1 sec. </a>
+        <a class='btn btn-info btn-small rounded' id='forward-s' style='width: 55px;'>1 sec. &#8594;</a>
       </div>")
     $('#loop-slider').slider(
       min: 2
@@ -480,13 +512,13 @@ $ ->
 
   $('#delete-line').livequery ->
     $(this).click ->
+      console.log "deleting line"
+      window.editing_line = 'off'
       line_id = $(this).attr('data-line-id')
       $.post('/delete_line', { 'line' : { 'id' : "#{line_id}" } } )
       $(this).parent().parent().parent().slideUp()
-      delayedRemove = ->
-        $(this).parent().parent().parent().remove()
-      window.setTimeout(delayedRemove, 1000)
-      window.editing_line = 'off'
+      # The slideUp would be nice but unfortunately js from YouTube/Google interferes with a delayed remove() and mucks the whole thing
+      $(this).parent().parent().parent().remove()
 
   # REVISING TIME/DURATION OF LINES
 
