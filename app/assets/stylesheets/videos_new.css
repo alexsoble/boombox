@@ -22,25 +22,27 @@
   margin-right: 40px;
   float: left; }
 
+/* LINES AND LYRICS EDITING AREA */
+
 .lyrics-container {
-  margin-left: 5px; 
-  margin-top: 5px; 
+  margin: 10px; 
   float: left; 
-  width: 300px; }
-
-#lang1-lyrics {
-  max-height: 380px;
-  overflow-y: scroll; }
-
-#lang2-lyrics {
-  max-height: 380px;
-  overflow-y: scroll; }
+  width: 230px; }
 
 .lyrics-container.wide { 
-  width: 600px;
-  margin-left: 40px; 
+  width: 640px;
+  margin-left: 30px; 
   margin-top: 0px; 
-  float: left; }
+  float: left; 
+  max-height: 380px;
+  overflow-y: scroll; }
+
+.line { float: left; }
+
+.tools-container { float: right; }
+
+.marginless { margin: 0px !important; }
+
 
 /* SMALL LYRICS CONTAINER FOR THE VIDEO AS IT'S EDITED */
 
@@ -57,7 +59,7 @@
   float: left;
   margin: 4px; }
 
-  /* ---------------------------- */
+/* --------------------------------------------------- */
 
 .center-pill {
   margin-right: auto; 
@@ -90,23 +92,42 @@
 #big-timer {  color: white;
   line-height: 90px; }
 
+
+/*  --------- CONTROLS BELOW VIDEO --------- */
+
 #controls { position: relative; }
 
-#loop-settings {  width: 200px; 
+#loop-settings {  width: 180px; 
   float: right;
-  margin-top: 20px; 
-  margin-right: -40px; }
+  padding-top: 15px;
+  padding-bottom: 15px;
+  border-top: 2px solid #9B59BB;
+  border-bottom: 2px solid #9B59BB;
+  border-right: 2px solid #9B59BB;
+  border-top-right-radius: 10px;
+  border-bottom-right-radius: 10px; }
 
-#difficulty-settings {  width: 240px; 
+#difficulty-settings {  
+  width: 220px; 
   float: left;
-  margin-top: 20px; 
-  margin-right: -40px; }
-
-.settings { padding: 8px;
-  border-radius: 10px;
-  border: 2px solid #9B59BB; }
+  padding-top: 15px;
+  padding-bottom: 15px;
+  padding-left: 20px;
+  border-top: 2px solid #9B59BB;
+  border-bottom: 2px solid #9B59BB;
+  border-left: 2px solid #9B59BB;
+  border-top-left-radius: 10px;
+  border-bottom-left-radius: 10px; }
 
 .checkbox { font-size: 12px; }
+
+/*  ---------------------------------------- */
+
+.help-button { width: 10px; 
+  border-radius: 5px; 
+  background-color: #FE781E; 
+  text-align: center; 
+  color: white; }
 
 #slider { width: 150px; float: left; margin-top: 6px; }
 #loop-slider { width: 150px; float: left; margin: 6px; }

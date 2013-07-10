@@ -12,8 +12,7 @@
       </div>
       <div id="new-video-box"></div>
       <div id="timer-box"></div>
-      <div id="loop-settings" class="settings"></div>
-      <div id="difficulty-settings" class="settings"></div>
+      <div id="settings"></div>
     </div>
 
   </div> 
@@ -27,17 +26,32 @@
       <% if @lang1_and_lang2 %>
 
         <div class="span3">
-          <div class="lyrics-container">
-            <div id="lang1-box">    
-              <div id="lang1-lyrics">
-                <% @lines.each do |l| %>
+          <div class="lyrics-container wide">
+              <% @lines.each do |l| %>
+                <div class="line" id="lang1-<%= l.time %>" class="editing-lyrics" data-line-id=<%= l.id %> data-time=<%= l.time %> data-duration=<%= l.duration %>>
+                  <div class="tools-container">
+                    <small><small class='edit-duration'><strong>Loop: <%= l.formatted_time %> to <%= l.formatted_end_time %></strong></small></small>
+                    <br>
+                    <div class="btn btn-primary btn-small rounded marginless">edit</div><div class="btn btn-success btn-small rounded marginless">share</div><div class="btn btn-warning btn-small rounded marginless">help</div>
+                  </div>
                   <% if l.lang1.present? %>
-                    <p id="lang1-<%= l.time %>" class="editing-lyrics" data-line-id=<%= l.id %> data-time=<%= l.time %> data-duration=<%= l.duration %>><small><small class='edit-duration'>(<%= l.formatted_time %> to <%= l.formatted_end_time %>)</small></small>  <span class='edit-line-lang1'><%= l.lang1 %></span></p>
+                    <div class="lyrics-container">
+                      <p><span class='edit-line-lang1'><%= l.lang1 %></span></p>
+                    </div>
                   <% end %>
-                <% end %>
-              </div>
-              <div id="lang1-input">
-                <div><i class='left'><%= @lang1 %>&nbsp;</i>
+                  <% if l.lang2.present? %> 
+                    <div class="lyrics-container">
+                      <p><span class='edit-line-lang1'><%= l.lang2 %></span></p>
+                    </div>
+                  <% end %>
+                </div>
+                <br>
+              <% end %>
+            </div>
+            <div class="lyrics-container wide">
+              <div class="lyrics-container">
+                <div id="lang1-input">
+                  <i class='left'><%= @lang1 %>&nbsp;</i>
                   <small class='left'>(<small class='current-loop-time'></small>)</small></div>
                   <br>
                   <div class='control-group'>
@@ -46,36 +60,17 @@
                   </div>
                 </div>
               </div>
-            </div>
-          </div>
-        </div>
-
-        <div class="span3">
-          <div class="lyrics-container">
-            <div id="lang2-box">
-              <div id="lang2-lyrics">
-                <% @lines.each do |l| %>
-                  <% if l.lang2.present? %> 
-                    <p id="lang2-<%= l.time %>" class="editing-lyrics" data-line-id=<%= l.id %> data-time=<%= l.time %> data-duration=<%= l.duration %>><small><small class='edit-duration'>(<%= l.formatted_time %>)</small></small>  <span class='edit-line-lang1'><%= l.lang2 %></span></p>
-                  <% end %>
-                <% end %>
-              </div>
-              <div id="lang2-input">
-                <div>
+              <div class="lyrics-container">
+                <div id="lang2-input">
                   <i class='left'><%= @lang2 %>&nbsp;</i>
                   <small class='left'>(<small id='current-loop-time' class='current-loop-time'></small>)</small></div>
                   <br>
                   <div class='controls'>
                     <input type='text' class='input-xlarge lang2-line'>
-                </div>
+                  </div>
+                <div class="publish-button" style="float: left;"></div>
+                <div class="preview-button" style="float: left; margin-left: 20px;"></div>
               </div>
-            </div>
-          </div>
-          <div class="lyrics-container">
-            <div class="publish-button" style="float: left;"></div>
-            <div class="preview-button" style="float: left; margin-left: 20px;"></div>
-          </div>
-        </div>
 
       <% else %>
       
@@ -87,8 +82,8 @@
           </div>
         </div>
         <div class="lyrics-container">
-          <div class="publish-button" style="float: left;"></div>
-          <div class="preview-button" style="float: left; margin-left: 20px;"></div>
+          <div class="publish-button"></div>
+          <div class="preview-button"></div>
         </div>
       </div>
       <% end %>

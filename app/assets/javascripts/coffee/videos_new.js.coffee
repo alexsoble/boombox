@@ -34,11 +34,13 @@ $ ->
     $("#controls").prepend('<div id="red-arrow-text-box"><p><strong>Click here when <br> the words start!</strong></p></div>')
     $("#controls").fadeIn('slow')
     $('#red-arrow').fadeIn('slow')
-  if action_name is 'edit' and published is 'false'
-    $('.publish-button').html('<div class="btn btn-info" id="publish-button">Publish!</div>')
-    $('.preview-button').html('<div class="btn btn-info" id="preview-button">Preview</div>')
-  if action_name is 'edit' and published is 'true'
-    $('.publish-button').html('<div class="btn btn-info" id="publish-button">Update</div>')
+  if action_name is 'edit'
+    $('.tools-container').toggle('width')
+    if published is 'false'
+      $('.publish-button').html('<div class="btn btn-info" id="publish-button">Publish!</div>')
+      $('.preview-button').html('<div class="btn btn-info" id="preview-button">Preview</div>')
+    if published is 'true'
+      $('.publish-button').html('<div class="btn btn-info" id="publish-button">Update</div>')
 
 # YOUTUBE PLAYER COMES IN HERE
 
@@ -100,6 +102,7 @@ $ ->
       fadeOut = ->
         if window.got_volume == false
           window.volume = player.getVolume()
+          console.log "volume: " + window.volume
           window.got_volume = true
           halfVolume = 0.5 * window.volume
           quarterVolume = 0.25 * window.volume
@@ -111,6 +114,7 @@ $ ->
       if exact_time > (window.loop) * (window.section + 1)
         fadeOut()
         loopNow()
+        console.log "window.got_volume: " + window.got_volume
 
     arr = []
     lyrics = $(".editing-lyrics")
@@ -365,35 +369,40 @@ $ ->
 
   step3 = ->
 
-    $('#difficulty-settings').html("
-        Video difficulty:
-          <br>
-          <div class='control-group'>
-            <label class='checkbox'>
-              <input type='checkbox' id='beginner' value='beginner'>
-              Beginner (slow pace, simple vocab)
-            </label>
-            <label class='checkbox'>
-              <input type='checkbox' id='intermediate' value='intermediate'>
-              Intermediate (measured pace/vocab)
-            </label>
-            <label class='checkbox'>
-              <input type='checkbox' id='advanced' value='advanced'>
-              Advanced (quick pace, tricky vocab)
-            </label>
-          </div>")
-    $('#loop-settings').html("
-      <a class='btn btn-info btn-small rounded' id='loop-status'>Playing in 4-second loops.</a>
-      <div id='loop-slider'></div>
-      <br>
-      <br>
-      <div class='btn-group'>
-        <a class='btn btn-info btn-small rounded' id='backward-loop' style='width: 55px;'>&#8592; 1 loop</a>
-        <a class='btn btn-info btn-small rounded' id='forward-loop' style='width: 55px;'>1 loop &#8594;</a>
-        <br>
-        <a class='btn btn-info btn-small rounded' id='backward-s' style='width: 55px;'>&#8592;</i> 1 sec. </a>
-        <a class='btn btn-info btn-small rounded' id='forward-s' style='width: 55px;'>1 sec. &#8594;</a>
-      </div>")
+    $('#settings').html("
+      <div class='settings'>
+        <div id='difficulty-settings'>
+          Difficulty:
+            <br>
+            <div class='control-group'>
+              <label class='checkbox'>
+                <input type='checkbox' id='beginner' value='beginner'>
+                Beginner (slow and simple)
+              </label>
+              <label class='checkbox'>
+                <input type='checkbox' id='intermediate' value='intermediate'>
+                Intermediate (not too fast!)
+              </label>
+              <label class='checkbox'>
+                <input type='checkbox' id='advanced' value='advanced'>
+                Advanced (fast and/or tricky)
+              </label>
+            </div>
+          </div>
+          <div id='loop-settings'>
+            <a class='btn btn-info btn-small rounded' id='loop-status'>Playing in 4-second loops.</a>
+            <div id='loop-slider'></div>
+            <br>
+            <br>
+            <div class='btn-group'>
+              <a class='btn btn-info btn-small rounded' id='backward-loop' style='width: 55px;'>&#8592; 1 loop</a>
+              <a class='btn btn-info btn-small rounded' id='forward-loop' style='width: 55px;'>1 loop &#8594;</a>
+              <br>
+              <a class='btn btn-info btn-small rounded' id='backward-s' style='width: 55px;'>&#8592;</i> 1 sec. </a>
+              <a class='btn btn-info btn-small rounded' id='forward-s' style='width: 55px;'>1 sec. &#8594;</a>
+            </div>
+          </div>
+        </div>")
     $('#loop-slider').slider(
       min: 2
       max: 12
@@ -452,6 +461,10 @@ $ ->
       console.log "Turning loops on."
 
   # REVISING LINE CONTENT 
+
+  $('.line').livequery ->
+    $(this).hover(
+      -> $(this).children(":first").animate({width: 'toggle'}))
 
   $('.edit-line-lang1').livequery ->
     $(this).hover(
@@ -606,14 +619,23 @@ $ ->
   $('#beginner').livequery ->
     $(this).click ->
       if $(this).prop('checked') == true
+        $('#intermediate').prop('checked',false)
+        $('#advanced').prop('checked',false)
+        $.post('/update_difficulty', { 'interp' : { 'id' : "#{interp_id}", 'difficulty' : "beginner" } })
 
   $('#intermediate').livequery ->
     $(this).click ->
-      console.log $(this).prop('checked')
+      if $(this).prop('checked') == true
+        $('#beginner').prop('checked',false)
+        $('#advanced').prop('checked',false)
+        $.post('/update_difficulty', { 'interp' : { 'id' : "#{interp_id}", 'difficulty' : "intermediate" } })
 
   $('#advanced').livequery ->
     $(this).click ->
-      console.log $(this).prop('checked')
+      if $(this).prop('checked') == true
+        $('#intermediate').prop('checked',false)
+        $('#beginner').prop('checked',false)
+        $.post('/update_difficulty', { 'interp' : { 'id' : "#{interp_id}", 'difficulty' : "advanced" } })
 
   # OLD STUFF...  MAYBE NOT USELESS THOUGH? 
 
