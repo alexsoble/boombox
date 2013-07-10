@@ -14,6 +14,18 @@
   <% end %>
   <%= csrf_meta_tags %>
 </head>
+
+<script>
+  // Set to false or delete to disable analytics/tracking:
+  TowTruckConfig_enableAnalytics = false;
+</script>
+<script>
+$(function () {
+  $("#start-towtruck").click(TowTruck);
+});
+</script>
+<script src="https://towtruck.mozillalabs.com/towtruck.js"></script>
+
 <body>
 <div class="navbar navbar-inverse">
   <div class="navbar-inner" style="background-color: #9B59BB;">
@@ -22,6 +34,7 @@
       <ul class="nav" id="main-menu-left">
         <li><a href="/philosophy">Philosophy</a></li>
         <li><a href="/survey">Survey</a></li>
+        <li><a id="start-towtruck">Collaborate</a></li>
       </ul>
       <% if current_user %>
         <ul class="nav pull-right signed-in-user" id="<%= current_user.id %>">

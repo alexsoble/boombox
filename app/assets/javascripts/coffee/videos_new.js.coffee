@@ -100,7 +100,6 @@ $ ->
       fadeOut = ->
         if window.got_volume == false
           window.volume = player.getVolume()
-          console.log "volume: " + window.volume
           window.got_volume = true
           halfVolume = 0.5 * window.volume
           quarterVolume = 0.25 * window.volume
@@ -112,7 +111,6 @@ $ ->
       if exact_time > (window.loop) * (window.section + 1)
         fadeOut()
         loopNow()
-        console.log "window.got_volume: " + window.got_volume
 
     arr = []
     lyrics = $(".editing-lyrics")
@@ -367,8 +365,24 @@ $ ->
 
   step3 = ->
 
+    $('#difficulty-settings').html("
+        Video difficulty:
+          <br>
+          <div class='control-group'>
+            <label class='checkbox'>
+              <input type='checkbox' id='beginner' value='beginner'>
+              Beginner (slow pace, simple vocab)
+            </label>
+            <label class='checkbox'>
+              <input type='checkbox' id='intermediate' value='intermediate'>
+              Intermediate (measured pace/vocab)
+            </label>
+            <label class='checkbox'>
+              <input type='checkbox' id='advanced' value='advanced'>
+              Advanced (quick pace, tricky vocab)
+            </label>
+          </div>")
     $('#loop-settings').html("
-      <br>
       <a class='btn btn-info btn-small rounded' id='loop-status'>Playing in 4-second loops.</a>
       <div id='loop-slider'></div>
       <br>
@@ -586,6 +600,20 @@ $ ->
       $(this).parent().parent().slideUp()
       $(this).parent().parent().remove()
       window.editing_line = 'off'
+
+  # DIFFICULTY SETTINGS 
+
+  $('#beginner').livequery ->
+    $(this).click ->
+      if $(this).prop('checked') == true
+
+  $('#intermediate').livequery ->
+    $(this).click ->
+      console.log $(this).prop('checked')
+
+  $('#advanced').livequery ->
+    $(this).click ->
+      console.log $(this).prop('checked')
 
   # OLD STUFF...  MAYBE NOT USELESS THOUGH? 
 

@@ -11,58 +11,59 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130702012618) do
+ActiveRecord::Schema.define(:version => 20130709215003) do
 
   create_table "interpretations", :force => true do |t|
-    t.string   "lang2"
-    t.integer  "video_id"
-    t.datetime "created_at",                    :null => false
-    t.datetime "updated_at",                    :null => false
-    t.integer  "user_id"
-    t.boolean  "published",  :default => false
+    t.string    "lang2"
+    t.integer   "video_id"
+    t.timestamp "created_at",                    :null => false
+    t.timestamp "updated_at",                    :null => false
+    t.integer   "user_id"
+    t.boolean   "published",  :default => false
+    t.string    "difficulty"
   end
 
   create_table "lines", :force => true do |t|
-    t.string   "lang1"
-    t.string   "lang2"
-    t.integer  "time"
-    t.integer  "upvotes"
-    t.integer  "downvotes"
-    t.integer  "interpretation_id"
-    t.datetime "created_at",                       :null => false
-    t.datetime "updated_at",                       :null => false
-    t.integer  "duration",          :default => 4
+    t.string    "lang1"
+    t.string    "lang2"
+    t.integer   "time"
+    t.integer   "upvotes"
+    t.integer   "downvotes"
+    t.integer   "interpretation_id"
+    t.timestamp "created_at",                       :null => false
+    t.timestamp "updated_at",                       :null => false
+    t.integer   "duration",          :default => 4
   end
 
   create_table "requests", :force => true do |t|
-    t.datetime "created_at", :null => false
-    t.datetime "updated_at", :null => false
-    t.string   "lang2"
-    t.integer  "video_id"
-    t.integer  "user_id"
+    t.timestamp "created_at", :null => false
+    t.timestamp "updated_at", :null => false
+    t.string    "lang2"
+    t.integer   "video_id"
+    t.integer   "user_id"
   end
 
   create_table "sessions", :force => true do |t|
-    t.datetime "created_at", :null => false
-    t.datetime "updated_at", :null => false
+    t.timestamp "created_at", :null => false
+    t.timestamp "updated_at", :null => false
   end
 
   create_table "users", :force => true do |t|
-    t.datetime "created_at",      :null => false
-    t.datetime "updated_at",      :null => false
-    t.string   "provider"
-    t.string   "uid"
-    t.string   "name"
-    t.string   "email"
-    t.string   "password_digest"
+    t.timestamp "created_at",      :null => false
+    t.timestamp "updated_at",      :null => false
+    t.string    "provider"
+    t.string    "uid"
+    t.string    "name"
+    t.string    "email"
+    t.string    "password_digest"
   end
 
   create_table "videos", :force => true do |t|
-    t.string   "title"
-    t.datetime "created_at", :null => false
-    t.datetime "updated_at", :null => false
-    t.string   "lang1"
-    t.string   "youtube_id"
+    t.string    "title"
+    t.timestamp "created_at", :null => false
+    t.timestamp "updated_at", :null => false
+    t.string    "lang1"
+    t.string    "youtube_id"
   end
 
 end

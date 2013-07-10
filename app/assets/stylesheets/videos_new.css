@@ -92,11 +92,21 @@
 
 #controls { position: relative; }
 
-#loop-settings { 
-  width: 200px; 
+#loop-settings {  width: 200px; 
   float: right;
-  margin-right: -40px;
-  border: 2px #9B59BB }
+  margin-top: 20px; 
+  margin-right: -40px; }
+
+#difficulty-settings {  width: 240px; 
+  float: left;
+  margin-top: 20px; 
+  margin-right: -40px; }
+
+.settings { padding: 8px;
+  border-radius: 10px;
+  border: 2px solid #9B59BB; }
+
+.checkbox { font-size: 12px; }
 
 #slider { width: 150px; float: left; margin-top: 6px; }
 #loop-slider { width: 150px; float: left; margin: 6px; }
