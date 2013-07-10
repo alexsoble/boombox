@@ -8,6 +8,7 @@ $ ->
   translation_type = $('#data').attr('data-translation-type')
   published = $('#data').attr('data-published')
   console.log youtube_id + " " + lang1 + " " + lang2 + " " + interp_id + " " + action_name + " "+ translation_type
+  window.tool_helptip_displayed = false
 
   formatTime = (time) ->
     time = Math.floor(time)
@@ -21,11 +22,11 @@ $ ->
       if 9 < time%60 <= 59 then formatted_time = Math.floor((time)/60) + ":" + (time)%60
     formatted_time
 
+  $('#timer-box').html('<div id="timer"><h2 class="timer-text" id="big-timer"></h2></div>')
   if action_name isnt 'edit'
     $('#title-box').hide()
     $('#red-arrow').hide()
     $('#title-box').slideDown('5000')
-    $('#timer-box').html('<div id="timer"><h2 class="timer-text" id="big-timer"></h2></div>')
     $('#timer-box').hide()
     $("#controls").append('<br><div class="btn-group relative" id="settings-and-start">
         <br><br><br><br>
@@ -53,13 +54,14 @@ $ ->
   firstScriptTag.parentNode.insertBefore tag, firstScriptTag
 
   window.onYouTubeIframeAPIReady = ->
-    player = new YT.Player("new-video-box",
+    player = new YT.Player("new-video-box", {
       height: "315"
       width: "420"
       videoId: youtube_id
+      playerVars: { controls: 0 }
       events:
         onReady: onPlayerReady
-        onStateChange: onPlayerStateChange)
+        onStateChange: onPlayerStateChange })
     window.player = player 
 
   onPlayerReady = (event) ->
@@ -67,16 +69,16 @@ $ ->
 
   window.section = 0 
   window.time = 0
-  if action_name is 'new'
-    window.loop = 'none_yet'
-  if action_name is 'edit'
-    window.loop = false
+  window.loop = false
   window.got_volume = false
   
   countVideoPlayTime = ->
-    exact_time = player.getCurrentTime()
-    window.time = Math.floor(exact_time)
-    $(".timer-text").html(formatTime(window.time))
+
+    getTime = ->
+      exact_time = player.getCurrentTime()
+      window.time = Math.floor(exact_time)
+      $(".timer-text").html(formatTime(window.time))
+    setInterval(getTime, 100)
 
     current_loop_time = window.loop * window.section
     current_loop_end = window.loop * (window.section + 1)
@@ -111,7 +113,7 @@ $ ->
           softAndSlow = ->
             player.setVolume(quarterVolume)
           window.setTimeout(softAndSlow, 500)
-      if exact_time > (window.loop) * (window.section + 1)
+      if window.time > (window.loop) * (window.section + .6)
         fadeOut()
         loopNow()
         console.log "window.got_volume: " + window.got_volume
@@ -215,6 +217,11 @@ $ ->
     helloArray['English'] = 'Hello'
     helloArray['Danish'] = 'Hej'
     helloArray['Icelandic'] = 'Halló'
+    helloArray['Russian'] = 'привет'
+    helloArray['Kazakh'] = 'Сәлем!'
+    helloArray['Tajik'] = 'салом'
+    helloArray['Uzbek'] = 'Salom'
+    helloArray['Uyghur'] = 'Ässalamu läykum'
     console.log helloArray
 
     $("#controls").html("
@@ -257,6 +264,10 @@ $ ->
   
     if window.translation_type == 'lang1_and_lang2' and action_name isnt 'edit'
 
+      $('#intro-text').html("<strong>Here we go!  Listen carefully.<br><br>  If you need to look up a word, online dictionaries like <a href='http://www.wordreference.com/'>Wordreference</a> can be a great resource. <br><br>Don't worry if you have trouble understanding at first — you'll get tools to help you.</strong>")
+      delayedFade = ->
+        $('#intro-text').fadeOut()
+      window.setTimeout(delayedFade, 10000)
       $('#lang1-input').html("<div><i class='left'>#{lang1}&nbsp;</i>
         <small class='left'>(<small class='current-loop-time'></small>)</small></div>
         <br>
@@ -302,13 +313,37 @@ $ ->
             time = $("#current-loop-time").text()
             time_in_seconds = parseInt(time.slice(3,5)) + parseInt(time.slice(0,2))*60
             $.post('/new_line', { 'line' : { 'lang1' : "#{entry}", 'lang2' : "#{that_entry}", 'time' : "#{time_in_seconds}", 'duration' : "#{window.loop}", 'interpretation_id' : "#{interp_id}" , 'upvotes' : 0, 'downvotes' : 0  } }, (data) ->
+              console.log data.data
               line_id = data.data.id 
               duration = data.data.duration
-              $('#lang1-lyrics').append("<p data-line-id=#{line_id} data-time=#{time_in_seconds} data-duration=#{duration}><small><small class='edit-duration'>(#{time})</small></small>  <span class='edit-line-lang1'>#{entry}</span></p>")
-              $('#lang2-lyrics').append("<p data-line-id=#{line_id} data-time=#{time_in_seconds} data-duration=#{duration}><small><small class='edit-duration'>(#{time})</small></small>  <span class='edit-line-lang2'>#{that_entry}</span></p>")
+              $('#lyrics-box').append("
+                  <div class='line' id='lang1-#{time_in_seconds}' class='editing-lyrics' data-line-id=#{line_id} data-time=#{time_in_seconds} data-duration=#{window.loop}>
+                    <div class='lyrics-container'>
+                      <p><span class='edit-line-lang1'>#{that_entry}</span></p>
+                    </div>
+                    <div class='lyrics-container'>
+                      <p><span class='edit-line-lang1'>#{entry}</span></p>
+                    </div>
+                  </div>
+                  <div class='tools-container'>
+                    <div class='btn btn-primary btn-small rounded marginless watch-button'>repeat</div><div class='btn btn-warning btn-small rounded marginless help-button'>compare</div>
+                    <br>
+                    <div class='btn btn-info btn-small rounded marginless edit-button'>revise</div><div class='btn btn-success btn-small rounded marginless share-button'>share</div>
+                    <br>
+                    <small><small class='edit-duration'><strong>#{formatTime(time_in_seconds)} to #{formatTime(time_in_seconds + window.loop)}</strong></small></small>
+                  </div>
+                  ")
+              if window.tool_helptip_displayed == false
+                $('.tools-container').prepend("<strong><span id='tools-intro-text'>Hey, your very first translated line!<br>Nice job. Here are some tools if you need help:<br><br></span></strong>")
+                delayedFade = ->
+                  $('#tools-intro-text').fadeOut()
+                window.setTimeout(delayedFade, 8000)
+                window.tool_helptip_displayed = true
+              $('#lyrics-box').scrollTo('100%')
               $('.lyrics-box.small').children().eq(0).html("")
               $('.lyrics-box.small').children().eq(1).html("")
               console.log data)
+            $('#intro-text').fadeOut()
             $('.lang1-line').val('')
             $('.lang2-line').val('')
             window.section += 1
@@ -327,14 +362,36 @@ $ ->
             time = $("#current-loop-time").text()
             time_in_seconds = parseInt(time.slice(3,5)) + parseInt(time.slice(0,2))*60
             $.post('/new_line', { 'line' : { 'lang1' : "#{that_entry}", 'lang2' : "#{entry}", 'time' : "#{time_in_seconds}", 'duration' : "#{window.loop}", 'interpretation_id' : "#{interp_id}" , 'upvotes' : 0, 'downvotes' : 0  } }, (data) ->
+              console.log data.data
               line_id = data.data.id 
               duration = data.data.duration
-              $('#lang1-lyrics').append("<p data-line-id=#{line_id} data-time=#{time_in_seconds} data-duration=#{duration}><small><small class='edit-duration'>(#{time})</small></small>  <span class='edit-line-lang1'>#{that_entry}</span></p>")
-              $('#lang2-lyrics').append("<p data-line-id=#{line_id} data-time=#{time_in_seconds} data-duration=#{duration}><small><small class='edit-duration'>(#{time})</small></small>  <span class='edit-line-lang2'>#{entry}</span></p>")
+              $('#lyrics-box').append("
+                  <div class='line' id='lang1-#{time_in_seconds}' class='editing-lyrics' data-line-id=#{line_id} data-time=#{time_in_seconds} data-duration=#{window.loop}>
+                    <div class='lyrics-container'>
+                      <p><span class='edit-line-lang1'>#{that_entry}</span></p>
+                    </div>
+                    <div class='lyrics-container'>
+                      <p><span class='edit-line-lang1'>#{entry}</span></p>
+                    </div>
+                  </div>
+                  <div class='tools-container'>
+                    <div class='btn btn-primary btn-small rounded marginless watch-button'>repeat</div><div class='btn btn-warning btn-small rounded marginless help-button'>compare</div>
+                    <br>
+                    <div class='btn btn-info btn-small rounded marginless edit-button'>revise</div><div class='btn btn-success btn-small rounded marginless share-button'>share</div>
+                    <br>
+                    <small><small class='edit-duration'><strong>#{formatTime(time_in_seconds)} to #{formatTime(time_in_seconds + window.loop)}</strong></small></small>
+                  </div>
+                  ")
+              if window.tool_helptip_displayed == false
+                $('.tools-container').prepend("<strong><span id='tools-intro-text'>Hey, your very first translated line!<br>Nice job. Here are some tools if you need help:<br><br></span></strong>")
+                delayedFade = ->
+                  $('#tools-intro-text').fadeOut()
+                window.setTimeout(delayedFade, 8000)
+                window.tool_helptip_displayed = true
+              $('#intro-text').fadeOut()
               $('.lyrics-box.small').children().eq(0).html("")
               $('.lyrics-box.small').children().eq(1).html("")
-              $('#lang1-lyrics').scrollTo('100%')
-              $('#lang2-lyrics').scrollTo('100%')
+              $('#lyrics-box').scrollTo('100%')
               console.log data)
             window.section += 1
             if action_name isnt 'edit'
@@ -388,7 +445,25 @@ $ ->
                 Advanced (fast and/or tricky)
               </label>
             </div>
+          </div>")
+    if action_name is 'edit'
+      $('#settings').append("
+          <div id='loop-settings'>
+            <a class='btn btn-info btn-small rounded' id='loop-status'>Playing without loops.</a>
+            <div id='loop-slider'></div>
+            <br>
+            <br>
+            <div class='btn-group'>
+              <a class='btn btn-info btn-small rounded' id='backward-loop' style='width: 55px;'>&#8592; 1 loop</a>
+              <a class='btn btn-info btn-small rounded' id='forward-loop' style='width: 55px;'>1 loop &#8594;</a>
+              <br>
+              <a class='btn btn-info btn-small rounded' id='backward-s' style='width: 55px;'>&#8592;</i> 1 sec. </a>
+              <a class='btn btn-info btn-small rounded' id='forward-s' style='width: 55px;'>1 sec. &#8594;</a>
+            </div>
           </div>
+        </div>")
+    if action_name is 'new'
+      $('#settings').append("
           <div id='loop-settings'>
             <a class='btn btn-info btn-small rounded' id='loop-status'>Playing in 4-second loops.</a>
             <div id='loop-slider'></div>
@@ -460,16 +535,23 @@ $ ->
       window.loop = 4
       console.log "Turning loops on."
 
+  # LINE CONTROLS
+
+  $('.watch-button').livequery ->
+    $(this).click ->
+      time = $(this).parent().parent().attr('data-time')
+      window.player.seekTo(time)
+      window.loop = $(this).parent().parent().attr('data-duration') 
+      window.section = time / window.loop
+
   # REVISING LINE CONTENT 
 
   $('.line').livequery ->
     $(this).hover(
-      -> $(this).children(":first").animate({width: 'toggle'}))
-
-  $('.edit-line-lang1').livequery ->
-    $(this).hover(
       -> $(this).attr('style','background-color: yellow;')
       -> $(this).attr('style','background-color: white;'))
+    $(this).click ->
+      $(this).next().animate({width: 'toggle'})
 
   $('.edit-line-lang2').livequery ->
     $(this).hover(
@@ -619,22 +701,19 @@ $ ->
   $('#beginner').livequery ->
     $(this).click ->
       if $(this).prop('checked') == true
-        $('#intermediate').prop('checked',false)
-        $('#advanced').prop('checked',false)
+        $('#difficulty-settings').html('Difficulty: Beginner')
         $.post('/update_difficulty', { 'interp' : { 'id' : "#{interp_id}", 'difficulty' : "beginner" } })
 
   $('#intermediate').livequery ->
     $(this).click ->
       if $(this).prop('checked') == true
-        $('#beginner').prop('checked',false)
-        $('#advanced').prop('checked',false)
+        $('#difficulty-settings').html('Difficulty: Intermediate')
         $.post('/update_difficulty', { 'interp' : { 'id' : "#{interp_id}", 'difficulty' : "intermediate" } })
 
   $('#advanced').livequery ->
     $(this).click ->
       if $(this).prop('checked') == true
-        $('#intermediate').prop('checked',false)
-        $('#beginner').prop('checked',false)
+        $('#difficulty-settings').html('Difficulty: Advanced')
         $.post('/update_difficulty', { 'interp' : { 'id' : "#{interp_id}", 'difficulty' : "advanced" } })
 
   # OLD STUFF...  MAYBE NOT USELESS THOUGH? 

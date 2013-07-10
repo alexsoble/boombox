@@ -22,6 +22,8 @@
   margin-right: 40px;
   float: left; }
 
+.input-xlarge { width: 220px; }
+
 /* LINES AND LYRICS EDITING AREA */
 
 .lyrics-container {
@@ -39,7 +41,7 @@
 
 .line { float: left; }
 
-.tools-container { float: right; }
+.tools-container { float: right; width: 140px; }
 
 .marginless { margin: 0px !important; }
 
@@ -97,37 +99,27 @@
 
 #controls { position: relative; }
 
+#settings { position: relative; top: -5px; }
+
 #loop-settings {  width: 180px; 
   float: right;
   padding-top: 15px;
   padding-bottom: 15px;
-  border-top: 2px solid #9B59BB;
   border-bottom: 2px solid #9B59BB;
-  border-right: 2px solid #9B59BB;
-  border-top-right-radius: 10px;
-  border-bottom-right-radius: 10px; }
+  border-right: 2px solid #9B59BB; }
 
 #difficulty-settings {  
   width: 220px; 
   float: left;
   padding-top: 15px;
   padding-bottom: 15px;
-  padding-left: 20px;
-  border-top: 2px solid #9B59BB;
+  padding-left: 15px;
   border-bottom: 2px solid #9B59BB;
-  border-left: 2px solid #9B59BB;
-  border-top-left-radius: 10px;
-  border-bottom-left-radius: 10px; }
+  border-left: 2px solid #9B59BB; }
 
 .checkbox { font-size: 12px; }
 
 /*  ---------------------------------------- */
-
-.help-button { width: 10px; 
-  border-radius: 5px; 
-  background-color: #FE781E; 
-  text-align: center; 
-  color: white; }
 
 #slider { width: 150px; float: left; margin-top: 6px; }
 #loop-slider { width: 150px; float: left; margin: 6px; }
@@ -157,7 +149,7 @@
 
 #request-options {
   margin-left: auto;
-  margin-right: auto;
+  margin-right: auto; 
   width: 160px;
   text-align: left; }
 

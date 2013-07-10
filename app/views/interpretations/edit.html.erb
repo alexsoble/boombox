@@ -26,27 +26,29 @@
       <% if @lang1_and_lang2 %>
 
         <div class="span3">
-          <div class="lyrics-container wide">
-              <% @lines.each do |l| %>
-                <div class="line" id="lang1-<%= l.time %>" class="editing-lyrics" data-line-id=<%= l.id %> data-time=<%= l.time %> data-duration=<%= l.duration %>>
-                  <div class="tools-container">
-                    <small><small class='edit-duration'><strong>Loop: <%= l.formatted_time %> to <%= l.formatted_end_time %></strong></small></small>
-                    <br>
-                    <div class="btn btn-primary btn-small rounded marginless">edit</div><div class="btn btn-success btn-small rounded marginless">share</div><div class="btn btn-warning btn-small rounded marginless">help</div>
+          <div class="lyrics-container wide" id="lyrics-box">
+            <% @lines.each do |l| %>
+              <div class="line" id="lang1-<%= l.time %>" class="editing-lyrics" data-line-id=<%= l.id %> data-time=<%= l.time %> data-duration=<%= l.duration %>>
+                <% if l.lang1.present? %>
+                  <div class="lyrics-container">
+                    <p><span class='edit-line-lang1'><%= l.lang1 %></span></p>
                   </div>
-                  <% if l.lang1.present? %>
-                    <div class="lyrics-container">
-                      <p><span class='edit-line-lang1'><%= l.lang1 %></span></p>
-                    </div>
-                  <% end %>
-                  <% if l.lang2.present? %> 
-                    <div class="lyrics-container">
-                      <p><span class='edit-line-lang1'><%= l.lang2 %></span></p>
-                    </div>
-                  <% end %>
-                </div>
+                <% end %>
+                <% if l.lang2.present? %> 
+                  <div class="lyrics-container">
+                    <p><span class='edit-line-lang1'><%= l.lang2 %></span></p>
+                  </div>
+                <% end %>
+              </div>
+              <div class="tools-container">
+                <div class="btn btn-primary btn-small rounded marginless watch-button">repeat</div><div class="btn btn-warning btn-small rounded marginless help-button">compare</div>
                 <br>
-              <% end %>
+                <div class="btn btn-info btn-small rounded marginless edit-button">revise</div><div class="btn btn-success btn-small rounded marginless share-button" href="https://twitter.com/share">share</div>
+                <br>
+                <small><small class='edit-duration'><strong><%= l.formatted_time %> to <%= l.formatted_end_time %></strong></small></small>
+              </div>
+              <br>
+            <% end %>
             </div>
             <div class="lyrics-container wide">
               <div class="lyrics-container">
@@ -71,6 +73,8 @@
                 <div class="publish-button" style="float: left;"></div>
                 <div class="preview-button" style="float: left; margin-left: 20px;"></div>
               </div>
+            </div>
+          </div>
 
       <% else %>
       
