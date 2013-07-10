@@ -10,7 +10,7 @@ Boombox::Application.routes.draw do
   get '/auth/:provider/callback' => 'sessions#create'
   get '/philosophy' => 'pages#philosophy'
   get '/survey' => 'pages#survey'
-  get '/help' => 'pages#help'
+  get '/experiment' => 'pages#experiment'
 
   get '/request/' => 'videos#request'
   resources :videos
