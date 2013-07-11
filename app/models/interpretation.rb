@@ -8,7 +8,11 @@ class Interpretation < ActiveRecord::Base
   end
 
   def lang1
-    Video.find_by_id(self.video_id).lang1 || ''
+    if self.video.present?
+      self.video.lang1
+    else 
+      ''
+    end
   end
 
 end
