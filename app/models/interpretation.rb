@@ -4,11 +4,11 @@ class Interpretation < ActiveRecord::Base
   belongs_to :user
 
   def video
-    Video.find_by_id(self.video_id)
+    Video.find_by_id(self.video_id) ||= ''
   end
 
   def lang1
-    Video.find_by_id(self.video_id).lang1
+    Video.find_by_id(self.video_id).lang1 ||= ''
   end
 
 end

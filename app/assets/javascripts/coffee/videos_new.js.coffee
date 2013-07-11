@@ -38,7 +38,6 @@ $ ->
   if action_name is 'edit'
     $('.tools-container').toggle('width')
     if published is 'false'
-      $('.publish-button').html('<div class="btn btn-info" id="publish-button">Publish!</div>')
       $('.preview-button').html('<div class="btn btn-info" id="preview-button">Preview</div>')
     if published is 'true'
       $('.publish-button').html('<div class="btn btn-info" id="publish-button">Update</div>')

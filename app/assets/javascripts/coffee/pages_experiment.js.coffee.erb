@@ -1,0 +1,12 @@
+$ -> 
+
+  $('#ask-youtube').autocomplete()
+
+  $('#ask-youtube-no-autocomplete').keyup (e) ->
+    if e.which == 13
+      entry = $('#ask-youtube-no-autocomplete').val()
+      ajax = $.ajax("http://gdata.youtube.com/feeds/api/videos?q=#{entry}&max-results=5&v=2")
+      console.log ajax
+      $.post('/read_data_from_youtube', { 'youtube_data' : "#{ajax}" }, (results) ->
+        console.log results
+        $('#results').html(results) )
