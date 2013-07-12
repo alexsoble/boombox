@@ -49,6 +49,11 @@ class VideosController < ApplicationController
 
   def index
 
+    @demo_videos = [
+      Video.find_by_id(24),
+      Video.find_by_id(25)
+    ]
+
     # MOST RECENTLY TRANSLATED VIDEOS
 
     @latest_translated_videos = Array.new

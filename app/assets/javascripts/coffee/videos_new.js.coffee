@@ -221,6 +221,7 @@ $ ->
     helloArray['Tajik'] = 'салом'
     helloArray['Uzbek'] = 'Salom'
     helloArray['Uyghur'] = 'Ässalamu läykum'
+    helloArray['Albanian'] = 'Tung'
     console.log helloArray
 
     $("#controls").html("
