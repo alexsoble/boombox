@@ -1,12 +1,32 @@
 $ -> 
+  
+  $('#experiment-slider').rangeSlider()
 
-  $('#ask-youtube').autocomplete()
-
-  $('#ask-youtube-no-autocomplete').keyup (e) ->
-    if e.which == 13
-      entry = $('#ask-youtube-no-autocomplete').val()
-      ajax = $.ajax("http://gdata.youtube.com/feeds/api/videos?q=#{entry}&max-results=5&v=2")
-      console.log ajax
-      $.post('/read_data_from_youtube', { 'youtube_data' : "#{ajax}" }, (results) ->
-        console.log results
-        $('#results').html(results) )
+  $('#ask-youtube').autocomplete(
+    source: (request, response) ->
+      $.ajax(
+        url: "http://gdata.youtube.com/feeds/api/videos?q=#{request.term}&max-results=5&v=2",
+        dataType: "xml",
+        complete: (r) ->
+          parser = new DOMParser
+          xml = parser.parseFromString(r.responseText, "application/xml")
+          window.xml = xml
+          entries = xml.getElementsByTagName("entry")
+          results = []
+          for e in entries
+            result = []
+            result['title'] = e.getElementsByTagName("title")[0].textContent
+            result['url'] = e.getElementsByTagName("player")[0].attributes.url.nodeValue
+            results[result['title']] = result['url']
+            results.push result['title']
+          window.results = results
+          response(results, (item) ->
+            label: item
+            value: results[label]
+          )
+        )
+    select: (e, ui) ->
+      e.preventDefault()
+      $('#ask-youtube').val(ui.item.label)
+      $('#ask-youtube-no-autocomplete').val(results[ui.item.label]).trigger('change')
+    )

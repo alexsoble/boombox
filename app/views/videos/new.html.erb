@@ -1,7 +1,7 @@
 <br>
 <div id="title-box" class="centerbox very-wide-box"><h2><%= @video.title %></h2></div>
 
-<div class="row-fluid">
+<div class="row">
 
   <div class="span5">
 
@@ -17,17 +17,15 @@
 
   </div> 
 
-  <div class="span7">
+  <div class="span5 offset2">
+
     <div id="controls"><%= image_tag("red_arrow.png", :id => 'red-arrow') %></div>
+  
   </div>
 
-  <div class="row-fluid">
+  <div class="span5 offset2">
 
-    <div class="span3">
-      <div class="lyrics-container wide" id="lyrics-box">
-        <span id="intro-text"></span>
-      </div>
-    </div>
+    <div class="lyrics-container wide" id="lyrics-box"></div>
 
     <div class="lyrics-container wide">
       <div class="lyrics-container">
@@ -39,8 +37,6 @@
         <div class="preview-button" style="float: left; margin-left: 20px;"></div>
       </div>
     </div>
-
-  </div>
 
 </div>
 

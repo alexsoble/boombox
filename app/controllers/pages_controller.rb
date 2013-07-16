@@ -17,7 +17,7 @@ class PagesController < ApplicationController
 
   def read_data_from_youtube
 
-    @xml = params[:youtube_data]
+    @xml = File.read(params[:youtube_data])
 
     doc = REXML::Document.new(@xml)
     @titles = []

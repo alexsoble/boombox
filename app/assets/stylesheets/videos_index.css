@@ -31,7 +31,7 @@
 
 .short-text-box { width: 165px; position: relative; left: -12px; top: 1px; }
 
-.ui-autocomplete { max-height: 300px; overflow-y: auto; overflow-x: hidden; }
+.ui-autocomplete { max-height: 200px; overflow-y: auto; overflow-x: hidden; }
 
 ul.ui-autocomplete.ui-menu { background-color: white; list-style-type: none; } 
 
