@@ -28,9 +28,7 @@ Boombox::Application.routes.draw do
   # post '/new_line' => 'lines#create'
   # post '/update_line' => 'lines#update' 
   # post '/delete_line' => 'lines#destroy'
-  # post '/previous_line' => 'lines#previous'
   # get '/requests_by_language' => 'requests#get_by_language'
-  get '/interps_by_language' => 'interpretations#get_by_language'
-  post '/read_data_from_youtube' => 'pages#read_data_from_youtube'
+  # get '/interps_by_language' => 'interpretations#get_by_language'
 
 end

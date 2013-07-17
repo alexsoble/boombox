@@ -539,7 +539,7 @@ $ ->
           <br>
           <span style='float: left; margin: 10px;' class='toolbox-lower'>
             <div class='btn btn-inverse btn-small rounded tight-margins' id='edit-timing'> adjust timing </div>
-            <div class='btn btn-inverse btn-small rounded tight-margins' id='delete-line'> delete line &uarr; </div>
+            <div class='btn btn-inverse btn-small rounded tight-margins' id='delete-line'> delete line </div>
           </span>
           <span style='float: right; margin: 10px;' class='toolbox-lower'>
             <div class='btn btn-success btn-small rounded tight-margins' id='mark-chorus' data-line-id=#{id}> &uarr; set as chorus </div>
@@ -650,7 +650,7 @@ $ ->
         console.log "original_end_time: " + original_end_time
         original_midpoint = Math.round((original_start_time + original_end_time) / 2)
 
-        $(this).parent().after("
+        $(this).parent().parent().append("
             <br>
             <div id='edit-timing-slider'></div>
             ")
@@ -675,7 +675,9 @@ $ ->
             shortFormatTime(val)
           ).bind("valuesChanged", (e, data) ->
             start = data.values.min
+            $(this).parent().attr('data-time',start)
             end = data.values.max
+            $(this).parent().attr('data-duration', end - start)
             player.seekTo(start)
             window.loop = end - start
             window.section = start / window.loop
@@ -729,9 +731,11 @@ $ ->
     $(this).click ->
       lines = []
       $('.line').each(->
-        line = (time : $(this).attr('data-time'), duration : $(this).attr('data-duration'), lang1 : $.trim($(this).children().eq(0).text()), lang2 : $.trim($(this).children().eq(1).text()), interpretation_id : interp_id )
-        lines.push line
-      )
+        if $(this).attr('class') == 'line'
+          line = (time : $(this).attr('data-time'), duration : $(this).attr('data-duration'), lang1 : $.trim($(this).children().eq(0).text()), lang2 : $.trim($(this).children().eq(1).text()), interpretation_id : interp_id )
+        else
+          line = (time : $(this).attr('data-time'), duration : $(this).attr('data-duration'), lang1 : $.trim($('#edit-line-lang1').val()), lang2 : $.trim($('#edit-line-lang2').val()), interpretation_id : interp_id )
+        lines.push line)
       console.log JSON.stringify(lines)
       $.post('/save', { 'interp_id' : "#{interp_id}", 'lines' : "#{JSON.stringify(lines)}" }, (data) ->
         console.log data.data )

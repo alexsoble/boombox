@@ -15,19 +15,4 @@ class PagesController < ApplicationController
   def experiment
   end
 
-  def read_data_from_youtube
-
-    @xml = File.read(params[:youtube_data])
-
-    doc = REXML::Document.new(@xml)
-    @titles = []
-
-    doc.elements.each do |ele|
-       @titles << ele.title
-    end
-
-    render :json => { :results => @titles }
-
-  end
-
 end
