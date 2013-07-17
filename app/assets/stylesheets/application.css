@@ -44,19 +44,13 @@ h3 { font-size: 18px !important; line-height: 22px !important }
 
 .white { color: white; }
 
+.padded-label { position: relative; top: 5px }
+
 .red { color: red; }
 
 .visible { overflow: visible; }
 
 .quiet { display: none; }
-
-table { border-collapse: separate; 
-  border-spacing: 5px 20px; 
-  border: 1px;
-  border-color: white; }
-
-td { color: black;
-  text-align: center; }
 
 .hr { height: 1px;
   background: #9B59BB;

@@ -3,6 +3,10 @@ player = null
 $ ->
 
   $('#lyrics').hide()
+  if $('#data').attr('data-clip') is 'true'
+    clip = true
+    clip_start = parseInt($('#data').attr('data-start'))
+    clip_end = clip_start + parseInt($('#data').attr('data-duration'))
 
   tag = document.createElement("script")
   tag.src = "https://www.youtube.com/iframe_api"

@@ -111,31 +111,80 @@ $ ->
           </ul>
         </li> -->
         <div id='loop-settings'>
+          <div class='left-endLabel'>
+            <span class='padded-label'>
+              #{shortFormatTime(window.time)}
+            </span>
+          </div>
           <div id='loop-slider'></div>
+          <div class='right-endLabel'>
+            <span class='padded-label'>
+              #{shortFormatTime(window.time + 60)}
+            </span>
+          </div>
           <br>
           <span id='loop-status'>Playing in 4-second loops.</span> <a id='loop-toggle'><small>(off)</small></a>
         </div>
         ")
-
-    window.start_handle = $(".ui-slider-handle:eq(0)")
-    window.end_handle = $(".ui-slider-handle:eq(1)")
 
   loopingSlider = ->
     $('#loop-slider').rangeSlider(
       arrows: false
       step: 1
       defaultValues:
-        min: 0
-        max: 4
+        min: window.time
+        max: window.time + 4
       bounds:
-        min: 0
-        max: 60
+        min: Math.floor(window.time / 45) * 45
+        max: (Math.floor(window.time / 45)) * 45 + 60
       range:
         min: 1
         max: 12
       formatter: (val) -> 
         shortFormatTime(val)
-      ).bind("valuesChanged", (e, data) ->
+      )
+    $('#loop-slider').bind("valuesChanged", (e, data) ->
+
+        bounds = $('#loop-slider').rangeSlider("bounds")
+        min = bounds.min
+        max = bounds.max
+        start = data.values.min
+        end = data.values.max
+
+        left_label = $('.left-endLabel').children(':first')
+        right_label = $('.right-endLabel').children(':first')
+
+        shiftRight = -> 
+          if end == max
+            left_label.text(shortFormatTime(max))
+            right_label.text(shortFormatTime(max + 60))
+            $('#loop-slider').rangeSlider(
+              bounds:
+                min: max
+                max: max + 60
+            ).rangeSlider("values", max + 1, max + 5)
+
+        shiftLeft = -> 
+          if start == min
+            left_label.text(shortFormatTime(min - 60))
+            right_label.text(shortFormatTime(min))
+            $('#loop-slider').rangeSlider(
+              bounds:
+                min: min - 60
+                max: min
+            ).rangeSlider("values", min - 55, min - 59)
+
+        waitForIt = (direction) -> 
+          direction()
+
+        if end == max
+          window.setTimeout(waitForIt(shiftRight), 1000)
+
+        if start == min
+          window.setTimeout(waitForIt(shiftLeft), 1000)
+
+      )
+    $('#loop-slider').bind("valuesChanged", (e, data) ->
         start = data.values.min
         end = data.values.max
         player.seekTo(start)

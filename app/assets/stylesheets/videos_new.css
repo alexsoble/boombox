@@ -115,13 +115,47 @@
 
 #difficulty-settings { float: left; }
 
-#loop-slider { width: 400px; 
-  float: left; 
-  margin: 40px; }
+#loop-slider { width: 380px; 
+  position: relative;
+  left: 24px; 
+  top: 5px; }
 
-.ui-rangeSlider-leftLabel { font-size: 12px; }
+.ui-rangeSlider-leftLabel { 
+  font-size: 12px; 
+  background-color: #C5C5CF;
+  height: 15px;
+  position: relative;
+  bottom: 20px; }
 
-.ui-rangeSlider-rightLabel { font-size: 12px; }
+.ui-rangeSlider-rightLabel { 
+  font-size: 12px; 
+  background-color: #C5C5CF;
+  height: 15px;
+  position: relative;
+  bottom: -24px;  }
+
+.left-endLabel { 
+  font-size: 12px; 
+  color: white;
+  background-color: orange;
+  text-align: center;
+  position: relative;
+  top: 30px;
+  width: 30px;
+  height: 30px; }
+
+.right-endLabel { 
+  font-size: 12px; 
+  color: white; 
+  background-color: orange; 
+  text-align: center;
+  position: relative; 
+  top: -20px;
+  left: 390px;
+  width: 30px; 
+  height: 30px; }
+
+
 
 /*  ---------------------------------------- */
 

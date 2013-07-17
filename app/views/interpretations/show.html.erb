@@ -93,6 +93,6 @@
 
 <%= content_tag "div", id: "video-id", data: { youtube_id: @interp.video.youtube_id } do %>
 <% end %>
-
 <%= content_tag "div", id: "interpretation-id", data: { interp_id: @interp.id } do %>
 <% end %>
+<div id="data" class="quiet" data-clip=<%= @clip %> data-start=<%= @start %> data-duration=<%= @duration %>></div>

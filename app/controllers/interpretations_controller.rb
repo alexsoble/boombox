@@ -29,7 +29,11 @@ class InterpretationsController < ApplicationController
     @url = request.url
 
     if params[:clip] == 'yes'
-      @clip = yes
+      @clip = true
+      @start = params[:start]
+      @duration = params[:duration]
+    else 
+      @clip = false
     end
 
     @lines_have_lang1 = false
