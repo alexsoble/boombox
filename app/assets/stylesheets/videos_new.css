@@ -39,12 +39,13 @@
   max-height: 380px;
   overflow-y: scroll; }
 
-.line { float: left; }
+.line { float: left; background-color: white; }
 
 .btn-uniform-width { float: right; width: 60px; }
 
 .tight-margins { margin: 5px !important; }
 
+#edit-timing-slider { float: left; width: 200px; margin: 30px; }
 
 /* SMALL LYRICS CONTAINER FOR THE VIDEO AS IT'S EDITED */
 

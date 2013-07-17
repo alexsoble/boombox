@@ -1,3 +1,32 @@
+
+      id = $('#editing-div').parent().attr('data-line-id')
+      window.this_editing_time = $("[data-line-id=#{id}]:eq(0)").children(":first").children(":first")
+      window.that_editing_time = $("[data-line-id=#{id}]:eq(1)").children(":first").children(":first")
+      console.log "old start time: #{old_start_time}, old end time: #{old_end_time}"
+      $('#slider').slider(
+        if old_end_time > 5
+          min: old_midpoint - 5
+        else
+          min: 0
+        max: old_midpoint + 6
+        step: 1
+        values: [ old_start_time, old_end_time ]
+        slide: (event, ui) ->
+          window.new_start_time = ui.values[0]
+          window.new_end_time = ui.values[1]
+          window.this_editing_time.html("(#{formatted_start_time} to #{formatted_end_time})")
+          window.that_editing_time.html("(#{formatted_start_time} to #{formatted_end_time})")
+          window.first_handle.html("<p><small><small>#{formatted_start_time}</small></small></p>")
+          window.second_handle.html("<p><small><small>#{formatted_end_time}</small></small></p>"))
+      window.first_handle = $(".ui-slider-handle:eq(1)")
+      window.first_handle.html("<p><small><small>#{formatTime(old_start_time)}</small></small></p>")
+      window.second_handle = $(".ui-slider-handle:eq(2)")
+      window.second_handle.html("<p><small><small>#{formatTime(old_end_time)}</small></small></p>")
+      $('#editing-div').hide().slideDown('fast')
+      window.editing_line = 'on'
+
+s
+
                   <div class='tools-container'>
                     <div class='btn btn-primary btn-small rounded marginless watch-button'>repeat</div><div class='btn btn-warning btn-small rounded marginless help-button'>compare</div>
                     <br>

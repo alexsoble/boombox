@@ -36,6 +36,8 @@ $ ->
   window.loop = false
   window.tool_helptip_displayed = false
   window.editing_line = 'off'
+  window.editing_line_timing = 'off'
+  window.editing_line_ask_heyu = 'off'
   $('#timer-box').html('<div id="timer"><h2 class="timer-text" id="big-timer"></h2></div>')
 
   if action_name is 'edit'
@@ -173,6 +175,7 @@ $ ->
     helloArray['Arabic'] = 'سلام'
     helloArray['Persian'] = 'سلام'
     helloArray['Urdu'] = 'سلام'
+    helloArray['Sindhi'] = 'سلام'
     helloArray['Turkish'] = 'Merhaba'
     helloArray['Hebrew'] = 'שלום'
     helloArray['Dutch'] = 'Hallo'
@@ -230,7 +233,7 @@ $ ->
     displayTooltip = ->
 
       if window.tool_helptip_displayed == false
-        $('#lyrics-box').prepend("<strong><span id='tools-intro-text'>Hey, your very first translated line!<br>Nice job. Click on the line to edit or check your work.<br><br></span></strong>")
+        $('#lyrics-box').prepend("<span id='tools-intro-text'><strong>Hey, your very first translated line!</strong><br>Click on the line to edit or check your work.<br><br></span>")
         delayedFade = ->
           $('#tools-intro-text').fadeOut()
         window.setTimeout(delayedFade, 8000)
@@ -242,7 +245,6 @@ $ ->
       $(".lang1-line").livequery ->
         $(this).keyup (e) ->
           entry = this.value
-          console.log entry
           $('.lyrics-box.small').children().eq(0).html("<p class='white'>#{entry}</p>")
           e.preventDefault
           if e.which == 13 and ($('.lang2-line').val() isnt '')
@@ -251,25 +253,23 @@ $ ->
             that_entry = $('.lang2-line').val()
             time = $("#current-loop-time").text()
             time_in_seconds = parseInt(time.slice(3,5)) + parseInt(time.slice(0,2))*60
-            $.post('/new_line', { 'line' : { 'lang1' : "#{entry}", 'lang2' : "#{that_entry}", 'time' : "#{time_in_seconds}", 'duration' : "#{window.loop}", 'interpretation_id' : "#{interp_id}" , 'upvotes' : 0, 'downvotes' : 0  } }, (data) ->
-              console.log data.data
-              line_id = data.data.id 
-              duration = data.data.duration
-              $('#lyrics-box').append("
-                  <div class='line' id='lang1-#{time_in_seconds}' class='editing-lyrics' data-line-id=#{line_id} data-time=#{time_in_seconds} data-duration=#{window.loop}>
-                    <div class='lyrics-container'>
-                      <p><span class='edit-line-lang1'>#{that_entry}</span></p>
-                    </div>
-                    <div class='lyrics-container'>
-                      <p><span class='edit-line-lang1'>#{entry}</span></p>
-                    </div>
+            # AJAX $.post('/new_line', { 'line' : { 'lang1' : "#{entry}", 'lang2' : "#{that_entry}", 'time' : "#{time_in_seconds}", 'duration' : "#{window.loop}", 'interpretation_id' : "#{interp_id}" , 'upvotes' : 0, 'downvotes' : 0  } }, (data) ->
+              # AJAX console.log data.data
+              # AJAX line_id = data.data.id 
+              # AJAX duration = data.data.duration
+            $('#lyrics-box').append("
+                <div class='line' data-time=#{time_in_seconds} data-duration=#{window.loop}>
+                  <div class='lyrics-container'>
+                    <p>#{that_entry}</p>
                   </div>
-                  ")
-              displayTooltip()
-              $('#lyrics-box').scrollTo('100%')
-              $('.lyrics-box.small').children().eq(0).html("")
-              $('.lyrics-box.small').children().eq(1).html("")
-              console.log data)
+                  <div class='lyrics-container'>
+                    <p>#{entry}</p>
+                  </div>
+                </div>")
+            displayTooltip()
+            $('#lyrics-box').scrollTo('100%')
+            $('.lyrics-box.small').children().eq(0).html("")
+            $('.lyrics-box.small').children().eq(1).html("")
             $('#intro-text').fadeOut()
             $('.lang1-line').val('')
             $('.lang2-line').val('')
@@ -281,7 +281,6 @@ $ ->
         $(this).keydown (e) ->
         $(this).keyup (e) ->
           entry = this.value
-          console.log entry
           $('.lyrics-box.small').children().eq(1).html("<p class='white'>#{entry}</p>")
           if e.which == 13 and ($('.lang1-line').val() isnt '')
             $('#lyrics-box').parent().slideDown()
@@ -289,25 +288,24 @@ $ ->
             that_entry = $('.lang1-line').val()
             time = $("#current-loop-time").text()
             time_in_seconds = parseInt(time.slice(3,5)) + parseInt(time.slice(0,2))*60
-            $.post('/new_line', { 'line' : { 'lang1' : "#{that_entry}", 'lang2' : "#{entry}", 'time' : "#{time_in_seconds}", 'duration' : "#{window.loop}", 'interpretation_id' : "#{interp_id}" , 'upvotes' : 0, 'downvotes' : 0  } }, (data) ->
-              console.log data.data
-              line_id = data.data.id 
-              duration = data.data.duration
-              $('#lyrics-box').append("
-                  <div class='line' id='lang1-#{time_in_seconds}' class='editing-lyrics' data-line-id=#{line_id} data-time=#{time_in_seconds} data-duration=#{window.loop}>
-                    <div class='lyrics-container'>
-                      <p><span class='edit-line-lang1'>#{that_entry}</span></p>
-                    </div>
-                    <div class='lyrics-container'>
-                      <p><span class='edit-line-lang1'>#{entry}</span></p>
-                    </div>
+            # AJAX $.post('/new_line', { 'line' : { 'lang1' : "#{that_entry}", 'lang2' : "#{entry}", 'time' : "#{time_in_seconds}", 'duration' : "#{window.loop}", 'interpretation_id' : "#{interp_id}" , 'upvotes' : 0, 'downvotes' : 0  } }, (data) ->
+              # AJAX console.log data.data
+              # AJAX line_id = data.data.id 
+              # AJAX duration = data.data.duration
+            $('#lyrics-box').append("
+                <div class='line' data-time=#{time_in_seconds} data-duration=#{window.loop}>
+                  <div class='lyrics-container'>
+                    <p>#{that_entry}</p>
                   </div>
-                  ")
-              displayTooltip()
-              $('.lyrics-box.small').children().eq(0).html("")
-              $('.lyrics-box.small').children().eq(1).html("")
-              $('#lyrics-box').scrollTo('100%')
-              console.log data)
+                  <div class='lyrics-container'>
+                    <p>#{entry}</p>
+                  </div>
+                </div>
+                ")
+            displayTooltip()
+            $('.lyrics-box.small').children().eq(0).html("")
+            $('.lyrics-box.small').children().eq(1).html("")
+            $('#lyrics-box').scrollTo('100%')
             window.section += 1
             if action_name isnt 'edit'
               $('.lang1-line').val('')
@@ -322,16 +320,14 @@ $ ->
         $(this).keyup (e) ->
           if e.which == 13
             entry = this.value
-            console.log entry
             if entry isnt ''
               time = $("#current-loop-time").text()
               $('#lang2-lyrics').append("<p><small><small class='edit-duration'>(#{time})</small></small>  <span class='edit-line-lan2'>#{entry}</span></p>")
               $('.lang2-line').val('')
               time_in_seconds = parseInt(time.slice(3,5)) + parseInt(time.slice(0,2))*60
-              $.post('/new_line', { 'line' : { 'lang1' : '', 'lang2' : "#{entry}", 'time' : "#{time_in_seconds}", 'duration' : "#{window.loop}", 'interpretation_id' : "#{interp_id}" , 'upvotes' : 0, 'downvotes' : 0  } }, (data) ->
-                console.log data.data )
-              $.post('/previous_line', { 'time' : "#{time_in_seconds}" }, (data) ->
-                console.log data.data )
+              # AJAX $.post('/new_line', { 'line' : { 'lang1' : '', 'lang2' : "#{entry}", 'time' : "#{time_in_seconds}", 'duration' : "#{window.loop}", 'interpretation_id' : "#{interp_id}" , 'upvotes' : 0, 'downvotes' : 0  } }, (data) ->
+              # AJAX console.log data.data )
+              # AJAX $.post('/previous_line', { 'time' : "#{time_in_seconds}" }, (data) ->
             window.section += 1
             $('.publish-button').html('<div class="btn btn-info" id="publish-button">Publish!</div>')
             $('.preview-button').html('<div class="btn btn-info" id="preview-button">Preview</div>')
@@ -339,18 +335,18 @@ $ ->
               $('.save-button').html('<div class="btn btn-info" id="save-button">Saved</div>')
             window.setTimeout(delayedShowSaved, 600)
 
-
   introText = ->
   
     if action_name isnt 'edit'
       window.player.pauseVideo()
   
     if action_name is 'new'
-      $('#controls').html("<strong>
+      $('#controls').html("
       Here we go!  Once you've filled in the translation, hit ENTER to submit each line. <br><br>
       If you need to look up a word, online dictionaries like <a href='http://www.wordreference.com/'>Wordreference</a> can be a great resource. <br><br>
       Don't worry if you have trouble understanding at first — you'll get tools to help you.<br><br>
-      <a href='#' id='input-lines-go'>I'm ready!</a></strong>")
+      <a href='#' id='input-lines-go'>I'm ready!</a>
+      ")
 
     $("#input-lines-go").livequery -> 
       $(this).click ->
@@ -521,147 +517,157 @@ $ ->
       )
     $(this).click ->
       if window.editing_line isnt 'on'
+        window.editing_line = 'on'
         id = $(this).attr('data-line-id')
+        $(this).attr('class','line edited-line')
         lang1 = $.trim($(this).children().eq(0).text())
         lang2 = $.trim($(this).children().eq(1).text())
         $(this).children().eq(0).children().eq(0).html("
           <div class='control-group'>
             <div class='controls'>
-              <input type='text' class='input-xlarge' id='edit-line-lang1'>
+              <input type='text' class='input-xlarge edit-line' id='edit-line-lang1'>
             </div>
           </div>")
         $(this).children().eq(1).children().eq(0).html("
           <div class='control-group'>
             <div class='controls'>
-              <input type='text' class='input-xlarge' id='edit-line-lang2'>
+              <input type='text' class='input-xlarge edit-line' id='edit-line-lang2'>
             </div>
           </div>")
         $('#edit-line-lang1').val(lang1)
         $('#edit-line-lang2').val(lang2)
-        window.editing_line = 'on'
         $(this).prepend("
-          <span style='float: left;'>
+          <span style='float: left;' class='toolbox-upper'>
             <div class='btn btn-primary btn-small rounded tight-margins' id='add-line-above' data-line-id=#{id}> &uarr; add line </div>
             <div class='btn btn-primary btn-small rounded tight-margins' id='edit-timing' data-line-id=#{id}> adjust timing </div>
             <div class='btn btn-primary btn-small rounded tight-margins' id='delete-line' data-line-id=#{id}>delete line &darr;</div>
           </span>
-          <br>")
+          <br>
+          ")
         $(this).append("
           <br>
-          <span style='float: right;'>
-            <div class='btn btn-warning btn-small rounded btn-uniform-width tight-margins watch-button'>ask heyu</div>
-            <div class='btn btn-warning btn-small rounded btn-uniform-width tight-margins share-button' href='https://twitter.com/share'>ask twitter</div>
+          <span style='float: left;' class='toolbox-upper'>
+            <div class='btn btn-success btn-small rounded tight-margins' id='chorus'> mark as chorus </div>
+          </span>
+          <span style='float: right;' class='toolbox-lower'>
+            <div class='btn btn-warning btn-small rounded btn-uniform-width tight-margins' id='done-editing'>done</div>
+            <div class='btn btn-warning btn-small rounded btn-uniform-width tight-margins' id='ask-heyu'>ask heyu</div>
+            <div class='btn btn-warning btn-small rounded btn-uniform-width tight-margins' id='ask-twitter' data-twitter-url='https://twitter.com/share?url=https%3A%2F%2Fdev.twitter.com%2Fpages%2Ftweet-button'>ask twitter</div>
           </span>")
         $(this).hover(
           -> $(this).attr('style','background-color: yellow;')
           -> $(this).attr('style','background-color: yellow;')
           )
 
-  $('#edit-line-lang1').livequery ->
-    $(this).keyup (e) ->
-      e.preventDefault
-      if e.which == 13 and this.value isnt ''
-        entry = this.value
-        line_id = $('#edit-line-lang1').parent().parent().parent().parent().attr('data-line-id')
-        text_to_update = $('#edit-line-lang1').parent().parent().parent()
-        $.post('/update_line', { 'line' : { 'lang1' : "#{entry}", 'id' : "#{line_id}" } }, (data) ->
-          updated_lang1 = data.data.lang1
-          text_to_update.html("#{updated_lang1}")
-          console.log updated_lang1 
-          $(this).parent().parent().parent().attr('style','background-color: white;') )
-        $('#add-delete').remove()
-        window.editing_line = 'off'
-
-  $('#edit-line-lang2').livequery ->
-    $(this).keyup (e) ->
-      e.preventDefault
-      if e.which == 13 and this.value isnt ''
-        entry = this.value
-        line_id = $('#edit-line-lang2').parent().parent().parent().parent().attr('data-line-id')
-        text_to_update = $('#edit-line-lang2').parent().parent().parent()
-        $.post('/update_line', { 'line' : { 'lang2' : "#{entry}", 'id' : "#{line_id}" } }, (data) ->
-          updated_lang2 = data.data.lang2
-          text_to_update.html("#{updated_lang2}")
-          console.log updated_lang2
-          $(this).parent().parent().parent().attr('style','background-color: white;') )
-        window.editing_line = 'off'
+  $('#add-line-above').livequery ->
+    $(this).click ->
+      $('.edited-line').before("
+        <div class='line'>
+          <div class='lyrics-container'>
+            <p>New line!</p>
+          </div>
+          <div class='lyrics-container'>
+            <p>New line!</p>
+          </div>
+        </div>
+      ")
+      doneEditing()
 
   $('#delete-line').livequery ->
     $(this).click ->
       console.log "deleting line"
       window.editing_line = 'off'
       line_id = $(this).attr('data-line-id')
-      $.post('/delete_line', { 'line' : { 'id' : "#{line_id}" } } )
-      $(this).parent().parent().parent().slideUp()
-      # The slideUp would be nice but unfortunately js from YouTube/Google interferes with a delayed remove() and mucks the whole thing
-      $(this).parent().parent().parent().remove()
-
-  # REVISING TIME/DURATION OF LINES
-
-  $('.edit-duration').livequery ->
-    $(this).hover(
-      -> $(this).attr('style','background-color: yellow;')
-      -> $(this).attr('style','background-color: white;'))
-
-    $(this).click ->
-
-      if window.editing_line isnt 'on'
-
-        $(this).parent().parent().append("
-          <div id='editing-div'>
-            <div id='slider'></div>
-            <div id='revise-timing-done'><div class='btn btn-info btn-small rounded' id='editing-line-done'>Done!</div></div>
-            <br>
-          </div>")
-
-        id = $('#editing-div').parent().attr('data-line-id')
-        window.this_editing_time = $("[data-line-id=#{id}]:eq(0)").children(":first").children(":first")
-        window.that_editing_time = $("[data-line-id=#{id}]:eq(1)").children(":first").children(":first")
-
-        old_start_time = parseInt($('#slider').parent().parent().attr('data-time'))
-        old_end_time = parseInt($('#slider').parent().parent().attr('data-time')) + parseInt($('#slider').parent().parent().attr('data-duration'))
-        old_midpoint = Math.round((old_start_time + old_end_time) / 2)
-        console.log "old start time: #{old_start_time}, old end time: #{old_end_time}"
-
-        $('#slider').slider(
-          range: true
-          if old_end_time > 5
-            min: old_midpoint - 5
-          else
-            min: 0
-          max: old_midpoint + 6
-          step: 1
-          values: [ old_start_time, old_end_time ]
-          slide: (event, ui) ->
-            formatted_start_time = formatTime(ui.values[0])
-            formatted_end_time = formatTime(ui.values[1])
-            window.new_start_time = ui.values[0]
-            window.new_end_time = ui.values[1]
-            window.this_editing_time.html("(#{formatted_start_time} to #{formatted_end_time})")
-            window.that_editing_time.html("(#{formatted_start_time} to #{formatted_end_time})")
-            window.first_handle.html("<p><small><small>#{formatted_start_time}</small></small></p>")
-            window.second_handle.html("<p><small><small>#{formatted_end_time}</small></small></p>"))
-
-        window.first_handle = $(".ui-slider-handle:eq(1)")
-        window.first_handle.html("<p><small><small>#{formatTime(old_start_time)}</small></small></p>")
-        window.second_handle = $(".ui-slider-handle:eq(2)")
-        window.second_handle.html("<p><small><small>#{formatTime(old_end_time)}</small></small></p>")
-        $('#editing-div').hide().slideDown('fast')
-      window.editing_line = 'on'
-
-  $('#editing-line-done').livequery ->
-    $(this).click ->
-      line_id = $(this).parent().parent().parent().attr('data-line-id')
-      line_to_update = $(this).parent().parent().parent()
-      $.post('/update_line', { 'line' : { 'time' : "#{window.new_start_time}", 'duration' : "#{window.new_end_time - window.new_start_time}", 'id' : "#{line_id}" } }, (data) ->
-        updated_time = data.data.time
-        updated_duration = data.data.duration
-        line_to_update.attr('data-time', "#{updated_time}")
-        line_to_update.attr('data-duration', "#{updated_duration}")
-        console.log "updated time: #{updated_time}, updated duration: #{updated_duration}" )
+      # AJAX $.post('/delete_line', { 'line' : { 'id' : "#{line_id}" } } )
       $(this).parent().parent().slideUp()
+      # ^The slideUp would be nice but unfortunately js from YouTube/Google interferes with a delayed remove() and mucks up the whole thing
       $(this).parent().parent().remove()
-      window.editing_line = 'off'
+
+  $('.edit-line').livequery ->
+    $(this).keyup (e) ->
+      e.preventDefault
+      if e.which == 13 and this.value isnt ''
+        doneEditing()
+
+  $('#ask-twitter').livequery ->
+    $(this).click ->
+      url = $(this).attr('data-twitter-url')
+      window.open(url,'name','width=200,height=200')
+
+  $('#ask-heyu').livequery ->
+    $(this).click ->
+      if window.editing_line_ask_heyu isnt 'on'
+        window.editing_line_ask_heyu = 'on'
+        $(this).parent().after("
+            <span id='coming-soon'>Coming soon! Compare your translation with other Heyu users'.</span>
+            ")
+      else
+        window.editing_line_ask_heyu = 'off'
+        $('#coming-soon').remove()
+
+  doneEditing = ->
+    line_id = $('.edited-line').attr('data-line-id')
+    time = $('.edited-line').attr('data-time')
+    duration = $('.edited-line').attr('data-duration')
+    lang1 = $('#edit-line-lang1').val()
+    lang2 = $('#edit-line-lang2').val()
+    # AJAX $.post('/update_line', { 'line' : { 'lang1' : "#{lang1}", 'id' : "#{line_id}" } }, (data) ->
+      # AJAX console.log data.data )
+    # AJAX $.post('/update_line', { 'line' : { 'lang2' : "#{lang2}", 'id' : "#{line_id}" } }, (data) ->
+      # AJAX console.log data.data )
+    $('.edited-line').before("
+      <div class='line' data-line-id=#{line_id} data-time=#{time} data-duration=#{duration}>
+        <div class='lyrics-container'>
+          <p>#{lang1}</p>
+        </div>
+        <div class='lyrics-container'>
+          <p>#{lang2}</p>
+        </div>
+      </div>
+      ")
+    $('.edited-line').remove()
+    window.editing_line = 'off'
+    window.editing_line_timing = 'off'
+
+  $('#done-editing').livequery ->
+    $(this).click ->
+      doneEditing()
+
+  $('#edit-timing').livequery ->
+    $(this).click ->
+      if window.editing_line_timing isnt 'on'
+        window.editing_line_timing = 'on'
+
+        original_start_time = parseInt($(this).parent().parent().attr('data-time'))
+        console.log "original_start_time: " + original_start_time
+        original_end_time = original_start_time + parseInt($(this).parent().parent().attr('data-duration'))
+        console.log "original_end_time: " + original_end_time
+        original_midpoint = Math.round((original_start_time + original_end_time) / 2)
+
+        $(this).parent().after("
+            <br>
+            <div id='edit-timing-slider'></div>
+            ")
+        $('#edit-timing-slider').rangeSlider(
+          arrows: false
+          step: 1
+          defaultValues:
+            min: original_start_time
+            max: original_end_time
+          if original_start_time > 5
+            bounds:
+              min: original_start_time - 5
+              max: original_end_time + 5
+          else
+            bounds:
+              min: 0
+              max: original_end_time + 5
+          range:
+            min: 1
+            max: 12
+          formatter: (val) -> 
+            shortFormatTime(val)
+          )
 
   # DIFFICULTY SETTINGS 
 
