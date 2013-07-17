@@ -25,47 +25,38 @@ $ ->
           $('#results-box').html('').show()
           for r in results
             $('#results-box').append("
-              <div class='video-thumb-box result-thumb-box'>
+              <div class='video-thumb-box result-thumb-box' data-youtube-id=#{r.value}>
+                <div class='quiet'>#{r.label}</div>
                 <strong class='center'>#{r.label.slice(0,32)}</strong>
                 <img alt='video_#{r.label}' src='http://img.youtube.com/vi/#{r.value}/1.jpg' />
-              </div> ")
+              </div>")
           $('#ask-youtube').autocomplete('close')
           response(results, (item) ->
             e.preventDefault()
             label: item.label
-            value: item.value 
-            false
-            )
+            value: item.value
           )
-    focus: (event, ui) ->
-      $('#ask-youtube').val(ui.item.label)
-      if window.n < 49
-        window.n += 1
-      console.log window.n
-      if window.n > 4
-        console.log "Search!"
-        $('#ask-youtube').autocomplete("search")
-      false
-    select: (e, ui) ->
-      e.preventDefault()
-      window.youtube_id = ui.item.value
-      window.title = ui.item.label
-      $('#new-translation-button').attr('style','height: 85px; background-color: blue;')
+        )
+      )
 
+  $('.result-thumb-box').livequery ->
+    $(this).click ->
+      window.youtube_id = $(this).attr('data-youtube-id')
+      window.title = $(this).children(':first').html()
+      $('#new-translation-button').attr('style','height: 85px; background-color: blue;')
       $('#new-translation-button').html("
         <div class='button-text-wrapper'>
           <p class='index-button-text'>#{window.title}</p>
         </div>
         <div id='lang1-button'>
           <div class='button-text-wrapper'>
-            <p class='index-button-text' style='font-size: 15px'>The video\'s original language is...</p>
+            <p class='index-button-text' style='font-size: 15px'>This video\'s original language is...</p>
             <div class='ui-widget'>
               <input id='lang1-input-translate' class='lang1-input short-text-box'/>
             </div>
           </div>
         </div>")
       $('.index-button-text').hide().slideDown('2000')
-      )
 
   availableTags = [ "English", "Dutch", "Afrikaans"
     "Chinese (Mandarin)", "Cantonese", "Japanese", "Korean"
