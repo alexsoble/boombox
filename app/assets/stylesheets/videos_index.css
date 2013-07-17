@@ -6,6 +6,10 @@
   margin-right: 40px;
   margin-top: 20px;
   float: left; }
+.video-thumb-box.result-thumb-box {
+  margin-right: 0px;
+  margin-left: 40px;
+  margin-top: 40px; }
 
 .thumb-box-width { width: 140px; }
 
@@ -16,6 +20,12 @@
   background-color: #9B59BB;
   position: relative;
   border-radius: 10px; }
+.index-button#results-box {
+  width: 584px;
+  background-color: white; 
+  border: 8px solid #9B59BB;
+  min-height: 400px;
+  margin-top: 30px; }
 
 .button-text-wrapper { 
   padding-left: 30px; 

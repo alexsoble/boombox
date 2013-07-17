@@ -1,5 +1,6 @@
 $ ->
 
+  $('#results-box').hide()
   window.n = 0
 
   $('#ask-youtube').autocomplete(
@@ -7,7 +8,7 @@ $ ->
       $.ajax(
         url: 
           if window.n < 5
-            "http://gdata.youtube.com/feeds/api/videos?q=#{request.term}&max-results=5&v=2"
+            "http://gdata.youtube.com/feeds/api/videos?q=#{request.term}&max-results=6&v=2"
           else
             "http://gdata.youtube.com/feeds/api/videos?q=#{request.term}&max-results=#{window.n}&v=2"
         dataType: "xml",
@@ -21,9 +22,19 @@ $ ->
           for e in entries
             item = ( label : e.getElementsByTagName("title")[0].textContent, value : (e.getElementsByTagName("id")[0].textContent).substr(e.getElementsByTagName("id")[0].textContent.length - 11) )
             results.push item
+          $('#results-box').html('').show()
+          for r in results
+            $('#results-box').append("
+              <div class='video-thumb-box result-thumb-box'>
+                <strong class='center'>#{r.label.slice(0,32)}</strong>
+                <img alt='video_#{r.label}' src='http://img.youtube.com/vi/#{r.value}/1.jpg' />
+              </div> ")
+          $('#ask-youtube').autocomplete('close')
           response(results, (item) ->
+            e.preventDefault()
             label: item.label
             value: item.value 
+            false
             )
           )
     focus: (event, ui) ->

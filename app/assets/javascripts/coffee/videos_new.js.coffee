@@ -538,11 +538,11 @@ $ ->
         $(this).append("
           <br>
           <span style='float: left; margin: 10px;' class='toolbox-lower'>
-            <div class='btn btn-inverse btn-small rounded tight-margins' id='delete-line'> delete line &uarr; </div>
             <div class='btn btn-inverse btn-small rounded tight-margins' id='edit-timing'> adjust timing </div>
+            <div class='btn btn-inverse btn-small rounded tight-margins' id='delete-line'> delete line &uarr; </div>
           </span>
           <span style='float: right; margin: 10px;' class='toolbox-lower'>
-            <div class='btn btn-success btn-small rounded tight-margins' id='mark-chorus' data-line-id=#{id}> &uarr; this is the chorus </div>
+            <div class='btn btn-success btn-small rounded tight-margins' id='mark-chorus' data-line-id=#{id}> &uarr; set as chorus </div>
             <div class='btn btn-success btn-small rounded tight-margins' id='done-editing'> done editing </div>
           </span>")
         $(this).hover(
@@ -673,8 +673,15 @@ $ ->
             max: 12
           formatter: (val) -> 
             shortFormatTime(val)
+          ).bind("valuesChanged", (e, data) ->
+            start = data.values.min
+            end = data.values.max
+            player.seekTo(start)
+            window.loop = end - start
+            window.section = start / window.loop
+            $("#loop-status").html("Playing in a loop from #{shortFormatTime(start)} to #{shortFormatTime(end)}.")
           )
-
+          
   # DIFFICULTY SETTINGS 
 
   $('#beginner').livequery ->
@@ -729,6 +736,10 @@ $ ->
       $.post('/save', { 'interp_id' : "#{interp_id}", 'lines' : "#{JSON.stringify(lines)}" }, (data) ->
         console.log data.data )
 
+  $("#preview-button").livequery ->
+    $(this).click ->
+      window.location.href = "/interpretations/#{interp_id}"
+
   $("#publish-button").livequery ->
     $(this).click ->
       if $("#user-id").attr('data-user') != "logged-out"
@@ -738,10 +749,6 @@ $ ->
       else
         $('.preview-button').hide()
         $('.publish-button').html("<p><a href='/sign_up?interp=#{interp_id}'><strong>Sign up for Heyu?</strong></a> That way your username will appear alongside your translation. Get props for excellent work!<br><br>If you've already signed up, be sure to <a href='/sign_in?interp=#{interp_id}'><strong>sign in</strong></a>.<br><br>Otherwise, <a href='/interpretations/#{interp_id}'>submit your translation anonymously.</a>")
-
-  $("#preview-button").livequery ->
-    $(this).click ->
-      window.location.href = "/interpretations/#{interp_id}"
 
 # YOUTUBE WINDOW STICKY ON SCROLL
 
