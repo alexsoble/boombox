@@ -38,6 +38,7 @@ $ ->
   window.editing_line = 'off'
   window.editing_line_timing = 'off'
   window.editing_line_ask_heyu = 'off'
+  window.choruslang2 = ''
   $('#timer-box').html('<div id="timer"><h2 class="timer-text" id="big-timer"></h2></div>')
 
   if action_name is 'edit'
@@ -134,9 +135,6 @@ $ ->
         max: 12
       formatter: (val) -> 
         shortFormatTime(val)
-      valueLabels: "change"
-      durationIn: 1200
-      durationOut: 1200
       ).bind("valuesChanged", (e, data) ->
         start = data.values.min
         end = data.values.max
@@ -213,7 +211,7 @@ $ ->
         <label class='checkbox'>
           <input type='checkbox' id='just-lang2'>I want to just write down the #{lang2} translation.
           <br>
-          <div style='float: left; margin-left: 40px; margin-top: 25px;'><i>This is a good option if the YouTube <br>video already includes captions. <br><br> #{window.cc_status}</i></div>          
+          <div style='float: left; margin-left: 40px; margin-top: 25px;'>This is a good option if the YouTube <br>video already includes captions. <br><br> #{window.cc_status}</div>          
         </label>
         <br>
       </div>")
@@ -253,10 +251,6 @@ $ ->
             that_entry = $('.lang2-line').val()
             time = $("#current-loop-time").text()
             time_in_seconds = parseInt(time.slice(3,5)) + parseInt(time.slice(0,2))*60
-            # AJAX $.post('/new_line', { 'line' : { 'lang1' : "#{entry}", 'lang2' : "#{that_entry}", 'time' : "#{time_in_seconds}", 'duration' : "#{window.loop}", 'interpretation_id' : "#{interp_id}" , 'upvotes' : 0, 'downvotes' : 0  } }, (data) ->
-              # AJAX console.log data.data
-              # AJAX line_id = data.data.id 
-              # AJAX duration = data.data.duration
             $('#lyrics-box').append("
                 <div class='line' data-time=#{time_in_seconds} data-duration=#{window.loop}>
                   <div class='lyrics-container'>
@@ -274,7 +268,7 @@ $ ->
             $('.lang1-line').val('')
             $('.lang2-line').val('')
             window.section += 1
-            $('.publish-button').html('<div class="btn btn-info" id="publish-button">Publish!</div>')
+            $('.publish-button').html('<div class="btn btn-info" id="save-button">Save</div>')
             $('.preview-button').html('<div class="btn btn-info" id="preview-button">Preview</div>').effect('highlight')
 
       $(".lang2-line").livequery ->
@@ -288,10 +282,6 @@ $ ->
             that_entry = $('.lang1-line').val()
             time = $("#current-loop-time").text()
             time_in_seconds = parseInt(time.slice(3,5)) + parseInt(time.slice(0,2))*60
-            # AJAX $.post('/new_line', { 'line' : { 'lang1' : "#{that_entry}", 'lang2' : "#{entry}", 'time' : "#{time_in_seconds}", 'duration' : "#{window.loop}", 'interpretation_id' : "#{interp_id}" , 'upvotes' : 0, 'downvotes' : 0  } }, (data) ->
-              # AJAX console.log data.data
-              # AJAX line_id = data.data.id 
-              # AJAX duration = data.data.duration
             $('#lyrics-box').append("
                 <div class='line' data-time=#{time_in_seconds} data-duration=#{window.loop}>
                   <div class='lyrics-container'>
@@ -311,7 +301,7 @@ $ ->
               $('.lang1-line').val('')
               $('.lang2-line').val('')
               $('.lang1-line').focus()
-              $('.publish-button').html('<div class="btn btn-info" id="publish-button">Publish!</div>')
+              $('.publish-button').html('<div class="btn btn-info" id="save-button">Save</div>')
               $('.preview-button').html('<div class="btn btn-info" id="preview-button">Preview</div>').effect('highlight')
 
     if window.translation_type == 'just_lang2'
@@ -325,9 +315,6 @@ $ ->
               $('#lang2-lyrics').append("<p><small><small class='edit-duration'>(#{time})</small></small>  <span class='edit-line-lan2'>#{entry}</span></p>")
               $('.lang2-line').val('')
               time_in_seconds = parseInt(time.slice(3,5)) + parseInt(time.slice(0,2))*60
-              # AJAX $.post('/new_line', { 'line' : { 'lang1' : '', 'lang2' : "#{entry}", 'time' : "#{time_in_seconds}", 'duration' : "#{window.loop}", 'interpretation_id' : "#{interp_id}" , 'upvotes' : 0, 'downvotes' : 0  } }, (data) ->
-              # AJAX console.log data.data )
-              # AJAX $.post('/previous_line', { 'time' : "#{time_in_seconds}" }, (data) ->
             window.section += 1
             $('.publish-button').html('<div class="btn btn-info" id="publish-button">Publish!</div>')
             $('.preview-button').html('<div class="btn btn-info" id="preview-button">Preview</div>')
@@ -342,10 +329,10 @@ $ ->
   
     if action_name is 'new'
       $('#controls').html("
-      Here we go!  Once you've filled in the translation, hit ENTER to submit each line. <br><br>
-      If you need to look up a word, online dictionaries like <a href='http://www.wordreference.com/'>Wordreference</a> can be a great resource. <br><br>
+      Here we go!<br><br>  Once you've filled in the translation, hit <strong>ENTER</strong> to submit each line. <br><br>
+      If you need to look up a word, online dictionaries like <strong><a href='http://www.wordreference.com/'>Wordreference</a></strong> can be a great resource.<br><br>
       Don't worry if you have trouble understanding at first — you'll get tools to help you.<br><br>
-      <a href='#' id='input-lines-go'>I'm ready!</a>
+      <a href='#' id='input-lines-go'><strong>I'm ready!</strong></a>
       ")
 
     $("#input-lines-go").livequery -> 
@@ -519,44 +506,48 @@ $ ->
       if window.editing_line isnt 'on'
         window.editing_line = 'on'
         id = $(this).attr('data-line-id')
-        $(this).attr('class','line edited-line')
+        $(this).attr('class','line edited-line rounded')
         lang1 = $.trim($(this).children().eq(0).text())
         lang2 = $.trim($(this).children().eq(1).text())
-        $(this).children().eq(0).children().eq(0).html("
-          <div class='control-group'>
+        $(this).html("
+        <div class='lines-being-edited'>
+          <div class='control-group' style='float: left;'>
             <div class='controls'>
               <input type='text' class='input-xlarge edit-line' id='edit-line-lang1'>
             </div>
-          </div>")
-        $(this).children().eq(1).children().eq(0).html("
-          <div class='control-group'>
+          </div>
+          <div class='control-group' style='float: right;'>
             <div class='controls'>
               <input type='text' class='input-xlarge edit-line' id='edit-line-lang2'>
             </div>
-          </div>")
+          </div>
+        </div>")
         $('#edit-line-lang1').val(lang1)
         $('#edit-line-lang2').val(lang2)
         $(this).prepend("
-          <span style='float: left;' class='toolbox-upper'>
-            <div class='btn btn-primary btn-small rounded tight-margins' id='add-line-above' data-line-id=#{id}> &uarr; add line </div>
-            <div class='btn btn-primary btn-small rounded tight-margins' id='edit-timing' data-line-id=#{id}> adjust timing </div>
-            <div class='btn btn-primary btn-small rounded tight-margins' id='delete-line' data-line-id=#{id}>delete line &darr;</div>
+          <span style='float: left; margin: 10px;' class='toolbox-upper'>
+            <div class='btn btn-primary btn-small rounded tight-margins' id='add-line-above' data-line-id=#{id}> &uarr; add new line </div>
+            <div class='btn btn-primary btn-small rounded tight-margins' id='add-chorus' data-line-id=#{id}> &uarr; add chorus</div>
           </span>
-          <br>
-          ")
+          <span style='float: right; margin: 10px;' class='toolbox-upper'>
+            <div class='btn btn-warning btn-small rounded tight-margins' id='ask-twitter' data-twitter-url='https://twitter.com/share?url=https%3A%2F%2Fdev.twitter.com%2Fpages%2Ftweet-button'> get help from twitter </div>
+            <div class='btn btn-warning btn-small rounded tight-margins' id='ask-heyu'> get help from heyu </div>
+          </span>
+          </span>
+          <br>")
         $(this).append("
           <br>
-          <span style='float: left;' class='toolbox-upper'>
-            <div class='btn btn-success btn-small rounded tight-margins' id='chorus'> mark as chorus </div>
+          <span style='float: left; margin: 10px;' class='toolbox-lower'>
+            <div class='btn btn-inverse btn-small rounded tight-margins' id='delete-line'> delete line &uarr; </div>
+            <div class='btn btn-inverse btn-small rounded tight-margins' id='edit-timing'> adjust timing </div>
           </span>
-          <span style='float: right;' class='toolbox-lower'>
-            <div class='btn btn-warning btn-small rounded btn-uniform-width tight-margins' id='done-editing'>done</div>
-            <div class='btn btn-warning btn-small rounded btn-uniform-width tight-margins' id='ask-heyu'>ask heyu</div>
-            <div class='btn btn-warning btn-small rounded btn-uniform-width tight-margins' id='ask-twitter' data-twitter-url='https://twitter.com/share?url=https%3A%2F%2Fdev.twitter.com%2Fpages%2Ftweet-button'>ask twitter</div>
+          <span style='float: right; margin: 10px;' class='toolbox-lower'>
+            <div class='btn btn-success btn-small rounded tight-margins' id='mark-chorus' data-line-id=#{id}> &uarr; this is the chorus </div>
+            <div class='btn btn-success btn-small rounded tight-margins' id='done-editing'> done editing </div>
           </span>")
         $(this).hover(
-          -> $(this).attr('style','background-color: yellow;')
-          -> $(this).attr('style','background-color: yellow;')
+          -> $(this).attr('style','background-color: #F9F9F9;')
+          -> $(this).attr('style','background-color: #F9F9F9;')
           )
 
   $('#add-line-above').livequery ->
@@ -569,16 +560,32 @@ $ ->
           <div class='lyrics-container'>
             <p>New line!</p>
           </div>
-        </div>
-      ")
-      doneEditing()
+        </div>")
+
+  $('#mark-chorus').livequery ->
+    $(this).click -> 
+      window.choruslang1 = $('#edit-line-lang1').val()
+      window.choruslang2 = $('#edit-line-lang2').val()
+
+  $('#add-chorus').livequery ->
+    $(this).click -> 
+      if window.choruslang2 isnt ''
+        $('.edited-line').before("
+          <div class='line'>
+            <div class='lyrics-container'>
+              <p>#{window.choruslang1}</p>
+            </div>
+            <div class='lyrics-container'>
+              <p>#{window.choruslang2}</p>
+            </div>
+          </div>
+        ")
 
   $('#delete-line').livequery ->
     $(this).click ->
       console.log "deleting line"
       window.editing_line = 'off'
       line_id = $(this).attr('data-line-id')
-      # AJAX $.post('/delete_line', { 'line' : { 'id' : "#{line_id}" } } )
       $(this).parent().parent().slideUp()
       # ^The slideUp would be nice but unfortunately js from YouTube/Google interferes with a delayed remove() and mucks up the whole thing
       $(this).parent().parent().remove()
@@ -597,13 +604,14 @@ $ ->
   $('#ask-heyu').livequery ->
     $(this).click ->
       if window.editing_line_ask_heyu isnt 'on'
+        $(this).parent().parent().after("
+          <span id='coming-soon' style='float: left; background-color: orange; width: 500px;'>
+            <span style='margin: 10px;'>
+              <strong>Coming soon</strong>: compare your translation with other Heyu users'.
+            </span>
+          </span>
+          ")
         window.editing_line_ask_heyu = 'on'
-        $(this).parent().after("
-            <span id='coming-soon'>Coming soon! Compare your translation with other Heyu users'.</span>
-            ")
-      else
-        window.editing_line_ask_heyu = 'off'
-        $('#coming-soon').remove()
 
   doneEditing = ->
     line_id = $('.edited-line').attr('data-line-id')
@@ -611,10 +619,6 @@ $ ->
     duration = $('.edited-line').attr('data-duration')
     lang1 = $('#edit-line-lang1').val()
     lang2 = $('#edit-line-lang2').val()
-    # AJAX $.post('/update_line', { 'line' : { 'lang1' : "#{lang1}", 'id' : "#{line_id}" } }, (data) ->
-      # AJAX console.log data.data )
-    # AJAX $.post('/update_line', { 'line' : { 'lang2' : "#{lang2}", 'id' : "#{line_id}" } }, (data) ->
-      # AJAX console.log data.data )
     $('.edited-line').before("
       <div class='line' data-line-id=#{line_id} data-time=#{time} data-duration=#{duration}>
         <div class='lyrics-container'>
@@ -626,8 +630,10 @@ $ ->
       </div>
       ")
     $('.edited-line').remove()
+    $('#coming-soon').remove()
     window.editing_line = 'off'
     window.editing_line_timing = 'off'
+    window.editing_line_ask_heyu = 'off'
 
   $('#done-editing').livequery ->
     $(this).click ->
@@ -711,6 +717,17 @@ $ ->
           player.playVideo() )
 
 # DONE/SAVE BUTTONS
+
+  $("#save-button").livequery ->
+    $(this).click ->
+      lines = []
+      $('.line').each(->
+        line = (time : $(this).attr('data-time'), duration : $(this).attr('data-duration'), lang1 : $.trim($(this).children().eq(0).text()), lang2 : $.trim($(this).children().eq(1).text()), interpretation_id : interp_id )
+        lines.push line
+      )
+      console.log JSON.stringify(lines)
+      $.post('/save', { 'interp_id' : "#{interp_id}", 'lines' : "#{JSON.stringify(lines)}" }, (data) ->
+        console.log data.data )
 
   $("#publish-button").livequery ->
     $(this).click ->

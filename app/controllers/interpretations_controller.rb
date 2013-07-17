@@ -1,6 +1,49 @@
 class InterpretationsController < ApplicationController
   respond_to :json, :html
 
+  def save
+    @interp = Interpretation.find_by_id(params[:interp_id])
+    @original_lines = Line.where(:interpretation_id => @interp.id)
+
+    if @original_lines.present?
+      @original_lines.all.each do |o|
+        o.destroy
+        o.save
+      end
+    end
+
+    @lines = JSON.parse(params[:lines])
+    puts @lines
+    @lines.each do |l|
+      Line.create(l)
+    end
+
+    @new_lines = Line.where(:interpretation_id => @interp.id)
+
+    render :json => { :data => @new_lines }
+  end
+
+  def show
+    @interp = Interpretation.find_by_id(params[:id])
+    @lines = Line.where(:interpretation_id => @interp.id).order("created_at ASC")
+    @url = request.url
+
+    if params[:clip] == 'yes'
+      @clip = yes
+    end
+
+    @lines_have_lang1 = false
+    @lines.all.each do |l|
+      if l.lang1.present? then @lines_have_lang1 = true end
+    end 
+
+    if @interp.user_id == 0
+      @user = 'anon' 
+    else
+      @user = User.find_by_id(@interp.user_id)
+    end
+  end
+
   def create 
     @interp = Interpretation.create(params[:interpretation])
     render :json => { :data => @interp }
@@ -29,22 +72,6 @@ class InterpretationsController < ApplicationController
     end
   end
 
-  def show
-    @interp = Interpretation.find_by_id(params[:id])
-    @lines = Line.where(:interpretation_id => @interp.id).order("created_at ASC")
-    @url = request.url
-
-    @lines_have_lang1 = false
-    @lines.all.each do |l|
-      if l.lang1.present? then @lines_have_lang1 = true end
-    end 
-
-    if @interp.user_id == 0
-      @user = 'anon' 
-    else
-      @user = User.find_by_id(@interp.user_id)
-    end
-  end
 
   def publish 
 

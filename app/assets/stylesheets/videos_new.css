@@ -41,11 +41,20 @@
 
 .line { float: left; background-color: white; }
 
+.lines-being-edited { float: left; 
+  width: 500px;
+  margin-left: 30px;
+  margin-right: 30px;
+  margin-top: 10px;
+  margin-bottom: -10px; }
+
 .btn-uniform-width { float: right; width: 60px; }
 
-.tight-margins { margin: 5px !important; }
+.tight-margins { margin: 2px !important; }
 
-#edit-timing-slider { float: left; width: 200px; margin: 30px; }
+#edit-timing-slider { float: left; 
+  width: 200px; 
+  margin: 40px; }
 
 /* SMALL LYRICS CONTAINER FOR THE VIDEO AS IT'S EDITED */
 
@@ -108,7 +117,7 @@
 
 #loop-slider { width: 400px; 
   float: left; 
-  margin-top: 4px; }
+  margin: 40px; }
 
 .ui-rangeSlider-leftLabel { font-size: 12px; }
 
