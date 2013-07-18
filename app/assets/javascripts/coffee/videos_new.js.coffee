@@ -97,15 +97,6 @@ $ ->
   sliderSetup = ->
 
     $('#settings').append("
-        <!---
-        <div class='dropdown' id='difficulty-settings'>
-          <a class='dropdown-toggle' data-toggle='dropdown' href='#'>Difficulty </a>
-          <ul class='dropdown-menu'>
-            <li><a href='#'>Beginner</a></li>
-            <li><a href='#'>Intermediate</a></li>
-            <li><a href='#'>Advanced</a></li>
-          </ul>
-        </li> -->
         <div id='loop-settings'>
           <div class='left-endLabel'>
             <span class='padded-label'></span>
@@ -114,10 +105,15 @@ $ ->
           <div class='right-endLabel'>
             <span class='padded-label'></span>
           </div>
-          <br>
-          <span id='loop-status'>Playing in 4-second loops.</span> <a id='loop-toggle'><small>(off)</small></a>
-        </div>
-        ")
+          <span id='set-difficulty'><a>Video difficulty</a></span>
+          <span id='loop-status'></span> <a id='loop-toggle'></a>
+          <div class='controls'>
+            <select id='difficulty-settings'>
+              <option value='beginner' class='difficulty-setting'>Beginner</option>
+              <option value='intermediate' class='difficulty-setting'>Intermediate</option>
+              <option value='advanced' class='difficulty-setting'>Advanced</option>
+            </select>
+          </div>")
 
   playbackControls = ->
     $('#loop-slider').rangeSlider(
@@ -630,8 +626,9 @@ $ ->
 
   $('#add-line-above').livequery ->
     $(this).click ->
+      new_time = parseInt($(this).parent().parent().attr('data-time')) - 4
       $('.edited-line').before("
-        <div class='line'>
+        <div class='line' data-time=#{new_time} data-duration=4>
           <div class='lyrics-container'>
             <p>New line!</p>
           </div>
@@ -648,16 +645,16 @@ $ ->
   $('#add-chorus').livequery ->
     $(this).click -> 
       if window.choruslang2 isnt ''
+        new_time = parseInt($(this).parent().parent().attr('data-time')) - 4
         $('.edited-line').before("
-          <div class='line'>
+          <div class='line' data-time=#{new_time} data-duration=4>
             <div class='lyrics-container'>
               <p>#{window.choruslang1}</p>
             </div>
             <div class='lyrics-container'>
               <p>#{window.choruslang2}</p>
             </div>
-          </div>
-        ")
+          </div>")
 
   $('#delete-line').livequery ->
     $(this).click ->
@@ -692,6 +689,9 @@ $ ->
         window.editing_line_ask_heyu = 'on'
 
   doneEditing = ->
+    window.editing_line = 'off'
+    window.editing_line_timing = 'off'
+    window.editing_line_ask_heyu = 'off'
     line_id = $('.edited-line').attr('data-line-id')
     time = $('.edited-line').attr('data-time')
     duration = $('.edited-line').attr('data-duration')
@@ -705,14 +705,10 @@ $ ->
         <div class='lyrics-container'>
           <p>#{lang2}</p>
         </div>
-      </div>
-      ")
+      </div>")
     $('.edited-line').remove()
     $('#coming-soon').remove()
     $('#loop-settings').slideDown()
-    window.editing_line = 'off'
-    window.editing_line_timing = 'off'
-    window.editing_line_ask_heyu = 'off'
 
   $('#done-editing').livequery ->
     $(this).click ->
@@ -768,23 +764,19 @@ $ ->
 
   # DIFFICULTY SETTINGS 
 
-  $('#beginner').livequery ->
-    $(this).click ->
-      if $(this).prop('checked') == true
-        $('#difficulty-settings').html('Difficulty: Beginner')
-        $.post('/update_difficulty', { 'interp' : { 'id' : "#{interp_id}", 'difficulty' : "beginner" } })
+  $('#difficulty-settings').hide()
 
-  $('#intermediate').livequery ->
+  $('#set-difficulty').livequery ->
     $(this).click ->
-      if $(this).prop('checked') == true
-        $('#difficulty-settings').html('Difficulty: Intermediate')
-        $.post('/update_difficulty', { 'interp' : { 'id' : "#{interp_id}", 'difficulty' : "intermediate" } })
+      $('#set-difficulty').toggle()
+      $('#difficulty-settings').toggle()
 
-  $('#advanced').livequery ->
+  $('#difficulty-settings').livequery ->
     $(this).click ->
-      if $(this).prop('checked') == true
-        $('#difficulty-settings').html('Difficulty: Advanced')
-        $.post('/update_difficulty', { 'interp' : { 'id' : "#{interp_id}", 'difficulty' : "advanced" } })
+      console.log "clicked!!"
+      $('#difficulty-settings').toggle()
+      $('#set-difficulty').toggle()
+      $.post('/update_difficulty', { 'interp' : { 'id' : "#{interp_id}", 'difficulty' : "#{$(this).attr('value')}" } })
 
   # OLD STUFF...  MAYBE NOT USELESS THOUGH? 
 
