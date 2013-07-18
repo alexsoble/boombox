@@ -34,6 +34,7 @@ $ ->
     formatted_time
 
   window.loop = false
+  window.valuesChanging = false
   window.tool_helptip_displayed = false
   window.editing_line = 'off'
   window.editing_line_timing = 'off'
@@ -77,25 +78,20 @@ $ ->
         </label>
       </div>")
 
-  if action_name is 'edit'
-    window.translation_type = translation_type
-    sliderSetup()
-    nonLoopingSlider()
-
   $("#yes-loops").livequery ->
     $(this).click -> 
       window.section = window.time / 4
       window.loop = 4
       $(this).parent().parent().fadeOut()
       sliderSetup()
-      loopingSlider()
+      loopingPlaybackControls()
       langOneLangTwoStep()
 
   $("#no-loops").livequery ->
     $(this).click -> 
       $(this).parent().parent().fadeOut()
       sliderSetup()
-      nonLoopingSlider()
+      nonLoopingPlayback()
       langOneLangTwoStep()
 
   sliderSetup = ->
@@ -112,22 +108,18 @@ $ ->
         </li> -->
         <div id='loop-settings'>
           <div class='left-endLabel'>
-            <span class='padded-label'>
-              #{shortFormatTime(Math.floor(window.time / 45) * 45)}
-            </span>
+            <span class='padded-label'></span>
           </div>
           <div id='loop-slider'></div>
           <div class='right-endLabel'>
-            <span class='padded-label'>
-              #{shortFormatTime(Math.floor(window.time / 45) * 45 + 60)}
-            </span>
+            <span class='padded-label'></span>
           </div>
           <br>
           <span id='loop-status'>Playing in 4-second loops.</span> <a id='loop-toggle'><small>(off)</small></a>
         </div>
         ")
 
-  loopingSlider = ->
+  playbackControls = ->
     $('#loop-slider').rangeSlider(
       arrows: false
       step: 1
@@ -143,47 +135,53 @@ $ ->
       formatter: (val) -> 
         shortFormatTime(val)
       )
+      
+  loopingPlaybackControls = ->
+    playbackControls()
+
+    left_label = $('.left-endLabel').children(':first')
+    right_label = $('.right-endLabel').children(':first')
+    left_label.html(shortFormatTime(Math.floor(window.time / 45) * 45))
+    right_label.html(shortFormatTime(Math.floor(window.time / 45) * 45 + 60))
+
+    $('#loop-slider').children().eq(3).attr('class','ui-rangeSlider-leftLabel playback-slider-label')
+    $('#loop-slider').children().eq(4).attr('class','ui-rangeSlider-rightLabel playback-slider-label')
+
     $('#loop-slider').bind("valuesChanged", (e, data) ->
+      bounds = $('#loop-slider').rangeSlider("bounds")
+      min = bounds.min
+      max = bounds.max
+      start = data.values.min
+      end = data.values.max
 
-        bounds = $('#loop-slider').rangeSlider("bounds")
-        min = bounds.min
-        max = bounds.max
-        start = data.values.min
-        end = data.values.max
+      shiftRight = -> 
+        if end == max and max < window.player.getDuration()
+          left_label.text(shortFormatTime(max))
+          right_label.text(shortFormatTime(max + 60))
+          $('#loop-slider').rangeSlider(
+            bounds:
+              min: max
+              max: max + 60
+          ).rangeSlider("values", max + 1, max + 5)
 
-        left_label = $('.left-endLabel').children(':first')
-        right_label = $('.right-endLabel').children(':first')
+      shiftLeft = -> 
+        if start == min and min > 0
+          left_label.text(shortFormatTime(min - 60))
+          right_label.text(shortFormatTime(min))
+          $('#loop-slider').rangeSlider(
+            bounds:
+              min: min - 60
+              max: min
+          ).rangeSlider("values", min - 55, min - 59)
 
-        shiftRight = -> 
-          if end == max and max < window.player.getDuration()
-            left_label.text(shortFormatTime(max))
-            right_label.text(shortFormatTime(max + 60))
-            $('#loop-slider').rangeSlider(
-              bounds:
-                min: max
-                max: max + 60
-            ).rangeSlider("values", max + 1, max + 5)
-
-        shiftLeft = -> 
-          if start == min and min > 0
-            left_label.text(shortFormatTime(min - 60))
-            right_label.text(shortFormatTime(min))
-            $('#loop-slider').rangeSlider(
-              bounds:
-                min: min - 60
-                max: min
-            ).rangeSlider("values", min - 55, min - 59)
-
-        waitForIt = (direction) -> 
-          direction()
-
-        if end == max
-          window.setTimeout(waitForIt(shiftRight), 1000)
-
-        if start == min
-          window.setTimeout(waitForIt(shiftLeft), 1000)
-
+      waitForIt = (direction) -> 
+        direction()
+      if end == max
+        window.setTimeout(waitForIt(shiftRight), 1000)
+      if start == min
+        window.setTimeout(waitForIt(shiftLeft), 1000)
       )
+
     $('#loop-slider').bind("valuesChanged", (e, data) ->
         start = data.values.min
         end = data.values.max
@@ -193,17 +191,30 @@ $ ->
         $("#loop-status").html("Playing in a loop from #{shortFormatTime(start)} to #{shortFormatTime(end)}.")
       )
 
-  nonLoopingSlider = ->
-    $('#loop-slider').slider(
-      range: false
-      min: 0
-      max: 60
-      step: 1
-      values: 0
-      slide: (event, ui) ->
-        start = ui.value
-        window.start_handle.html("<div class='loop-start-handle'><small><small>#{formatTime(start)}</small></small></div>")
-        window.player.seekTo(ui.value)
+  nonLoopingPlayback = (video_duration) ->
+    playbackControls()
+    left_label = $('.left-endLabel').children(':first')
+    left_label.html(':00')
+    $('.ui-rangeSlider-innerBar').prepend("<div id='progress-bar'></div>")
+    $('#loop-slider').children().eq(0).children().eq(1).attr('id','straightforward-playback-handle')
+    $('.ui-rangeSlider-bar').attr('style','color: white; background-color: #848488;')
+    $('.ui-rangeSlider-rightHandle').attr('style','opacity: 0')
+    $('.ui-rangeSlider-leftHandle').attr('style','opacity: 0')
+    $('#loop-slider').children().eq(3).hide()
+    $('#loop-slider').children().eq(4).hide()
+    $('#loop-slider').rangeSlider("option", "range", {min: video_duration/20, max: video_duration/20})
+    $('#loop-slider').rangeSlider("option", "bounds", {min: 0, max: video_duration})
+    $('#loop-slider').bind("valuesChanging", (e, data) ->
+      window.valuesChanging = true
+      time = data.values.min
+      new_width = 368 * time / video_duration
+      console.log "valuesChanging! new width: #{new_width}px"
+      $('#progress-bar').attr('style',"width: #{new_width}px")
+      )
+    $('#loop-slider').bind("valuesChanged", (e, data) ->
+      window.valuesChanging = false
+      time = data.values.min
+      window.player.seekTo(time)
       )
 
   langOneLangTwoStep = ->
@@ -274,6 +285,10 @@ $ ->
       $(this).click ->
         window.translation_type = 'just_lang2'
         introText()
+
+  if action_name is 'edit'
+    window.translation_type = translation_type
+    sliderSetup()
 
   inputLineLogic = -> 
 
@@ -421,7 +436,6 @@ $ ->
 
 # YOUTUBE PLAYER COMES IN HERE
 
-  player = null
   window.rollover_pause = false
 
   tag = document.createElement("script")
@@ -451,6 +465,11 @@ $ ->
 
   onPlayerReady = (event) ->
     event.target.playVideo()
+    video_duration = window.player.getDuration()
+    window.video_duration = video_duration
+    if window.loop is false
+      $('.right-endLabel').children(':first').html(shortFormatTime(video_duration))
+      nonLoopingPlayback(video_duration)
 
   countVideoPlayTime = ->
 
@@ -458,7 +477,13 @@ $ ->
       exact_time = player.getCurrentTime()
       window.time = Math.floor(exact_time)
       $(".timer-text").html(formatTime(window.time))
-    setInterval(getTime, 100)
+
+      # STRAIGHTFORWARD (NON-LOOPING) SLIDER AND PROGRESS BAR MOVE HERE
+      if window.loop is false and window.valuesChanging is false
+        new_width = 368 * window.time / window.video_duration
+        $('#progress-bar').attr('style',"width: #{new_width}px")
+        $('.ui-rangeSlider-bar').attr('style',"left: #{new_width - 10}px")
+    setInterval(getTime, 200)
 
     current_loop_time = window.loop * window.section
     current_loop_end = window.loop * (window.section + 1)
@@ -523,12 +548,17 @@ $ ->
 
   $('#loop-toggle').livequery -> 
     $(this).click ->
+      window.loop = false
+      console.log "Turning loops off."
       $('#loop-status').html("Playing without loops.")
       $(this).attr('id','loop-status-off')
       $(this).html('<small>(on)</small>')
-      $('#loop-slider').slideUp()
-      window.loop = false
-      console.log "Turning loops off."
+
+      # ADJUSTING THE SLIDER
+      video_duration = window.player.getDuration()
+      $('.left-endLabel').children(':first').html(':00')
+      $('.right-endLabel').children(':first').html(shortFormatTime(video_duration))
+      nonLoopingPlayback(video_duration)
 
   # LINE CONTROLS
 

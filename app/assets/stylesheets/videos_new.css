@@ -104,7 +104,6 @@
 #big-timer {  color: white;
   line-height: 90px; }
 
-
 /*  --------- CONTROLS BELOW VIDEO --------- */
 
 #controls { position: relative; }
@@ -120,16 +119,29 @@
   left: 24px; 
   top: 5px; }
 
-.ui-rangeSlider-leftLabel { 
+#progress-bar { height: 16px; 
+  background-color: orange; 
+  position: absolute; }
+
+.ui-rangeSlider-bar#straightforward-playback-handle
+  { position: absolute; 
+  color: white; 
+  background-color: orange; 
+  height: 20px; width: 20px;
+  opacity: .75; }
+
+.ui-rangeSlider-leftLabel.playback-slider-label { 
   font-size: 12px; 
-  background-color: #C5C5CF;
+  background-color: #848488 ;
+  color: white;
   height: 15px;
   position: relative;
   bottom: 20px; }
 
-.ui-rangeSlider-rightLabel { 
+.ui-rangeSlider-rightLabel.playback-slider-label { 
   font-size: 12px; 
-  background-color: #C5C5CF;
+  background-color: #848488 ;
+  color: white;
   height: 15px;
   position: relative;
   bottom: -24px;  }

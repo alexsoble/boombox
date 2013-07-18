@@ -25,9 +25,7 @@ class ApplicationController < ActionController::Base
 
   def correct_user(user_id)
     unless current_user && current_user.id == user_id
-      flash[:notice] = "It's like mama always said: you can't edit videos that aren't yours.
-        Video user id: #{user_id}... Your user id: #{current_user.id}
-      "
+      flash[:notice] = "It's like mama always said: you can't edit videos that aren't yours."
       redirect_to '/'
       false
     end

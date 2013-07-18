@@ -1,7 +1,7 @@
 class InterpretationsController < ApplicationController
   respond_to :json, :html
 
-  before_filter only: [:edit] do |controller|
+  before_filter only: [:edit, :publish, :destroy] do |controller|
     if params[:id].present?
       @interp = Interpretation.find_by_id(params[:id])
       @user_id = @interp.user_id
@@ -87,8 +87,7 @@ class InterpretationsController < ApplicationController
   end
 
   def publish 
-
-    @interp = Interpretation.find_by_id(params[:interpretation][:id])
+    @interp = Interpretation.find_by_id(params[:id])
     @interp.published = true
     @interp.save
 
@@ -96,7 +95,6 @@ class InterpretationsController < ApplicationController
     # Send the relevant user an Alert here
 
     render :json => { :data => @interp }
-
   end
 
   def destroy

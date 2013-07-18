@@ -19,7 +19,7 @@ $ ->
 
   $("#publish-button").click ->
     if $("#user-id").attr('data-user') != "logged-out"
-      $.post('/publish', { 'interpretation' : { 'id' : "#{interp_id}" } }, (data) ->
+      $.post('/publish', { 'id' : "#{interp_id}" }, (data) ->
         console.log data.data )
       window.location.href = "/interpretations/#{interp_id}"
     else
