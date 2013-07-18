@@ -40,7 +40,10 @@ $ ->
   window.editing_line_timing = 'off'
   window.editing_line_ask_heyu = 'off'
   window.choruslang2 = ''
-  $('#timer-box').html('<div id="timer"><h2 class="timer-text" id="big-timer"></h2></div>')
+  $('#timer-box').html('<div id="timer">
+    <h2 class="timer-text" id="big-timer"></h2>
+    <div style="background-color: #9B59BB; width: 80px;"><small class="white">pause</small></div>
+    </div>')
 
   if action_name is 'edit'
     $('.tools-container').toggle('width')
@@ -94,26 +97,35 @@ $ ->
       nonLoopingPlayback()
       langOneLangTwoStep()
 
+  reportLoopStatus = ->
+    if window.loop is false
+      $('#loop-status').html("")
+      $('#loop-toggle').html("Turn on video looping.")
+    else
+      $('#loop-status').html("Playing video in loops. Each loop is #{window.loop} seconds long.")
+      $('#loop-toggle').html("Turn off video looping.")
+
   sliderSetup = ->
 
     $('#settings').append("
-        <div id='loop-settings'>
-          <div class='left-endLabel'>
-            <span class='padded-label'></span>
-          </div>
-          <div id='loop-slider'></div>
-          <div class='right-endLabel'>
-            <span class='padded-label'></span>
-          </div>
-          <span id='set-difficulty'><a>Video difficulty</a></span>
-          <span id='loop-status'></span> <a id='loop-toggle'></a>
-          <div class='controls'>
-            <select id='difficulty-settings'>
-              <option value='beginner' class='difficulty-setting'>Beginner</option>
-              <option value='intermediate' class='difficulty-setting'>Intermediate</option>
-              <option value='advanced' class='difficulty-setting'>Advanced</option>
-            </select>
-          </div>")
+      <div id='loop-settings'>
+        <div class='left-endLabel'>
+          <span class='padded-label'></span>
+        </div>
+        <div id='loop-slider'></div>
+        <div class='right-endLabel'>
+          <span class='padded-label'></span>
+        </div>
+        <span id='loop-status'></span> <a id='loop-toggle'></a>
+        <br>
+        <span id='set-difficulty'><a>Video difficulty</a></span>
+        <div class='controls'>
+          <select id='difficulty-settings'>
+            <option value='beginner' class='difficulty-setting'>Beginner</option>
+            <option value='intermediate' class='difficulty-setting'>Intermediate</option>
+            <option value='advanced' class='difficulty-setting'>Advanced</option>
+          </select>
+        </div>")
 
   playbackControls = ->
     $('#loop-slider').rangeSlider(
@@ -142,6 +154,9 @@ $ ->
 
     $('#loop-slider').children().eq(3).attr('class','ui-rangeSlider-leftLabel playback-slider-label')
     $('#loop-slider').children().eq(4).attr('class','ui-rangeSlider-rightLabel playback-slider-label')
+
+    # GET RID OF ANY JUNK FROM THE STRAIGHTFORWARD PLAYBACK CONTROLLER
+    $('#progress-bar').remove()
 
     $('#loop-slider').bind("valuesChanged", (e, data) ->
       bounds = $('#loop-slider').rangeSlider("bounds")
@@ -178,7 +193,7 @@ $ ->
         window.setTimeout(waitForIt(shiftLeft), 1000)
       )
 
-    $('#loop-slider').bind("valuesChanged", (e, data) ->
+    $('#loop-slider').bind("userValuesChanged", (e, data) ->
         start = data.values.min
         end = data.values.max
         player.seekTo(start)
@@ -469,6 +484,7 @@ $ ->
     if window.loop is false
       $('.right-endLabel').children(':first').html(shortFormatTime(video_duration))
       nonLoopingPlayback(video_duration)
+    reportLoopStatus()
 
   countVideoPlayTime = ->
 
@@ -544,20 +560,6 @@ $ ->
     $(this).click -> 
       window.section -= 1
       player.seekTo(window.loop * window.section, true)
-
-  $('#loop-toggle').livequery -> 
-    $(this).click ->
-      window.loop = false
-      console.log "Turning loops off."
-      $('#loop-status').html("Playing without loops.")
-      $(this).attr('id','loop-status-off')
-      $(this).html('<small>(on)</small>')
-
-      # ADJUSTING THE SLIDER
-      video_duration = window.player.getDuration()
-      $('.left-endLabel').children(':first').html(':00')
-      $('.right-endLabel').children(':first').html(shortFormatTime(video_duration))
-      nonLoopingPlayback(video_duration)
 
   # LINE CONTROLS
 
@@ -762,7 +764,20 @@ $ ->
           )
           $('#lyrics-box').scrollTo('100%')
 
-  # DIFFICULTY SETTINGS 
+  # LOOP TOGGLE AND DIFFICULTY SETTINGS 
+
+  $('#loop-toggle').livequery -> 
+    $(this).click -> 
+      if window.loop == false
+        window.loop = 4
+        playbackControls()
+        loopingPlaybackControls()
+        reportLoopStatus()
+      else
+        window.loop = false
+        playbackControls()
+        nonLoopingPlayback(video_duration)
+        reportLoopStatus()
 
   $('#difficulty-settings').hide()
 
