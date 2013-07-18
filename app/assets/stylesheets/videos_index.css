@@ -1,15 +1,16 @@
 .span { height: 80px; }
 
 .video-thumb-box {
-  width: 140px;
+  width: 110px;
   height: 140px;
   margin-right: 40px;
   margin-top: 20px;
   float: left; }
 .video-thumb-box.result-thumb-box {
   margin-right: 0px;
-  margin-left: 40px;
-  margin-top: 40px; }
+  margin-left: 65px;
+  margin-top: 40px; 
+  cursor: pointer; }
 
 .thumb-box-width { width: 140px; }
 

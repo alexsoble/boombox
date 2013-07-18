@@ -208,7 +208,6 @@ $ ->
       window.valuesChanging = true
       time = data.values.min
       new_width = 368 * time / video_duration
-      console.log "valuesChanging! new width: #{new_width}px"
       $('#progress-bar').attr('style',"width: #{new_width}px")
       )
     $('#loop-slider').bind("valuesChanged", (e, data) ->
@@ -294,7 +293,7 @@ $ ->
 
     displayTooltip = ->
 
-      if window.tool_helptip_displayed == false
+      if window.tool_helptip_displayed == false and action_name == 'new'
         $('#lyrics-box').prepend("<span id='tools-intro-text'><strong>Hey, your very first translated line!</strong><br>Click on the line to edit or check your work.<br><br></span>")
         delayedFade = ->
           $('#tools-intro-text').fadeOut()
@@ -338,6 +337,7 @@ $ ->
         $(this).keydown (e) ->
         $(this).keyup (e) ->
           entry = this.value
+          console.log entry
           $('.lyrics-box.small').children().eq(1).html("<p class='white'>#{entry}</p>")
           if e.which == 13 and ($('.lang1-line').val() isnt '')
             $('#lyrics-box').parent().slideDown()
@@ -433,6 +433,9 @@ $ ->
       $('#lang1-box').parent().parent().remove()
 
     # LOGIC FOR THE INPUT LINES
+
+  if action_name == 'edit'
+    inputLineLogic()
 
 # YOUTUBE PLAYER COMES IN HERE
 
@@ -619,6 +622,7 @@ $ ->
             <div class='btn btn-success btn-small rounded tight-margins' id='mark-chorus' data-line-id=#{id}> &uarr; set as chorus </div>
             <div class='btn btn-success btn-small rounded tight-margins' id='done-editing'> done editing </div>
           </span>")
+        $('#lyrics-box').scrollTo($('.edited-line'))
         $(this).hover(
           -> $(this).attr('style','background-color: #F9F9F9;')
           -> $(this).attr('style','background-color: #F9F9F9;')
@@ -705,6 +709,7 @@ $ ->
       ")
     $('.edited-line').remove()
     $('#coming-soon').remove()
+    $('#loop-settings').slideDown()
     window.editing_line = 'off'
     window.editing_line_timing = 'off'
     window.editing_line_ask_heyu = 'off'
@@ -756,8 +761,11 @@ $ ->
             window.loop = end - start
             window.section = start / window.loop
             $("#loop-status").html("Playing in a loop from #{shortFormatTime(start)} to #{shortFormatTime(end)}.")
+          ).bind("valuesChanging", (e, data) ->
+            $('#loop-settings').slideUp()
           )
-          
+          $('#lyrics-box').scrollTo('100%')
+
   # DIFFICULTY SETTINGS 
 
   $('#beginner').livequery ->

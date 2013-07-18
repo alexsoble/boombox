@@ -9,6 +9,18 @@ class InterpretationsController < ApplicationController
     controller.correct_user(@user_id)
   end
 
+  before_filter only: [:show] do |controller|
+    if params[:id].present?
+      @interp = Interpretation.find_by_id(params[:id])
+      @user_id = @interp.user_id
+      if @interp.published == true
+        true
+      else
+        controller.correct_user(@user_id)
+      end
+    end
+  end
+
   def save
     @interp = Interpretation.find_by_id(params[:interp_id])
     @original_lines = Line.where(:interpretation_id => @interp.id)

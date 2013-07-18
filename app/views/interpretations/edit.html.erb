@@ -1,7 +1,7 @@
 <br>
 <div id="title-box" class="centerbox very-wide-box"><h2><%= @video.title %></h2></div>
 
-<div class="row-fluid">
+<div class="row">
 
   <div class="span5">
 
@@ -17,57 +17,56 @@
 
   </div> 
 
-  <div class="span5 offset2">
 
-    <% if @lang1_and_lang2 %>
+  <% if @lang1_and_lang2 %>
 
-      <div class="span5 offset2">
+    <div class="span5 offset2">
 
-        <div class="lyrics-container wide" id="lyrics-box">
-          <% @lines.each do |l| %>
-            <div class="line" data-time=<%= l.time %> data-duration=<%= l.duration %>>
-              <% if l.lang1.present? %>
-                <div class="lyrics-container">
-                  <p><%= l.lang1 %></p>
-                </div>
-              <% end %>
-              <% if l.lang2.present? %> 
-                <div class="lyrics-container">
-                  <p><%= l.lang2 %></p>
-                </div>
-              <% end %>
-            </div>
-          <% end %>
-        </div>
-
-        <div class="lyrics-container wide">
-          <div class="lyrics-container">
-            <div id="lang1-input">
-              <i class='left'><%= @lang1 %>&nbsp;</i>
-              <small class='left'>(<small class='current-loop-time'></small>)</small></div>
-              <br>
-              <div class='control-group'>
-              <div class='controls'>
-                <input type='text' class='input-xlarge lang1-line'>
+      <div class="lyrics-container wide" id="lyrics-box">
+        <% @lines.each do |l| %>
+          <div class="line" data-time=<%= l.time %> data-duration=<%= l.duration %>>
+            <% if l.lang1.present? %>
+              <div class="lyrics-container">
+                <p><%= l.lang1 %></p>
               </div>
-            </div>
-          </div>
-          <div class="lyrics-container">
-            <div id="lang2-input">
-              <i class='left'><%= @lang2 %>&nbsp;</i>
-              <small class='left'>(<small id='current-loop-time' class='current-loop-time'></small>)</small></div>
-              <br>
-              <div class='controls'>
-                <input type='text' class='input-xlarge lang2-line'>
+            <% end %>
+            <% if l.lang2.present? %> 
+              <div class="lyrics-container">
+                <p><%= l.lang2 %></p>
               </div>
-            <div class="publish-button" style="float: left;"></div>
-            <div class="preview-button" style="float: left; margin-left: 20px;"></div>
+            <% end %>
           </div>
-        </div>
+        <% end %>
       </div>
 
-    <% else %>
-    
+      <div class="lyrics-container wide">
+        <div class="lyrics-container">
+          <div id="lang1-input">
+            <i class='left'><%= @lang1 %>&nbsp;</i>
+            <small class='left'>(<small class='current-loop-time'></small>)</small></div>
+            <br>
+            <div class='control-group'>
+            <div class='controls'>
+              <input type='text' class='input-xlarge lang1-line'>
+            </div>
+          </div>
+        </div>
+        <div class="lyrics-container">
+          <div id="lang2-input">
+            <i class='left'><%= @lang2 %>&nbsp;</i>
+            <small class='left'>(<small id='current-loop-time' class='current-loop-time'></small>)</small></div>
+            <br>
+            <div class='controls'>
+              <input type='text' class='input-xlarge lang2-line'>
+            </div>
+          <br>
+          <div class="preview-button" style="float: right;"></div>
+        </div>
+      </div>
+    </div>
+
+  <% else %>
+  
     <div class="span3">
       <div class="lyrics-container">
         <div id="lang2-box">
@@ -80,9 +79,8 @@
         <div class="preview-button"></div>
       </div>
     </div>
-    <% end %>
 
-  </div>
+  <% end %>
 
 </div>
 
