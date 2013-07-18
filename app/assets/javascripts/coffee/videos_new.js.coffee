@@ -113,13 +113,13 @@ $ ->
         <div id='loop-settings'>
           <div class='left-endLabel'>
             <span class='padded-label'>
-              #{shortFormatTime(window.time)}
+              #{shortFormatTime(Math.floor(window.time / 45) * 45)}
             </span>
           </div>
           <div id='loop-slider'></div>
           <div class='right-endLabel'>
             <span class='padded-label'>
-              #{shortFormatTime(window.time + 60)}
+              #{shortFormatTime(Math.floor(window.time / 45) * 45 + 60)}
             </span>
           </div>
           <br>
@@ -136,7 +136,7 @@ $ ->
         max: window.time + 4
       bounds:
         min: Math.floor(window.time / 45) * 45
-        max: (Math.floor(window.time / 45)) * 45 + 60
+        max: Math.floor(window.time / 45) * 45 + 60
       range:
         min: 1
         max: 12
@@ -155,7 +155,7 @@ $ ->
         right_label = $('.right-endLabel').children(':first')
 
         shiftRight = -> 
-          if end == max
+          if end == max and max < window.player.getDuration()
             left_label.text(shortFormatTime(max))
             right_label.text(shortFormatTime(max + 60))
             $('#loop-slider').rangeSlider(
@@ -165,7 +165,7 @@ $ ->
             ).rangeSlider("values", max + 1, max + 5)
 
         shiftLeft = -> 
-          if start == min
+          if start == min and min > 0
             left_label.text(shortFormatTime(min - 60))
             right_label.text(shortFormatTime(min))
             $('#loop-slider').rangeSlider(
@@ -317,7 +317,6 @@ $ ->
             $('.lang1-line').val('')
             $('.lang2-line').val('')
             window.section += 1
-            $('.publish-button').html('<div class="btn btn-info" id="save-button">Save</div>')
             $('.preview-button').html('<div class="btn btn-info" id="preview-button">Preview</div>').effect('highlight')
 
       $(".lang2-line").livequery ->
@@ -350,7 +349,6 @@ $ ->
               $('.lang1-line').val('')
               $('.lang2-line').val('')
               $('.lang1-line').focus()
-              $('.publish-button').html('<div class="btn btn-info" id="save-button">Save</div>')
               $('.preview-button').html('<div class="btn btn-info" id="preview-button">Preview</div>').effect('highlight')
 
     if window.translation_type == 'just_lang2'
@@ -367,9 +365,6 @@ $ ->
             window.section += 1
             $('.publish-button').html('<div class="btn btn-info" id="publish-button">Publish!</div>')
             $('.preview-button').html('<div class="btn btn-info" id="preview-button">Preview</div>')
-            delayedShowSaved = ->
-              $('.save-button').html('<div class="btn btn-info" id="save-button">Saved</div>')
-            window.setTimeout(delayedShowSaved, 600)
 
   introText = ->
   
@@ -774,34 +769,24 @@ $ ->
         if state == 2
           player.playVideo() )
 
-# DONE/SAVE BUTTONS
+# PREVIEW/SAVE BUTTONS
 
-  $("#save-button").livequery ->
-    $(this).click ->
-      lines = []
-      $('.line').each(->
-        if $(this).attr('class') == 'line'
-          line = (time : $(this).attr('data-time'), duration : $(this).attr('data-duration'), lang1 : $.trim($(this).children().eq(0).text()), lang2 : $.trim($(this).children().eq(1).text()), interpretation_id : interp_id )
-        else
-          line = (time : $(this).attr('data-time'), duration : $(this).attr('data-duration'), lang1 : $.trim($('#edit-line-lang1').val()), lang2 : $.trim($('#edit-line-lang2').val()), interpretation_id : interp_id )
-        lines.push line)
-      console.log JSON.stringify(lines)
-      $.post('/save', { 'interp_id' : "#{interp_id}", 'lines' : "#{JSON.stringify(lines)}" }, (data) ->
-        console.log data.data )
+  save = ->
+    lines = []
+    $('.line').each(->
+      if $(this).attr('class') == 'line'
+        line = (time : $(this).attr('data-time'), duration : $(this).attr('data-duration'), lang1 : $.trim($(this).children().eq(0).text()), lang2 : $.trim($(this).children().eq(1).text()), interpretation_id : interp_id )
+      else
+        line = (time : $(this).attr('data-time'), duration : $(this).attr('data-duration'), lang1 : $.trim($('#edit-line-lang1').val()), lang2 : $.trim($('#edit-line-lang2').val()), interpretation_id : interp_id )
+      lines.push line)
+    console.log JSON.stringify(lines)
+    $.post('/save', { 'interp_id' : "#{interp_id}", 'lines' : "#{JSON.stringify(lines)}" }, (data) ->
+      console.log data.data )
 
   $("#preview-button").livequery ->
     $(this).click ->
+      save()
       window.location.href = "/interpretations/#{interp_id}"
-
-  $("#publish-button").livequery ->
-    $(this).click ->
-      if $("#user-id").attr('data-user') != "logged-out"
-        $.post('/publish', { 'interpretation' : { 'id' : "#{interp_id}" } }, (data) ->
-          console.log data.data )
-        window.location.href = "/interpretations/#{interp_id}"
-      else
-        $('.preview-button').hide()
-        $('.publish-button').html("<p><a href='/sign_up?interp=#{interp_id}'><strong>Sign up for Heyu?</strong></a> That way your username will appear alongside your translation. Get props for excellent work!<br><br>If you've already signed up, be sure to <a href='/sign_in?interp=#{interp_id}'><strong>sign in</strong></a>.<br><br>Otherwise, <a href='/interpretations/#{interp_id}'>submit your translation anonymously.</a>")
 
 # YOUTUBE WINDOW STICKY ON SCROLL
 

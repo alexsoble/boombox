@@ -23,6 +23,17 @@ class ApplicationController < ActionController::Base
   end 
   helper_method :requested_video_languages
 
+  def correct_user(user_id)
+    unless current_user && current_user.id == user_id
+      flash[:notice] = "It's like mama always said: you can't edit videos that aren't yours.
+        Video user id: #{user_id}... Your user id: #{current_user.id}
+      "
+      redirect_to '/'
+      false
+    end
+  end 
+  helper_method :correct_user
+
   private
 
   def current_user
@@ -30,5 +41,5 @@ class ApplicationController < ActionController::Base
     rescue ActiveRecord::RecordNotFound
   end
   helper_method :current_user
-  
+
 end

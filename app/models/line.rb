@@ -1,5 +1,5 @@
 class Line < ActiveRecord::Base
-  attr_accessible :downvotes, :interpretation_id, :lang1, :lang2, :time, :upvotes, :duration
+  attr_accessible :downvotes, :interpretation_id, :lang1, :lang2, :time, :upvotes, :duration, :published
   belongs_to :interpretation
 
   def formatted_time

@@ -26,73 +26,75 @@
     <% end %>
   </div>
   <div class="centerbox visible relative">
-    <div class="btn-group" style="float; left">
-      <% if @lines_have_lang1 %>
-        <div id="just-lang2" class="btn btn-info btn-small rounded">Show just <%= @interp.lang2 %></div>
-        <div id="lang1-and-lang2" class="btn btn-info btn-small rounded"><%= @interp.lang1 %> and <%= @interp.lang2 %></div>
-      <% end %>
-    </div>
-    <div class="right">
-      <h3>Translated by 
-      <% if @user == 'anon' %>
-        anonymous
-      <% else %> 
-        <% if current_user %>
-          <% if current_user.id == @user.id %>
-            you!</h3>
-            <%= link_to "Edit translation", edit_interpretation_url(@interp) %>.
-            <br>
-            <br>
-            <br>
+    <% if @published == false # HERE'S WHAT GOES BELOW THE VIDEO BOX WHEN THE INTERP IS IN 'PREVIEW' MODE %>
+      <br>
+      <div class="btn btn-primary btn-large rounded" id="edit-button" style="float: left;"> <strong>&larr;</strong> Edit</div>
+      <div class="btn btn-primary btn-large rounded" id="publish-button" style="float: right;"> Publish &rarr; </div>
+    <% else %>
+      <div class="btn-group" style="float; left">
+        <% if @lines_have_lang1 %>
+          <div id="just-lang2" class="btn btn-info btn-small rounded">Show just <%= @interp.lang2 %></div>
+          <div id="lang1-and-lang2" class="btn btn-info btn-small rounded"><%= @interp.lang1 %> and <%= @interp.lang2 %></div>
+        <% end %>
+      </div>
+      <div class="right">
+        <h3>Translated by 
+        <% if @user == 'anon' %>
+          anonymous
+        <% else %> 
+          <% if current_user %>
+            <% if current_user.id == @user.id %>
+              you!</h3>
+              <%= link_to "Edit translation", edit_interpretation_url(@interp) %>.
+              <br>
+              <br>
+              <br>
+            <% else %>
+              <%= link_to "#{@user.name}", user_url(@user) %>.</h3>
+            <% end %>
           <% else %>
             <%= link_to "#{@user.name}", user_url(@user) %>.</h3>
           <% end %>
-        <% else %>
-          <%= link_to "#{@user.name}", user_url(@user) %>.</h3>
         <% end %>
-      <% end %>
-    </div>
-    <br>
-    <br>
-    <div class="right" style="margin-right: 10px;">
-      <% if current_user && @user != 'anon' %>
-        <% if current_user.id == @user.id %>
-         <div class="left">
+      </div>
+      <br>
+      <br>
+      <div class="right" style="margin-right: 10px;">
+        <% if current_user && @user != 'anon' %>
+          <% if current_user.id == @user.id %>
+           <div class="left">
 
-            Show off your translation:
-            <br>
-            <a href="https://twitter.com/share" class="twitter-share-button" data-lang="en" data-size="medium" data-text="[Don't tweet this just yet...] Check out this video I translated! <%= @url %>" data-hashtags="<%= @interp.lang1 %>,<%= @interp.lang2 %>,Languages">Tweet this Translation</a>
-            <br>
-            <div class="fb-like" data-send="false" data-width="75" data-layout="button_count" data-show-faces="true" data-font="arial"></div>
-            <br>
-            <i class="icon-envelope icon icon"></i><%= link_to "  E-mail", "" %>
-          </div>
-          <% else %>
-            Share this translation:
-            <br>
-            <a href="https://twitter.com/share" class="twitter-share-button" data-lang="en" data-size="medium" data-text="[Don't tweet this just yet...] Check out this video I found on Heyu! <%= @url %>" data-hashtags="<%= @interp.lang1 %>,<%= @interp.lang2 %>,Languages">Tweet this Translation</a>
-            <br>
-            <div class="fb-like" data-send="false" data-width="75" data-layout="button_count" data-show-faces="true" data-font="arial"></div>
-            <br>
-            <i class="icon-envelope icon icon"></i><%= link_to "  E-mail", "" %>
-          <% end %>
-      <% else %>
-        <i>Share this translation:</i>
-        <br>
-        <a href="https://twitter.com/shabre" class="twitter-share-button" data-lang="en" data-size="medium" data-text="[Don't tweet this just yet...] Check out this video I found on Heyu! <%= @url %>" data-hashtags="<%= @interp.lang1 %>,<%= @interp.lang2 %>,Languages">Tweet this Translation</a>
-        <br>
-        <div class="fb-like" data-send="false" data-width="75" data-layout="button_count" data-show-faces="true" data-font="arial"></div>
-        <br>
-        <i class="icon-envelope icon icon"></i><%= link_to "  E-mail", "" %>
-      <% end %>
+              Show off your translation:
+              <br>
+              <a href="https://twitter.com/share" class="twitter-share-button" data-lang="en" data-size="medium" data-text="[Don't tweet this just yet...] Check out this video I translated! <%= @url %>" data-hashtags="<%= @interp.lang1 %>,<%= @interp.lang2 %>,Languages">Tweet this Translation</a>
+              <br>
+              <div class="fb-like" data-send="false" data-width="75" data-layout="button_count" data-show-faces="true" data-font="arial"></div>
+              <br>
+              <i class="icon-envelope icon icon"></i><%= link_to "  E-mail", "" %>
+            </div>
+            <% else %>
+              Share this translation:
+              <br>
+              <a href="https://twitter.com/share" class="twitter-share-button" data-lang="en" data-size="medium" data-text="[Don't tweet this just yet...] Check out this video I found on Heyu! <%= @url %>" data-hashtags="<%= @interp.lang1 %>,<%= @interp.lang2 %>,Languages">Tweet this Translation</a>
+              <br>
+              <div class="fb-like" data-send="false" data-width="75" data-layout="button_count" data-show-faces="true" data-font="arial"></div>
+              <br>
+              <i class="icon-envelope icon icon"></i><%= link_to "  E-mail", "" %>
+            <% end %>
+        <% else %>
+          <i>Share this translation:</i>
+          <br>
+          <a href="https://twitter.com/shabre" class="twitter-share-button" data-lang="en" data-size="medium" data-text="[Don't tweet this just yet...] Check out this video I found on Heyu! <%= @url %>" data-hashtags="<%= @interp.lang1 %>,<%= @interp.lang2 %>,Languages">Tweet this Translation</a>
+          <br>
+          <div class="fb-like" data-send="false" data-width="75" data-layout="button_count" data-show-faces="true" data-font="arial"></div>
+          <br>
+          <i class="icon-envelope icon icon"></i><%= link_to "  E-mail", "" %>
+        <% end %>
+      </div>
     </div>
-  </div>
+  <% end %>
 <% else %>
   <div class="centerbox" style="text-align: center;"><h3>Nobody's translated this song yet. <%= link_to "Want to give it a try?", "/videos/new" %></h3></div>
 <% end %>
 
-<%= content_tag "div", id: "video-id", data: { youtube_id: @interp.video.youtube_id } do %>
-<% end %>
-<%= content_tag "div", id: "interpretation-id", data: { interp_id: @interp.id } do %>
-<% end %>
-<div id="data" class="quiet" data-clip=<%= @clip %> data-start=<%= @start %> data-duration=<%= @duration %>></div>
+<div id="data" class="quiet" data-interp-id=<%= @interp.id %> data-video-id=<%= @interp.video.youtube_id %> data-clip=<%= @clip %><% if @clip == true then %> data-start=<%= @start %> data-duration=<%= @duration %> <% end %> /></div>

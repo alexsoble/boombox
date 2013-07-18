@@ -1,6 +1,14 @@
 class InterpretationsController < ApplicationController
   respond_to :json, :html
 
+  before_filter only: [:edit] do |controller|
+    if params[:id].present?
+      @interp = Interpretation.find_by_id(params[:id])
+      @user_id = @interp.user_id
+    end
+    controller.correct_user(@user_id)
+  end
+
   def save
     @interp = Interpretation.find_by_id(params[:interp_id])
     @original_lines = Line.where(:interpretation_id => @interp.id)
@@ -27,6 +35,8 @@ class InterpretationsController < ApplicationController
     @interp = Interpretation.find_by_id(params[:id])
     @lines = Line.where(:interpretation_id => @interp.id).order("created_at ASC")
     @url = request.url
+
+    if @interp.published == true then @published = true else @published = false end
 
     if params[:clip] == 'yes'
       @clip = true
@@ -75,7 +85,6 @@ class InterpretationsController < ApplicationController
       redirect_to home_path
     end
   end
-
 
   def publish 
 

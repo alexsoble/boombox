@@ -3,6 +3,10 @@ player = null
 $ ->
 
   $('#lyrics').hide()
+
+  interp_id = $('#data').attr('data-interp-id')
+  video_youtube_id = $('#data').attr('data-video-id')
+
   if $('#data').attr('data-clip') is 'true'
     clip = true
     clip_start = parseInt($('#data').attr('data-start'))
@@ -12,7 +16,20 @@ $ ->
   tag.src = "https://www.youtube.com/iframe_api"
   firstScriptTag = document.getElementsByTagName("script")[0]
   firstScriptTag.parentNode.insertBefore tag, firstScriptTag
-  video_youtube_id = $('#video-id').data('youtube-id')
+
+  $("#publish-button").click ->
+    if $("#user-id").attr('data-user') != "logged-out"
+      $.post('/publish', { 'interpretation' : { 'id' : "#{interp_id}" } }, (data) ->
+        console.log data.data )
+      window.location.href = "/interpretations/#{interp_id}"
+    else
+      $("#edit-button").replaceWith("<p><a href='/sign_up?interp=#{interp_id}'><strong>Sign up for Heyu?</strong></a> That way your username will appear alongside your translation. Get props for excellent work!<br><br>If you've already signed up, be sure to <a href='/sign_in?interp=#{interp_id}'><strong>sign in</strong></a>.<br><br>Otherwise, <a href='/interpretations/#{interp_id}'>submit your translation anonymously.</a>")
+
+  $("#edit-button").click ->
+    if $("#user-id").attr('data-user') != "logged-out"
+      window.location.href = "/interpretations/#{interp_id}/edit"
+    else
+      $('#publish-button').replaceWith("<p><a href='/sign_up?interp=#{interp_id}'><strong>Sign up for Heyu?</strong></a> That way your username will appear alongside your translation. Get props for excellent work!<br><br>If you've already signed up, be sure to <a href='/sign_in?interp=#{interp_id}'><strong>sign in</strong></a>.<br><br>Otherwise, <a href='/interpretations/#{interp_id}'>submit your translation anonymously.</a>")
 
   window.onYouTubeIframeAPIReady = ->
     player = new YT.Player("show-video-box",

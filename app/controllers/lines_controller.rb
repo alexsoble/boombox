@@ -31,12 +31,6 @@ class LinesController < ApplicationController
 
   end
 
-  def previous
-    # find the previous line -- it's the one with the highest "time" that's lower than the line just entered
-    # update its duration -- it's equal to the difference between the two lines' start times
-    # render back the data
-  end
-
   def destroy
     @line = Line.find_by_id(params[:line][:id])
     @line.destroy
