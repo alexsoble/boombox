@@ -17,6 +17,9 @@
 .language-option {
   color: black; }
 
+#lyrics-box { overflow-y: scroll;
+ width: 580px; }
+
 .video-container {
   margin-left: 80px;
   margin-right: 40px;
@@ -107,11 +110,8 @@
 /*  --------- CONTROLS BELOW VIDEO --------- */
 
 #controls { position: relative; }
-
 #settings { position: relative; top: -5px; }
-
 #loop-settings { float: left; }
-
 #difficulty-settings { float: left; }
 
 #loop-slider { width: 380px; 
@@ -130,21 +130,15 @@
   height: 20px; width: 20px;
   opacity: .75; }
 
-.ui-rangeSlider-leftLabel.playback-slider-label { 
+.playback-slider-label {
   font-size: 12px; 
   background-color: #848488 ;
   color: white;
-  height: 15px;
-  position: relative;
-  bottom: 20px; }
+  height: 25px; width: 25px; 
+  position: relative; }
 
-.ui-rangeSlider-rightLabel.playback-slider-label { 
-  font-size: 12px; 
-  background-color: #848488 ;
-  color: white;
-  height: 15px;
-  position: relative;
-  bottom: -24px;  }
+.ui-rangeSlider-leftLabel.playback-slider-label { bottom: 20px; }
+.ui-rangeSlider-rightLabel.playback-slider-label { bottom: -24px;  }
 
 .left-endLabel { 
   font-size: 12px; 

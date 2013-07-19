@@ -42,7 +42,6 @@ $ ->
   window.choruslang2 = ''
   $('#timer-box').html('<div id="timer">
     <h2 class="timer-text" id="big-timer"></h2>
-    <div style="background-color: #9B59BB; width: 80px;"><small class="white">pause</small></div>
     </div>')
 
   if action_name is 'edit'
@@ -149,16 +148,24 @@ $ ->
 
     left_label = $('.left-endLabel').children(':first')
     right_label = $('.right-endLabel').children(':first')
-    left_label.html(shortFormatTime(Math.floor(window.time / 45) * 45))
-    right_label.html(shortFormatTime(Math.floor(window.time / 45) * 45 + 60))
+    left_label.html("<div class='text-padding'>#{shortFormatTime(Math.floor(window.time / 45) * 45)}</div>")
+    right_label.html("<div class='text-padding'>#{shortFormatTime(Math.floor(window.time / 45) * 45 + 60)}</div>")
 
     $('#loop-slider').children().eq(3).attr('class','ui-rangeSlider-leftLabel playback-slider-label')
     $('#loop-slider').children().eq(4).attr('class','ui-rangeSlider-rightLabel playback-slider-label')
 
+    $('.ui-rangeSlider-leftLabel.playback-slider-label').html("<div class='text-padding'>#{shortFormatTime(window.time)}</div>")
+    $('.ui-rangeSlider-rightLabel.playback-slider-label').html("<div class='text-padding'>#{shortFormatTime(window.time + window.loop)}</div>")
+
+    $('#loop-slider').rangeSlider("values", window.time, window.time + window.loop)
+
     # GET RID OF ANY JUNK FROM THE STRAIGHTFORWARD PLAYBACK CONTROLLER
     $('#progress-bar').remove()
+    $('#loop-slider').off("valuesChanged")
+    $('#loop-slider').off("userValuesChanged")
+    $('#loop-slider').off("valuesChanging")
 
-    $('#loop-slider').bind("valuesChanged", (e, data) ->
+    $('#loop-slider').on("valuesChanged", (e, data) ->
       bounds = $('#loop-slider').rangeSlider("bounds")
       min = bounds.min
       max = bounds.max
@@ -193,19 +200,27 @@ $ ->
         window.setTimeout(waitForIt(shiftLeft), 1000)
       )
 
-    $('#loop-slider').bind("userValuesChanged", (e, data) ->
+    $('#loop-slider').on("userValuesChanged", (e, data) ->
         start = data.values.min
         end = data.values.max
         player.seekTo(start)
         window.loop = end - start
         window.section = start / window.loop
         $("#loop-status").html("Playing in a loop from #{shortFormatTime(start)} to #{shortFormatTime(end)}.")
+        $('.ui-rangeSlider-leftLabel.playback-slider-label').html("<div class='text-padding'>#{shortFormatTime(start)}</div>")
+        $('.ui-rangeSlider-rightLabel.playback-slider-label').html("<div class='text-padding'>#{shortFormatTime(end)}</div>")
       )
 
   nonLoopingPlayback = (video_duration) ->
     playbackControls()
+
+    # GET RID OF ANY JUNK FROM THE LOOPING PLAYBACK CONTROLLER
+    $('#loop-slider').off("valuesChanged").off("userValuesChanged").off("valuesChanging")
+
     left_label = $('.left-endLabel').children(':first')
     left_label.html(':00')
+    if window.video_duration != undefined
+      $('.right-endLabel').children(':first').html(shortFormatTime(video_duration))
     $('.ui-rangeSlider-innerBar').prepend("<div id='progress-bar'></div>")
     $('#loop-slider').children().eq(0).children().eq(1).attr('id','straightforward-playback-handle')
     $('.ui-rangeSlider-bar').attr('style','color: white; background-color: #848488;')
@@ -312,70 +327,72 @@ $ ->
         window.tool_helptip_displayed = true
         $('#intro-text').html('')
 
+    addNewLineInRightPlace = (lang1, lang2) ->
+      lines = []
+      $('.line').each(->
+        time = $(this).attr('data-time')
+        if window.loop != false 
+          if window.loop * window.section > time
+            lines.push time
+        else
+          if window.time > time
+            lines.push time
+        )
+
+      the_right_time = Math.max.apply(Math, lines)
+      console.log the_right_time
+      correct_line = $(".line[data-time=#{the_right_time}]")
+      console.log correct_line
+
+      correct_line.after("
+          <div class='line' data-time=#{window.time} data-duration=#{window.loop ?= 4}>
+            <div class='lyrics-container'>
+              <p>#{lang1}</p>
+            </div>
+            <div class='lyrics-container'>
+              <p>#{lang2}</p>
+            </div>
+          </div>")
+      resetForNextLine()
+
+    moveLoopForward = -> 
+      $('#loop-slider').rangeSlider("values", window.section * window.loop, (window.section + 1) * window.loop)
+      window.player.seekTo(window.section * window.loop)
+
+    resetForNextLine = -> 
+      $('.preview-button').html('<div class="btn btn-info" id="preview-button">Preview</div>').effect('highlight')
+      $('.lyrics-box.small').children().eq(0).html("")
+      $('.lyrics-box.small').children().eq(1).html("")
+      $('#lyrics-box').scrollTo('100%')
+      $('#intro-text').fadeOut()
+      $('.lang1-line').val('')
+      $('.lang2-line').val('')
+      $('.lang1-line').focus()
+      window.section += 1
+      displayTooltip()
+      moveLoopForward()
+
     if window.translation_type == 'lang1_and_lang2'
 
       $(".lang1-line").livequery ->
         $(this).keyup (e) ->
           entry = this.value
           $('.lyrics-box.small').children().eq(0).html("<p class='white'>#{entry}</p>")
-          e.preventDefault
           if e.which == 13 and ($('.lang2-line').val() isnt '')
             $('#lyrics-box').parent().slideDown()
             entry = this.value
             that_entry = $('.lang2-line').val()
-            time = $("#current-loop-time").text()
-            time_in_seconds = parseInt(time.slice(3,5)) + parseInt(time.slice(0,2))*60
-            $('#lyrics-box').append("
-                <div class='line' data-time=#{time_in_seconds} data-duration=#{window.loop}>
-                  <div class='lyrics-container'>
-                    <p>#{that_entry}</p>
-                  </div>
-                  <div class='lyrics-container'>
-                    <p>#{entry}</p>
-                  </div>
-                </div>")
-            displayTooltip()
-            $('#lyrics-box').scrollTo('100%')
-            $('.lyrics-box.small').children().eq(0).html("")
-            $('.lyrics-box.small').children().eq(1).html("")
-            $('#intro-text').fadeOut()
-            $('.lang1-line').val('')
-            $('.lang2-line').val('')
-            window.section += 1
-            $('.preview-button').html('<div class="btn btn-info" id="preview-button">Preview</div>').effect('highlight')
+            addNewLineInRightPlace(entry, that_entry)
 
       $(".lang2-line").livequery ->
-        $(this).keydown (e) ->
         $(this).keyup (e) ->
           entry = this.value
-          console.log entry
           $('.lyrics-box.small').children().eq(1).html("<p class='white'>#{entry}</p>")
           if e.which == 13 and ($('.lang1-line').val() isnt '')
             $('#lyrics-box').parent().slideDown()
             entry = this.value
             that_entry = $('.lang1-line').val()
-            time = $("#current-loop-time").text()
-            time_in_seconds = parseInt(time.slice(3,5)) + parseInt(time.slice(0,2))*60
-            $('#lyrics-box').append("
-                <div class='line' data-time=#{time_in_seconds} data-duration=#{window.loop}>
-                  <div class='lyrics-container'>
-                    <p>#{that_entry}</p>
-                  </div>
-                  <div class='lyrics-container'>
-                    <p>#{entry}</p>
-                  </div>
-                </div>
-                ")
-            displayTooltip()
-            $('.lyrics-box.small').children().eq(0).html("")
-            $('.lyrics-box.small').children().eq(1).html("")
-            $('#lyrics-box').scrollTo('100%')
-            window.section += 1
-            if action_name isnt 'edit'
-              $('.lang1-line').val('')
-              $('.lang2-line').val('')
-              $('.lang1-line').focus()
-              $('.preview-button').html('<div class="btn btn-info" id="preview-button">Preview</div>').effect('highlight')
+            addNewLineInRightPlace(that_entry, entry)
 
     if window.translation_type == 'just_lang2'
 
@@ -478,13 +495,12 @@ $ ->
     window.player = player
 
   onPlayerReady = (event) ->
-    event.target.playVideo()
     video_duration = window.player.getDuration()
     window.video_duration = video_duration
-    if window.loop is false
-      $('.right-endLabel').children(':first').html(shortFormatTime(video_duration))
-      nonLoopingPlayback(video_duration)
     reportLoopStatus()
+    if window.loop is false
+      nonLoopingPlayback(video_duration)
+    event.target.playVideo()
 
   countVideoPlayTime = ->
 
@@ -498,6 +514,7 @@ $ ->
         new_width = 368 * window.time / window.video_duration
         $('#progress-bar').attr('style',"width: #{new_width}px")
         $('.ui-rangeSlider-bar').attr('style',"left: #{new_width - 10}px")
+
     setInterval(getTime, 200)
 
     current_loop_time = window.loop * window.section
@@ -601,43 +618,29 @@ $ ->
         $('#edit-line-lang2').val(lang2)
         $(this).prepend("
           <span style='float: left; margin: 10px;' class='toolbox-upper'>
-            <div class='btn btn-primary btn-small rounded tight-margins' id='add-line-above' data-line-id=#{id}> &uarr; add new line </div>
-            <div class='btn btn-primary btn-small rounded tight-margins' id='add-chorus' data-line-id=#{id}> &uarr; add chorus</div>
+            <div class='btn btn-small btn-primary rounded tight-margins' id='done-editing' style='background-color: white; border: solid 1px; border-color: black; color: black;'> done editing </div>
+            <div class='btn btn-inverse btn-small rounded tight-margins' id='delete-line' data-line-id=#{id}> delete line </div>
           </span>
           <span style='float: right; margin: 10px;' class='toolbox-upper'>
-            <div class='btn btn-warning btn-small rounded tight-margins' id='ask-twitter' data-twitter-url='https://twitter.com/share?url=https%3A%2F%2Fdev.twitter.com%2Fpages%2Ftweet-button'> get help from twitter </div>
-            <div class='btn btn-warning btn-small rounded tight-margins' id='ask-heyu'> get help from heyu </div>
+            <div class='btn btn-success btn-small rounded tight-margins' id='ask-twitter' data-twitter-url='https://twitter.com/share?url=https%3A%2F%2Fdev.twitter.com%2Fpages%2Ftweet-button'> get help from twitter </div>
+            <div class='btn btn-success btn-small rounded tight-margins' id='ask-heyu'> get help from heyu </div>
           </span>
           </span>
           <br>")
         $(this).append("
           <br>
-          <span style='float: left; margin: 10px;' class='toolbox-lower'>
-            <div class='btn btn-inverse btn-small rounded tight-margins' id='edit-timing'> adjust timing </div>
-            <div class='btn btn-inverse btn-small rounded tight-margins' id='delete-line'> delete line </div>
-          </span>
           <span style='float: right; margin: 10px;' class='toolbox-lower'>
-            <div class='btn btn-success btn-small rounded tight-margins' id='mark-chorus' data-line-id=#{id}> &uarr; set as chorus </div>
-            <div class='btn btn-success btn-small rounded tight-margins' id='done-editing'> done editing </div>
+            <div class='btn btn-primary btn-small rounded tight-margins' id='mark-chorus'> &uarr; set as chorus </div>
+            <div class='btn btn-primary btn-small rounded tight-margins' id='add-chorus'> add chorus &darr; </div>
+          </span>
+          <span style='float: left; margin: 10px;' class='toolbox-lower'>
+            <div class='btn btn-small btn-warning rounded tight-margins' id='edit-timing' data-line-id=#{id}> adjust timing </div>
           </span>")
         $('#lyrics-box').scrollTo($('.edited-line'))
         $(this).hover(
           -> $(this).attr('style','background-color: #F9F9F9;')
           -> $(this).attr('style','background-color: #F9F9F9;')
           )
-
-  $('#add-line-above').livequery ->
-    $(this).click ->
-      new_time = parseInt($(this).parent().parent().attr('data-time')) - 4
-      $('.edited-line').before("
-        <div class='line' data-time=#{new_time} data-duration=4>
-          <div class='lyrics-container'>
-            <p>New line!</p>
-          </div>
-          <div class='lyrics-container'>
-            <p>New line!</p>
-          </div>
-        </div>")
 
   $('#mark-chorus').livequery ->
     $(this).click -> 
@@ -648,7 +651,7 @@ $ ->
     $(this).click -> 
       if window.choruslang2 isnt ''
         new_time = parseInt($(this).parent().parent().attr('data-time')) - 4
-        $('.edited-line').before("
+        $('.edited-line').after("
           <div class='line' data-time=#{new_time} data-duration=4>
             <div class='lyrics-container'>
               <p>#{window.choruslang1}</p>
@@ -762,7 +765,7 @@ $ ->
           ).bind("valuesChanging", (e, data) ->
             $('#loop-settings').slideUp()
           )
-          $('#lyrics-box').scrollTo('100%')
+          $('#lyrics-box').scrollTo('.edited-line')
 
   # LOOP TOGGLE AND DIFFICULTY SETTINGS 
 

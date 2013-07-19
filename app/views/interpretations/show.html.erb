@@ -2,6 +2,19 @@
 <br>
 <div class="show-video-box centerbox">
   <div id="show-video-box"></div>
+  <div class="btn btn-info rounded btn-small dropdown-toggle" data-toggle="dropdown" id="lyrics-settings">heyu options</div>
+  <ul class="dropdown-menu" id="lyrics-settings-dropdown">
+  <small>
+    <% if @lines_have_lang1 %>    
+      <!-- <li id='just-lang2'>Show just English</li>
+      <li id='lang1-and-lang2'>Show English and Spanish</li>
+      <li id='just-lang1'>Show just Spanish</li>
+      <li class="divider"></li> -->
+    <% end %>
+      <li id='video-top'>Show lyrics up top</li>
+      <li id='video-bottom'>Show lyrics down low</li>
+    </small>
+  </ul>
     <% if @lines.present? %>
       <div class="lyrics-box centerbox top" id="lyrics">
       <% if @lines_have_lang1 %>    

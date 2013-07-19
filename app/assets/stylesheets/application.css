@@ -12,7 +12,15 @@
  *= require_tree .
  */
 
-html { overflow-y: scroll !important; }
+::-webkit-scrollbar {
+    -webkit-appearance: none;
+    width: 7px;
+}
+::-webkit-scrollbar-thumb {
+    border-radius: 4px;
+    background-color: black;
+    -webkit-box-shadow: 0 0 1px rgba(255,255,255,.5);
+}
 
 .centerbox {  margin-right: auto; 
   margin-left: auto; 

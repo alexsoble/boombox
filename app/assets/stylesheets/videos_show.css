@@ -21,11 +21,9 @@
 
 .text-container { margin-top: 10px; margin-bottom: 10px; }
 
-.lyrics-box.top { bottom: 365px; }
+#lyrics-settings { position: absolute; top: 354px; left: 360px; }
 
-.lyrics-box.bottom { bottom: 80px; }
-
-.lyrics-box.below { bottom: -80px; }
+#lyrics-settings-dropdown { position: absolute; top: 374px; left: 288px; width: 60px; }
 
 .wide-lyrics-container {
   width: 630px;

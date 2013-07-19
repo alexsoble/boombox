@@ -5,6 +5,8 @@ $ ->
   else
     window.user_id = null
 
+  $("body").css("overflow", "hidden")
+
   $(".page-language-option").click (e) =>
     language_option = e.currentTarget.id
 
