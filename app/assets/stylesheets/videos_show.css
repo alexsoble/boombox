@@ -3,6 +3,8 @@
   font-size: 20px; 
   text-shadow: 2px 2px 2px black }
 
+.wrapper { overflow: hidden; width: 600px; }
+
 .black { color: black; text-shadow: 2px 2px 2px white }
 .white { color: white; text-shadow: 2px 2px 2px black }
 
@@ -16,7 +18,8 @@
   top: 10px;
   left: 10px;
   border-radius: 10px;
-  position: absolute; }
+  position: absolute; 
+  overflow: auto; }
 
 .text-container { margin-top: 10px; margin-bottom: 10px; }
 
