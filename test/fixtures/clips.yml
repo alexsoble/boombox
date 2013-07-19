@@ -1,0 +1,11 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/Fixtures.html
+
+one:
+  start: 1
+  duration: 1
+  interpretation_id: 1
+
+two:
+  start: 1
+  duration: 1
+  interpretation_id: 1

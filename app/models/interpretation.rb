@@ -2,6 +2,7 @@ class Interpretation < ActiveRecord::Base
   attr_accessible :lang2, :video_id, :user_id, :published
   belongs_to :video
   belongs_to :user
+  has_many :clips
 
   def video
     Video.find_by_id(self.video_id) || ''

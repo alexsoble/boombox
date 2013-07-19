@@ -15,6 +15,8 @@ class InterpretationsController < ApplicationController
       @user_id = @interp.user_id
       if @interp.published == true
         true
+      elsif params[:clip].present? && params[:clip] == 'yes' && params[:duration].to_i < 12
+        true
       else
         controller.correct_user(@user_id)
       end
@@ -33,7 +35,6 @@ class InterpretationsController < ApplicationController
     end
 
     @lines = JSON.parse(params[:lines])
-    puts @lines
     @lines.each do |l|
       Line.create(l)
     end

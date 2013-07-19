@@ -11,6 +11,8 @@
   margin-left: 65px;
   margin-top: 40px; 
   cursor: pointer; }
+.video-thumb-box.user-thumb-box {
+  margin-right: 40px; }
 
 .thumb-box-width { width: 140px; }
 

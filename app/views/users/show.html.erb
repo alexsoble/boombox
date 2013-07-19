@@ -1,49 +1,41 @@
-<div class="centerbox center">
-
+<div class="draft-container">
 <% if @published.present? %>
   <% if current_user && @user.id == current_user.id %>
-      <h2><i>My translations</i></h2>
+      <h2><i>My published translations</i></h2>
     <% else %>
       <h2><i><%= @user.name %>'s translations:</i></h2>
   <% end %>
-  <div class="centerbox thumb-box-width">
     <% @published.all.each do |i| %>
      <% v = i.video %>
-      <div class="video-thumb-box center">
-        <strong class="center"><%= link_to "#{v.title.slice(0,32)}", interpretation_url(i) %></strong>
+      <div class="video-thumb-box user-thumb-box">
+        <strong class="center"><%= link_to "#{v.title.slice(0,28)}", interpretation_url(i) %></strong>
         <br>
         <img src="http://img.youtube.com/vi/<%= v.youtube_id %>/1.jpg">
+        <% if current_user && @user.id == current_user.id %>
+          <%= link_to "Edit", edit_interpretation_url(i) %> // <%= link_to "Delete", interpretation_url(i), :method => :delete %>
+        <% end %>
       </div>
-      <% if current_user && @user.id == current_user.id %>
-        <%= link_to "Edit", edit_interpretation_url(i) %> // <%= link_to "Delete", interpretation_url(i), :method => :delete %>
-      <% end %>
-      <br>
     <% end %>
   </div>
 <% else %>
   <br><br><h3>No completed translations... yet!</h3>
 <% end %>
 
-<br>
-<br>
-
 <% if current_user && @user.id == current_user.id %>
   <% if @drafts %>
-    <h2><i>My drafts</i></h2>
-    <div class="centerbox thumb-box-width">
+    <div class="draft-container">
+      <h2><i>My drafts</i></h2>
       <% @drafts.all.each do |d| %>
        <% v = d.video %>
-          <div class="video-thumb-box center">
-            <strong class="center"><%= link_to "#{v.title.slice(0,32)}", interpretation_url(d) %></strong>
-            <br>
-            <img src="http://img.youtube.com/vi/<%= v.youtube_id %>/1.jpg">
-          </div>
-        <% if current_user && @user.id == current_user.id %>
-          <%= link_to "Edit", edit_interpretation_url(d) %> //  <%= link_to "Delete", interpretation_url(d), :method => :delete %>
-        <% end %>
+        <div class="video-thumb-box user-thumb-box">
+          <strong class="center"><%= link_to "#{v.title.slice(0,28)}", interpretation_url(d) %></strong>
+          <br>
+          <img src="http://img.youtube.com/vi/<%= v.youtube_id %>/1.jpg">
+          <% if current_user && @user.id == current_user.id %>
+            <%= link_to "Edit", edit_interpretation_url(d) %> //  <%= link_to "Delete", interpretation_url(d), :method => :delete %>
+          <% end %>
+        </div>
       <% end %>
     </div>  
   <% end %>
 <% end %>
-
-</div>

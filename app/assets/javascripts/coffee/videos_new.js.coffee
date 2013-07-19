@@ -352,6 +352,7 @@ $ ->
               <p>#{lang2}</p>
             </div>
           </div>")
+      correct_line.next().effect("highlight", {}, 2000)
       resetForNextLine()
 
     moveLoopForward = -> 
@@ -621,7 +622,7 @@ $ ->
             <div class='btn btn-inverse btn-small rounded tight-margins' id='delete-line' data-line-id=#{id}> delete line </div>
           </span>
           <span style='float: right; margin: 10px;' class='toolbox-upper'>
-            <div class='btn btn-success btn-small rounded tight-margins' id='ask-twitter' data-twitter-url='https://twitter.com/share?url=https%3A%2F%2Fdev.twitter.com%2Fpages%2Ftweet-button'> get help from twitter </div>
+            <div class='btn btn-success btn-small rounded tight-margins' id='ask-twitter' data-twitter-url='https://twitter.com/share?text=hello&url=http%3A%2F%2Flocalhost%3A3000%2Finterpretations%2F66%3Fclip%3Dyes%26start%3D30%26duration%3D4'> get help from twitter </div>
             <div class='btn btn-success btn-small rounded tight-margins' id='ask-heyu'> get help from heyu </div>
           </span>
           </span>
@@ -710,11 +711,16 @@ $ ->
           <p>#{lang2}</p>
         </div>
       </div>")
+    $('.edited-line').prev().effect("highlight", {}, 2000)
     $('.edited-line').remove()
     $('#coming-soon').remove()
     $('#loop-settings').slideDown()
 
   $('#done-editing').livequery ->
+    $(this).click ->
+      doneEditing()
+
+  $('#done-editing-time').livequery ->
     $(this).click ->
       doneEditing()
 
@@ -729,7 +735,13 @@ $ ->
         console.log "original_end_time: " + original_end_time
         original_midpoint = Math.round((original_start_time + original_end_time) / 2)
 
-        $(this).parent().parent().append("
+        player.seekTo(original_start_time)
+        window.loop = original_end_time - original_start_time
+        window.section = original_start_time / window.loop
+
+        $(this).replaceWith("<div class='btn btn-small btn-primary rounded tight-margins' id='done-editing-time' style='background-color: white; border: solid 1px; border-color: orange; color: orange;'> done adjusting timing</div>")
+
+        $('#done-editing-time').parent().parent().append("
             <br>
             <div id='edit-timing-slider'></div>
             ")
@@ -826,7 +838,6 @@ $ ->
       else
         line = (time : $(this).attr('data-time'), duration : $(this).attr('data-duration'), lang1 : $.trim($('#edit-line-lang1').val()), lang2 : $.trim($('#edit-line-lang2').val()), interpretation_id : interp_id )
       lines.push line)
-    console.log JSON.stringify(lines)
     $.post('/save', { 'interp_id' : "#{interp_id}", 'lines' : "#{JSON.stringify(lines)}" }, (data) ->
       console.log data.data )
 
@@ -834,6 +845,10 @@ $ ->
     $(this).click ->
       save()
       window.location.href = "/interpretations/#{interp_id}"
+
+# AUTOSAVE EVERY 10 SECONDS 
+
+  autosave = setInterval(save, 10000)
 
 # YOUTUBE WINDOW STICKY ON SCROLL
 

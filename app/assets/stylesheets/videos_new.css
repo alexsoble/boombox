@@ -57,7 +57,8 @@
 
 #edit-timing-slider { float: left; 
   width: 200px; 
-  margin: 40px; }
+  margin: 30px;
+/*  margin-left: -120px; */ }
 
 /* SMALL LYRICS CONTAINER FOR THE VIDEO AS IT'S EDITED */
 
