@@ -23,12 +23,12 @@
 
 .text-container { margin-top: 10px; margin-bottom: 10px; }
 
-#lyrics-settings { position: absolute; top: 354px; left: 360px; }
+#lyrics-settings { position: absolute; top: 355px; left: 360px; }
 
-#lyrics-settings-dropdown { position: absolute; top: 374px; left: 288px; width: 60px; }
+#lyrics-settings-dropdown { position: absolute; top: 375px; left: 288px; width: 60px; }
 
 .wide-lyrics-container {
-  width: 630px;
+  width: 600px;
   height: 60px;
   float: left; 
   margin-top: 1px;

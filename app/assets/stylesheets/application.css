@@ -59,7 +59,7 @@ h3 { font-size: 18px !important; line-height: 22px !important }
 
 .red { color: red; }
 .blue { color: #007FFF; }
-.visible { overflow: visible; }
+.visible { overflow: visible !important;}
 
 .quiet { display: none; }
 

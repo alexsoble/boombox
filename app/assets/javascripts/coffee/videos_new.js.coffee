@@ -3,6 +3,8 @@ $ ->
   youtube_id = $('#data').attr('data-youtube-id')
   lang1 = $('#data').attr('data-lang-one')
   lang2 = $('#data').attr('data-lang-two')
+  window.lang1 = lang1
+  window.lang2 = lang2
   interp_id = $('#data').attr('data-interp-id')
   action_name = $('#data').attr('data-action-name')
   translation_type = $('#data').attr('data-translation-type')
@@ -328,6 +330,8 @@ $ ->
     $("#just-lang2").livequery -> 
       $(this).click ->
         window.translation_type = 'just_lang2'
+        $('#lang1-input').parent().remove()
+        $('#lyrics-box').attr('style','width: 300px;')
         introText()
 
   if action_name is 'edit'
@@ -358,19 +362,32 @@ $ ->
             lines.push time
         )
 
-      the_right_time = Math.max.apply(Math, lines)
-      console.log the_right_time
-      correct_line = $(".line[data-time=#{the_right_time}]")
+      if lines.length > 0
+        the_right_time = Math.max.apply(Math, lines)
+        console.log the_right_time
+        correct_line = $(".line[data-time=#{the_right_time}]").eq(0)
+      else
+        $('#lyrics-box').prepend("<div id='start-lyrics'></div>")
+        correct_line = $("#start-lyrics")
 
-      correct_line.after("
-          <div class='line' data-time=#{window.time} data-duration=#{window.loop ?= 4}>
-            <div class='lyrics-container'>
-              <p>#{lang1}</p>
-            </div>
-            <div class='lyrics-container'>
-              <p>#{lang2}</p>
-            </div>
-          </div>")
+      if window.translation_type == 'lang1_and_lang2'
+        correct_line.after("
+            <div class='line' data-time=#{window.time} data-duration=#{window.loop ?= 4}>
+              <div class='lyrics-container'>
+                <p>#{lang1}</p>
+              </div>
+              <div class='lyrics-container'>
+                <p>#{lang2}</p>
+              </div>
+            </div>")
+      if window.translation_type == 'just_lang2'
+        correct_line.after("
+            <div class='line' data-time=#{window.time} data-duration=#{window.loop ?= 4}>
+              <div class='lyrics-container'>
+                <p>#{lang2}</p>
+              </div>
+            </div>")
+
       correct_line.next().effect("highlight", {}, 2000)
       resetForNextLine()
 
@@ -419,14 +436,7 @@ $ ->
         $(this).keyup (e) ->
           if e.which == 13
             entry = this.value
-            if entry isnt ''
-              time = $("#current-loop-time").text()
-              $('#lang2-lyrics').append("<p><small><small class='edit-duration'>(#{time})</small></small>  <span class='edit-line-lan2'>#{entry}</span></p>")
-              $('.lang2-line').val('')
-              time_in_seconds = parseInt(time.slice(3,5)) + parseInt(time.slice(0,2))*60
-            window.section += 1
-            $('.publish-button').html('<div class="btn btn-info" id="publish-button">Publish!</div>')
-            $('.preview-button').html('<div class="btn btn-info" id="preview-button">Preview</div>')
+            addNewLineInRightPlace('', entry)
 
   introText = ->
   
@@ -641,7 +651,7 @@ $ ->
             <div class='btn btn-inverse btn-small rounded tight-margins' id='delete-line' data-line-id=#{id}> delete line </div>
           </span>
           <span style='float: right; margin: 10px;' class='toolbox-upper'>
-            <div class='btn btn-success btn-small rounded tight-margins' id='ask-twitter' data-twitter-url='https://twitter.com/share?text=hello&url=http%3A%2F%2Flocalhost%3A3000%2Finterpretations%2F66%3Fclip%3Dyes%26start%3D30%26duration%3D4'> get help from twitter </div>
+            <div class='btn btn-success btn-small rounded tight-margins' id='ask-twitter' data-twitter-url='https://twitter.com/share?text=Speak #{window.lang1}? What do you think about this translation? http://localhost:3000/interpretations/#{interp_id}'> get help from twitter </div>
             <div class='btn btn-success btn-small rounded tight-margins' id='ask-heyu'> get help from heyu </div>
           </span>
           </span>
@@ -697,7 +707,9 @@ $ ->
 
   $('#ask-twitter').livequery ->
     $(this).click ->
-      url = $(this).attr('data-twitter-url')
+      start_time = parseInt($(this).parent().parent().attr('data-time'))
+      duration = parseInt($(this).parent().parent().attr('data-duration'))
+      url = $(this).attr('data-twitter-url') + '?clip=yes&start=' + start_time + '&duration=' + duration
       window.open(url,'name','width=200,height=200')
 
   $('#ask-heyu').livequery ->
@@ -853,9 +865,11 @@ $ ->
     lines = []
     $('.line').each(->
       if $(this).attr('class') == 'line'
-        line = (time : $(this).attr('data-time'), duration : $(this).attr('data-duration'), lang1 : $.trim($(this).children().eq(0).text()), lang2 : $.trim($(this).children().eq(1).text()), interpretation_id : interp_id )
+        this_lang1 = $.trim($(this).children().eq(0).text())
+        line = (time : $(this).attr('data-time'), duration : $(this).attr('data-duration'), lang1 : this_lang1, lang2 : $.trim($(this).children().eq(1).text()), interpretation_id : interp_id )
       else
-        line = (time : $(this).attr('data-time'), duration : $(this).attr('data-duration'), lang1 : $.trim($('#edit-line-lang1').val()), lang2 : $.trim($('#edit-line-lang2').val()), interpretation_id : interp_id )
+        this_lang1 = $.trim($('#edit-line-lang1').val())
+        line = (time : $(this).attr('data-time'), duration : $(this).attr('data-duration'), lang1 : this_lang1, lang2 : $.trim($('#edit-line-lang2').val()), interpretation_id : interp_id )
       lines.push line)
     $.post('/save', { 'interp_id' : "#{interp_id}", 'lines' : "#{JSON.stringify(lines)}" }, (data) ->
       console.log data.data )
