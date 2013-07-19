@@ -59,9 +59,13 @@ class InterpretationsController < ApplicationController
     end
 
     @lines_have_lang1 = false
+    line_length = []
     @lines.all.each do |l|
       if l.lang1.present? then @lines_have_lang1 = true end
+      line_length << l.lang1.length 
+      line_length << l.lang2.length 
     end 
+    @longest_line_length = line_length.max
 
     if @interp.user_id == 0
       @user = 'anon' 

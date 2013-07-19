@@ -22,6 +22,8 @@
     -webkit-box-shadow: 0 0 1px rgba(255,255,255,.5);
 }
 
+html { overflow-x: hidden; }
+
 .centerbox {  margin-right: auto; 
   margin-left: auto; 
   width: 640px; 

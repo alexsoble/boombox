@@ -97,7 +97,7 @@
         <% else %>
           <i>Share this translation:</i>
           <br>
-          <a href="https://twitter.com/shabre" class="twitter-share-button" data-lang="en" data-size="medium" data-text="[Don't tweet this just yet...] Check out this video I found on Heyu! <%= @url %>" data-hashtags="<%= @interp.lang1 %>,<%= @interp.lang2 %>,Languages">Tweet this Translation</a>
+          <a href="https://twitter.com/share" class="twitter-share-button" data-lang="en" data-size="medium" data-text="[Don't tweet this just yet...] Check out this video I found on Heyu! <%= @url %>" data-hashtags="<%= @interp.lang1 %>,<%= @interp.lang2 %>,Languages">Tweet this Translation</a>
           <br>
           <div class="fb-like" data-send="false" data-width="75" data-layout="button_count" data-show-faces="true" data-font="arial"></div>
           <br>
@@ -110,4 +110,4 @@
   <div class="centerbox" style="text-align: center;"><h3>Nobody's translated this song yet. <%= link_to "Want to give it a try?", "/videos/new" %></h3></div>
 <% end %>
 
-<div id="data" class="quiet" data-interp-id=<%= @interp.id %> data-video-id=<%= @interp.video.youtube_id %> data-clip=<%= @clip %><% if @clip == true then %> data-start=<%= @start %> data-duration=<%= @duration %> <% end %> /></div>
+<div id="data" class="quiet" data-interp-id=<%= @interp.id %> data-video-id=<%= @interp.video.youtube_id %> data-clip=<%= @clip %><% if @clip == true then %> data-start=<%= @start %> data-duration=<%= @duration %> <% end %> data-longest-line=<%= @longest_line_length %>/></div>

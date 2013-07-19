@@ -342,7 +342,6 @@ $ ->
       the_right_time = Math.max.apply(Math, lines)
       console.log the_right_time
       correct_line = $(".line[data-time=#{the_right_time}]")
-      console.log correct_line
 
       correct_line.after("
           <div class='line' data-time=#{window.time} data-duration=#{window.loop ?= 4}>

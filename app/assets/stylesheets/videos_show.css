@@ -5,7 +5,6 @@
 
 .black { color: black; text-shadow: 2px 2px 2px white }
 .white { color: white; text-shadow: 2px 2px 2px black }
-.sky { color: #0F82F5; text-shadow: 2px 2px 2px black }
 
 .show-video-box { position: relative; 
   overflow: visible;
