@@ -17,7 +17,9 @@ class InterpretationsController < ApplicationController
         true
       elsif params[:clip].present? && params[:clip] == 'yes' && params[:duration].to_i < 12
         true
-      else current_user
+      elsif params[:preview].present? && params[:preview] == 'yes'
+        true
+      elsif current_user
         controller.correct_user(@user_id)
       end
     end

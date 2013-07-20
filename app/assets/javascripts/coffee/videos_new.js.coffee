@@ -444,12 +444,20 @@ $ ->
       window.player.pauseVideo()
   
     if action_name is 'new'
+      if window.loop isnt false
+        sliderIntroText = "You can use the <strong>slider below the video</strong> to adjust the video loops so that they match the lines you're translating."
+      else
+        sliderIntroText = "You can use the <strong>slider below the video</strong> to adjust the video playback."
       $('#controls').html("
-      Here we go!<br><br>  Once you've filled in the translation, hit <strong>ENTER</strong> to submit each line. <br><br>
-      If you need to look up a word, online dictionaries like <strong><a href='http://www.wordreference.com/'>Wordreference</a></strong> can be a great resource.<br><br>
+      <strong>Here we go!</strong><br><br>  
+      Your goal: translate the video <strong>line-by-line.</strong><br><br> One you've translated a line, hit <strong>ENTER</strong> to move to the next line. <br><br>
+      #{sliderIntroText}<br><br>
+      If you need to look up a word, online dictionaries like <a href='http://www.wordreference.com/'>Wordreference</a> can be a great resource.<br><br>
       Don't worry if you have trouble understanding at first — you'll get tools to help you.<br><br>
-      <a href='#' id='input-lines-go'><strong>I'm ready!</strong></a>
+      Please note that we'll ask you to sign up for a Heyu account if you'd like to save or publish your translation.<br><br>
+      <h3><a href='#' id='input-lines-go'><strong>I'm ready!</strong></a></h3>
       ")
+      $('#loop-slider').parent().effect('highlight', {}, 5000)
 
     $("#input-lines-go").livequery -> 
       $(this).click ->
@@ -877,7 +885,7 @@ $ ->
   $("#preview-button").livequery ->
     $(this).click ->
       save()
-      window.location.href = "/interpretations/#{interp_id}"
+      window.location.href = "/interpretations/#{interp_id}?preview=yes"
 
 # AUTOSAVE EVERY 10 SECONDS 
 
