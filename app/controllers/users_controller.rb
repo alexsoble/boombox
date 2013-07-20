@@ -12,10 +12,6 @@ class UsersController < ApplicationController
     @interp = params[:interp]
   end 
 
-  def new_with_video
-
-  end
-
   def index
     @top_ten_users = User.limit(10)
   end

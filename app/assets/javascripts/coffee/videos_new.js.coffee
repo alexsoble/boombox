@@ -454,7 +454,7 @@ $ ->
       #{sliderIntroText}<br><br>
       If you need to look up a word, online dictionaries like <a href='http://www.wordreference.com/'>Wordreference</a> can be a great resource.<br><br>
       Don't worry if you have trouble understanding at first — you'll get tools to help you.<br><br>
-      Please note that we'll ask you to sign up for a Heyu account if you'd like to save or publish your translation.<br><br>
+      Please note that we'll ask you to sign up for a Heyu account in case you'd like to save or publish your translation.<br><br>
       <h3><a href='#' id='input-lines-go'><strong>I'm ready!</strong></a></h3>
       ")
       $('#loop-slider').parent().effect('highlight', {}, 5000)

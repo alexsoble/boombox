@@ -34,7 +34,7 @@ $ ->
     if $("#user-id").attr('data-user') != "logged-out"
       window.location.href = "/interpretations/#{interp_id}/edit"
     else
-      $('#publish-button').replaceWith("<p><a href='/sign_up?interp=#{interp_id}'><strong>Sign up for Heyu?</strong></a> That way your username will appear alongside your translation. Get props for excellent work!<br><br>If you've already signed up, be sure to <a href='/sign_in?interp=#{interp_id}'><strong>sign in</strong></a>.<br><br>Otherwise, <a href='/interpretations/#{interp_id}'>submit your translation anonymously.</a>")
+      $("#edit-button").replaceWith("<p><a href='/sign_up?interp=#{interp_id}'><strong>Sign up for Heyu?</strong></a><br> That way your username will appear alongside your translation. Get props for excellent work!<br><br>(If you've already signed up, be sure to <a href='/sign_in?interp=#{interp_id}'><strong>sign in</strong></a>.)")
 
   window.onYouTubeIframeAPIReady = ->
     player = new YT.Player("show-video-box",
