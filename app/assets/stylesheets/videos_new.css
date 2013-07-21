@@ -111,7 +111,7 @@
 /*  --------- CONTROLS BELOW VIDEO --------- */
 
 #controls { position: relative; }
-#settings { position: relative; top: -5px; }
+#settings { position: relative; top: -35px; }
 #loop-settings { float: left; }
 #difficulty-settings { float: left; }
 

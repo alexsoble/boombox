@@ -109,24 +109,35 @@ $ ->
   sliderSetup = ->
 
     $('#settings').append("
+      <div style='float: left;'>
+        <div class='btn btn-primary btn-small rounded'> &larr; </div>
+        <div class='btn btn-primary btn-small rounded'> play </div>
+        <div class='btn btn-primary btn-small rounded'> &rarr; </div>        
+      </div>
+      <div style='float: right;'>
+        Play in loops
+        <div class='btn btn-primary btn-small rounded'> off </div>
+        <div class='btn btn-primary btn-small rounded'> on </div>
+      </div>
+      <br>
+      <br>
       <div id='loop-settings'>
-        <div class='left-endLabel'>
-          <span class='padded-label'></span>
-        </div>
-        <div id='loop-slider'></div>
-        <div class='right-endLabel'>
-          <span class='padded-label'></span>
-        </div>
-        <span id='loop-status'></span> <a id='loop-toggle'></a>
-        <br>
-        <span id='set-difficulty'><a>Video difficulty</a></span>
-        <div class='controls'>
-          <select id='difficulty-settings'>
-            <option value='beginner' class='difficulty-setting'>Beginner</option>
-            <option value='intermediate' class='difficulty-setting'>Intermediate</option>
-            <option value='advanced' class='difficulty-setting'>Advanced</option>
-          </select>
-        </div>")
+        <div id='playback-left-label' class='end-label'><span class='padded-label'></span></div>
+          <div id='playback-slider'>
+        <div id='playback-right-label' class='end-label'><span class='padded-label'></span></div>
+        <div id='looping-left-label' class='end-label'><span class='padded-label'></span></div>
+          <div id='loop-slider'></div>
+        <div id='looping-left-label' class='end-label'><span class='padded-label'></span>
+      </div>
+      <!-- <br>
+      <span id='set-difficulty'><a>Video difficulty</a></span>
+      <div class='controls'>
+        <select id='difficulty-settings'>
+          <option value='beginner' class='difficulty-setting'>Beginner</option>
+          <option value='intermediate' class='difficulty-setting'>Intermediate</option>
+          <option value='advanced' class='difficulty-setting'>Advanced</option>
+        </select>
+      </div> --> ")
 
   playbackControls = ->
     $('#loop-slider').rangeSlider(
@@ -265,37 +276,6 @@ $ ->
 
   langOneLangTwoStep = ->
 
-    # HELLO ARRAY
-    helloArray = []
-    helloArray['Spanish'] = 'Hola'
-    helloArray['French'] = 'Bonjour'
-    helloArray['Italian'] = 'Ciao'
-    helloArray['Portuguese'] = 'Oi'
-    helloArray['Romanian'] = 'Bună ziua'
-    helloArray['Catalan'] = 'Hola'
-    helloArray['Korean'] = '안녕하세요'
-    helloArray['Chinese'] = '你好'
-    helloArray['Japanese'] = 'こんにちは'
-    helloArray['Arabic'] = 'سلام'
-    helloArray['Persian'] = 'سلام'
-    helloArray['Urdu'] = 'سلام'
-    helloArray['Sindhi'] = 'سلام'
-    helloArray['Turkish'] = 'Merhaba'
-    helloArray['Hebrew'] = 'שלום'
-    helloArray['Dutch'] = 'Hallo'
-    helloArray['German'] = 'Guten Tag'
-    helloArray['Afrikaans'] = 'Hallo'
-    helloArray['Norwegian'] = 'Hei'
-    helloArray['English'] = 'Hello'
-    helloArray['Danish'] = 'Hej'
-    helloArray['Icelandic'] = 'Halló'
-    helloArray['Russian'] = 'привет'
-    helloArray['Kazakh'] = 'Сәлем!'
-    helloArray['Tajik'] = 'салом'
-    helloArray['Uzbek'] = 'Salom'
-    helloArray['Uyghur'] = 'Ässalamu läykum'
-    helloArray['Albanian'] = 'Tung'
-
     if window.player.getOptions().indexOf('cc') > -1
       window.cc_status = "Which this video does!"
     else
@@ -307,8 +287,8 @@ $ ->
         <label class='checkbox'>
           <input type='checkbox' id='lang1-and-lang2'>I want to write down the #{lang1} and #{lang2} side-by-side.
         <br>
-        <div style='float: left; margin-left: 40px; margin-top: 25px;'><i>#{lang1}</i>: <br> <strong>#{helloArray[lang1]}</strong></div>
-        <div style='float: left; margin-left: 40px; margin-top: 25px;'><i>#{lang2}</i>: <br> <strong>#{helloArray[lang2]}</strong></div>
+        <div style='float: left; margin-left: 40px; margin-top: 25px;'><i>#{lang1}</i>: <br> <strong>#{window.helloArray[lang1]}</strong></div>
+        <div style='float: left; margin-left: 40px; margin-top: 25px;'><i>#{lang2}</i>: <br> <strong>#{window.helloArray[lang2]}</strong></div>
         </label>
         <br>
       </div>
@@ -532,9 +512,9 @@ $ ->
     window.player = player
 
   onPlayerReady = (event) ->
+    reportLoopStatus()
     video_duration = window.player.getDuration()
     window.video_duration = video_duration
-    reportLoopStatus()
     if window.loop is false
       nonLoopingPlayback(video_duration)
     event.target.playVideo()
