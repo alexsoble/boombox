@@ -450,7 +450,7 @@ $ ->
         sliderIntroText = "You can use the <strong>slider below the video</strong> to adjust the video playback."
       $('#controls').html("
       <strong>Here we go!</strong><br><br>  
-      Your goal: translate the video <strong>line-by-line.</strong><br><br> One you've translated a line, hit <strong>ENTER</strong> to move to the next line. <br><br>
+      Your goal: translate the video <strong>line-by-line.</strong><br><br> Once you've translated a line, hit <strong>ENTER</strong> to move to the next line. <br><br>
       #{sliderIntroText}<br><br>
       If you need to look up a word, online dictionaries like <a href='http://www.wordreference.com/'>Wordreference</a> can be a great resource.<br><br>
       Don't worry if you have trouble understanding at first — you'll get tools to help you.<br><br>
