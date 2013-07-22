@@ -57,8 +57,7 @@
 
 #edit-timing-slider { float: left; 
   width: 200px; 
-  margin: 30px;
-/*  margin-left: -120px; */ }
+  margin: 30px; }
 
 /* SMALL LYRICS CONTAINER FOR THE VIDEO AS IT'S EDITED */
 
@@ -115,52 +114,55 @@
 #loop-settings { float: left; }
 #difficulty-settings { float: left; }
 
-#loop-slider { width: 380px; 
+#playback-slider { width: 400px; 
   position: relative;
-  left: 24px; 
-  top: 5px; }
+  left: 10px;
+  top: -28px;
+  z-index: -1; }
+
+#loop-slider { width: 400px; 
+  position: relative;
+  left: 0px; 
+  top: -48px;
+  z-index: -1;  }
 
 #progress-bar { height: 16px; 
   background-color: orange; 
   position: absolute; }
 
-.ui-rangeSlider-bar#straightforward-playback-handle
-  { position: absolute; 
+.end-label { 
+  font-size: 12px; 
   color: white; 
-  background-color: orange; 
-  height: 20px; width: 20px;
-  opacity: .75; }
+  background-color: #0F82F5; 
+  text-align: center;
+  border-radius: 10px;
+  opacity: .9; 
+  position: relative; 
+  width: 30px; 
+  height: 30px; }
 
-.playback-slider-label {
+.end-label#playback-left-label 
+.end-label#playback-right-label { left: 360px; top: -40px; }
+.end-label#looping-left-label { background-color: #00FFFF; top: -18px; }
+.end-label#looping-right-label { background-color: #00FFFF; left: 390px; top: -78px; }
+
+.playback-handle { width: 30px; height: 30px;
+  border-radius: 15px;
+  background-color: #00FFFF;
+  opacity: .9; 
+  position: relative; 
+  top: 25px; }
+
+.playback-handle.looping { min-width: 30px; }
+
+.loop-handle-label {
   font-size: 12px; 
   background-color: #848488 ;
   color: white;
   height: 25px; width: 25px; 
   position: relative; }
-
-.ui-rangeSlider-leftLabel.playback-slider-label { bottom: 20px; }
-.ui-rangeSlider-rightLabel.playback-slider-label { bottom: -24px;  }
-
-.left-endLabel { 
-  font-size: 12px; 
-  color: white;
-  background-color: orange;
-  text-align: center;
-  position: relative;
-  top: 30px;
-  width: 30px;
-  height: 30px; }
-
-.right-endLabel { 
-  font-size: 12px; 
-  color: white; 
-  background-color: orange; 
-  text-align: center;
-  position: relative; 
-  top: -20px;
-  left: 390px;
-  width: 30px; 
-  height: 30px; }
+.ui-rangeSlider-leftLabel.loop-handle-label { bottom: 20px; }
+.ui-rangeSlider-rightLabel.loop-handle-label { bottom: -24px; }
 
 select { width: 150px; }
 
