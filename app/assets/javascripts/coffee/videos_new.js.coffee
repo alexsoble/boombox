@@ -104,7 +104,7 @@ $ ->
     $('#settings').append("
       <div style='float: left;'>
         <div class='btn btn-primary btn-small rounded marginless' id='backward'> &larr; </div>
-        <div class='btn btn-primary btn-small rounded marginless' id='play-pause'> play </div> 
+        <div class='btn btn-primary btn-small rounded marginless' id='play-pause'> pause </div> 
         <div class='btn btn-primary btn-small rounded marginless' id='forward'> &rarr; </div>        
       </div>
       <div style='float: right;'>
