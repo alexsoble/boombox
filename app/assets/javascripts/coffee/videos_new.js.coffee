@@ -821,6 +821,7 @@ $ ->
     $(this).click -> 
       if window.loop == false
         window.loop = 4
+        window.section = window.time / window.loop
         loopingControls()
         $('#loop-on').attr('style','float: left;').attr('class','btn btn-primary btn-small rounded')
         $('#loop-off').attr('style','float: right;').attr('class','btn btn-disabled btn-small rounded')
