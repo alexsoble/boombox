@@ -166,10 +166,10 @@ $ ->
       $('#playback-right-label').attr('style','left: 390px; top: -55px;')
 
     $('#playback-slider').children().eq(0).children().eq(0).addClass('playback-handle')
-    # $('#playback-slider').children().eq(0).children().eq(1).hide()
-    # $('#playback-slider').children().eq(0).children().eq(3).hide()
-    # $('#playback-slider').children().eq(3).hide()
-    # $('#playback-slider').children().eq(4).hide()
+    $('#playback-slider').children().eq(0).children().eq(1).hide()
+    $('#playback-slider').children().eq(0).children().eq(3).hide()
+    $('#playback-slider').children().eq(3).hide()
+    $('#playback-slider').children().eq(4).hide()
 
     $('#playback-slider').on("valuesChanging", (e, data) ->
       window.valuesChanging = true
