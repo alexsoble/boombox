@@ -3,6 +3,12 @@ $ ->
   $('#results-box').hide()
   window.n = 0
 
+  $('#ask-youtube').keyup ->
+    $('#progress-bar').html('
+      <div class="progress progress-info progress-striped active">
+        <div class="bar" style="width: 100%;"></div>
+      </div>')
+
   $('#ask-youtube').autocomplete(
     source: (request, response) ->
       $.ajax(
@@ -32,6 +38,8 @@ $ ->
                 <img alt='video_#{r.label}' src='http://img.youtube.com/vi/#{r.value}/1.jpg' />
               </div>")
           $('#ask-youtube').autocomplete('close')
+          $('#progress-bar').children(':first').removeClass('active')
+          $('#progress-bar').children(':first').children(':first').attr('style','width: 0%')
           response(results, (item) ->
             e.preventDefault()
             label: item.label

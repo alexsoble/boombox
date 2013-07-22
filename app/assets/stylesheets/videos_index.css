@@ -49,3 +49,7 @@
 ul.ui-autocomplete.ui-menu { background-color: white; list-style-type: none; } 
 
 li.ui-autocomplete.ui-menu { color: black; } 
+
+#progress-bar { width: 250px; 
+  position: relative;
+  left: -12px; }

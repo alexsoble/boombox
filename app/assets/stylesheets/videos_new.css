@@ -126,10 +126,6 @@
   top: -66px;
   z-index: -1; }
 
-#progress-bar { height: 16px; 
-  background-color: orange; 
-  position: absolute; }
-
 .end-label { 
   font-size: 12px; 
   color: white; 
