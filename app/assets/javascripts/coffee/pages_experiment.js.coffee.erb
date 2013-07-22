@@ -1,32 +1,31 @@
 $ -> 
   
-  $('#experiment-slider').rangeSlider()
+  shortFormatTime = (time) ->
+    time = Math.floor(time)
+    if time <= 9 then formatted_time = ":0" + time
+    if 9 < time <= 59 then formatted_time = ":" + time
+    if 60 <= time < 540
+      if time%60 <= 9 then formatted_time = Math.floor((time)/60) + ":0" + (time)%60
+      if 9 < time%60 <= 59 then formatted_time = Math.floor((time)/60) + ":" + (time)%60
+    if 540 <= time < 3600
+      if time%60 <= 9 then formatted_time = Math.floor((time)/60) + ":0" + (time)%60
+      if 9 < time%60 <= 59 then formatted_time = Math.floor((time)/60) + ":" + (time)%60
+    formatted_time
 
-  $('#ask-youtube').autocomplete(
-    source: (request, response) ->
-      $.ajax(
-        url: "http://gdata.youtube.com/feeds/api/videos?q=#{request.term}&max-results=5&v=2",
-        dataType: "xml",
-        complete: (r) ->
-          parser = new DOMParser
-          xml = parser.parseFromString(r.responseText, "application/xml")
-          window.xml = xml
-          entries = xml.getElementsByTagName("entry")
-          results = []
-          for e in entries
-            result = []
-            result['title'] = e.getElementsByTagName("title")[0].textContent
-            result['url'] = e.getElementsByTagName("player")[0].attributes.url.nodeValue
-            results[result['title']] = result['url']
-            results.push result['title']
-          window.results = results
-          response(results, (item) ->
-            label: item
-            value: results[label]
-          )
-        )
-    select: (e, ui) ->
-      e.preventDefault()
-      $('#ask-youtube').val(ui.item.label)
-      $('#ask-youtube-no-autocomplete').val(results[ui.item.label]).trigger('change')
-    )
+  loopingControls = ->
+
+    $('#poop-slider').rangeSlider(
+      step: 1
+      defaultValues:
+        min: 7
+        max: 12
+      bounds:
+        min: Math.floor(window.time / 45) * 45
+        max: Math.floor(window.time / 45) * 45 + 60
+      range:
+        min: 4
+        max: 12
+      )
+
+  window.time = 0
+  loopingControls()

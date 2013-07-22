@@ -117,14 +117,12 @@
 #playback-slider { width: 400px; 
   position: relative;
   left: 10px;
-  top: -28px;
-  z-index: -1; }
+  top: -28px; }
 
 #loop-slider { width: 400px; 
   position: relative;
-  left: 0px; 
-  top: -66px;
-  z-index: -1; }
+  left: 10px; 
+  top: -66px; }
 
 .end-label { 
   font-size: 12px; 
@@ -135,10 +133,11 @@
   opacity: .9; 
   position: relative; 
   width: 30px; 
-  height: 30px; }
+  height: 30px; 
+  z-index: 1; }
 
 .end-label#playback-left-label 
-.end-label#playback-right-label { left: 360px; top: -40px; }
+.end-label#playback-right-label { left: 360px; top: -40px;  }
 .end-label#looping-left-label { background-color: #00FFFF; top: -42px; }
 .end-label#looping-right-label { background-color: #00FFFF; left: 390px; top: -94px; }
 

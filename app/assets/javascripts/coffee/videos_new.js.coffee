@@ -135,9 +135,9 @@ $ ->
 
   playbackControls = (video_duration) ->
 
-    $('#loop-slider').slideUp()
-    $('#loop-slider').next().slideUp()
-    $('#loop-slider').prev().slideUp()
+    # $('#loop-slider').hide()
+    # $('#loop-slider').next().hide()
+    # $('#loop-slider').prev().hide()
 
     $('#playback-slider').rangeSlider(
       arrows: false
@@ -188,7 +188,6 @@ $ ->
     $('#loop-slider').prev().slideDown()
 
     $('#loop-slider').rangeSlider(
-      arrows: false
       step: 1
       defaultValues:
         min: window.time
@@ -213,8 +212,8 @@ $ ->
     $('#looping-right-label').html("<div class='text-padding'>#{shortFormatTime(Math.floor(window.time / 45) * 45 + 60)}</div>")
     $('#playback-slider').rangeSlider("values", $('#looping-left-label').html(), $('#looping-right-label').html())    
 
-    # $('.ui-rangeSlider-leftLabel.loop-handle-label').html("<div class='text-padding'>#{shortFormatTime(window.time)}</div>")
-    # $('.ui-rangeSlider-rightLabel.loop-handle-label').html("<div class='text-padding'>#{shortFormatTime(window.time + window.loop)}</div>")
+    # $('.ui-rangeSlider-leftLabel.loop-handle-label').children().eq(0).html("<div class='text-padding'>#{shortFormatTime(window.time)}</div>")
+    # $('.ui-rangeSlider-rightLabel.loop-handle-label').children().eq(0).html("<div class='text-padding'>#{shortFormatTime(window.time + window.loop)}</div>")
 
     $('#loop-slider').on("valuesChanged", (e, data) ->
       bounds = $('#loop-slider').rangeSlider("bounds")
