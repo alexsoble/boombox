@@ -17,4 +17,5 @@
 //= require jquery.scrollTo
 //= require jquery-ui-1.10.3.custom.min
 //= require jQAllRangeSliders-min
+//= require jquery.jsPlumb-1.4.1-all-min
 //= require_directory .

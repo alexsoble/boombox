@@ -68,7 +68,6 @@ $ ->
   $("#start").livequery ->
     $(this).click -> 
       window.player.pauseVideo()
-
       $(this).remove()
       $('#timer-box').show()
       $("#controls").html("
@@ -102,20 +101,22 @@ $ ->
   sliderSetup = ->
 
     $('#settings').append("
-      <div style='float: left;'>
-        <div class='btn btn-primary btn-small rounded marginless' id='backward'> &larr; </div>
-        <div class='btn btn-primary btn-small rounded marginless' id='play-pause'> pause </div> 
-        <div class='btn btn-primary btn-small rounded marginless' id='forward'> &rarr; </div>        
+      <div style='float: left; margin-left: 10px; margin-top: 20px;'>
+        <div class='btn btn-primary btn-small rounded' id='backward'> &larr; </div>
+        <div class='btn btn-primary btn-small rounded' id='play-pause'> pause </div> 
+        <div class='btn btn-primary btn-small rounded' id='forward'> &rarr; </div>        
       </div>
-      <div style='float: right;'>
-        <span style='color: white;'>Play in loops</span>
-        <div class='btn btn-small rounded loop-toggle' style='background-color: white; border: solid 1px; border-color: black; color: black; width: 100px;'>
-          <div class='btn btn-primary btn-small rounded' id='loop-on'> on </div>
-          <div class='btn btn-disabled btn-small rounded' id='loop-off'> off </div>
+      <div style='float: right; margin-right: 10px; margin-top: 20px;'>
+        <span style='color: white;'>Play in loops:</span>
+        <div class='btn btn-small rounded loop-toggle' style='background-color: black; width: 80px;'>
+          <div class='btn btn-primary btn-small rounded' id='loop-on'> turn off </div>
         </div>
       </div>
-      <br>
-      <br>
+      <div id='loop-labels'>
+        <div id='adjust-playback-label' style='color: white;'>Adjust time:</div>
+        <br>
+        <div id='adjust-loops-label' style='color: white;'>Adjust loops:</div>
+      </div> 
       <div id='loop-settings'>
         <div id='playback-left-label' class='end-label'><span class='padded-label'></span></div>
           <div id='playback-slider'></div>
@@ -123,6 +124,7 @@ $ ->
         <div id='looping-left-label' class='end-label'><span class='padded-label'></span></div>
           <div id='loop-slider'></div>
         <div id='looping-right-label' class='end-label'><span class='padded-label'></span></div>
+      </div> 
       <!-- <br>
       <span id='set-difficulty'><a>Video difficulty</a></span>
       <div class='controls'>
@@ -131,13 +133,14 @@ $ ->
           <option value='intermediate' class='difficulty-setting'>Intermediate</option>
           <option value='advanced' class='difficulty-setting'>Advanced</option>
         </select>
-      </div> --> ")
+      --> ")
 
   playbackControls = (video_duration) ->
 
-    # $('#loop-slider').hide()
-    # $('#loop-slider').next().hide()
-    # $('#loop-slider').prev().hide()
+    $('#loop-slider').hide()
+    $('#loop-slider').next().hide()
+    $('#loop-slider').prev().hide()
+    $('#adjust-loops-label').hide()
 
     $('#playback-slider').rangeSlider(
       arrows: false
@@ -154,7 +157,7 @@ $ ->
           max: 6
       else
         range:
-          min: 10
+          min: 60
           max: 60
       formatter: (val) -> 
         shortFormatTime(val)
@@ -163,22 +166,16 @@ $ ->
     $('#playback-left-label').html('0:00')
     if window.video_duration != undefined
       $('#playback-right-label').children(':first').html(shortFormatTime(video_duration))
-      $('#playback-right-label').attr('style','left: 390px; top: -55px;')
 
-    $('#playback-slider').children().eq(0).children().eq(0).addClass('playback-handle')
-    $('#playback-slider').children().eq(0).children().eq(1).hide()
-    $('#playback-slider').children().eq(0).children().eq(3).hide()
+    $('#playback-slider').children().eq(0).children().eq(1).addClass('playback-handle').addClass('looping')
     $('#playback-slider').children().eq(3).hide()
     $('#playback-slider').children().eq(4).hide()
 
     $('#playback-slider').on("valuesChanging", (e, data) ->
-      window.valuesChanging = true
-    )
-
-    $('#loop-slider').bind("valuesChanged", (e, data) ->
-      window.valuesChanging = false
-      time = data.values.min
-      window.player.seekTo(time)
+      if window.loop is false
+        window.valuesChanging = true
+        time = data.values.min
+        window.player.seekTo(time)
     )
 
   loopingControls = ->
@@ -186,6 +183,7 @@ $ ->
     $('#loop-slider').slideDown()
     $('#loop-slider').next().slideDown()
     $('#loop-slider').prev().slideDown()
+    $('#adjust-loops-label').slideDown()
 
     $('#loop-slider').rangeSlider(
       step: 1
@@ -202,18 +200,21 @@ $ ->
         shortFormatTime(val)
       )
 
-    $('#loop-slider').children().eq(0).children().eq(0).attr('style','background-color: #00FFFF; border: 1px solid white;')
+    $('#loop-slider').children().eq(0).children().eq(0).attr('style','background-color: #00FFFF;')
     $('#loop-slider').children().eq(3).addClass('loop-handle-label')
     $('#loop-slider').children().eq(4).addClass('loop-handle-label')
 
-    $('#playback-slider').children().eq(0).children().eq(2).addClass('playback-handle looping')
-      
-    $('#looping-left-label').html("<div class='text-padding'>#{shortFormatTime(Math.floor(window.time / 45) * 45)}</div>")
-    $('#looping-right-label').html("<div class='text-padding'>#{shortFormatTime(Math.floor(window.time / 45) * 45 + 60)}</div>")
+    left_boundary = Math.floor(window.time / 45) * 45
+    right_boundary = left_boundary + 60
+
+    $('#looping-left-label').html("<div class='text-padding'>#{shortFormatTime(left_boundary)}</div>")
+    $('#looping-right-label').html("<div class='text-padding'>#{shortFormatTime(right_boundary)}</div>")
     $('#playback-slider').rangeSlider("values", $('#looping-left-label').html(), $('#looping-right-label').html())    
 
     # $('.ui-rangeSlider-leftLabel.loop-handle-label').children().eq(0).html("<div class='text-padding'>#{shortFormatTime(window.time)}</div>")
     # $('.ui-rangeSlider-rightLabel.loop-handle-label').children().eq(0).html("<div class='text-padding'>#{shortFormatTime(window.time + window.loop)}</div>")
+
+    $('#playback-slider').rangeSlider("values", left_boundary, right_boundary)
 
     $('#loop-slider').on("valuesChanged", (e, data) ->
       bounds = $('#loop-slider').rangeSlider("bounds")
@@ -233,6 +234,7 @@ $ ->
                 min: min + 30
                 max: max + 30
             ).rangeSlider("values", start, end)
+            $('#playback-slider').rangeSlider("values", min + 30, max + 30)
           else
             $('#looping-left-label').text(shortFormatTime(video_duration - 60))
             $('#looping-right-label').text(shortFormatTime(video_duration))
@@ -252,6 +254,7 @@ $ ->
                 min: min - 30
                 max: max - 30
             ).rangeSlider("values", start, end)
+            $('#playback-slider').rangeSlider("values", min - 30, max - 30)
           else
             $('#looping-left-label').text(shortFormatTime(0))
             $('#looping-right-label').text(shortFormatTime(60))
@@ -277,8 +280,7 @@ $ ->
         window.section = start / window.loop
         $('.ui-rangeSlider-leftLabel.loop-handle-label').html("<div class='text-padding'>#{shortFormatTime(start)}</div>")
         $('.ui-rangeSlider-rightLabel.loop-handle-label').html("<div class='text-padding'>#{shortFormatTime(end)}</div>")
-
-    )
+      )
 
   langOneLangTwoStep = ->
 
@@ -432,18 +434,11 @@ $ ->
       window.player.pauseVideo()
   
     if action_name is 'new'
-      if window.loop isnt false
-        sliderIntroText = "You can use the <strong>slider below the video</strong> to adjust the video loops so that they match the lines you're translating."
-      else
-        sliderIntroText = "You can use the <strong>slider below the video</strong> to adjust the video playback."
       $('#controls').html("
-      <strong>Here we go!</strong><br><br>  
-      Your goal: translate the video <strong>line-by-line.</strong><br><br> Once you've translated a line, hit <strong>ENTER</strong> to move to the next line. <br><br>
-      #{sliderIntroText}<br><br>
-      If you need to look up a word, online dictionaries like <a href='http://www.wordreference.com/'>Wordreference</a> can be a great resource.<br><br>
-      Don't worry if you have trouble understanding at first — you'll get tools to help you.<br><br>
-      Please note that we'll ask you to sign up for a Heyu account in case you'd like to save or publish your translation.<br><br>
-      <h3><a href='#' id='input-lines-go'><strong>I'm ready!</strong></a></h3>")
+        <strong>Here we go!</strong><br><br>  
+        Your goal: translate the video <strong>line-by-line.</strong><br><br> Once you've translated a line, hit <strong>ENTER</strong> to move to the next line. <br><br>
+        Please note that we'll ask you to sign up for a Heyu account in case you'd like to save or publish your translation.<br><br>
+        <h3><a href='#' id='input-lines-go'><strong>I'm ready!</strong></a></h3>")
 
     $("#input-lines-go").livequery -> 
       $(this).click ->
@@ -532,8 +527,6 @@ $ ->
     # PLAYBACK SLIDER MOVES HERE
     if window.loop is false and window.valuesChanging is false
       $('#playback-slider').rangeSlider("values", window.time, window.time + 6)
-    else 
-      $('#playback-slider').rangeSlider("values", window.loop * window.section, window.loop * (window.section + 1))
 
     current_loop_time = window.loop * window.section
     current_loop_end = window.loop * (window.section + 1)
@@ -822,13 +815,11 @@ $ ->
         window.loop = 4
         window.section = window.time / window.loop
         loopingControls()
-        $('#loop-on').attr('style','float: left;').attr('class','btn btn-primary btn-small rounded')
-        $('#loop-off').attr('style','float: right;').attr('class','btn btn-disabled btn-small rounded')
+        $('#loop-on').html('turn off')
       else
         window.loop = false
         playbackControls(window.video_duration)
-        $('#loop-off').attr('style','float: left;').attr('class','btn btn-primary btn-small rounded')
-        $('#loop-on').attr('style','float: right;').attr('class','btn btn-disabled btn-small rounded')
+        $('#loop-on').html('turn on')
 
   $('#difficulty-settings').hide()
 
@@ -872,13 +863,3 @@ $ ->
 # AUTOSAVE EVERY 10 SECONDS 
 
   autosave = setInterval(save, 10000)
-
-# YOUTUBE WINDOW STICKY ON SCROLL
-
-  $window = $(window)
-  video_box = $('#outer-video-box')
-  video_top = video_box.offset().top
-  lyrics_container = $('.lyrics-container')
-  $window.scroll ->
-    video_box.toggleClass('sticky', $window.scrollTop() > video_top)
-    lyrics_container.toggleClass('sticky', $window.scrollTop() > video_top)
