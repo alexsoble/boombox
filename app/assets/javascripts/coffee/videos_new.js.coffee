@@ -211,8 +211,8 @@ $ ->
     $('#looping-right-label').html("<div class='text-padding'>#{shortFormatTime(right_boundary)}</div>")
     $('#playback-slider').rangeSlider("values", $('#looping-left-label').html(), $('#looping-right-label').html())    
 
-    # $('.ui-rangeSlider-leftLabel.loop-handle-label').children().eq(0).html("<div class='text-padding'>#{shortFormatTime(window.time)}</div>")
-    # $('.ui-rangeSlider-rightLabel.loop-handle-label').children().eq(0).html("<div class='text-padding'>#{shortFormatTime(window.time + window.loop)}</div>")
+    $('.ui-rangeSlider-leftLabel.loop-handle-label').children().eq(0).html("<div class='text-padding'>#{shortFormatTime(window.time)}</div>")
+    $('.ui-rangeSlider-rightLabel.loop-handle-label').children().eq(0).html("<div class='text-padding'>#{shortFormatTime(window.time + window.loop)}</div>")
 
     $('#playback-slider').rangeSlider("values", left_boundary, right_boundary)
 
@@ -437,7 +437,7 @@ $ ->
       $('#controls').html("
         <strong>Here we go!</strong><br><br>  
         Your goal: translate the video <strong>line-by-line.</strong><br><br> Once you've translated a line, hit <strong>ENTER</strong> to move to the next line. <br><br>
-        Please note that we'll ask you to sign up for a Heyu account in case you'd like to save or publish your translation.<br><br>
+        Be sure to <strong><a href='/sign_up?interp=#{interp_id}'>sign up for a Heyu account</strong></a> if you'd like to save or publish your translation.<br><br>
         <h3><a href='#' id='input-lines-go'><strong>I'm ready!</strong></a></h3>")
 
     $("#input-lines-go").livequery -> 
