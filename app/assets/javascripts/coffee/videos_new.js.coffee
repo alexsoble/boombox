@@ -101,17 +101,30 @@ $ ->
   sliderSetup = ->
 
     $('#settings').append("
-      <div style='float: left; margin-left: 10px; margin-top: 20px;'>
+      <div style='float: left; margin-left: 10px; margin-top: 5px;'>
         <div class='btn btn-primary btn-small rounded' id='backward'> &larr; </div>
         <div class='btn btn-primary btn-small rounded' id='play-pause'> pause </div> 
-        <div class='btn btn-primary btn-small rounded' id='forward'> &rarr; </div>        
-      </div>
-      <div style='float: right; margin-right: 10px; margin-top: 20px;'>
-        <span style='color: white;'>Play in loops:</span>
-        <div class='btn btn-small rounded loop-toggle' style='background-color: black; width: 80px;'>
-          <div class='btn btn-primary btn-small rounded' id='loop-on'> turn off </div>
-        </div>
-      </div>
+        <div class='btn btn-primary btn-small rounded' id='forward'> &rarr; </div>
+      </div>")
+
+    if window.loop != false
+      $('#settings').append("
+        <div style='float: right; margin-right: 10px; margin-top: 5px;'>
+          <span style='color: white;'>Play in loops:</span>
+          <div class='btn btn-small rounded loop-toggle' style='background-color: black; width: 80px;'>
+            <div class='btn btn-primary btn-small rounded' id='loop-on'> turn off </div>
+          </div>
+        </div>")
+    else
+      $('#settings').append("
+        <div style='float: right; margin-right: 10px; margin-top: 5px;'>
+          <span style='color: white;'>Play in loops:</span>
+          <div class='btn btn-small rounded loop-toggle' style='background-color: black; width: 80px;'>
+            <div class='btn btn-primary btn-small rounded' id='loop-on'> turn on </div>
+          </div>
+        </div>")
+
+    $('#settings').append("
       <div id='loop-labels'>
         <div id='adjust-playback-label' style='color: white;'>Adjust time:</div>
         <br>
