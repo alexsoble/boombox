@@ -40,7 +40,7 @@
     <% end %>
   </div>
   </div>
-  <div class="centerbox visible relative">
+  <div class="centerbox visible relative" id="below-video-box">
     <% if @published == false # HERE'S WHAT GOES BELOW THE VIDEO BOX WHEN THE INTERP IS IN 'PREVIEW' MODE %>
       <br>
       <div class="btn btn-primary btn-large rounded" id="edit-button" style="float: left;"> <strong>&larr;</strong> Edit</div>
@@ -92,7 +92,7 @@
     </div>
   <% end %>
 <% else %>
-  <div class="centerbox" style="text-align: center;"><h3>Nobody's translated this song yet. <%= link_to "Want to give it a try?", "/videos/new" %></h3></div>
+  <div class="centerbox" style="text-align: center;"><h3>Nobody's translated this song yet. <%= link_to "Want to give it a try?", "/videos/new?interp=#{@interp.id}" %></h3></div>
 <% end %>
 
-<div id="data" class="quiet" data-interp-id=<%= @interp.id %> data-video-id=<%= @interp.video.youtube_id %> data-clip=<%= @clip %><% if @clip == true then %> data-start=<%= @start %> data-duration=<%= @duration %> <% end %> data-longest-line=<%= @longest_line_length %>/></div>
+<div id="data" class="quiet" data-interp-id=<%= @interp.id %> data-video-id=<%= @interp.video.youtube_id %> data-clip=<%= @clip %><% if @clip == true then %> data-start=<%= @start %> data-duration=<%= @duration %> <% end %> data-longest-line=<%= @longest_line_length %> <% if @quiz == true then %> data-quiz="true" <% else %> data-quiz="false" <% end %> /></div>

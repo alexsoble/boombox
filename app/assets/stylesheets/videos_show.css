@@ -3,14 +3,17 @@
   font-size: 20px; 
   text-shadow: 2px 2px 2px black }
 
-.wrapper { overflow: hidden; width: 600px; }
-
 .black { color: black; text-shadow: 2px 2px 2px white }
 .white { color: white; text-shadow: 2px 2px 2px black }
 
 .show-video-box { position: relative; 
   overflow: visible;
   text-align: left; }
+
+.wrapper { overflow: hidden; width: 600px; }
+
+.wrapper.quizframe { top: 400px; 
+  height: 100px; }
 
 .lyrics-box { background: rgba(0, 0, 0, .3);
   height: 80px;
@@ -20,6 +23,9 @@
   border-radius: 10px;
   position: absolute; 
   overflow: auto; }
+
+.lyrics-box.quizframe { top: 400px; 
+  background: rgba(0, 0, 205, .3) }
 
 .text-container { margin-top: 10px; margin-bottom: 10px; }
 

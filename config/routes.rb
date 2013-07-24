@@ -12,13 +12,13 @@ Boombox::Application.routes.draw do
   get '/philosophy' => 'pages#philosophy'
   get '/survey' => 'pages#survey'
   get '/experiment' => 'pages#experiment'
-
-  get '/request/' => 'videos#request'
   
   resources :videos
   resources :users
   resources :sessions
   resources :interpretations
+
+  get '/interpretations/:id/quiz' => 'interpretations#show'
   
   post '/new_video' => 'videos#create'
   post '/new_interp' => 'interpretations#create'

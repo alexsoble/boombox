@@ -61,6 +61,12 @@ class InterpretationsController < ApplicationController
       @clip = false
     end
 
+    if params[:quiz] == 'yes'
+      @quiz = true
+    else
+      @quiz = false
+    end
+
     @lines_have_lang1 = false
     line_length = []
     @lines.all.each do |l|

@@ -1,31 +1,85 @@
 $ -> 
   
-  shortFormatTime = (time) ->
-    time = Math.floor(time)
-    if time <= 9 then formatted_time = ":0" + time
-    if 9 < time <= 59 then formatted_time = ":" + time
-    if 60 <= time < 540
-      if time%60 <= 9 then formatted_time = Math.floor((time)/60) + ":0" + (time)%60
-      if 9 < time%60 <= 59 then formatted_time = Math.floor((time)/60) + ":" + (time)%60
-    if 540 <= time < 3600
-      if time%60 <= 9 then formatted_time = Math.floor((time)/60) + ":0" + (time)%60
-      if 9 < time%60 <= 59 then formatted_time = Math.floor((time)/60) + ":" + (time)%60
-    formatted_time
+  clip = true
+  video_youtube_id = 'ztzjZf2ePag'
 
-  loopingControls = ->
+  window.onYouTubeIframeAPIReady = ->
+    player = new YT.Player("show-video-box",
+      height: "380"
+      width: "630"
+      videoId: video_youtube_id
+      playerVars: 
+        if clip == true
+          controls: 0
+      events:
+        onReady: onPlayerReady
+        onStateChange: onPlayerStateChange)
+    window.player = player
 
-    $('#poop-slider').rangeSlider(
-      step: 1
-      defaultValues:
-        min: 7
-        max: 12
-      bounds:
-        min: Math.floor(window.time / 45) * 45
-        max: Math.floor(window.time / 45) * 45 + 60
-      range:
-        min: 4
-        max: 12
-      )
+  onPlayerReady = (event) ->
+    event.target.playVideo()
 
-  window.time = 0
-  loopingControls()
+  countVideoPlayTime = ->
+    array_builder = ->
+      arr = []
+      lyrics = $(".lyrics")
+      jQuery.each lyrics, ->
+        id = $(this).attr("id")
+        arr.push id
+      arr
+
+    scroll = (array, time) ->
+      time_id = 'lang2-' + time
+      if array.indexOf(time_id) > -1
+        if $('#lyrics').attr('style') == "display: none;"
+          $('#lyrics').slideDown()
+        lang1 = $("#lang1-#{time}").html()
+        lang2 = $("#lang2-#{time}").html()
+        duration = $("#lang2-#{time}").attr('data-duration')
+        $("#lyrics").children().eq(0).html("<p class='lyrics white'>#{lang1}</p>").hide().slideDown(800)
+        $("#lyrics").children().eq(1).html("<p class='lyrics white'>#{lang2}</p>").hide().slideDown(800)
+        slideUpLyrics = -> 
+          console.log "sliding up"
+          $("#lyrics").children().eq(0).slideUp()
+          $("#lyrics").children().eq(1).slideUp()
+        window.setTimeout(slideUpLyrics, (duration + 1) * 1000)
+
+    exact_time = player.getCurrentTime()
+    time = Math.round(exact_time)
+
+    # LOOPING HAPPENS HERE (IF IT'S A CLIP)
+    loopNow = ->
+      loopingNow = ->
+        player.seekTo(clip_start, true)
+        player.setVolume(window.volume)
+        player.pauseVideo()
+        startUpAgain = ->
+          player.playVideo()
+          window.got_volume = false
+        window.setTimeout(startUpAgain, 1200)
+      window.setTimeout(loopingNow, 1000)
+    fadeOut = ->
+      if window.got_volume == false
+        window.volume = player.getVolume()
+        window.got_volume = true
+        halfVolume = 0.5 * window.volume
+        quarterVolume = 0.25 * window.volume
+        tinyVolume = 0.1 * window.volume
+        player.setVolume(halfVolume)
+        softAndSlow = ->
+          player.setVolume(quarterVolume)
+        window.setTimeout(softAndSlow, 500)
+    if time > clip_end
+      fadeOut()
+      loopNow()
+
+    arr = array_builder()
+    do_scroll = scroll(arr, time)
+
+  onPlayerStateChange = (event) ->
+    if event.data is YT.PlayerState.PLAYING and not done
+      setTimeout stopVideo, 6000
+      done = true
+
+  counter = setInterval(countVideoPlayTime, 1000)
+  done = false

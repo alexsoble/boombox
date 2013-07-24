@@ -79,7 +79,7 @@ $ ->
           console.log "sliding up"
           $("#lyrics").children().eq(0).slideUp()
           $("#lyrics").children().eq(1).slideUp()
-        window.setTimeout(slideUpLyrics, ((duration + .5) * 1000))
+        window.setTimeout(slideUpLyrics, (duration + 1) * 1000)
 
     exact_time = player.getCurrentTime()
     time = Math.round(exact_time)
@@ -120,6 +120,13 @@ $ ->
 
   counter = setInterval(countVideoPlayTime, 1000)
   done = false
+
+  quiz = $('#data').attr('data-quiz')
+
+  if quiz == 'true'
+    $('#lyrics').addClass('quizframe')
+    $('.wrapper').addClass('quizframe')
+    $('#below-video-box').hide()
 
   # CONTROLS
 
