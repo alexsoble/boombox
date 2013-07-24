@@ -673,6 +673,7 @@ $ ->
     $(this).click -> 
       window.choruslang1 = $('#edit-line-lang1').val()
       window.choruslang2 = $('#edit-line-lang2').val()
+      doneEditing()
 
   $('#add-chorus').livequery ->
     $(this).click -> 
@@ -686,6 +687,8 @@ $ ->
             <div class='lyrics-container'>
               <p>#{window.choruslang2}</p>
             </div>
+        doneEditing()
+
           </div>")
 
   $('#delete-line').livequery ->

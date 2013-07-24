@@ -68,18 +68,20 @@ $ ->
     scroll = (array, time) ->
       time_id = 'lang2-' + time
       if array.indexOf(time_id) > -1
-        if $('#lyrics').attr('style') == "display: none;"
-          $('#lyrics').slideDown()
-        lang1 = $("#lang1-#{time}").html()
-        lang2 = $("#lang2-#{time}").html()
-        duration = $("#lang2-#{time}").attr('data-duration')
-        $("#lyrics").children().eq(0).html("<p class='lyrics white'>#{lang1}</p>").hide().slideDown(800)
-        $("#lyrics").children().eq(1).html("<p class='lyrics white'>#{lang2}</p>").hide().slideDown(800)
-        slideUpLyrics = -> 
-          console.log "sliding up"
-          $("#lyrics").children().eq(0).slideUp()
-          $("#lyrics").children().eq(1).slideUp()
-        window.setTimeout(slideUpLyrics, (duration + 1) * 1000)
+
+        if time != $("#lyrics").children(':first').children(':first').attr('id')
+          if $('#lyrics').attr('style') == "display: none;"
+            $('#lyrics').slideDown()
+          lang1 = $("#lang1-#{time}").html()
+          lang2 = $("#lang2-#{time}").html()
+          duration = $("#lang2-#{time}").attr('data-duration')
+          $("#lyrics").children().eq(0).html("<p class='lyrics white' id='#{time}'>#{lang1}</p>").hide().slideDown(800)
+          $("#lyrics").children().eq(1).html("<p class='lyrics white' id='#{time}'>#{lang2}</p>").hide().slideDown(800)
+          window.slid_down = true
+          slideUpLyrics = -> 
+            $("#lyrics").children().eq(0).slideUp()
+            $("#lyrics").children().eq(1).slideUp()
+          window.setTimeout(slideUpLyrics, (duration + 1) * 1000)
 
     exact_time = player.getCurrentTime()
     time = Math.round(exact_time)
@@ -115,7 +117,6 @@ $ ->
 
   onPlayerStateChange = (event) ->
     if event.data is YT.PlayerState.PLAYING and not done
-      setTimeout stopVideo, 6000
       done = true
 
   counter = setInterval(countVideoPlayTime, 1000)
