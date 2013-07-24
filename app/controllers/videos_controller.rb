@@ -50,8 +50,8 @@ class VideosController < ApplicationController
   def index
 
     @demo_videos = [
-      Video.find_by_id(24),
-      Video.find_by_id(25)
+      Interpretation.find(27),
+      Interpretation.find(28)
     ]
 
     # MOST RECENTLY TRANSLATED VIDEOS

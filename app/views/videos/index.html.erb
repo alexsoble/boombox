@@ -32,9 +32,10 @@
       </div>
     </div>
     <div class="row-fluid">
-      <% @demo_videos.each do |v| %>
+      <% @demo_videos.each do |i| %>
+        <% v = i.video %>
         <div class="video-thumb-box interp <%= v.lang1 %>">
-          <strong class="center"><%= link_to "#{v.title.slice(0,32)}", video_url(v.id) %></strong>
+          <strong class="center"><%= link_to "#{v.title.slice(0,32)}", interpretation_url(i) %></strong>
           <br>
           <%= image_tag "http://img.youtube.com/vi/#{v.youtube_id}/1.jpg" %>
         </div>

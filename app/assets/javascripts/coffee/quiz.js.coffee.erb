@@ -2,6 +2,14 @@ player = null
 
 $ ->
 
+  remove_accents = (str) ->
+    str = str.replace(/^\s+|\s+$/g, "").toLowerCase() # trim and force lowercase
+    from = "àáäâèéëêìíïîòóöôùúüûñç"
+    to   = "aaaaeeeeiiiioooouuuunc"
+    for i in [i..from.length]
+      str = str.replace(new RegExp(from.charAt(i), "g"), to.charAt(i))
+    return str
+
   window.slid_down = false
   quiz_array = []
 
@@ -31,7 +39,7 @@ $ ->
     $('#lyrics').addClass('quizframe')
     $('.wrapper').addClass('quizframe')
     $('#below-video-box').hide()
-
+    $('.wrapper').after('<div id="answer-box"></div>')
 
   $('#lyrics').hide()
 
@@ -93,13 +101,18 @@ $ ->
         n = 0
         $(document).keypress( (e) ->
           if String.fromCharCode(e.keyCode) == keyword.charAt(n)
-            $('.wrapper').after("<p>Success!!! #{keyword.charAt(n)}</p>")
+            $('#answer-box').append("#{keyword.charAt(n)}")
             # lyrics_html = $("##{id}").html()
             # lyrics_with_blanks = lyrics_html.replace("#{random_word}", "____")
             # $("##{id}").html(lyrics_with_blanks)
             n += 1
-            if n - 1 == keyword.length
-              $('.wrapper').after("ULTIMATE SUCCESS!!!")
+            console.log n
+            console.log keyword.length
+            if n == keyword.length
+              $('#answer-box').html("")
+              window.player.playVideo()
+              $('.lyrics-box.quizframe').addClass('success')
+              window.slid_down = false
           )  
 
         if window.slid_down == false
@@ -114,7 +127,7 @@ $ ->
 
           pause = -> 
             window.player.pauseVideo()
-          window.setTimeout(pause, duration * 1000)
+          window.setTimeout(pause, (duration - .5) * 1000)
 
     exact_time = player.getCurrentTime()
     time = Math.round(exact_time)
