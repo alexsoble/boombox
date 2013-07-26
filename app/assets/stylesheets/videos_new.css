@@ -138,10 +138,9 @@
   left: 43px; 
   margin-top: 30px; }
 
-#loop-slider { width: 313px; 
-  position: relative;
-  left: 43px;
-  top: -35px; }
+#loop-slider { width: 333px; 
+  left: 33px;
+  top: -26px; }
 
 .end-label { 
   font-size: 12px; 
@@ -155,7 +154,7 @@
   z-index: 1; }
 
 .end-label.playback-left-label { top: 56px; left: 10px; }
-.end-label.playback-right-label { top: -30px; left: 346px; }
+.end-label.playback-right-label { top: -26px; left: 346px; }
 .end-label.playback-left-label.disabled { background-color: #DDDDDD; }
 .end-label.playback-right-label.disabled { background-color: #DDDDDD; }
 

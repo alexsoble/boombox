@@ -105,7 +105,7 @@ $ ->
         <div class='btn btn-info btn-small rounded tight-pack' id='backward'> &larr; </div>
         <div class='btn btn-info btn-small rounded tight-pack' id='play-pause'> pause </div> 
         <div class='btn btn-info btn-small rounded tight-pack' id='forward'> &rarr; </div>
-        <div class='btn btn-info btn-small rounded tight-pack' id='volume'> v </div>
+        <div class='btn btn-info btn-small rounded tight-pack' id='volume'> <i class='icon-volume-up'></i> </div>
         <div class='btn btn-info btn-small rounded tight-pack' id='helpz'> ? </div>
       </div>")
 
@@ -222,8 +222,8 @@ $ ->
     left_boundary = Math.floor(window.time / 45) * 45
     right_boundary = left_boundary + 60
 
-    $('#looping-left-label').children(':first').html("<div class='text-padding'>#{shortFormatTime(left_boundary)}</div>")
-    $('#looping-right-label').children(':first').html("<div class='text-padding'>#{shortFormatTime(right_boundary)}</div>")
+    $('.inner-label.looping-left-label').html("#{shortFormatTime(left_boundary)}")
+    $('.inner-label.looping-right-label').html("#{shortFormatTime(right_boundary)}")
 
     $('.end-label.playback-left-label').addClass('disabled')
     $('.end-label.playback-right-label').addClass('disabled')
@@ -246,8 +246,8 @@ $ ->
         video_duration = window.player.getDuration()
         if end == max and max < video_duration
           if max + 30 < video_duration
-            $('#looping-left-label').text(shortFormatTime(min + 30))
-            $('#looping-right-label').text(shortFormatTime(max + 30))
+            $('.inner-label.looping-left-label').text(shortFormatTime(min + 30))
+            $('.inner-label.looping-right-label').text(shortFormatTime(max + 30))
             $('#loop-slider').rangeSlider(
               bounds:
                 min: min + 30
@@ -255,8 +255,8 @@ $ ->
             ).rangeSlider("values", start, end)
             $('#playback-slider').rangeSlider("values", min + 30, max + 30)
           else
-            $('#looping-left-label').text(shortFormatTime(video_duration - 60))
-            $('#looping-right-label').text(shortFormatTime(video_duration))
+            $('.inner-label.looping-left-label').text(shortFormatTime(video_duration - 60))
+            $('.inner-label.looping-right-label').text(shortFormatTime(video_duration))
             $('#loop-slider').rangeSlider(
               bounds:
                 min: video_duration - 60
@@ -266,8 +266,8 @@ $ ->
       shiftLeft = -> 
         if start == min and min > 0
           if min > 30
-            $('#looping-left-label').text(shortFormatTime(min - 30))
-            $('#looping-right-label').text(shortFormatTime(max - 30))
+            $('.inner-label.looping-left-label').text(shortFormatTime(min - 30))
+            $('.inner-label.looping-right-label').text(shortFormatTime(max - 30))
             $('#loop-slider').rangeSlider(
               bounds:
                 min: min - 30
@@ -275,8 +275,8 @@ $ ->
             ).rangeSlider("values", start, end)
             $('#playback-slider').rangeSlider("values", min - 30, max - 30)
           else
-            $('#looping-left-label').text(shortFormatTime(0))
-            $('#looping-right-label').text(shortFormatTime(60))
+            $('.inner-label.looping-left-label').text(shortFormatTime(0))
+            $('.inner-label.looping-right-label').text(shortFormatTime(60))
             $('#loop-slider').rangeSlider(
               bounds:
                 min: 0
@@ -622,7 +622,10 @@ $ ->
         $('.ui-rangeSlider-leftLabel.loop-handle-label').html("<div class='text-padding'>#{shortFormatTime(window.loop * (window.section - 1))}</div>")
         $('.ui-rangeSlider-rightLabel.loop-handle-label').html("<div class='text-padding'>#{shortFormatTime(window.loop * window.section)}</div>")
       else
-        player.seekTo(window.time - 15)
+        if window.time > 14
+          player.seekTo(window.time - 15)
+        else
+          player.seekTo(0)
 
   $('#play-pause').livequery ->
     $(this).click ->
