@@ -1,6 +1,26 @@
 
-#answer-box { font-size: 30px; text-align: center; color: black; }
+#answer-box { font-size: 30px; 
+  text-align: center; 
+  color: black;  }
 
 .lyrics-box.quizframe.success { top: 400px; 
   background: rgba(0, 155, 0, .3) }
 
+#score-box { width: 90px;
+  height: 90px;
+  border-radius: 45px;
+  background-color: #9B59BB;
+  text-align: center; 
+  position: relative;
+  left: 500px;
+  top: 100px; }
+
+#score-text {  color: white;
+  line-height: 90px; }
+
+.wrapper.quizframe { top: 400px; 
+  height: 400px; 
+  width: 600px; }
+
+.lyrics-box.quizframe { top: 400px; 
+  background: rgba(0, 0, 205, .3) }

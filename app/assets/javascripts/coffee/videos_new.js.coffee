@@ -118,7 +118,7 @@ $ ->
     else
       $('#settings').append("
         <div style='float: right; margin-right: 10px; margin-top: 5px;'>
-          <span style='color: white;'>Play in loops:</span>
+          <span style='color: white;'>Play in loops?</span>
           <div class='btn btn-small rounded loop-toggle' style='background-color: black; width: 80px;'>
             <div class='btn btn-primary btn-small rounded' id='loop-on'> turn on </div>
           </div>
@@ -176,7 +176,7 @@ $ ->
         shortFormatTime(val)
     )
     
-    $('#playback-left-label').html('0:00')
+    $('#playback-left-label').children(':first').html('0:00')
     if window.video_duration != undefined
       $('#playback-right-label').children(':first').html(shortFormatTime(video_duration))
 
@@ -213,15 +213,15 @@ $ ->
         shortFormatTime(val)
       )
 
-    $('#loop-slider').children().eq(0).children().eq(0).attr('style','background-color: #00FFFF;')
+    $('#loop-slider').children().eq(0).children().eq(1).attr('style','background-color: #0F82F5;')
     $('#loop-slider').children().eq(3).addClass('loop-handle-label')
     $('#loop-slider').children().eq(4).addClass('loop-handle-label')
 
     left_boundary = Math.floor(window.time / 45) * 45
     right_boundary = left_boundary + 60
 
-    $('#looping-left-label').html("<div class='text-padding'>#{shortFormatTime(left_boundary)}</div>")
-    $('#looping-right-label').html("<div class='text-padding'>#{shortFormatTime(right_boundary)}</div>")
+    $('#looping-left-label').children(':first').html("<div class='text-padding'>#{shortFormatTime(left_boundary)}</div>")
+    $('#looping-right-label').children(':first').html("<div class='text-padding'>#{shortFormatTime(right_boundary)}</div>")
     $('#playback-slider').rangeSlider("values", $('#looping-left-label').html(), $('#looping-right-label').html())    
 
     $('.ui-rangeSlider-leftLabel.loop-handle-label').children().eq(0).html("<div class='text-padding'>#{shortFormatTime(window.time)}</div>")

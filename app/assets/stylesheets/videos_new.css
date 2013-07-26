@@ -138,10 +138,9 @@
 .end-label { 
   font-size: 12px; 
   color: white; 
-  background-color: #0F82F5; 
+  background-color: #6a59bb; 
   text-align: center;
   border-radius: 10px;
-  opacity: .9; 
   position: relative; 
   width: 30px; 
   height: 30px; 
@@ -150,14 +149,13 @@
 
 .end-label#playback-left-label { top: 3px; }
 .end-label#playback-right-label { top: -90px; left: 250px; }
-.end-label#looping-left-label { background-color: #00FFFF; top: -85px; }
-.end-label#looping-right-label { background-color: #00FFFF; top: -180px; left: 250px; }
+.end-label#looping-left-label { background-color: #0F82F5; top: -85px; }
+.end-label#looping-right-label { background-color: #0F82F5; top: -180px; left: 250px; }
 
 #adjust-playback-label { margin-left: 15px; margin-top: 15px; }
 #adjust-loops-label { margin-left: 15px; margin-top: 5px; }
 
 .playback-handle.looping { 
-  background-color: #00FFFF;
   opacity: 1; }
 
 .loop-handle-label {

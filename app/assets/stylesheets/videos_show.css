@@ -12,9 +12,6 @@
 
 .wrapper { overflow: hidden; width: 600px; }
 
-.wrapper.quizframe { top: 400px; 
-  height: 100px; }
-
 .lyrics-box { background: rgba(0, 0, 0, .3);
   height: 80px;
   width: 610px;
@@ -23,9 +20,6 @@
   border-radius: 10px;
   position: absolute; 
   overflow: auto; }
-
-.lyrics-box.quizframe { top: 400px; 
-  background: rgba(0, 0, 205, .3) }
 
 .text-container { margin-top: 10px; margin-bottom: 10px; }
 
