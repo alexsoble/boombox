@@ -101,35 +101,28 @@ $ ->
   sliderSetup = ->
 
     $('#settings').append("
-      <div style='float: left; margin-left: 10px; margin-top: 5px;'>
-        <div class='btn btn-primary btn-small rounded' id='backward'> &larr; </div>
-        <div class='btn btn-primary btn-small rounded' id='play-pause'> pause </div> 
-        <div class='btn btn-primary btn-small rounded' id='forward'> &rarr; </div>
+      <div style='float: right; margin-left: 10px; margin-top: 10px;'>
+        <div class='btn btn-info btn-small rounded' id='backward'> &larr; </div>
+        <div class='btn btn-info btn-small rounded' id='play-pause'> pause </div> 
+        <div class='btn btn-info btn-small rounded' id='forward'> &rarr; </div>
       </div>")
 
     if window.loop != false
-      $('#settings').append("
-        <div style='float: right; margin-right: 10px; margin-top: 5px;'>
-          <span style='color: white;'>Play in loops:</span>
-          <div class='btn btn-small rounded loop-toggle' style='background-color: black; width: 80px;'>
-            <div class='btn btn-primary btn-small rounded' id='loop-on'> turn off </div>
-          </div>
-        </div>")
+      loop_toggle_initalize = "turn off"
+      loop_toggle_initalize_style = "float: left;"
     else
-      $('#settings').append("
-        <div style='float: right; margin-right: 10px; margin-top: 5px;'>
-          <span style='color: white;'>Play in loops?</span>
-          <div class='btn btn-small rounded loop-toggle' style='background-color: black; width: 80px;'>
-            <div class='btn btn-primary btn-small rounded' id='loop-on'> turn on </div>
-          </div>
-        </div>")
+      loop_toggle_initalize = "turn on"
+      loop_toggle_initalize_style = "float: right;"
 
     $('#settings').append("
-      <div id='loop-labels'>
-        <div id='adjust-playback-label' style='color: white;'>Adjust time:</div>
-        <br>
-        <div id='adjust-loops-label' style='color: white;'>Adjust loops:</div>
-      </div> 
+      <div style='float: left; margin-left: 10px; margin-top: 10px; width: 220px;'>
+        <p style='float: left;'>Play in loops?</p>
+        <div class='btn btn-small rounded loop-toggle'>
+          <div class='btn btn-info btn-small rounded' id='loop-on' style='#{loop_toggle_initalize_style}'> #{loop_toggle_initalize} </div>
+        </div>
+      </div>")
+
+    $('#settings').append("
       <div id='loop-settings'>
         <div id='playback-left-label' class='end-label'><span class='padded-label'></span></div>
           <div id='playback-slider'></div>
@@ -832,10 +825,12 @@ $ ->
         window.section = window.time / window.loop
         loopingControls()
         $('#loop-on').html('turn off')
+        $('#loop-on').attr('style','float: left;')
       else
         window.loop = false
         playbackControls(window.video_duration)
         $('#loop-on').html('turn on')
+        $('#loop-on').attr('style','float: right;')
 
   $('#difficulty-settings').hide()
 
