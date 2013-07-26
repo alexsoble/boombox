@@ -113,59 +113,56 @@
 
 #settings { position: relative; 
   top: -15px; 
-  height: 160px; 
+  height: 120px; 
   background-color: white;
   border: 2px solid black;
   border-radius: 10px; }
+#settings.looping { height: 180px; }
 
 #difficulty-settings { float: left; }
 
-#loop-settings { float: right; 
-  width: 350px; 
-  height: 100px; }
+#loop-settings { width: 360px; 
+  height: 100px; 
+  margin: 10px; }
 .loop-toggle {
   float: right; 
   background-color: #DDDDDD; 
-  width: 90px; 
+  width: 80px; 
   position: relative;
   bottom: 2px; }
 #loop-on {
   margin-right: 0;
   margin-left: 0;}
 
-#loop-labels {
-  float: left; 
-  background-color: black;
-  height: 104px; 
-  width: 120px; }
+#playback-slider { width: 313px;
+  left: 43px; 
+  margin-top: 30px; }
 
-#playback-slider { width: 240px; 
-  margin: 20px;
+#loop-slider { width: 313px; 
   position: relative;
-  left: 10px;
-  top: -44px; }
-
-#loop-slider { width: 260px; 
-  margin: 20px;
-  position: relative;
-  top: -135px; }
+  left: 43px;
+  top: -35px; }
 
 .end-label { 
   font-size: 12px; 
   color: white; 
-  background-color: #6a59bb; 
+  background-color: #0F82F5; 
   text-align: center;
   border-radius: 10px;
   position: relative; 
-  width: 30px; 
+  width: 40px; 
   height: 30px; 
-  margin: 10px; 
   z-index: 1; }
 
-.end-label#playback-left-label { top: 3px; }
-.end-label#playback-right-label { top: -90px; left: 250px; }
-.end-label#looping-left-label { background-color: #0F82F5; top: -85px; }
-.end-label#looping-right-label { background-color: #0F82F5; top: -180px; left: 250px; }
+.end-label.playback-left-label { top: 56px; left: 10px; }
+.end-label.playback-right-label { top: -30px; left: 346px; }
+.end-label.playback-left-label.disabled { background-color: #DDDDDD; }
+.end-label.playback-right-label.disabled { background-color: #DDDDDD; }
+
+.end-label.looping-left-label { top: 0px; left: 10px; }
+.end-label.looping-right-label { top: -50px; left: 346px; }
+
+.inner-label { width: 36px; height: 26px; margin: 2px; color: white; position: absolute; top: 2px; }
 
 #adjust-playback-label { margin-left: 15px; margin-top: 15px; }
 #adjust-loops-label { margin-left: 15px; margin-top: 5px; }
@@ -183,7 +180,7 @@
 .ui-rangeSlider-leftLabel.loop-handle-label { bottom: -24px; }
 .ui-rangeSlider-rightLabel.loop-handle-label { bottom: -24px; }
 
-.tight-pack { margin-left: 10px; margin-top: 10px; margin-right: 2px; }
+.tight-pack { margin-right: 1px !important; margin-left: 0px !important; }
 
 select { width: 150px; }
 

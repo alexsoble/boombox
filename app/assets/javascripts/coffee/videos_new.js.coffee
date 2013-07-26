@@ -101,45 +101,51 @@ $ ->
   sliderSetup = ->
 
     $('#settings').append("
-      <div style='float: right; margin-left: 10px; margin-top: 10px;'>
-        <div class='btn btn-info btn-small rounded' id='backward'> &larr; </div>
-        <div class='btn btn-info btn-small rounded' id='play-pause'> pause </div> 
-        <div class='btn btn-info btn-small rounded' id='forward'> &rarr; </div>
+      <div style='float: right; margin-right: 20px; margin-top: 20px;'>
+        <div class='btn btn-info btn-small rounded tight-pack' id='backward'> &larr; </div>
+        <div class='btn btn-info btn-small rounded tight-pack' id='play-pause'> pause </div> 
+        <div class='btn btn-info btn-small rounded tight-pack' id='forward'> &rarr; </div>
+        <div class='btn btn-info btn-small rounded tight-pack' id='volume'> v </div>
+        <div class='btn btn-info btn-small rounded tight-pack' id='helpz'> ? </div>
       </div>")
 
     if window.loop != false
       loop_toggle_initalize = "turn off"
-      loop_toggle_initalize_style = "float: left;"
+      loop_toggle_initalize_style = "float: right;"
+      $('#settings').addClass('looping')
     else
       loop_toggle_initalize = "turn on"
-      loop_toggle_initalize_style = "float: right;"
+      loop_toggle_initalize_style = "float: left;"
 
     $('#settings').append("
-      <div style='float: left; margin-left: 10px; margin-top: 10px; width: 220px;'>
-        <p style='float: left;'>Play in loops?</p>
+      <div style='float: left; margin-left: 20px; margin-top: 20px; width: 160px;'>
+        <p style='float: left;'>Loops?</p>
         <div class='btn btn-small rounded loop-toggle'>
-          <div class='btn btn-info btn-small rounded' id='loop-on' style='#{loop_toggle_initalize_style}'> #{loop_toggle_initalize} </div>
+          <div class='btn btn-info btn-small rounded tight-pack' id='loop-on' style='#{loop_toggle_initalize_style}'> #{loop_toggle_initalize} </div>
         </div>
       </div>")
 
     $('#settings').append("
       <div id='loop-settings'>
-        <div id='playback-left-label' class='end-label'><span class='padded-label'></span></div>
+        <div class='playback-left-label end-label'><div class='playback-left-label inner-label'></div></div>
           <div id='playback-slider'></div>
-        <div id='playback-right-label' class='end-label'><span class='padded-label'></span></div>
-        <div id='looping-left-label' class='end-label'><span class='padded-label'></span></div>
+        <div class='playback-right-label end-label'><div class='playback-right-label inner-label'></div></div>
+        <div class='looping-left-label end-label'><div class='looping-left-label inner-label'></div></div>
           <div id='loop-slider'></div>
-        <div id='looping-right-label' class='end-label'><span class='padded-label'></span></div>
-      </div> 
-      <!-- <br>
-      <span id='set-difficulty'><a>Video difficulty</a></span>
-      <div class='controls'>
-        <select id='difficulty-settings'>
-          <option value='beginner' class='difficulty-setting'>Beginner</option>
-          <option value='intermediate' class='difficulty-setting'>Intermediate</option>
-          <option value='advanced' class='difficulty-setting'>Advanced</option>
-        </select>
-      --> ")
+        <div class='looping-right-label end-label'><div class='looping-right-label inner-label'></divr></div>
+      </div>")
+
+    $('#loop-settings').after("
+      <!---<div style='margin-left: 20px;'>
+        <div class='btn btn-info btn-small rounded' style='position: absolute; left: 20px bottom: 400px;'> Teacher tools </div>
+         <span id='set-difficulty'><a>Video difficulty</a></span>
+        <div class='controls'>
+          <select id='difficulty-settings'>
+            <option value='beginner' class='difficulty-setting'>Beginner</option>
+            <option value='intermediate' class='difficulty-setting'>Intermediate</option>
+            <option value='advanced' class='difficulty-setting'>Advanced</option>
+          </select> -->
+      </div>")
 
   playbackControls = (video_duration) ->
 
@@ -169,13 +175,16 @@ $ ->
         shortFormatTime(val)
     )
     
-    $('#playback-left-label').children(':first').html('0:00')
+    $('.inner-label.playback-left-label').html('0:00')
     if window.video_duration != undefined
-      $('#playback-right-label').children(':first').html(shortFormatTime(video_duration))
+      $('.inner-label.playback-right-label').html(shortFormatTime(video_duration))
 
     $('#playback-slider').children().eq(0).children().eq(1).addClass('playback-handle').addClass('looping')
     $('#playback-slider').children().eq(3).hide()
     $('#playback-slider').children().eq(4).hide()
+
+    $('.end-label.playback-left-label').removeClass('disabled')
+    $('.end-label.playback-right-label').removeClass('disabled')
 
     $('#playback-slider').on("valuesChanging", (e, data) ->
       if window.loop is false
@@ -215,6 +224,10 @@ $ ->
 
     $('#looping-left-label').children(':first').html("<div class='text-padding'>#{shortFormatTime(left_boundary)}</div>")
     $('#looping-right-label').children(':first').html("<div class='text-padding'>#{shortFormatTime(right_boundary)}</div>")
+
+    $('.end-label.playback-left-label').addClass('disabled')
+    $('.end-label.playback-right-label').addClass('disabled')
+
     $('#playback-slider').rangeSlider("values", $('#looping-left-label').html(), $('#looping-right-label').html())    
 
     $('.ui-rangeSlider-leftLabel.loop-handle-label').children().eq(0).html("<div class='text-padding'>#{shortFormatTime(window.time)}</div>")
@@ -567,6 +580,8 @@ $ ->
             player.setVolume(quarterVolume)
           window.setTimeout(softAndSlow, 500)
       if window.time > (window.loop) * (window.section + .6)
+        loop_range = $('#loop-slider').children().eq(0).children().eq(1)
+        loop_range.animate({width: 'toggle'}, window.loop * 1000) 
         fadeOut()
         loopNow()
 
@@ -825,12 +840,14 @@ $ ->
         window.section = window.time / window.loop
         loopingControls()
         $('#loop-on').html('turn off')
-        $('#loop-on').attr('style','float: left;')
+        $('#loop-on').attr('style','float: right;')
+        $('#settings').addClass('looping')
       else
         window.loop = false
         playbackControls(window.video_duration)
         $('#loop-on').html('turn on')
-        $('#loop-on').attr('style','float: right;')
+        $('#loop-on').attr('style','float: left;')
+        $('#settings').removeClass('looping')
 
   $('#difficulty-settings').hide()
 

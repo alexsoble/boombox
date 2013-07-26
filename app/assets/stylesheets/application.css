@@ -55,8 +55,6 @@ h3 { font-size: 18px !important; line-height: 22px !important }
 
 .white { color: white; }
 
-.padded-label { position: relative; top: 5px }
-
 .red { color: red; }
 .blue { color: #007FFF; }
 .visible { overflow: visible !important;}
