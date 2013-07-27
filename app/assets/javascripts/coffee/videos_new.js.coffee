@@ -133,6 +133,7 @@ $ ->
         <div class='looping-left-label end-label'><div class='looping-left-label inner-label'></div></div>
           <div id='loop-slider'></div>
         <div class='looping-right-label end-label'><div class='looping-right-label inner-label'></divr></div>
+        <div id=loop-status'></div>
       </div>")
 
     $('#loop-settings').after("
@@ -377,9 +378,11 @@ $ ->
         $('#lyrics-box').prepend("<div id='start-lyrics'></div>")
         correct_line = $("#start-lyrics")
 
+      if window.loop != false then duration = window.loop else duration = 4
+
       if window.translation_type == 'lang1_and_lang2'
         correct_line.after("
-            <div class='line' data-time=#{window.time} data-duration=#{window.loop ?= 4}>
+            <div class='line' data-time=#{window.time} data-duration=#{duration}>
               <div class='lyrics-container'>
                 <p>#{lang1}</p>
               </div>
@@ -389,7 +392,7 @@ $ ->
             </div>")
       if window.translation_type == 'just_lang2'
         correct_line.after("
-            <div class='line' data-time=#{window.time} data-duration=#{window.loop ?= 4}>
+            <div class='line' data-time=#{window.time} data-duration=#{duration}>
               <div class='lyrics-container'>
                 <p>#{lang2}</p>
               </div>
@@ -403,6 +406,21 @@ $ ->
       $('.ui-rangeSlider-leftLabel.loop-handle-label').children(':first').html("<div class='text-padding'>#{shortFormatTime(window.time)}</div>")
       $('.ui-rangeSlider-rightLabel.loop-handle-label').children(':first').html("<div class='text-padding'>#{shortFormatTime(window.time + window.loop)}</div>")
       window.player.seekTo(window.section * window.loop)
+
+      if window.loop != false
+        number_of_loops = $('.line').length
+        console.log "number_of_loops: " + number_of_loops
+        total_seconds = 0
+        $('.line').each(->
+          total_seconds += parseInt($(this).attr('data-duration'))
+        )
+        console.log "total_seconds: " + total_seconds
+        fraction = total_seconds / window.video_duration
+        percentage = (Math.round(fraction * 10000))/100 + '%'
+        if .4 > fraction then status = "Solid start!"
+        if .7 >= fraction >= .4 then status = "You got this!"
+        if fraction > .7 then status = "Nearly there!"
+        $('#loop-status').html("You've translated #{number_of_loops} loops, totalling #{total_seconds} out of #{total_seconds}, or approximately #{percentage} of the video. #{status}")
 
     resetForNextLine = -> 
       $('.preview-button').html('<div class="btn btn-info" id="preview-button">Preview</div>').effect('highlight')
@@ -828,7 +846,6 @@ $ ->
             player.seekTo(start)
             window.loop = end - start
             window.section = start / window.loop
-            $("#loop-status").html("Playing in a loop from #{shortFormatTime(start)} to #{shortFormatTime(end)}.")
           ).bind("valuesChanging", (e, data) ->
             $('#loop-settings').slideUp()
           )

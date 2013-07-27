@@ -175,7 +175,7 @@
   color: white;
   height: 15px; width: 15px; 
   position: relative;
-  z-index: 2; }
+  border-radius: 10px; }
 .ui-rangeSlider-leftLabel.loop-handle-label { bottom: -24px; }
 .ui-rangeSlider-rightLabel.loop-handle-label { bottom: -24px; }
 
