@@ -503,6 +503,14 @@ $ ->
           <input type='text' class='input-xlarge lang2-line'>
         </div>")
 
+      # ADJUSTING INPUT LINES FOR R-T-L VERSUS L-T-R
+
+      if rtlArray.indexOf(window.lang1) > -1
+        $('.lang1-line').attr('style','direction: rtl;') 
+
+      if rtlArray.indexOf(window.lang2) > -1
+        $('.lang2-line').attr('style','direction: rtl;') 
+
     if window.translation_type == 'just_lang2'
       $('#lang2-input').html("
         <div><i class='left'>#{lang2}&nbsp;</i>
@@ -514,8 +522,10 @@ $ ->
             </div>
           </div>")
       $('#lang1-box').parent().parent().remove()
+      
+      if rtlArray.indexOf(window.lang2) > -1
+        $('.lang2-line').attr('style','direction: rtl;') 
 
-    # LOGIC FOR THE INPUT LINES
 
   if action_name == 'edit'
     inputLineLogic()

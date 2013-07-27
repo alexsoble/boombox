@@ -47,3 +47,8 @@ $ ->
   helloArray['Uyghur'] = 'Ässalamu läykum'
   helloArray['Albanian'] = 'Tung'
   window.helloArray = helloArray
+
+  # R-T-L ARRAY
+
+  rtlArray = ['Arabic','Persian','Urdu','Sindhi','Hebrew','Yiddish']
+  window.rtlArray = rtlArray
