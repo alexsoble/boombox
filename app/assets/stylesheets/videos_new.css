@@ -101,7 +101,7 @@
 #timer {  width: 90px;
   height: 90px;
   border-radius: 45px;
-  background-color: #9B59BB;
+  background-color: #0F82F5;
   text-align: center; }
 
 #big-timer {  color: white;
@@ -150,8 +150,9 @@
   border-radius: 10px;
   position: relative; 
   width: 40px; 
-  height: 30px; 
-  z-index: 1; }
+  height: 30px; }
+
+.loop-range-label { top: -4px; height: 18px; width: 30px; }
 
 .end-label.playback-left-label { top: 56px; left: 10px; }
 .end-label.playback-right-label { top: -26px; left: 346px; }
@@ -166,16 +167,15 @@
 #adjust-playback-label { margin-left: 15px; margin-top: 15px; }
 #adjust-loops-label { margin-left: 15px; margin-top: 5px; }
 
-.playback-handle.looping { 
-  opacity: 1; }
-
 .loop-handle-label {
   font-size: 12px; 
   background-color: #134F5C;
   color: white;
   height: 15px; width: 15px; 
   position: relative;
-  border-radius: 10px; }
+  border-radius: 10px;
+  width: 20px; }
+
 .ui-rangeSlider-leftLabel.loop-handle-label { bottom: -24px; }
 .ui-rangeSlider-rightLabel.loop-handle-label { bottom: -24px; }
 

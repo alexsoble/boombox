@@ -180,12 +180,10 @@ $ ->
     if window.video_duration != undefined
       $('.inner-label.playback-right-label').html(shortFormatTime(video_duration))
 
-    $('#playback-slider').children().eq(0).children().eq(1).addClass('playback-handle').addClass('looping')
-    $('#playback-slider').children().eq(3).hide()
-    $('#playback-slider').children().eq(4).hide()
-
     $('.end-label.playback-left-label').removeClass('disabled')
     $('.end-label.playback-right-label').removeClass('disabled')
+
+    $('#playback-slider').children().eq(4).html("")
 
     $('#playback-slider').on("valuesChanging", (e, data) ->
       if window.loop is false
@@ -235,6 +233,9 @@ $ ->
     $('.ui-rangeSlider-rightLabel.loop-handle-label').children().eq(0).html("<div class='text-padding'>#{shortFormatTime(window.time + window.loop)}</div>")
 
     $('#playback-slider').rangeSlider("values", left_boundary, right_boundary)
+
+    $('#playback-slider').children().eq(3).addClass('end-label').addClass('loop-range-label').html("#{shortFormatTime(left_boundary)}")
+    $('#playback-slider').children().eq(4).addClass('end-label').addClass('loop-range-label').html("#{shortFormatTime(right_boundary)}")
 
     $('#loop-slider').on("valuesChanged", (e, data) ->
       bounds = $('#loop-slider').rangeSlider("bounds")
