@@ -52,20 +52,28 @@ $ ->
     $(this).click ->
       window.youtube_id = $(this).attr('data-youtube-id')
       window.title = $(this).children(':first').html()
-      $('#new-translation-button').attr('style','height: 85px; background-color: blue;')
+      $('#new-translation-button').attr('style','height: 125px; background-color: blue; width: 820px;')
       $('#new-translation-button').html("
         <div class='button-text-wrapper'>
           <p class='index-button-text'>#{window.title}</p>
         </div>
         <div id='lang1-button'>
-          <div class='button-text-wrapper'>
-            <p class='index-button-text' style='font-size: 15px'>This video\'s original language is...</p>
+          <div class='translation-option'>
+            <label>This video\'s original language is...</label>
             <div class='ui-widget'>
               <input id='lang1-input-translate' class='lang1-input short-text-box'/>
             </div>
           </div>
-        </div>")
-      $('.index-button-text').hide().slideDown('2000')
+        </div>
+        <div id='lang2-button'>
+          <div class='translation-option'>
+            <label>I want to translate this video into...</label>
+            <div class='ui-widget'>
+              <input class='lang2-input short-text-box'/>
+            </div>
+          </div>
+        </div>
+        ")
 
   availableTags = [ "English", "Dutch", "Afrikaans"
     "Chinese (Mandarin)", "Cantonese", "Japanese", "Korean"
@@ -121,19 +129,6 @@ $ ->
           $.post('/new_video', { 'video' : { 'youtube_id' : "#{window.youtube_id}", 'title' : "#{window.title}", 'lang1' : "#{window.lang1}" } }, (data) ->
             console.log data
             window.video_id = data.video.id )
-
-        # PROMPT USER TO ENTER LANG2
-
-          $('#lang1-button').hide()
-          $('#lang1-button').html("
-              <div class='button-text-wrapper'>
-                <p class='index-button-text smaller' style='font-size: 15px'>I want to translate this video into...</p>
-                  <div class='ui-widget'>
-                    <input class='lang2-input short-text-box'/>
-                  </div>
-                </div>")
-          $('#lang1-button').slideDown()
-
 
   $('.lang2-input').livequery ->
     $(this).keyup (e) ->
