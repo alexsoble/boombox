@@ -1,3 +1,13 @@
+#title-box { position: relative; 
+  top: 42px;
+  width: 420px; 
+  height: 60px; 
+  text-align: center;
+  background-color: white;
+  border: 2px solid black;
+  border-top-left-radius: 10px;
+  border-top-right-radius: 10px; }
+
 .very-wide-box {
   width: 1000px;
   text-align: center;
@@ -7,9 +17,7 @@
 
 #outer-video-box { overflow: visible; position: relative; }
 
-#outer-video-box.sticky { 
-  position: fixed; 
-  bottom: 210px; }
+#new-video-box { border: 2px solid black; }
 
 #copy-and-paste-box {
   margin-top: 150px; }
@@ -96,7 +104,7 @@
 
 #timer-box { position: absolute;
   left: -45px;
-  top: 90px; }
+  top: 160px; }
 
 #timer {  width: 90px;
   height: 90px;
@@ -105,7 +113,7 @@
   text-align: center; }
 
 #big-timer {  color: white;
-  line-height: 90px; }
+  line-height: 88px; }
 
 /*  --------- CONTROLS BELOW VIDEO --------- */
 
@@ -116,7 +124,9 @@
   height: 120px; 
   background-color: white;
   border: 2px solid black;
-  border-radius: 10px; }
+  border-bottom-left-radius: 10px;
+  border-bottom-right-radius: 10px; }
+
 #settings.looping { height: 180px; }
 
 #difficulty-settings { float: left; }

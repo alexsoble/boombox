@@ -223,18 +223,15 @@ $ ->
         max: 12
       formatter: (val) -> 
         shortFormatTime(val)
-      )
+      ).rangeSlider("values", window.time, window.time + 4)
     
   # CHANGES TO THE PLAYBACK SLIDER
 
     $('.end-label.playback-left-label').addClass('disabled')
     $('.end-label.playback-right-label').addClass('disabled')
-
     $('#playback-slider').children().eq(3).addClass('end-label').addClass('loop-range-label').html("#{shortFormatTime(left_boundary)}")
     $('#playback-slider').children().eq(4).addClass('end-label').addClass('loop-range-label').html("#{shortFormatTime(right_boundary)}")
-
-    $('#playback-slider').children().eq(0).children().eq(1).addClass('timer-blue')
-
+    $('#playback-slider').children().eq(0).children().eq(1).attr('style','background-color: #0F82F5;')
     $('#playback-slider').rangeSlider("values", left_boundary, right_boundary)
 
   # BEHAVIOR FOR THE PLAYBACK SLIDER
@@ -293,6 +290,7 @@ $ ->
       end = data.values.max
 
       shiftRight = -> 
+        console.log "shiftRight"
         video_duration = window.player.getDuration()
         if end == max and max < video_duration
           if max + 30 < video_duration
@@ -314,6 +312,7 @@ $ ->
             ).rangeSlider("values", video_duration - 59, video_duration - 55)
 
       shiftLeft = -> 
+        console.log "shiftLeft"
         if start == min and min > 0
           if min > 30
             $('.inner-label.looping-left-label').text(shortFormatTime(min - 30))
@@ -628,7 +627,9 @@ $ ->
 
     # LOOP BAR INCHES FORWARD HERE
     if window.loop isnt false
-      $('#loop-bar').attr("style","width: #{((window.time - current_loop_time)/(window.loop)) * 330 * (window.loop / 60)}px")
+      $('#loop-bar').animate(
+        { width: "#{((window.time - current_loop_time)/(window.loop)) * 330 * (window.loop / 60)}px" }, 
+      )
 
     # DISPLAYING THE TIMING ABOVE THE TRANSLATION INPUT LINES 
     if window.loop isnt false
@@ -640,11 +641,13 @@ $ ->
     if window.loop isnt false
       loopNow = ->
         loopingNow = ->
+          $('#loop-bar').animate({width: 'toggle'})
           player.seekTo(window.loop * window.section, true)
           player.setVolume(window.volume)
           player.pauseVideo()
           startUpAgain = ->
             player.playVideo()
+            # $('#loop-bar').animate({width: "#{330 * (window.loop / 60)}px"}, duration: "#{window.loop * 1000}")
             window.got_volume = false
           window.setTimeout(startUpAgain, 1200)
         window.setTimeout(loopingNow, 1000)
