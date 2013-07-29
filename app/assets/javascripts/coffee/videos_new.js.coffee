@@ -42,6 +42,7 @@ $ ->
   window.editing_line_timing = 'off'
   window.editing_line_ask_heyu = 'off'
   window.choruslang2 = ''
+  window.loop_range_appended = false
   $('#timer-box').html('<div id="timer">
     <h2 class="timer-text" id="big-timer"></h2>
     </div>')
@@ -57,6 +58,8 @@ $ ->
     $('#red-arrow').hide()
     $('#title-box').slideDown('5000')
     $('#timer-box').hide()
+    $('#settings').hide()
+    $('#lyrics').hide()
     $("#controls").append('<br><div class="btn-group relative" id="settings-and-start">
         <br><br><br><br>
         <a class="btn btn-info btn-large center-pill rounded" id="start" style="position: absolute; left: 108px;">Start translating</a>
@@ -67,6 +70,7 @@ $ ->
 
   $("#start").livequery ->
     $(this).click -> 
+      $('#settings').slideDown()
       window.player.pauseVideo()
       $(this).remove()
       $('#timer-box').show()
@@ -185,7 +189,11 @@ $ ->
 
     $('#playback-slider').children().eq(4).html("")
 
-    $('#playback-slider').on("valuesChanging", (e, data) ->
+  # BEHAVIOR FOR THE PLAYBACK SLIDER
+
+    $('#playback-slider').off("valuesChanging").off("valuesChanged")
+
+    $('#playback-slider').on("valuesChanged", (e, data) ->
       if window.loop is false
         window.valuesChanging = true
         time = data.values.min
@@ -199,45 +207,85 @@ $ ->
     $('#loop-slider').prev().slideDown()
     $('#adjust-loops-label').slideDown()
 
+    left_boundary = Math.floor(window.time / 45) * 45
+    right_boundary = left_boundary + 60
+
     $('#loop-slider').rangeSlider(
       step: 1
+      bounds:
+        min: left_boundary
+        max: right_boundary
       defaultValues:
         min: window.time
         max: window.time + 4
-      bounds:
-        min: Math.floor(window.time / 45) * 45
-        max: Math.floor(window.time / 45) * 45 + 60
       range:
         min: 1
         max: 12
       formatter: (val) -> 
         shortFormatTime(val)
       )
-
-    $('#loop-slider').children().eq(0).children().eq(1).attr('style','background-color: #0F82F5;')
-    $('#loop-slider').children().eq(3).addClass('loop-handle-label')
-    $('#loop-slider').children().eq(4).addClass('loop-handle-label')
-
-    left_boundary = Math.floor(window.time / 45) * 45
-    right_boundary = left_boundary + 60
-
-    $('.inner-label.looping-left-label').html("#{shortFormatTime(left_boundary)}")
-    $('.inner-label.looping-right-label').html("#{shortFormatTime(right_boundary)}")
+    
+  # CHANGES TO THE PLAYBACK SLIDER
 
     $('.end-label.playback-left-label').addClass('disabled')
     $('.end-label.playback-right-label').addClass('disabled')
 
-    $('#playback-slider').rangeSlider("values", $('#looping-left-label').html(), $('#looping-right-label').html())    
+    $('#playback-slider').children().eq(3).addClass('end-label').addClass('loop-range-label').html("#{shortFormatTime(left_boundary)}")
+    $('#playback-slider').children().eq(4).addClass('end-label').addClass('loop-range-label').html("#{shortFormatTime(right_boundary)}")
+
+    $('#playback-slider').children().eq(0).children().eq(1).addClass('timer-blue')
+
+    $('#playback-slider').rangeSlider("values", left_boundary, right_boundary)
+
+  # BEHAVIOR FOR THE PLAYBACK SLIDER
+
+    $('#playback-slider').off("valuesChanging").off("valuesChanged")
+
+    $('#playback-slider').on("valuesChanging", (e, data) ->
+      start = data.values.min
+      end = data.values.max
+      player.seekTo(start)
+      $('.end-label.loop-range-label.ui-rangeSlider-leftLabel').html("#{shortFormatTime(start)}")
+      $('.end-label.loop-range-label.ui-rangeSlider-rightLabel').html("#{shortFormatTime(end)}")
+      $('.inner-label.looping-left-label').html("#{shortFormatTime(start)}")
+      $('.inner-label.looping-right-label').html("#{shortFormatTime(end)}")
+    )
+
+    $('#playback-slider').on("valuesChanged", (e, data) ->
+      start = data.values.min
+      end = data.values.max
+
+      $('#loop-slider').rangeSlider(
+        bounds:
+          min: start
+          max: end
+        )
+      $('#loop-slider').rangeSlider("values", start, start + window.loop)
+      $('.loop-handle-label.ui-rangeSlider-leftLabel').html("#{shortFormatTime(start)}")
+      $('.loop-handle-label.ui-rangeSlider-rightLabel').html("#{shortFormatTime(start + window.loop)}")
+    )
+
+  # CHANGES TO THE LOOP SLIDER
+
+    window.loop_range = $('#loop-slider').children().eq(0).children().eq(1)
+    window.loop_range.attr('style','background-color: #0F82F5;')
+    if window.loop_range_appended == false
+      window.loop_range.append('<div id="loop-bar"></div>')
+      window.loop_range_appended = true
+    $('#loop-slider').children().eq(3).addClass('loop-handle-label')
+    $('#loop-slider').children().eq(4).addClass('loop-handle-label')
+    $('#loop-slider').children().eq(0).children().eq(2).addClass('timer-blue')
+    $('#loop-slider').children().eq(0).children().eq(3).addClass('timer-blue')
+
+    $('.inner-label.looping-left-label').html("#{shortFormatTime(left_boundary)}")
+    $('.inner-label.looping-right-label').html("#{shortFormatTime(right_boundary)}")
 
     $('.ui-rangeSlider-leftLabel.loop-handle-label').children().eq(0).html("<div class='text-padding'>#{shortFormatTime(window.time)}</div>")
     $('.ui-rangeSlider-rightLabel.loop-handle-label').children().eq(0).html("<div class='text-padding'>#{shortFormatTime(window.time + window.loop)}</div>")
 
-    $('#playback-slider').rangeSlider("values", left_boundary, right_boundary)
+  # BEHAVIOR FOR THE LOOP SLIDER: SHIFT LEFT / SHIFT RIGHT CONTROLS
 
-    $('#playback-slider').children().eq(3).addClass('end-label').addClass('loop-range-label').html("#{shortFormatTime(left_boundary)}")
-    $('#playback-slider').children().eq(4).addClass('end-label').addClass('loop-range-label').html("#{shortFormatTime(right_boundary)}")
-
-    $('#loop-slider').on("valuesChanged", (e, data) ->
+    $('#loop-slider').on("userValuesChanged", (e, data) ->
       bounds = $('#loop-slider').rangeSlider("bounds")
       min = bounds.min
       max = bounds.max
@@ -527,7 +575,6 @@ $ ->
       if rtlArray.indexOf(window.lang2) > -1
         $('.lang2-line').attr('style','direction: rtl;') 
 
-
   if action_name == 'edit'
     inputLineLogic()
 
@@ -572,12 +619,16 @@ $ ->
     window.time = Math.floor(exact_time)
     $(".timer-text").html(formatTime(window.time))
 
+    current_loop_time = window.loop * window.section
+    current_loop_end = window.loop * (window.section + 1)
+
     # PLAYBACK SLIDER MOVES HERE
     if window.loop is false and window.valuesChanging is false
       $('#playback-slider').rangeSlider("values", window.time, window.time + 6)
 
-    current_loop_time = window.loop * window.section
-    current_loop_end = window.loop * (window.section + 1)
+    # LOOP BAR INCHES FORWARD HERE
+    if window.loop isnt false
+      $('#loop-bar').attr("style","width: #{((window.time - current_loop_time)/(window.loop)) * 330 * (window.loop / 60)}px")
 
     # DISPLAYING THE TIMING ABOVE THE TRANSLATION INPUT LINES 
     if window.loop isnt false
@@ -608,9 +659,8 @@ $ ->
           softAndSlow = ->
             player.setVolume(quarterVolume)
           window.setTimeout(softAndSlow, 500)
-      if window.time > (window.loop) * (window.section + .6)
-        loop_range = $('#loop-slider').children().eq(0).children().eq(1)
-        loop_range.animate({width: 'toggle'}, window.loop * 1000) 
+      modifier = .69 + (window.loop * 0.015)
+      if window.time > (window.loop) * (window.section + modifier)
         fadeOut()
         loopNow()
 

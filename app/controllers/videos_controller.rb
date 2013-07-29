@@ -51,6 +51,7 @@ class VideosController < ApplicationController
 
     @demo_videos = [
       Interpretation.find(27),
+      Interpretation.find(66),
       Interpretation.find(28)
     ]
 

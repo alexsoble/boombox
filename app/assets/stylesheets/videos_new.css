@@ -176,6 +176,10 @@
   border-radius: 10px;
   width: 20px; }
 
+#loop-bar { height: 2px; position: relative; top: 9px; background-color: white; }
+
+.timer-blue { background-color: #0F82F5; opacity: 1 }
+
 .ui-rangeSlider-leftLabel.loop-handle-label { bottom: -24px; }
 .ui-rangeSlider-rightLabel.loop-handle-label { bottom: -24px; }
 
