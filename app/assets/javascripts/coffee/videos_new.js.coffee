@@ -1025,7 +1025,8 @@ $ ->
             words_to_save.push word
 
           $.post('/save_quiz_words', { 'quiz_id' : "#{quiz_id}", 'words' : "#{JSON.stringify(words_to_save)}" }, (data) ->
-            console.log data )
+            console.log data
+            window.location.href = "/quizzes/#{quiz_id}" )
         )
 
   # OLD STUFF...  MAYBE NOT USELESS THOUGH? 

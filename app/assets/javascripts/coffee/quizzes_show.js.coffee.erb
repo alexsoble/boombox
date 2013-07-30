@@ -1,0 +1,151 @@
+player = null
+
+$ ->
+
+  remove_accents = (str) ->
+    str = str.replace(/^\s+|\s+$/g, "").toLowerCase() # trim and force lowercase
+    from = "ãàáäâèéëêìíïîòóöôùúüûñç"
+    to = "aaaaaeeeeiiiioooouuuunc"
+    for i in [0..from.length]
+      str = str.replace(from.charAt(i), to.charAt(i))
+    return str
+
+  console.log remove_accents("àáäâèéëêìíïîòóöôùúüûñç")
+
+  $('#lyrics-settings').hide()
+
+  window.slid_down = false
+  quiz_array = []
+
+  lyrics = $('.lyrics')
+
+  for l in lyrics by 2
+
+    id = l.id
+    time = id.substring(6)
+    words = l.innerText.split(/\s+/)
+    number_of_words = words.length
+    random_word_index = Math.floor(Math.random() * number_of_words)
+    random_word = words[random_word_index]
+    quiz_array[time] = random_word
+    window.quiz_array = quiz_array
+    console.log window.quiz_array
+
+    lyrics_html = $("##{id}").html()
+    lyrics_with_blanks = lyrics_html.replace("#{random_word}", "____")
+    $("##{id}").html(lyrics_with_blanks)
+    lyrics_html = $("##{id}").html()
+
+    console.log lyrics_html
+
+  $('#lyrics').addClass('quizframe')
+  $('.wrapper').addClass('quizframe')
+  $('#below-video-box').hide()
+  $('.wrapper').prepend('<div id="answer-box"></div>')
+  $('.wrapper').prepend('<div id="score-box"><div id="score-text"></div></div>')
+  $('#score-box').hide()
+  total = quiz_array.length
+  q = 0 
+
+  $('#lyrics').hide()
+
+  interp_id = $('#data').attr('data-interp-id')
+  video_youtube_id = $('#data').attr('data-video-id')
+
+  if $('#data').attr('data-clip') is 'true'
+    clip = true
+    window.initialize = false
+    window.got_volume = false
+    console.log "clip = true!"
+    clip_start = parseInt($('#data').attr('data-start'))
+    clip_end = clip_start + parseInt($('#data').attr('data-duration'))
+    console.log "clip start: " + clip_start
+    console.log "clip end: " + clip_end
+
+  tag = document.createElement("script")
+  tag.src = "https://www.youtube.com/iframe_api"
+  firstScriptTag = document.getElementsByTagName("script")[0]
+  firstScriptTag.parentNode.insertBefore tag, firstScriptTag
+
+  window.onYouTubeIframeAPIReady = ->
+    player = new YT.Player("show-video-box",
+      height: "380"
+      width: "630"
+      videoId: video_youtube_id
+      playerVars: 
+        controls: 0
+      events:
+        onReady: onPlayerReady
+        onStateChange: onPlayerStateChange)
+    window.player = player
+
+  onPlayerReady = (event) ->
+    if clip == true
+      if window.initialize == false
+        window.player.seekTo(clip_start)
+        window.initialize = true
+    event.target.playVideo()
+
+  countVideoPlayTime = ->
+    array_builder = ->
+      arr = []
+      lyrics = $(".lyrics")
+      jQuery.each lyrics, ->
+        id = $(this).attr("id")
+        arr.push id
+      arr
+
+    scroll = (array, time) ->
+
+      time_id = 'lang2-' + time
+      if array.indexOf(time_id) > -1
+        $('.lyrics-box.quizframe').removeClass('success')
+
+        # THIS LINE'S QUIZ WORD COMES IN HERE
+        keyword = quiz_array[time]
+        keyword = remove_accents(keyword)
+        console.log keyword
+
+        n = 0
+        $(document).keypress( (e) ->
+          if String.fromCharCode(e.keyCode) == keyword.charAt(n)
+            $('#answer-box').append("#{keyword.charAt(n)}")
+            # lyrics_html = $("##{id}").html()
+            # lyrics_with_blanks = lyrics_html.replace("#{random_word}", "____")
+            # $("##{id}").html(lyrics_with_blanks)
+            n += 1
+            console.log n
+            console.log keyword.length
+            if n == keyword.length
+              q += 1
+              $('#answer-box').html("")
+              window.player.playVideo()
+              $('.lyrics-box.quizframe').addClass('success')
+              window.answered = true
+              window.slid_down = false
+              $("#score-text").html("<h2>#{q}/#{total}</h2>")
+          )  
+
+        if window.slid_down == false
+          if $('#lyrics').attr('style') == "display: none;"
+            $('#lyrics').slideDown()
+            $('#score-box').slideDown()
+          lang1 = $("#lang1-#{time}").html()
+          lang2 = $("#lang2-#{time}").html()
+          duration = $("#lang2-#{time}").attr('data-duration')
+          $("#lyrics").children().eq(0).html("<p class='lyrics white'>#{lang1}</p>").hide().slideDown(800)
+          $("#lyrics").children().eq(1).html("<p class='lyrics white'>#{lang2}</p>").hide().slideDown(800)
+          window.slid_down = true
+
+    exact_time = player.getCurrentTime()
+    time = Math.round(exact_time)
+
+    arr = array_builder()
+    do_scroll = scroll(arr, time)
+
+  onPlayerStateChange = (event) ->
+    if event.data is YT.PlayerState.PLAYING and not done
+      done = true
+
+  counter = setInterval(countVideoPlayTime, 1000)
+  done = false

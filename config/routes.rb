@@ -10,9 +10,10 @@ Boombox::Application.routes.draw do
   get '/auth/:provider/callback' => 'sessions#create'
   
   resources :videos
+  resources :interpretations
+  resources :quizzes
   resources :users
   resources :sessions
-  resources :interpretations
 
   get '/interpretations/:id/quiz' => 'interpretations#show'
   

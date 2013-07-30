@@ -17,4 +17,18 @@ class QuizzesController < ApplicationController
 
   end
 
+  def show
+
+    @quiz = Quiz.find(params[:id])
+    @interp = Interpretation.find(@quiz.interpretation_id)
+    @words = []
+
+    Word.where(:quiz_id => @quiz.id).all.each do |w|
+      @words << w.text
+    end
+
+    render "interpretations/show"
+
+  end
+
 end
