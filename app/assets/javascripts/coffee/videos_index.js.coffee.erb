@@ -14,7 +14,7 @@ $ ->
       $.ajax(
         url: 
           if window.n < 5
-            "http://gdata.youtube.com/feeds/api/videos?q=#{request.term}&max-results=6&v=2"
+            "http://gdata.youtube.com/feeds/api/videos?q=#{request.term}&max-results=8&v=2"
           else
             "http://gdata.youtube.com/feeds/api/videos?q=#{request.term}&max-results=#{window.n}&v=2"
         dataType: "xml",
@@ -52,9 +52,9 @@ $ ->
     $(this).click ->
       window.youtube_id = $(this).attr('data-youtube-id')
       window.title = $(this).children(':first').html()
-      $('#new-translation-button').attr('style','height: 125px; background-color: blue; width: 820px;')
+      $('#new-translation-button').attr('style','height: 140px; background-color: blue;')
       $('#new-translation-button').html("
-        <div class='button-text-wrapper'>
+        <div class='button-text-wrapper' style='width: 120px;'>
           <p class='index-button-text'>#{window.title}</p>
         </div>
         <div id='lang1-button'>

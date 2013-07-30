@@ -11,7 +11,15 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130709215003) do
+ActiveRecord::Schema.define(:version => 20130730150754) do
+
+  create_table "clips", :force => true do |t|
+    t.integer  "start"
+    t.integer  "duration"
+    t.integer  "interpretation_id"
+    t.datetime "created_at",        :null => false
+    t.datetime "updated_at",        :null => false
+  end
 
   create_table "interpretations", :force => true do |t|
     t.string    "lang2"
@@ -33,6 +41,13 @@ ActiveRecord::Schema.define(:version => 20130709215003) do
     t.timestamp "created_at",                       :null => false
     t.timestamp "updated_at",                       :null => false
     t.integer   "duration",          :default => 4
+  end
+
+  create_table "quizzes", :force => true do |t|
+    t.integer  "interpretation_id"
+    t.string   "type"
+    t.datetime "created_at",        :null => false
+    t.datetime "updated_at",        :null => false
   end
 
   create_table "requests", :force => true do |t|
@@ -64,6 +79,13 @@ ActiveRecord::Schema.define(:version => 20130709215003) do
     t.timestamp "updated_at", :null => false
     t.string    "lang1"
     t.string    "youtube_id"
+  end
+
+  create_table "words", :force => true do |t|
+    t.integer  "quiz_id"
+    t.string   "text"
+    t.datetime "created_at", :null => false
+    t.datetime "updated_at", :null => false
   end
 
 end

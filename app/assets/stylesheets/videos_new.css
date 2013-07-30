@@ -19,11 +19,7 @@
 
 #new-video-box { border: 2px solid black; }
 
-#copy-and-paste-box {
-  margin-top: 150px; }
-
-.language-option {
-  color: black; }
+.language-option { color: black; }
 
 #lyrics-box { overflow-y: scroll;
  width: 580px; }
@@ -31,6 +27,7 @@
 .video-container {
   margin-left: 80px;
   margin-right: 40px;
+  margin-top: -30px;
   float: left; }
 
 .input-xlarge { width: 220px; }
@@ -121,13 +118,13 @@
 
 #settings { position: relative; 
   top: -15px; 
-  height: 120px; 
+  height: 150px; 
   background-color: white;
   border: 2px solid black;
   border-bottom-left-radius: 10px;
   border-bottom-right-radius: 10px; }
 
-#settings.looping { height: 180px; }
+#settings.looping { height: 220px; }
 
 #difficulty-settings { float: left; }
 
@@ -146,7 +143,7 @@
 
 #playback-slider { width: 313px;
   left: 43px; 
-  margin-top: 30px; }
+  margin-top: 60px; }
 
 #loop-slider { width: 333px; 
   left: 33px;
@@ -164,7 +161,7 @@
 
 .loop-range-label { top: -4px; height: 18px; width: 30px; }
 
-.end-label.playback-left-label { top: 56px; left: 10px; }
+.end-label.playback-left-label { top: 86px; left: 10px; }
 .end-label.playback-right-label { top: -26px; left: 346px; }
 .end-label.playback-left-label.disabled { background-color: #DDDDDD; }
 .end-label.playback-right-label.disabled { background-color: #DDDDDD; }
@@ -193,7 +190,7 @@
 .ui-rangeSlider-leftLabel.loop-handle-label { bottom: -24px; }
 .ui-rangeSlider-rightLabel.loop-handle-label { bottom: -24px; }
 
-.tight-pack { margin-right: 1px !important; margin-left: 0px !important; }
+.tight-pack { margin-right: 1px !important; margin-left: 0px !important; margin-bottom: 5px; }
 
 select { width: 150px; }
 

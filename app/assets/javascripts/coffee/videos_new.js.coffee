@@ -105,12 +105,14 @@ $ ->
   sliderSetup = ->
 
     $('#settings').append("
-      <div style='float: right; margin-right: 20px; margin-top: 20px;'>
+      <div style='float: right; margin-right: 20px; margin-top: 20px; margin-bottom: 5px;'>
         <div class='btn btn-info btn-small rounded tight-pack' id='backward'> &larr; </div>
         <div class='btn btn-info btn-small rounded tight-pack' id='play-pause'> pause </div> 
         <div class='btn btn-info btn-small rounded tight-pack' id='forward'> &rarr; </div>
         <div class='btn btn-info btn-small rounded tight-pack' id='volume'> <i class='icon-volume-up'></i> </div>
         <div class='btn btn-info btn-small rounded tight-pack' id='helpz'> ? </div>
+        <br>
+        <div class='btn btn-info btn-small rounded tight-pack' id='helpz'> Make it a quiz </div>        
       </div>")
 
     if window.loop != false

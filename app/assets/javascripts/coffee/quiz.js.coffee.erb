@@ -11,8 +11,6 @@ $ ->
     return str
 
   console.log remove_accents("àáäâèéëêìíïîòóöôùúüûñç")
-  console.log remove_accents("así")
-  console.log remove_accents("àáäâèéëêìíïîòóöôùúüûñç")
 
   $('#lyrics-settings').hide()
 
@@ -152,21 +150,3 @@ $ ->
 
   counter = setInterval(countVideoPlayTime, 1000)
   done = false
-
-  # CONTROLS
-
-  $("#just-lang2").click ->
-    $(".lang2").slideDown()
-    $(".lang1").hide()
-    $(".lang2").attr("class", "wide-lyrics-container lang2")
-
-  $("#lang1-and-lang2").click ->
-    $(".lang1").show()
-    $(".lang2").show()
-    $(".lang1").attr("class", "narrow-lyrics-container lang1")
-    $(".lang2").attr("class", "narrow-lyrics-container lang2")
-
-  $("#just-lang1").click ->
-    $(".lang1").slideDown()
-    $(".lang2").hide()
-    $(".lang1").attr("class", "wide-lyrics-container lang1")
