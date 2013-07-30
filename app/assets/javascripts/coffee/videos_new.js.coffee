@@ -37,6 +37,7 @@ $ ->
 
   window.loop = false
   window.valuesChanging = false
+  window.quiz_making_mode = false
   window.tool_helptip_displayed = false
   window.editing_line = 'off'
   window.editing_line_timing = 'off'
@@ -111,23 +112,24 @@ $ ->
         <div class='btn btn-info btn-small rounded tight-pack' id='forward'> &rarr; </div>
         <div class='btn btn-info btn-small rounded tight-pack' id='volume'> <i class='icon-volume-up'></i> </div>
         <div class='btn btn-info btn-small rounded tight-pack' id='helpz'> ? </div>
-        <br>
-        <div class='btn btn-info btn-small rounded tight-pack' id='helpz'> Make it a quiz </div>        
       </div>")
 
     if window.loop != false
-      loop_toggle_initalize = "turn off"
+      loop_toggle_initalize = "turn off loops"
       loop_toggle_initalize_style = "float: right;"
       $('#settings').addClass('looping')
     else
-      loop_toggle_initalize = "turn on"
+      loop_toggle_initalize = "turn on loops"
       loop_toggle_initalize_style = "float: left;"
 
     $('#settings').append("
-      <div style='float: left; margin-left: 20px; margin-top: 20px; width: 160px;'>
-        <p style='float: left;'>Loops?</p>
-        <div class='btn btn-small rounded loop-toggle'>
+      <div style='float: left; margin-left: 20px; margin-top: 20px; width: 140px;'>
+        <div class='loop-toggle'>
           <div class='btn btn-info btn-small rounded tight-pack' id='loop-on' style='#{loop_toggle_initalize_style}'> #{loop_toggle_initalize} </div>
+        </div>
+        <br>
+        <div class='quiz-toggle'>
+          <div class='btn btn-info btn-small rounded tight-pack' id='quiz-on'> make it a quiz </div>
         </div>
       </div>")
 
@@ -932,15 +934,28 @@ $ ->
         window.loop = 4
         window.section = window.time / window.loop
         loopingControls()
-        $('#loop-on').html('turn off')
+        $('#loop-on').html('turn off loops')
         $('#loop-on').attr('style','float: right;')
         $('#settings').addClass('looping')
       else
         window.loop = false
         playbackControls(window.video_duration)
-        $('#loop-on').html('turn on')
+        $('#loop-on').html('turn on loops')
         $('#loop-on').attr('style','float: left;')
         $('#settings').removeClass('looping')
+
+  $('.quiz-toggle').livequery -> 
+    $(this).click -> 
+      if window.quiz_making_mode == false
+        window.quiz_making_mode = true
+        $('.loop-toggle').slideUp()
+        $('#quiz-on').attr('style','float: right;')
+        $('#quiz-on').html('quiz mode')
+      else
+        window.quiz_making_mode = false
+        $('.loop-toggle').slideDown()
+        $('#quiz-on').attr('style','float: left;')
+        $('#quiz-on').html('make it a quiz')
 
   $('#difficulty-settings').hide()
 

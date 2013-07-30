@@ -52,9 +52,9 @@ $ ->
     $(this).click ->
       window.youtube_id = $(this).attr('data-youtube-id')
       window.title = $(this).children(':first').html()
-      $('#new-translation-button').attr('style','height: 140px; background-color: blue;')
+      $('#new-translation-button').attr('style','height: 140px; background-color: blue; width: 720px;')
       $('#new-translation-button').html("
-        <div class='button-text-wrapper' style='width: 120px;'>
+        <div class='button-text-wrapper' style='width: 200px;'>
           <p class='index-button-text'>#{window.title}</p>
         </div>
         <div id='lang1-button'>
@@ -128,7 +128,8 @@ $ ->
           window.lang1 = input
           $.post('/new_video', { 'video' : { 'youtube_id' : "#{window.youtube_id}", 'title' : "#{window.title}", 'lang1' : "#{window.lang1}" } }, (data) ->
             console.log data
-            window.video_id = data.video.id )
+            window.video_id = data.video.id
+            console.log "window.video_id: " + window.video_id )
 
   $('.lang2-input').livequery ->
     $(this).keyup (e) ->
@@ -136,7 +137,7 @@ $ ->
       if e.which == 13
 
         input = $(this).val()
-        if availableTags.indexOf(input) > -1
+        if availableTags.indexOf(input) > -1 and window.video_id isnt undefined
 
           window.lang2 = input
           if window.lang1 isnt window.lang2
