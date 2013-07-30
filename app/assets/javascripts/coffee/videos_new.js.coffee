@@ -191,9 +191,9 @@ $ ->
 
   # BEHAVIOR FOR THE PLAYBACK SLIDER
 
-    $('#playback-slider').off("valuesChanging").off("valuesChanged")
+    $('#playback-slider').off("valuesChanging").off("userValuesChanged")
 
-    $('#playback-slider').on("valuesChanged", (e, data) ->
+    $('#playback-slider').on("userValuesChanged", (e, data) ->
       if window.loop is false
         window.valuesChanging = true
         time = data.values.min
@@ -208,9 +208,7 @@ $ ->
     $('#adjust-loops-label').slideDown()
 
     left_boundary = Math.floor(window.time / 45) * 45
-    console.log "left_boundary: " + left_boundary
     right_boundary = left_boundary + 60
-    console.log "right_boundary: " + right_boundary
 
     $('#loop-slider').rangeSlider(
       step: 1
@@ -228,17 +226,18 @@ $ ->
       )
 
     console.log $('#loop-slider').rangeSlider("values")
-    
-    # CHANGES TO THE PLAYBACK SLIDER
+     
+    # CHANGES TO THE PLAYBACK SLIDER (ORDER OF OPERATIONS MATTERS HERE v !!!)
 
     $('.end-label.playback-left-label').addClass('disabled')
     $('.end-label.playback-right-label').addClass('disabled')
+
+    $('#playback-slider').off("valuesChanging").off("userValuesChanged")
+    $('#playback-slider').rangeSlider("values", left_boundary, right_boundary)
+
     $('#playback-slider').children().eq(3).addClass('end-label').addClass('loop-range-label').html("#{shortFormatTime(left_boundary)}")
     $('#playback-slider').children().eq(4).addClass('end-label').addClass('loop-range-label').html("#{shortFormatTime(right_boundary)}")
     $('#playback-slider').children().eq(0).children().eq(1).attr('style','background-color: #0F82F5;')
-
-    $('#playback-slider').off("valuesChanging").off("valuesChanged")
-    $('#playback-slider').rangeSlider("values", left_boundary, right_boundary)
 
     # BEHAVIOR FOR THE PLAYBACK SLIDER
 
@@ -281,8 +280,8 @@ $ ->
     $('.inner-label.looping-left-label').html("#{shortFormatTime(left_boundary)}")
     $('.inner-label.looping-right-label').html("#{shortFormatTime(right_boundary)}")
 
-    $('.ui-rangeSlider-leftLabel.loop-handle-label').html("#{shortFormatTime($('#loop-slider').rangeSlider("values").min)}")
-    $('.ui-rangeSlider-rightLabel.loop-handle-label').html("#{shortFormatTime($('#loop-slider').rangeSlider("values").max)}")
+    $('.ui-rangeSlider-leftLabel.loop-handle-label').html("<div class='inner-label'>#{shortFormatTime($('#loop-slider').rangeSlider("values").min)}</div>")
+    $('.ui-rangeSlider-rightLabel.loop-handle-label').html("<div class='inner-label'>#{shortFormatTime($('#loop-slider').rangeSlider("values").max)}</div>")
 
   # BEHAVIOR FOR THE LOOP SLIDER: SHIFT LEFT / SHIFT RIGHT CONTROLS
 
