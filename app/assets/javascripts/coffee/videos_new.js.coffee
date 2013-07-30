@@ -817,8 +817,14 @@ $ ->
 
   $('[class^="word"]').livequery ->
     $(this).click ->
-      $(this).addClass('blue')
-      window.quiz_words.push $(this).html()
+      this_word = $(this)
+      if this_word.hasClass('blue')
+        this_word.removeClass('blue')
+        index = window.quiz_words.indexOf(this_word.html())
+        window.quiz_words.splice(index, 1)
+      else
+        this_word.addClass('blue')
+        window.quiz_words.push this_word.html()
 
   $('#delete-line').livequery ->
     $(this).click ->
