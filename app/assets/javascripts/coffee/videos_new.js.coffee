@@ -38,6 +38,7 @@ $ ->
   window.loop = false
   window.valuesChanging = false
   window.quiz_making_mode = false
+  window.quiz_words = []
   window.tool_helptip_displayed = false
   window.editing_line = 'off'
   window.editing_line_timing = 'off'
@@ -734,11 +735,11 @@ $ ->
 
   $('.line').livequery ->
     $(this).hover(
-      -> $(this).attr('style','background-color: yellow;')
+      -> if window.quiz_making_mode == false then $(this).attr('style','background-color: yellow;')
       -> $(this).attr('style','background-color: white;')
       )
     $(this).click ->
-      if window.editing_line isnt 'on'
+      if window.editing_line isnt 'on' and window.quiz_making_mode == false
         window.editing_line = 'on'
         id = $(this).attr('data-line-id')
         $(this).attr('class','line edited-line rounded')
@@ -803,9 +804,21 @@ $ ->
             <div class='lyrics-container'>
               <p>#{window.choruslang2}</p>
             </div>
+          </div>")
         doneEditing()
 
-          </div>")
+  # QUIZ WORDS GET ADDED HERE v
+
+  $('p').livequery ->
+    $(this).hover -> 
+      if window.quiz_making_mode == true and $(this).attr('class') != 'lettered'
+        $(this).lettering('words')
+        $(this).addClass('lettered')
+
+  $('[class^="word"]').livequery ->
+    $(this).click ->
+      $(this).addClass('blue')
+      window.quiz_words.push $(this).html()
 
   $('#delete-line').livequery ->
     $(this).click ->
@@ -949,12 +962,39 @@ $ ->
         window.quiz_making_mode = true
         $('.loop-toggle').slideUp()
         $('#quiz-on').attr('style','float: right;')
-        $('#quiz-on').html('quiz mode')
+        $('#quiz-on').html('quiz-making')
+        $('#loop-settings').before('<div id="quiz-settings"></div>')
+        $('#loop-settings').slideUp()
+        $('#quiz-settings').append("
+          <div style='float: left; width: 160px;'>
+            <br>
+            Quiz name:<br>
+            <input type='text' name='quiz-name' style='width: 120px;'>
+            <br>
+            Description:<br>
+            <input type='text' name='quiz-description' style='width: 120px;'>
+            <br>
+          </div>
+          <div style='float: right; width: 200px;'>
+            <br>
+            <input type='checkbox'> Grammar quiz
+            <br> (\"click all past-tense verbs\")
+            <br>
+            <input type='checkbox'> Vocabulary quiz<br> (fill-in-the-blank style)
+            <br><br>
+            <div class='btn btn-info rounded' id='quiz-done-button' style='float: right;'>Create quiz</div> 
+          </div>
+        ")
+
+        $('#settings').addClass('looping')
+        quizSetup()
       else
         window.quiz_making_mode = false
         $('.loop-toggle').slideDown()
         $('#quiz-on').attr('style','float: left;')
         $('#quiz-on').html('make it a quiz')
+        $('#quiz-settings').remove()
+        $('#loop-settings').slideDown()
 
   $('#difficulty-settings').hide()
 
@@ -969,6 +1009,17 @@ $ ->
       $('#difficulty-settings').toggle()
       $('#set-difficulty').toggle()
       $.post('/update_difficulty', { 'interp' : { 'id' : "#{interp_id}", 'difficulty' : "#{$(this).attr('value')}" } })
+
+  # QUIZ SETUP
+
+  quizSetup = -> 
+    $('#quiz-done-button').livequery ->
+      $(this).click -> 
+        $.post('/save_quiz', { 'quiz' : { 'interpretation_id' : "#{interp_id}", 'type' : "#{}", 'name' : "#{}" } }, (data) ->
+          console.log data.data.id 
+          console.log data.data
+          # $.post('/save_quiz_words', { 'lines' : "#{JSON.stringify(lines)}" } )
+        )
 
   # OLD STUFF...  MAYBE NOT USELESS THOUGH? 
 

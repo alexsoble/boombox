@@ -8,10 +8,6 @@ Boombox::Application.routes.draw do
   get '/sign_in' => 'sessions#new'
   get '/sign_out' => 'sessions#destroy'
   get '/auth/:provider/callback' => 'sessions#create'
-
-  get '/philosophy' => 'pages#philosophy'
-  get '/survey' => 'pages#survey'
-  get '/experiment' => 'pages#experiment'
   
   resources :videos
   resources :users
@@ -25,10 +21,12 @@ Boombox::Application.routes.draw do
   post '/publish' => 'interpretations#publish'
   post '/new_request' => 'requests#create'
   post '/save' => 'interpretations#save'
-  # post '/new_line' => 'lines#create'
-  # post '/update_line' => 'lines#update' 
-  # post '/delete_line' => 'lines#destroy'
-  # get '/requests_by_language' => 'requests#get_by_language'
-  # get '/interps_by_language' => 'interpretations#get_by_language'
+
+  post '/save_quiz_words' => 'quizzes#update'
+  post '/save_quiz' => 'quizzes#create'
+  
+  get '/philosophy' => 'pages#philosophy'
+  get '/survey' => 'pages#survey'
+  get '/experiment' => 'pages#experiment'
 
 end

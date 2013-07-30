@@ -79,6 +79,8 @@
   float: left;
   margin: 4px; }
 
+.blue { color: blue } 
+
 /* --------------------------------------------------- */
 
 .center-pill {
@@ -131,6 +133,11 @@
 #loop-settings { width: 360px; 
   height: 100px; 
   margin: 10px; }
+
+#quiz-settings { width: 390px; 
+  height: 100px; 
+  margin-left: 20px;
+  margin-top: 40px; }
 
 .loop-toggle {
   float: left; 

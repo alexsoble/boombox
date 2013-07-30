@@ -11,14 +11,14 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130730150754) do
+ActiveRecord::Schema.define(:version => 20130730185552) do
 
   create_table "clips", :force => true do |t|
-    t.integer  "start"
-    t.integer  "duration"
-    t.integer  "interpretation_id"
-    t.datetime "created_at",        :null => false
-    t.datetime "updated_at",        :null => false
+    t.integer   "start"
+    t.integer   "duration"
+    t.integer   "interpretation_id"
+    t.timestamp "created_at",        :null => false
+    t.timestamp "updated_at",        :null => false
   end
 
   create_table "interpretations", :force => true do |t|
@@ -48,6 +48,7 @@ ActiveRecord::Schema.define(:version => 20130730150754) do
     t.string   "type"
     t.datetime "created_at",        :null => false
     t.datetime "updated_at",        :null => false
+    t.string   "name"
   end
 
   create_table "requests", :force => true do |t|
