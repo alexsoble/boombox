@@ -225,18 +225,18 @@ $ ->
         shortFormatTime(val)
       ).rangeSlider("values", window.time, window.time + 4)
     
-  # CHANGES TO THE PLAYBACK SLIDER
+    # CHANGES TO THE PLAYBACK SLIDER
 
     $('.end-label.playback-left-label').addClass('disabled')
     $('.end-label.playback-right-label').addClass('disabled')
     $('#playback-slider').children().eq(3).addClass('end-label').addClass('loop-range-label').html("#{shortFormatTime(left_boundary)}")
     $('#playback-slider').children().eq(4).addClass('end-label').addClass('loop-range-label').html("#{shortFormatTime(right_boundary)}")
     $('#playback-slider').children().eq(0).children().eq(1).attr('style','background-color: #0F82F5;')
-    $('#playback-slider').rangeSlider("values", left_boundary, right_boundary)
-
-  # BEHAVIOR FOR THE PLAYBACK SLIDER
 
     $('#playback-slider').off("valuesChanging").off("valuesChanged")
+    $('#playback-slider').rangeSlider("values", left_boundary, right_boundary)
+
+    # BEHAVIOR FOR THE PLAYBACK SLIDER
 
     $('#playback-slider').on("valuesChanging", (e, data) ->
       start = data.values.min
@@ -262,7 +262,7 @@ $ ->
       $('.loop-handle-label.ui-rangeSlider-rightLabel').html("#{shortFormatTime(start + window.loop)}")
     )
 
-  # CHANGES TO THE LOOP SLIDER
+    # CHANGES TO THE LOOP SLIDER
 
     window.loop_range = $('#loop-slider').children().eq(0).children().eq(1)
     window.loop_range.attr('style','background-color: #0F82F5;')
