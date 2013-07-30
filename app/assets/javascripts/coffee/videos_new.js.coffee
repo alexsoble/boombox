@@ -974,20 +974,13 @@ $ ->
         $('#quiz-settings').append("
           <div style='float: left; width: 160px;'>
             <br>
-            Quiz name:<br>
-            <input type='text' name='quiz-name' style='width: 120px;'>
-            <br>
-            Description:<br>
-            <input type='text' name='quiz-description' style='width: 120px;'>
-            <br>
+            Quiz name:<br> <input type='text' id='quiz-name' style='width: 120px;'><br>
+            Description:<br> <input type='text' id='quiz-description' style='width: 120px;'><br>
           </div>
           <div style='float: right; width: 200px;'>
             <br>
-            <input type='checkbox'> Grammar quiz
-            <br> (\"click all past-tense verbs\")
-            <br>
-            <input type='checkbox'> Vocabulary quiz<br> (fill-in-the-blank style)
-            <br><br>
+            <input type='checkbox' id='grammar'> Grammar quiz<br> (\"click all past-tense verbs\")<br>
+            <input type='checkbox' id='vocabulary'> Vocabulary quiz<br> (fill-in-the-blank style)<br><br>
             <div class='btn btn-info rounded' id='quiz-done-button' style='float: right;'>Create quiz</div> 
           </div>
         ")
@@ -1021,7 +1014,7 @@ $ ->
   quizSetup = -> 
     $('#quiz-done-button').livequery ->
       $(this).click -> 
-        $.post('/save_quiz', { 'quiz' : { 'interpretation_id' : "#{interp_id}", 'type' : "#{}", 'name' : "#{}" } }, (data) ->
+        $.post('/save_quiz', { 'quiz' : { 'interpretation_id' : "#{interp_id}", 'type' : "#{$("input:checked").attr('id')}", 'name' : "#{$('#quiz-name').val()}", 'description' : "#{$('#quiz-description').val()}"} }, (data) ->
           console.log data.data.id 
           console.log data.data
           # $.post('/save_quiz_words', { 'lines' : "#{JSON.stringify(lines)}" } )
