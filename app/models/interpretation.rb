@@ -3,6 +3,7 @@ class Interpretation < ActiveRecord::Base
   belongs_to :video
   belongs_to :user
   has_many :clips
+  has_many :quizzes
 
   def video
     Video.find_by_id(self.video_id) || ''
