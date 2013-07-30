@@ -35,7 +35,7 @@
 /* LINES AND LYRICS EDITING AREA */
 
 .lyrics-container {
-  margin: 10px; 
+  margin: 8px; 
   float: left; 
   width: 230px; }
 
@@ -44,7 +44,7 @@
   margin-left: 30px; 
   margin-top: 0px; 
   float: left; 
-  max-height: 380px;
+  max-height: 420px;
   overflow-y: scroll; }
 
 .line { float: left; background-color: white; }

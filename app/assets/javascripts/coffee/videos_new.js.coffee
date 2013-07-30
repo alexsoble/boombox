@@ -127,7 +127,6 @@ $ ->
         <div class='loop-toggle'>
           <div class='btn btn-info btn-small rounded tight-pack' id='loop-on' style='#{loop_toggle_initalize_style}'> #{loop_toggle_initalize} </div>
         </div>
-        <br>
         <div class='quiz-toggle'>
           <div class='btn btn-info btn-small rounded tight-pack' id='quiz-on'> make it a quiz </div>
         </div>
