@@ -46,6 +46,7 @@ $ ->
   $('#timer-box').html('<div id="timer">
     <h2 class="timer-text" id="big-timer"></h2>
     </div>')
+  $('#lyrics').hide()
 
   if action_name is 'edit'
     $('.tools-container').toggle('width')
@@ -59,7 +60,6 @@ $ ->
     $('#title-box').slideDown('5000')
     $('#timer-box').hide()
     $('#settings').hide()
-    $('#lyrics').hide()
     $("#controls").append('<br><div class="btn-group relative" id="settings-and-start">
         <br><br><br><br>
         <a class="btn btn-info btn-large center-pill rounded" id="start" style="position: absolute; left: 108px;">Start translating</a>
