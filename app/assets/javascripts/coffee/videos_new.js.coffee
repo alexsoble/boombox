@@ -305,6 +305,8 @@ $ ->
                 max: max + 30
             ).rangeSlider("values", start, end)
             $('#playback-slider').rangeSlider("values", min + 30, max + 30)
+            $('.ui-rangeSlider-leftLabel.loop-range-label').html("#{shortFormatTime(min + 30)}")
+            $('.ui-rangeSlider-rightLabel.loop-range-label').html("#{shortFormatTime(max + 30)}")
           else
             $('.inner-label.looping-left-label').text(shortFormatTime(video_duration - 60))
             $('.inner-label.looping-right-label').text(shortFormatTime(video_duration))
@@ -326,6 +328,8 @@ $ ->
                 max: max - 30
             ).rangeSlider("values", start, end)
             $('#playback-slider').rangeSlider("values", min - 30, max - 30)
+            $('.ui-rangeSlider-leftLabel.loop-range-label').html("#{shortFormatTime(min - 30)}")
+            $('.ui-rangeSlider-rightLabel.loop-range-label').html("#{shortFormatTime(max - 30)}")
           else
             $('.inner-label.looping-left-label').text(shortFormatTime(0))
             $('.inner-label.looping-right-label').text(shortFormatTime(60))
