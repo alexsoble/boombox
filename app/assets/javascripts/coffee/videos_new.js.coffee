@@ -208,7 +208,9 @@ $ ->
     $('#adjust-loops-label').slideDown()
 
     left_boundary = Math.floor(window.time / 45) * 45
+    console.log "left_boundary: " + left_boundary
     right_boundary = left_boundary + 60
+    console.log "right_boundary: " + right_boundary
 
     $('#loop-slider').rangeSlider(
       step: 1
@@ -223,7 +225,9 @@ $ ->
         max: 12
       formatter: (val) -> 
         shortFormatTime(val)
-      ).rangeSlider("values", window.time, window.time + 4)
+      )
+
+    console.log $('#loop-slider').rangeSlider("values")
     
     # CHANGES TO THE PLAYBACK SLIDER
 
@@ -248,7 +252,7 @@ $ ->
       $('.inner-label.looping-right-label').html("#{shortFormatTime(end)}")
     )
 
-    $('#playback-slider').on("valuesChanged", (e, data) ->
+    $('#playback-slider').on("userValuesChanged", (e, data) ->
       start = data.values.min
       end = data.values.max
 
@@ -277,8 +281,8 @@ $ ->
     $('.inner-label.looping-left-label').html("#{shortFormatTime(left_boundary)}")
     $('.inner-label.looping-right-label').html("#{shortFormatTime(right_boundary)}")
 
-    $('.ui-rangeSlider-leftLabel.loop-handle-label').children().eq(0).html("<div class='text-padding'>#{shortFormatTime(window.time)}</div>")
-    $('.ui-rangeSlider-rightLabel.loop-handle-label').children().eq(0).html("<div class='text-padding'>#{shortFormatTime(window.time + window.loop)}</div>")
+    $('.ui-rangeSlider-leftLabel.loop-handle-label').html("#{shortFormatTime($('#loop-slider').rangeSlider("values").min)}")
+    $('.ui-rangeSlider-rightLabel.loop-handle-label').html("#{shortFormatTime($('#loop-slider').rangeSlider("values").max)}")
 
   # BEHAVIOR FOR THE LOOP SLIDER: SHIFT LEFT / SHIFT RIGHT CONTROLS
 
