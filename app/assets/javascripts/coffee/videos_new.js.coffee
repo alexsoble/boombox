@@ -825,6 +825,7 @@ $ ->
       else
         this_word.addClass('blue')
         window.quiz_words.push this_word.html()
+        console.log JSON.stringify(window.quiz_words)
 
   $('#delete-line').livequery ->
     $(this).click ->
@@ -1014,10 +1015,17 @@ $ ->
   quizSetup = -> 
     $('#quiz-done-button').livequery ->
       $(this).click -> 
-        $.post('/save_quiz', { 'quiz' : { 'interpretation_id' : "#{interp_id}", 'type' : "#{$("input:checked").attr('id')}", 'name' : "#{$('#quiz-name').val()}", 'description' : "#{$('#quiz-description').val()}"} }, (data) ->
-          console.log data.data.id 
+        $.post('/new_quiz', { 'quiz' : { 'interpretation_id' : "#{interp_id}", 'quiz_type' : "#{$("input:checked").attr('id')}", 'name' : "#{$('#quiz-name').val()}", 'description' : "#{$('#quiz-description').val()}"} }, (data) ->
           console.log data.data
-          # $.post('/save_quiz_words', { 'lines' : "#{JSON.stringify(lines)}" } )
+          quiz_id = data.data.id 
+        
+          words_to_save = []
+          window.quiz_words.forEach (element, index) ->
+            word = (text : element, quiz_id : quiz_id )
+            words_to_save.push word
+
+          $.post('/save_quiz_words', { 'quiz_id' : "#{quiz_id}", 'words' : "#{JSON.stringify(words_to_save)}" }, (data) ->
+            console.log data )
         )
 
   # OLD STUFF...  MAYBE NOT USELESS THOUGH? 
@@ -1038,7 +1046,8 @@ $ ->
         this_lang1 = $.trim($('#edit-line-lang1').val())
         line = (time : $(this).attr('data-time'), duration : $(this).attr('data-duration'), lang1 : this_lang1, lang2 : $.trim($('#edit-line-lang2').val()), interpretation_id : interp_id )
       lines.push line)
-    $.post('/save', { 'interp_id' : "#{interp_id}", 'lines' : "#{JSON.stringify(lines)}" } )
+    $.post('/save', { 'interp_id' : "#{interp_id}", 'lines' : "#{JSON.stringify(lines)}" }, (data) ->
+      console.log data )
 
   $("#preview-button").livequery ->
     $(this).click ->

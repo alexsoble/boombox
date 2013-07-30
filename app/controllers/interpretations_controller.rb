@@ -27,23 +27,35 @@ class InterpretationsController < ApplicationController
 
   def save
     @interp = Interpretation.find_by_id(params[:interp_id])
+    @lines = JSON.parse(params[:lines])
     @original_lines = Line.where(:interpretation_id => @interp.id)
 
-    if @original_lines.present?
-      @original_lines.all.each do |o|
-        o.destroy
-        o.save
+    @intersection = @lines & @original_lines
+    logger.info @intersection
+
+    if @intersection.size != @lines.size
+
+      if @original_lines.present?
+        @original_lines.all.each do |o|
+          o.destroy
+          o.save
+        end
       end
+
+      @lines.each do |l|
+        Line.create(l)
+      end
+
+      @new_lines = Line.where(:interpretation_id => @interp.id)
+
+      render :json => { :data => @new_lines }
+
+    else
+
+      render :json => { :data => "no change" }
+
     end
 
-    @lines = JSON.parse(params[:lines])
-    @lines.each do |l|
-      Line.create(l)
-    end
-
-    @new_lines = Line.where(:interpretation_id => @interp.id)
-
-    render :json => { :data => @new_lines }
   end
 
   def show

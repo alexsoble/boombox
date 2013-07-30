@@ -22,8 +22,8 @@ Boombox::Application.routes.draw do
   post '/new_request' => 'requests#create'
   post '/save' => 'interpretations#save'
 
-  post '/save_quiz_words' => 'quizzes#update'
-  post '/save_quiz' => 'quizzes#create'
+  post '/save_quiz_words' => 'quizzes#save_words'
+  post '/new_quiz' => 'quizzes#create'
   
   get '/philosophy' => 'pages#philosophy'
   get '/survey' => 'pages#survey'
