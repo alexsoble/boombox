@@ -15,27 +15,13 @@ $ ->
   $('#lyrics-settings').hide()
 
   window.slid_down = false
-  quiz_array = []
 
   lyrics = $('.lyrics')
-
   for l in lyrics by 2
-
-    id = l.id
-    time = id.substring(6)
-    words = l.innerText.split(/\s+/)
-    number_of_words = words.length
-    random_word_index = Math.floor(Math.random() * number_of_words)
-    random_word = words[random_word_index]
-    quiz_array[time] = random_word
-    window.quiz_array = quiz_array
-    console.log window.quiz_array
-
     lyrics_html = $("##{id}").html()
     lyrics_with_blanks = lyrics_html.replace("#{random_word}", "____")
     $("##{id}").html(lyrics_with_blanks)
     lyrics_html = $("##{id}").html()
-
     console.log lyrics_html
 
   $('#lyrics').addClass('quizframe')
