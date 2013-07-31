@@ -18,17 +18,18 @@ $ ->
   video_youtube_id = $('#data').attr('data-video-id')
   title = $('#data').attr('data-video-title')
 
-  window.slid_down = false
+  window.keep_going = true
   $('#lyrics').addClass('quizframe')
   $('.wrapper').addClass('quizframe')
   $('#below-video-box').hide()
   $('.wrapper').prepend('<div id="answer-box"></div>')
-  $('.wrapper').prepend('<div id="score-box"><div id="score-text"></div></div>')
-  $('#score-box').hide()
   $('#lyrics').hide()
   $('#lyrics-settings').hide()
   window.score = 0
 
+  delayedFade = ->
+    $('#quiz-info-box').fadeOut(3000)
+  window.setTimeout(delayedFade, 60000)
 
   # BLANK OUT MISSING WORDS FOR VOCABULARY QUIZZES 
 
@@ -51,11 +52,14 @@ $ ->
         if window.words.indexOf(this_word.html()) > -1
           this_word.addClass('blue')
           window.score += 1
-          console.log window.score
+          $('#score').html(window.score)
+          window.keep_going = true
         else
           this_word.addClass('red')
-          window.score -= 1
-          console.log window.score
+          if window.score > 0
+            window.score -= 1
+            $('#score').html(window.score)
+          window.keep_going = false
 
   tag = document.createElement("script")
   tag.src = "https://www.youtube.com/iframe_api"
@@ -91,6 +95,9 @@ $ ->
       time_id = 'lang2-' + time
       if array.indexOf(time_id) > -1
         $('.lyrics-box.quizframe').removeClass('success')
+        this_time = time
+        console.log "time: " + time
+        console.log "this_time: " + this_time
 
         # FOR A VOCABULARY QUIZ: THIS LINE'S QUIZ WORD COMES IN HERE
 
@@ -119,17 +126,25 @@ $ ->
                 $("#score-text").html("<h2>#{q}/#{total}</h2>")
             )  
 
-        if $('#lyrics').attr('style') == "display: none;"
-          $('#lyrics').slideDown()
-          $('#score-box').slideDown()
-        lang1 = $("#lang1-#{time}").html()
-        lang2 = $("#lang2-#{time}").html()
-        duration = $("#lang2-#{time}").attr('data-duration')
-        $("#lyrics").children().eq(0).html("<p class='lyrics white'>#{lang1}</p>").hide().slideDown(800)
-        $("#lyrics").children().eq(1).html("<p class='lyrics white'>#{lang2}</p>").hide().slideDown(800)
+        # AUTO-PAUSE AT THE END OF A LINE HAPPENS HERE
+
+        if window.time > time + duration - 2
+          player.pauseVideo()
+          window.keep_going = false
+
+        if window.keep_going == true
+          if $('#lyrics').attr('style') == "display: none;"
+            $('#lyrics').slideDown()
+            $('#score-box').slideDown()
+          lang1 = $("#lang1-#{time}").html()
+          lang2 = $("#lang2-#{time}").html()
+          duration = parseInt($("#lang2-#{time}").attr('data-duration'))
+          $("#lyrics").children().eq(0).html("<p class='lyrics white'>#{lang1}</p>").hide().slideDown(800)
+          $("#lyrics").children().eq(1).html("<p class='lyrics white'>#{lang2}</p>").hide().slideDown(800)
 
     exact_time = player.getCurrentTime()
     time = Math.round(exact_time)
+    window.time = time
 
     arr = array_builder()
     do_scroll = scroll(arr, time)

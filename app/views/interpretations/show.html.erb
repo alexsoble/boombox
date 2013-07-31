@@ -10,6 +10,11 @@
       </div>
     </div>
   <% end %>
+  <% if @quiz.present? %>
+    <div id="score-box">
+      Your score: <div id="score"></div>
+    </div>
+  <% end %>  
   <div id="show-video-box"></div>
   <div class="btn btn-info rounded btn-small dropdown-toggle" data-toggle="dropdown" id="lyrics-settings">heyu options</div>
   <ul class="dropdown-menu" id="lyrics-settings-dropdown">
