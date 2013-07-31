@@ -1,6 +1,15 @@
 <br>
 <br>
 <div class="show-video-box centerbox">
+  <% if @quiz.present? %>
+    <div id="quiz-info-box">
+      <div style='margin: 10px;'>
+        Video: <%= @title %><br>
+        Quiz: <%= @quiz.name %><br>
+        Description: <%= @quiz.description %><br>
+      </div>
+    </div>
+  <% end %>
   <div id="show-video-box"></div>
   <div class="btn btn-info rounded btn-small dropdown-toggle" data-toggle="dropdown" id="lyrics-settings">heyu options</div>
   <ul class="dropdown-menu" id="lyrics-settings-dropdown">
@@ -95,7 +104,7 @@
   <div class="centerbox" style="text-align: center;"><h3>Nobody's translated this song yet. <%= link_to "Want to give it a try?", "/videos/new?interp=#{@interp.id}" %></h3></div>
 <% end %>
 
-<div id="data" class="quiet" data-interp-id=<%= @interp.id %> data-video-id=<%= @interp.video.youtube_id %> data-clip=<%= @clip %><% if @clip == true then %> data-start=<%= @start %> data-duration=<%= @duration %> <% end %> data-longest-line=<%= @longest_line_length %> <% if @quiz.present? %> data-quiz-type=<%= @quiz.quiz_type %> data-quiz-name=<%= @quiz.name %>data-quiz-description=<%= @quiz.description %> <% end %> /></div>
+<div id="data" class="quiet" data-interp-id=<%= @interp.id %> data-video-id=<%= @interp.video.youtube_id %> data-clip=<%= @clip %><% if @clip == true then %> data-start=<%= @start %> data-duration=<%= @duration %> <% end %> data-longest-line=<%= @longest_line_length %> <% if @quiz.present? %> data-quiz-type=<%= @quiz.quiz_type %> data-quiz-name=<%= @quiz.name %>data-quiz-description=<%= @quiz.description %> data-video-title=<%= @title %> <% end %> /></div>
 
 <% if @quiz.present? %>
   <%= javascript_tag do %>

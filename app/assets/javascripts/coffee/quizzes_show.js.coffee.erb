@@ -10,6 +10,14 @@ $ ->
       str = str.replace(from.charAt(i), to.charAt(i))
     return str
 
+  type = $('#data').attr('data-quiz-type')
+  name = $('#data').attr('data-quiz-name')
+  description = $('#data').attr('data-quiz-description')
+  console.log "type: " + type
+  interp_id = $('#data').attr('data-interp-id')
+  video_youtube_id = $('#data').attr('data-video-id')
+  title = $('#data').attr('data-video-title')
+
   window.slid_down = false
   $('#lyrics').addClass('quizframe')
   $('.wrapper').addClass('quizframe')
@@ -21,10 +29,6 @@ $ ->
   $('#lyrics-settings').hide()
   window.score = 0
 
-  type = $('#data').attr('data-quiz-type')
-  name = $('#data').attr('data-quiz-name')
-  description = $('#data').attr('data-quiz-description')
-  console.log "type: " + type
 
   # BLANK OUT MISSING WORDS FOR VOCABULARY QUIZZES 
 
@@ -52,9 +56,6 @@ $ ->
           this_word.addClass('red')
           window.score -= 1
           console.log window.score
-
-  interp_id = $('#data').attr('data-interp-id')
-  video_youtube_id = $('#data').attr('data-video-id')
 
   tag = document.createElement("script")
   tag.src = "https://www.youtube.com/iframe_api"

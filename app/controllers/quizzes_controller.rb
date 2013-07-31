@@ -21,6 +21,7 @@ class QuizzesController < ApplicationController
 
     @quiz = Quiz.find(params[:id])
     @interp = Interpretation.find(@quiz.interpretation_id)
+    @title = @interp.video.title
     @lines = Line.where(:interpretation_id => @interp.id).order("created_at ASC")
     @lines_have_lang1 = true
     
