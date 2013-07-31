@@ -967,6 +967,7 @@ $ ->
     $(this).click -> 
       if window.quiz_making_mode == false
         window.quiz_making_mode = true
+        player.pauseVideo()
         $('#quiz-on').attr('style','float: right;')
         $('.loop-toggle').parent().attr('style','float: right; margin-right: 20px; margin-top: 20px;')
         $('#quiz-on').html('quiz-making on')

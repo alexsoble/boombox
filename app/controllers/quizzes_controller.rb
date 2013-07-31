@@ -21,10 +21,19 @@ class QuizzesController < ApplicationController
 
     @quiz = Quiz.find(params[:id])
     @interp = Interpretation.find(@quiz.interpretation_id)
+    @lines = Line.where(:interpretation_id => @interp.id).order("created_at ASC")
+    @lines_have_lang1 = true
+    
     @words = []
 
     Word.where(:quiz_id => @quiz.id).all.each do |w|
       @words << w.text
+    end
+
+    if @interp.user_id == 0
+      @user = 'anon' 
+    else
+      @user = User.find_by_id(@interp.user_id)
     end
 
     render "interpretations/show"
