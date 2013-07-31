@@ -58,7 +58,6 @@ $ ->
       $('.publish-button').html('<div class="btn btn-info" id="publish-button">Update</div>')
   if action_name isnt 'edit'
     $('#title-box').hide()
-    $('#red-arrow').hide()
     $('#title-box').slideDown('5000')
     $('#timer-box').hide()
     $('#settings').hide()
@@ -66,9 +65,7 @@ $ ->
         <br><br><br><br>
         <a class="btn btn-info btn-large center-pill rounded" id="start" style="position: absolute; left: 108px;">Start translating</a>
       </div>')
-    $("#controls").prepend('<div id="red-arrow-text-box"><p><strong>Click here when <br> the words start!</strong></p></div>')
     $("#controls").fadeIn('slow')
-    $('#red-arrow').fadeIn('slow')
 
   $("#start").livequery ->
     $(this).click -> 
