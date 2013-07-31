@@ -107,7 +107,7 @@ $ ->
   sliderSetup = ->
 
     $('#settings').append("
-      <div style='float: right; margin-right: 20px; margin-top: 20px; margin-bottom: 5px;'>
+      <div id='playback-buttons' style='float: right; margin-right: 20px; margin-top: 20px; margin-bottom: 5px;'>
         <div class='btn btn-info btn-small rounded tight-pack' id='backward'> &larr; </div>
         <div class='btn btn-info btn-small rounded tight-pack' id='play-pause'> pause </div> 
         <div class='btn btn-info btn-small rounded tight-pack' id='forward'> &rarr; </div>
@@ -967,34 +967,47 @@ $ ->
     $(this).click -> 
       if window.quiz_making_mode == false
         window.quiz_making_mode = true
-        $('.loop-toggle').slideUp()
         $('#quiz-on').attr('style','float: right;')
-        $('#quiz-on').html('quiz-making')
+        $('.loop-toggle').parent().attr('style','float: right; margin-right: 20px; margin-top: 20px;')
+        $('#quiz-on').html('quiz-making on')
         $('#loop-settings').before('<div id="quiz-settings"></div>')
-        $('#loop-settings').slideUp()
+
+        # ADD THE QUIZ CONTROLS HERE
         $('#quiz-settings').append("
           <div style='float: left; width: 160px;'>
             <br>
-            Quiz name:<br> <input type='text' id='quiz-name' style='width: 120px;'><br>
-            Description:<br> <input type='text' id='quiz-description' style='width: 120px;'><br>
+            Quiz name:<br> <input type='text' id='quiz-name' style='width: 200px;'><br>
+            Description:<br> <input type='text' id='quiz-description' style='width: 200px;'><br>
           </div>
-          <div style='float: right; width: 200px;'>
-            <br>
-            <input type='checkbox' id='grammar'> Grammar quiz<br> (\"click all past-tense verbs\")<br>
-            <input type='checkbox' id='vocabulary'> Vocabulary quiz<br> (fill-in-the-blank style)<br><br>
-            <div class='btn btn-info rounded' id='quiz-done-button' style='float: right;'>Create quiz</div> 
+          <div style='float: left;'>
+            <input type='checkbox' id='grammar'> Grammar quiz (example: \"click all past-tense verbs\")<br>
+            <input type='checkbox' id='vocabulary'> Vocabulary quiz (fill-in-the-blank style)
           </div>
+          <div class='btn btn-info rounded' id='quiz-done-button' style='float: right;'>Create quiz</div> 
         ")
 
-        $('#settings').addClass('looping')
+        # GET RID OF LOOP RELATED STUFF HERE 
+        $('.loop-toggle').slideUp()
+        $('#loop-settings').slideUp()
+        $('#new-video-box').slideUp()
+        $('#timer').slideUp()
+        $('#settings').addClass('quiz-mode')
+        $('#playback-buttons').slideUp()
         quizSetup()
+
       else
         window.quiz_making_mode = false
         $('.loop-toggle').slideDown()
         $('#quiz-on').attr('style','float: left;')
         $('#quiz-on').html('make it a quiz')
         $('#quiz-settings').remove()
+
+        # PUT BACK LOOP RELATED STUFF HERE 
         $('#loop-settings').slideDown()
+        $('#new-video-box').slideDown()
+        $('#settings').removeClass('quiz-mode')
+        $('#timer').slideDown()
+        $('#playback-buttons').slideDown()
 
   $('#difficulty-settings').hide()
 

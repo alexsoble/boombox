@@ -128,16 +128,19 @@
 
 #settings.looping { height: 220px; }
 
+#settings.quiz-mode { top: 35px; 
+height: 220px;
+overflow: visible; }
+
 #difficulty-settings { float: left; }
 
 #loop-settings { width: 360px; 
   height: 100px; 
   margin: 10px; }
 
-#quiz-settings { width: 390px; 
+#quiz-settings { width: 400px; 
   height: 100px; 
-  margin-left: 20px;
-  margin-top: 40px; }
+  margin-left: 20px; }
 
 .loop-toggle {
   float: left; 
