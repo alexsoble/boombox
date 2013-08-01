@@ -152,6 +152,15 @@ $ ->
       </div>")
 
   playbackControls = (video_duration) ->
+    $('.playback-left-label.inner-label').html(":00")
+    $('.playback-right-label.inner-label').html("#{shortFormatTime(video_duration)}")
+    $('#playback-slider').children().eq(3).addClass('loop-handle-label')
+    $('#playback-slider').children().eq(4).addClass('loop-handle-label')
+
+  loopingBehavior = ->
+
+    if $('#playback-slider').hasClass('ui-slider')
+      $('#playback-slider').slider('destroy')
 
     $('#playback-slider').rangeSlider(
       arrows: false
@@ -168,17 +177,10 @@ $ ->
       formatter: (val) -> 
         shortFormatTime(val))
 
-    $('.playback-left-label.inner-label').html(":00")
-    $('.playback-right-label.inner-label').html("#{shortFormatTime(video_duration)}")
-
-  loopingBehavior = ->
-
     if window.loop_range_appended == false
       $('.ui-rangeSlider-bar').append('<div id="loop-bar"></div>')
       window.loop_range_appended = true
 
-    $('#playback-slider').children().eq(3).addClass('loop-handle-label')
-    $('#playback-slider').children().eq(4).addClass('loop-handle-label')
     $('.loop-handle-label.ui-rangeSlider-rightLabel').show()
     $('.loop-handle-label.ui-rangeSlider-leftLabel').html("<div class='inner-label'>#{shortFormatTime($('#playback-slider').rangeSlider("values").min)}</div>")
     $('.loop-handle-label.ui-rangeSlider-rightLabel').html("<div class='inner-label'>#{shortFormatTime($('#playback-slider').rangeSlider("values").max)}</div>")
@@ -196,14 +198,14 @@ $ ->
 
   straightPlaybackBehavior = ->
 
-    $('#playback-slider').rangeSlider("range", 4, 4)
-    $('#playback-slider').off("valuesChanging").off("userValuesChanged")
-    $('#playback-slider').on("userValuesChanged", (e, data) ->
-      window.valuesChanging = true
-      window.player.seekTo(time)
-    )
+    if $('#playback-slider').hasClass('ui-rangeSlider')
+      $('#playback-slider').rangeSlider('destroy')
 
-    $('.loop-handle-label.ui-rangeSlider-rightLabel').slideUp()
+    $('#playback-slider').slider(
+      min: 0,
+      max: window.video_duration,
+      step: 1
+    )
 
   longVideoControls = ->
 
@@ -262,7 +264,6 @@ $ ->
       $('.loop-handle-label.ui-rangeSlider-leftLabel').html("#{shortFormatTime(start)}")
       $('.loop-handle-label.ui-rangeSlider-rightLabel').html("#{shortFormatTime(start + window.loop)}")
     )
-
 
   # BEHAVIOR FOR THE LOOP SLIDER: SHIFT LEFT / SHIFT RIGHT CONTROLS
 
@@ -609,7 +610,7 @@ $ ->
 
     # PLAYBACK SLIDER MOVES HERE
     if window.loop is false and window.valuesChanging is false
-      $('#playback-slider').rangeSlider("values", window.time, window.time + 6)
+      $('#playback-slider').rangeSlider("values", window.time, window.time + 12)
 
     # LOOP BAR INCHES FORWARD HERE
     if window.loop isnt false

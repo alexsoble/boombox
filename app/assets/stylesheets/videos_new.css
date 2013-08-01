@@ -208,6 +208,12 @@ overflow: visible; }
   border-radius: 10px;
   width: 20px; }
 
+.lone-label {
+  width: 30px; 
+  height: 30px; 
+  background-color: #134F5C;
+}
+
 #loop-bar { height: 2px; position: relative; top: 9px; background-color: white; }
 
 .timer-blue { background-color: #0F82F5; opacity: 1 }
