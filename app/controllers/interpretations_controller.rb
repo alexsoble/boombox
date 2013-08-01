@@ -26,29 +26,58 @@ class InterpretationsController < ApplicationController
   end
 
   def save
+    
     @interp = Interpretation.find_by_id(params[:interp_id])
-    @lines = JSON.parse(params[:lines])
-    @original_lines = Line.where(:interpretation_id => @interp.id)
 
-    @intersection = @lines & @original_lines
-    logger.info @intersection
+    @original_lines = Line.where(:interpretation_id => @interp.id).to_a
+    @original_lang1 = Array.new
+    @original_lang2 = Array.new
+    @original_times = Array.new
+    @original_durations = Array.new
+    @original_lines.each do |l|
+      @original_lang1 << l.lang1
+      @original_lang2 << l.lang2
+      @original_times << l.time.to_i
+      @original_durations << l.duration.to_i
+    end
+    logger.debug "@original_lang1: #{@original_lang1}"
+    logger.debug "@original_lang2: #{@original_lang2}"
+    logger.debug "@original_times: #{@original_times}"
+    logger.debug "@original_durations: #{@original_durations}"
 
-    if @intersection.size != @lines.size
+    @new_lines = JSON.parse(params[:lines])
+    @new_lang1 = Array.new
+    @new_lang2 = Array.new
+    @new_times = Array.new
+    @new_durations = Array.new
+    @new_lines.each do |l|
+      @new_lang1 << l["lang1"]
+      @new_lang2 << l["lang2"]
+      @new_times << l["time"].to_i
+      @new_durations << l["duration"].to_i
+    end
+    logger.debug "@new_lang1: #{@new_lang1}"
+    logger.debug "@new_lang2: #{@new_lang2}"
+    logger.debug "@new_times: #{@new_times}"
+    logger.debug "@new_durations: #{@new_durations}"
+
+    if @original_lang1 != @new_lang1 || @new_lang2 != @original_lang2 || @original_times != @new_times || @new_durations != @original_durations
 
       if @original_lines.present?
-        @original_lines.all.each do |o|
+        @original_lines.each do |o|
           o.destroy
           o.save
         end
       end
 
-      @lines.each do |l|
+      @new_lines.each do |l|
         Line.create(l)
       end
 
-      @new_lines = Line.where(:interpretation_id => @interp.id)
+      @saved_lines = Line.where(:interpretation_id => @interp.id)
+      logger.debug "@saved_lines: #{@saved_lines}"
 
-      render :json => { :data => @new_lines }
+      render :json => { :data => @saved_lines }
 
     else
 

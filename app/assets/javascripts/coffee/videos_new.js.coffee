@@ -993,6 +993,16 @@ $ ->
         $('#playback-buttons').slideUp()
         quizSetup()
 
+        # GRAMMAR AND VOCAB CHECKBOX BEHAVIOR HERE
+
+        $('#grammar').livequery ->
+          $(this).click -> 
+            $('#vocabulary').prop('checked', false)
+
+        $('#vocabulary').livequery ->
+          $(this).click -> 
+            $('#grammar').prop('checked', false)
+
       else
         window.quiz_making_mode = false
         $('.loop-toggle').slideDown()
@@ -1068,4 +1078,4 @@ $ ->
 
 # AUTOSAVE EVERY 10 SECONDS 
 
-  autosave = setInterval(save, 10000)
+  autosave = setInterval(save, 30000)

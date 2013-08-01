@@ -19,6 +19,7 @@ $ ->
   title = $('#data').attr('data-video-title')
 
   window.keep_going = true
+  window.pause_time = false
   $('#lyrics').addClass('quizframe')
   $('.wrapper').addClass('quizframe')
   $('#below-video-box').hide()
@@ -81,77 +82,72 @@ $ ->
   onPlayerReady = (event) ->
     event.target.playVideo()
 
+  vocabQuiz = ->
+
+    keyword = word_array[time]
+    keyword = remove_accents(keyword)
+    console.log keyword
+
+    n = 0
+    $(document).keypress( (e) ->
+      if String.fromCharCode(e.keyCode) == keyword.charAt(n)
+        $('#answer-box').append("#{keyword.charAt(n)}")
+        # lyrics_html = $("##{id}").html()
+        # lyrics_with_blanks = lyrics_html.replace("#{random_word}", "____")
+        # $("##{id}").html(lyrics_with_blanks)
+        n += 1
+        console.log n
+        console.log keyword.length
+        if n == keyword.length
+          q += 1
+          $('#answer-box').html("")
+          window.player.playVideo()
+          $('.lyrics-box.quizframe').addClass('success')
+          window.answered = true
+          window.slid_down = false
+          $("#score-text").html("<h2>#{q}/#{total}</h2>")
+      )  
+
+  arr = []
+  lyrics = $(".lyrics")
+  jQuery.each lyrics, ->
+    id = $(this).attr("id")
+    arr.push id
+  console.log "arr = " + arr
+
+  quiz = (array, time) ->
+
+    time_id = 'lang2-' + time
+    if time == window.pause_time then player.pauseVideo()
+    if window.keep_going == true then player.playVideo()
+
+    if array.indexOf(time_id) > -1
+
+      duration = parseInt($("#lang1-#{time}").attr('data-duration'))
+      window.pause_time = time + duration
+      console.log "window.pause_time = " + pause_time
+
+      if window.keep_going == true
+        if $('#lyrics').attr('style') == "display: none;"
+          $('#lyrics').slideDown()
+          $('#score-box').slideDown()
+        lang1 = $("#lang1-#{time}").html()
+        lang2 = $("#lang2-#{time}").html()
+        $("#lyrics").children().eq(0).html("<p class='lyrics white'>#{lang1}</p>").hide().slideDown(800)
+        $("#lyrics").children().eq(1).html("<p class='lyrics white'>#{lang2}</p>").hide().slideDown(800)
+        window.keep_going = false
+      
   countVideoPlayTime = ->
-    array_builder = ->
-      arr = []
-      lyrics = $(".lyrics")
-      jQuery.each lyrics, ->
-        id = $(this).attr("id")
-        arr.push id
-      arr
-
-    scroll = (array, time) ->
-
-      time_id = 'lang2-' + time
-      if array.indexOf(time_id) > -1
-        $('.lyrics-box.quizframe').removeClass('success')
-        this_time = time
-        console.log "time: " + time
-        console.log "this_time: " + this_time
-
-        # FOR A VOCABULARY QUIZ: THIS LINE'S QUIZ WORD COMES IN HERE
-
-        if type == 'vocabulary' 
-          keyword = word_array[time]
-          keyword = remove_accents(keyword)
-          console.log keyword
-
-          n = 0
-          $(document).keypress( (e) ->
-            if String.fromCharCode(e.keyCode) == keyword.charAt(n)
-              $('#answer-box').append("#{keyword.charAt(n)}")
-              # lyrics_html = $("##{id}").html()
-              # lyrics_with_blanks = lyrics_html.replace("#{random_word}", "____")
-              # $("##{id}").html(lyrics_with_blanks)
-              n += 1
-              console.log n
-              console.log keyword.length
-              if n == keyword.length
-                q += 1
-                $('#answer-box').html("")
-                window.player.playVideo()
-                $('.lyrics-box.quizframe').addClass('success')
-                window.answered = true
-                window.slid_down = false
-                $("#score-text").html("<h2>#{q}/#{total}</h2>")
-            )  
-
-        # AUTO-PAUSE AT THE END OF A LINE HAPPENS HERE
-
-        if window.time > time + duration - 2
-          player.pauseVideo()
-          window.keep_going = false
-
-        if window.keep_going == true
-          if $('#lyrics').attr('style') == "display: none;"
-            $('#lyrics').slideDown()
-            $('#score-box').slideDown()
-          lang1 = $("#lang1-#{time}").html()
-          lang2 = $("#lang2-#{time}").html()
-          duration = parseInt($("#lang2-#{time}").attr('data-duration'))
-          $("#lyrics").children().eq(0).html("<p class='lyrics white'>#{lang1}</p>").hide().slideDown(800)
-          $("#lyrics").children().eq(1).html("<p class='lyrics white'>#{lang2}</p>").hide().slideDown(800)
 
     exact_time = player.getCurrentTime()
     time = Math.round(exact_time)
     window.time = time
+    do_quiz = quiz(arr, time)
 
-    arr = array_builder()
-    do_scroll = scroll(arr, time)
+  counter = setInterval(countVideoPlayTime, 1000)
 
   onPlayerStateChange = (event) ->
     if event.data is YT.PlayerState.PLAYING and not done
       done = true
 
-  counter = setInterval(countVideoPlayTime, 1000)
   done = false

@@ -56,14 +56,14 @@ $ ->
         window.initialize = true
     event.target.playVideo()
 
+  arr = []
+  lyrics = $(".lyrics")
+  jQuery.each lyrics, ->
+    id = $(this).attr("id")
+    arr.push id
+  arr
+
   countVideoPlayTime = ->
-    array_builder = ->
-      arr = []
-      lyrics = $(".lyrics")
-      jQuery.each lyrics, ->
-        id = $(this).attr("id")
-        arr.push id
-      arr
 
     scroll = (array, time) ->
       time_id = 'lang2-' + time
@@ -87,39 +87,40 @@ $ ->
     time = Math.round(exact_time)
 
     # LOOPING HAPPENS HERE (IF IT'S A CLIP)
-    loopNow = ->
-      loopingNow = ->
-        player.seekTo(clip_start, true)
-        player.setVolume(window.volume)
-        player.pauseVideo()
-        startUpAgain = ->
-          player.playVideo()
-          window.got_volume = false
-        window.setTimeout(startUpAgain, 1200)
-      window.setTimeout(loopingNow, 1000)
-    fadeOut = ->
-      if window.got_volume == false
-        window.volume = player.getVolume()
-        window.got_volume = true
-        halfVolume = 0.5 * window.volume
-        quarterVolume = 0.25 * window.volume
-        tinyVolume = 0.1 * window.volume
-        player.setVolume(halfVolume)
-        softAndSlow = ->
-          player.setVolume(quarterVolume)
-        window.setTimeout(softAndSlow, 500)
     if time > clip_end
       fadeOut()
       loopNow()
 
-    arr = array_builder()
     do_scroll = scroll(arr, time)
+
+  counter = setInterval(countVideoPlayTime, 1000)
+
+  loopNow = ->
+    loopingNow = ->
+      player.seekTo(clip_start, true)
+      player.setVolume(window.volume)
+      player.pauseVideo()
+      startUpAgain = ->
+        player.playVideo()
+        window.got_volume = false
+      window.setTimeout(startUpAgain, 1200)
+    window.setTimeout(loopingNow, 1000)
+  fadeOut = ->
+    if window.got_volume == false
+      window.volume = player.getVolume()
+      window.got_volume = true
+      halfVolume = 0.5 * window.volume
+      quarterVolume = 0.25 * window.volume
+      tinyVolume = 0.1 * window.volume
+      player.setVolume(halfVolume)
+      softAndSlow = ->
+        player.setVolume(quarterVolume)
+      window.setTimeout(softAndSlow, 500)
 
   onPlayerStateChange = (event) ->
     if event.data is YT.PlayerState.PLAYING and not done
       done = true
 
-  counter = setInterval(countVideoPlayTime, 1000)
   done = false
 
   quiz = $('#data').attr('data-quiz')
