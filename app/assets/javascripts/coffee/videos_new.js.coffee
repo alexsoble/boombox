@@ -91,7 +91,7 @@ $ ->
       $(this).parent().parent().fadeOut()
       sliderSetup()
       playbackControls(window.video_duration)
-      loopingControls()
+      loopingBehavior()
       langOneLangTwoStep()
 
   $("#no-loops").livequery ->
@@ -99,6 +99,7 @@ $ ->
       $(this).parent().parent().fadeOut()
       sliderSetup()
       playbackControls(window.video_duration)
+      straightPlaybackBehavior()
       langOneLangTwoStep()
 
   sliderSetup = ->
@@ -135,9 +136,6 @@ $ ->
         <div class='playback-left-label end-label'><div class='playback-left-label inner-label'></div></div>
           <div id='playback-slider'></div>
         <div class='playback-right-label end-label'><div class='playback-right-label inner-label'></div></div>
-        <div class='looping-left-label end-label'><div class='looping-left-label inner-label'></div></div>
-          <div id='loop-slider'></div>
-        <div class='looping-right-label end-label'><div class='looping-right-label inner-label'></divr></div>
         <div id=loop-status'></div>
       </div>")
 
@@ -155,58 +153,59 @@ $ ->
 
   playbackControls = (video_duration) ->
 
-    $('#loop-slider').hide()
-    $('#loop-slider').next().hide()
-    $('#loop-slider').prev().hide()
-    $('#adjust-loops-label').hide()
-
     $('#playback-slider').rangeSlider(
       arrows: false
       step: 1
       defaultValues:
         min: 0
-        max: 6
+        max: 4
       bounds:
         min: 0
         max: video_duration
-      if window.loop is false
-        range:
-          min: 6
-          max: 6
-      else
-        range:
-          min: 60
-          max: 60
+      range:
+        min: 0
+        max: 12
       formatter: (val) -> 
-        shortFormatTime(val)
-    )
+        shortFormatTime(val))
+
+    $('.playback-left-label.inner-label').html(":00")
+    $('.playback-right-label.inner-label').html("#{shortFormatTime(video_duration)}")
+
+  loopingBehavior = ->
+
+    if window.loop_range_appended == false
+      $('.ui-rangeSlider-bar').append('<div id="loop-bar"></div>')
+      window.loop_range_appended = true
+
+    $('#playback-slider').children().eq(3).addClass('loop-handle-label')
+    $('#playback-slider').children().eq(4).addClass('loop-handle-label')
+    $('.loop-handle-label.ui-rangeSlider-rightLabel').show()
+    $('.loop-handle-label.ui-rangeSlider-leftLabel').html("<div class='inner-label'>#{shortFormatTime($('#playback-slider').rangeSlider("values").min)}</div>")
+    $('.loop-handle-label.ui-rangeSlider-rightLabel').html("<div class='inner-label'>#{shortFormatTime($('#playback-slider').rangeSlider("values").max)}</div>")
     
-    $('.inner-label.playback-left-label').html('0:00')
-    if window.video_duration != undefined
-      $('.inner-label.playback-right-label').html(shortFormatTime(video_duration))
-
-    $('.end-label.playback-left-label').removeClass('disabled')
-    $('.end-label.playback-right-label').removeClass('disabled')
-
-    $('#playback-slider').children().eq(4).html("")
-
-  # BEHAVIOR FOR THE PLAYBACK SLIDER
-
     $('#playback-slider').off("valuesChanging").off("userValuesChanged")
-
-    $('#playback-slider').on("userValuesChanged", (e, data) ->
-      if window.loop is false
-        window.valuesChanging = true
-        time = data.values.min
-        window.player.seekTo(time)
+    $('#playback-slider').on("valuesChanging", (e, data) ->
+      start = data.values.min
+      end = data.values.max
+      player.seekTo(start)
+      window.loop = end - start
+      window.section = start / window.loop
+      $('.ui-rangeSlider-leftLabel.loop-handle-label').html("<div class='text-padding'>#{shortFormatTime(start)}</div>")
+      $('.loop-handle-label.ui-rangeSlider-rightLabel').html("<div class='text-padding'>#{shortFormatTime(end)}</div>")
     )
 
-  loopingControls = ->
+  straightPlaybackBehavior = ->
 
-    $('#loop-slider').slideDown()
-    $('#loop-slider').next().slideDown()
-    $('#loop-slider').prev().slideDown()
-    $('#adjust-loops-label').slideDown()
+    $('#playback-slider').rangeSlider("range", 4, 4)
+    $('#playback-slider').off("valuesChanging").off("userValuesChanged")
+    $('#playback-slider').on("userValuesChanged", (e, data) ->
+      window.valuesChanging = true
+      window.player.seekTo(time)
+    )
+
+    $('.loop-handle-label.ui-rangeSlider-rightLabel').slideUp()
+
+  longVideoControls = ->
 
     left_boundary = Math.floor(window.time / 45) * 45
     right_boundary = left_boundary + 60
@@ -226,8 +225,6 @@ $ ->
         shortFormatTime(val)
       )
 
-    console.log $('#loop-slider').rangeSlider("values")
-     
     # CHANGES TO THE PLAYBACK SLIDER (ORDER OF OPERATIONS MATTERS HERE v !!!)
 
     $('.end-label.playback-left-label').addClass('disabled')
@@ -266,23 +263,6 @@ $ ->
       $('.loop-handle-label.ui-rangeSlider-rightLabel').html("#{shortFormatTime(start + window.loop)}")
     )
 
-    # CHANGES TO THE LOOP SLIDER
-
-    window.loop_range = $('#loop-slider').children().eq(0).children().eq(1)
-    window.loop_range.attr('style','background-color: #0F82F5;')
-    if window.loop_range_appended == false
-      window.loop_range.append('<div id="loop-bar"></div>')
-      window.loop_range_appended = true
-    $('#loop-slider').children().eq(3).addClass('loop-handle-label')
-    $('#loop-slider').children().eq(4).addClass('loop-handle-label')
-    $('#loop-slider').children().eq(0).children().eq(2).addClass('timer-blue')
-    $('#loop-slider').children().eq(0).children().eq(3).addClass('timer-blue')
-
-    $('.inner-label.looping-left-label').html("#{shortFormatTime(left_boundary)}")
-    $('.inner-label.looping-right-label').html("#{shortFormatTime(right_boundary)}")
-
-    $('.ui-rangeSlider-leftLabel.loop-handle-label').html("<div class='inner-label'>#{shortFormatTime($('#loop-slider').rangeSlider("values").min)}</div>")
-    $('.ui-rangeSlider-rightLabel.loop-handle-label').html("<div class='inner-label'>#{shortFormatTime($('#loop-slider').rangeSlider("values").max)}</div>")
 
   # BEHAVIOR FOR THE LOOP SLIDER: SHIFT LEFT / SHIFT RIGHT CONTROLS
 
@@ -346,16 +326,6 @@ $ ->
         window.setTimeout(waitForIt(shiftRight), 1000)
       if start == min
         window.setTimeout(waitForIt(shiftLeft), 1000)
-      )
-
-    $('#loop-slider').on("valuesChanging", (e, data) ->
-        start = data.values.min
-        end = data.values.max
-        player.seekTo(start)
-        window.loop = end - start
-        window.section = start / window.loop
-        $('.ui-rangeSlider-leftLabel.loop-handle-label').html("<div class='text-padding'>#{shortFormatTime(start)}</div>")
-        $('.ui-rangeSlider-rightLabel.loop-handle-label').html("<div class='text-padding'>#{shortFormatTime(end)}</div>")
       )
 
   langOneLangTwoStep = ->
@@ -618,7 +588,15 @@ $ ->
     video_duration = window.player.getDuration()
     window.video_duration = video_duration
     playbackControls(video_duration)
+    if window.loop == false
+      straightPlaybackBehavior()
+    else
+      loopingBehavior()
     event.target.playVideo()
+
+    # CONTROLS FOR LONG VIDEOS COME IN HERE    
+    if video_duration > 300
+      longVideoControls()
 
   countVideoPlayTime = ->
 
@@ -949,16 +927,15 @@ $ ->
       if window.loop == false
         window.loop = 4
         window.section = window.time / window.loop
-        loopingControls()
+        loopingBehavior()
         $('#loop-on').html('turn off loops')
         $('#loop-on').attr('style','float: right;')
-        $('#settings').addClass('looping')
+
       else
         window.loop = false
-        playbackControls(window.video_duration)
+        straightPlaybackBehavior()
         $('#loop-on').html('turn on loops')
         $('#loop-on').attr('style','float: left;')
-        $('#settings').removeClass('looping')
 
   $('.quiz-toggle').livequery -> 
     $(this).click -> 
