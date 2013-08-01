@@ -208,11 +208,13 @@ overflow: visible; }
   border-radius: 10px;
   width: 20px; }
 
-.lone-label {
-  width: 30px; 
-  height: 30px; 
+.ui-slider-handle {
+  font-size: 12px; 
   background-color: #134F5C;
-}
+  color: white;
+  height: 15px; width: 15px; 
+  border-radius: 10px;
+  width: 20px; }
 
 #loop-bar { height: 2px; position: relative; top: 9px; background-color: white; }
 

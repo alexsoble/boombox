@@ -124,7 +124,7 @@ $ ->
     $('#settings').append("
       <div style='float: left; margin-left: 20px; margin-top: 20px; width: 140px;'>
         <div class='loop-toggle'>
-          <div class='btn btn-info btn-small rounded tight-pack' id='loop-on' style='#{loop_toggle_initalize_style}'> #{loop_toggle_initalize} </div>
+          <div class='btn btn-primary btn-small rounded tight-pack' id='loop-on' style='#{loop_toggle_initalize_style}'> #{loop_toggle_initalize} </div>
         </div>
         <div class='quiz-toggle'>
           <div class='btn btn-info btn-small rounded tight-pack' id='quiz-on'> make it a quiz </div>
@@ -152,10 +152,9 @@ $ ->
       </div>")
 
   playbackControls = (video_duration) ->
+
     $('.playback-left-label.inner-label').html(":00")
     $('.playback-right-label.inner-label').html("#{shortFormatTime(video_duration)}")
-    $('#playback-slider').children().eq(3).addClass('loop-handle-label')
-    $('#playback-slider').children().eq(4).addClass('loop-handle-label')
 
   loopingBehavior = ->
 
@@ -166,8 +165,8 @@ $ ->
       arrows: false
       step: 1
       defaultValues:
-        min: 0
-        max: 4
+        min: window.time
+        max: window.time + 4
       bounds:
         min: 0
         max: video_duration
@@ -176,6 +175,9 @@ $ ->
         max: 12
       formatter: (val) -> 
         shortFormatTime(val))
+
+    $('#playback-slider').children().eq(3).addClass('loop-handle-label')
+    $('#playback-slider').children().eq(4).addClass('loop-handle-label')
 
     if window.loop_range_appended == false
       $('.ui-rangeSlider-bar').append('<div id="loop-bar"></div>')
@@ -204,7 +206,10 @@ $ ->
     $('#playback-slider').slider(
       min: 0,
       max: window.video_duration,
+      value: window.time,
       step: 1
+      slide: (event, ui) ->
+        player.seekTo($('#playback-slider').slider("value"))
     )
 
   longVideoControls = ->
@@ -610,7 +615,7 @@ $ ->
 
     # PLAYBACK SLIDER MOVES HERE
     if window.loop is false and window.valuesChanging is false
-      $('#playback-slider').rangeSlider("values", window.time, window.time + 12)
+      $('#playback-slider').slider("value", window.time)
 
     # LOOP BAR INCHES FORWARD HERE
     if window.loop isnt false
