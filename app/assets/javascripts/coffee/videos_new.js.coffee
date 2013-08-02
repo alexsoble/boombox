@@ -203,6 +203,8 @@ $ ->
     if $('#playback-slider').hasClass('ui-rangeSlider')
       $('#playback-slider').rangeSlider('destroy')
 
+    $('.ui-slider-handle').addClass('loop-handle-label')
+
     $('#playback-slider').slider(
       min: 0,
       max: window.video_duration,
@@ -616,6 +618,7 @@ $ ->
     # PLAYBACK SLIDER MOVES HERE
     if window.loop is false and window.valuesChanging is false
       $('#playback-slider').slider("value", window.time)
+      $('.ui-slider-handle').html(shortFormatTime(window.time))
 
     # LOOP BAR INCHES FORWARD HERE
     if window.loop isnt false
