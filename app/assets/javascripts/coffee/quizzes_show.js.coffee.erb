@@ -124,15 +124,23 @@ $ ->
     if array.indexOf(time_id) > -1
 
       duration = parseInt($("#lang1-#{time}").attr('data-duration'))
+      lang1 = $("#lang1-#{time}").html()
+      lang2 = $("#lang2-#{time}").html()
       window.pause_time = time + duration
-      console.log "window.pause_time = " + pause_time
+
+      for w in window.words
+        $("#lang1-#{time}").children().each(->
+          console.log $(this).html()
+        )
+        console.log window.pause_lang1.match(/despierten/g)
+        console.log window.pause_lang1.match(/"#{w}"/g)
+        q += (lang1.match(/#{w}/g) || [] ).length
+        console.log q
 
       if window.keep_going == true
         if $('#lyrics').attr('style') == "display: none;"
           $('#lyrics').slideDown()
           $('#score-box').slideDown()
-        lang1 = $("#lang1-#{time}").html()
-        lang2 = $("#lang2-#{time}").html()
         $("#lyrics").children().eq(0).html("<p class='lyrics white'>#{lang1}</p>").hide().slideDown(800)
         $("#lyrics").children().eq(1).html("<p class='lyrics white'>#{lang2}</p>").hide().slideDown(800)
         window.keep_going = false

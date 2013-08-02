@@ -77,11 +77,6 @@ $ ->
           duration = $("#lang2-#{time}").attr('data-duration')
           $("#lyrics").children().eq(0).html("<p class='lyrics white' id='#{time}'>#{lang1}</p>").hide().slideDown(800)
           $("#lyrics").children().eq(1).html("<p class='lyrics white' id='#{time}'>#{lang2}</p>").hide().slideDown(800)
-          window.slid_down = true
-          slideUpLyrics = -> 
-            $("#lyrics").children().eq(0).slideUp()
-            $("#lyrics").children().eq(1).slideUp()
-          window.setTimeout(slideUpLyrics, (duration + 1) * 1000)
 
     exact_time = player.getCurrentTime()
     time = Math.round(exact_time)
