@@ -6,6 +6,11 @@ $ ->
 
   interp_id = $('#data').attr('data-interp-id')
   video_youtube_id = $('#data').attr('data-video-id')
+  longest_line_length = parseInt($('#data').attr('data-longest-line'))
+
+  if longest_line_length > 100
+    console.log "Woah! You've got some long lines in that translation!"
+    $('.lyrics-box').addClass('extra-large')
 
   if $('#data').attr('data-clip') is 'true'
     clip = true
@@ -144,10 +149,10 @@ $ ->
     $(".lang1").attr("class", "wide-lyrics-container lang1")
 
   $('#video-top').click ->
-    $('#lyrics').attr('style','top: 10px;')
+    $('#lyrics').addClass('top').removeClass('bottom')
 
   $('#video-bottom').click ->
-    $('#lyrics').attr('style','top: 260px;')
+    $('#lyrics').addClass('bottom').removeClass('top')
 
   # TWEET BUTTON
 
@@ -160,15 +165,3 @@ $ ->
       js.src = "//platform.twitter.com/widgets.js"
       fjs.parentNode.insertBefore js, fjs
   ) document, "script", "twitter-wjs"
-
-  # LIKE BUTTON
-
-  ((d, s, id) ->
-    js = undefined
-    fjs = d.getElementsByTagName(s)[0]
-    return  if d.getElementById(id)
-    js = d.createElement(s)
-    js.id = id
-    js.src = "//connect.facebook.net/en_US/all.js#xfbml=1"
-    fjs.parentNode.insertBefore js, fjs
-  ) document, "script", "facebook-jssdk"

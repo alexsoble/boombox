@@ -21,6 +21,14 @@
   position: absolute; 
   overflow: auto; }
 
+.lyrics-box.extra-small { height: 40px; }
+.lyrics-box.small { height: 60px; }
+.lyrics-box.extra-large { height: 100px; }
+
+.lyrics-box.top { top: 10px; }
+.lyrics-box.bottom { top: 260px; }
+.lyrics-box.bottom.extra-large { top: 240px; }
+
 .text-container { margin-top: 10px; margin-bottom: 10px; }
 
 #lyrics-settings { position: absolute; top: 355px; left: 360px; }
