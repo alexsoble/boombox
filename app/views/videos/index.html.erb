@@ -1,5 +1,5 @@
 <br>
-<h1 style='text-align: center;'>Learning a language?</h1>
+<h1 style='text-align: center;'>Love languages?</h1>
 <br>
 <h2 style='text-align: center;'>YouTube is your new best friend.</h2>
 <br>
@@ -37,7 +37,9 @@
         <div class="video-thumb-box interp <%= v.lang1 %>">
           <strong class="center"><%= link_to "#{v.title.slice(0,32)}", interpretation_url(i) %></strong>
           <br>
-          <%= image_tag "http://img.youtube.com/vi/#{v.youtube_id}/1.jpg" %>
+          <div class="image-box">
+            <%= image_tag "http://img.youtube.com/vi/#{v.youtube_id}/1.jpg" %>
+          </div>
         </div>
       <% end %>
     </div>

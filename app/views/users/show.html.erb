@@ -11,7 +11,9 @@
         <div class="video-thumb-box user-thumb-box">
           <strong class="center"><%= link_to "#{v.title.slice(0,25)}", interpretation_url(i) %></strong>
           <br>
-          <img src="http://img.youtube.com/vi/<%= v.youtube_id %>/1.jpg">
+          <div class="image-box">
+            <img src="http://img.youtube.com/vi/<%= v.youtube_id %>/1.jpg">
+          </div>
           <% if current_user && @user.id == current_user.id %>
             <%= link_to "Edit", edit_interpretation_url(i) %> // <%= link_to "Delete", interpretation_url(i), :method => :delete %>
           <% end %>
@@ -33,7 +35,9 @@
           <div class="video-thumb-box user-thumb-box">
             <strong class="center"><%= link_to "#{v.title.slice(0,25)}", interpretation_url(d) %></strong>
             <br>
-            <img src="http://img.youtube.com/vi/<%= v.youtube_id %>/1.jpg">
+            <div class="image-box">
+              <img src="http://img.youtube.com/vi/<%= v.youtube_id %>/1.jpg">
+            </div>
             <% if current_user && @user.id == current_user.id %>
               <%= link_to "Edit", edit_interpretation_url(d) %> //  <%= link_to "Delete", interpretation_url(d), :method => :delete %>
             <% end %>

@@ -3,18 +3,22 @@
 .span { height: 80px; }
 
 .video-thumb-box {
-  width: 110px;
-  height: 140px;
+  width: 120px;
+  height: 150px;
   margin-right: 40px;
   margin-top: 20px;
   float: left; 
   border: solid 1px #888888; 
   box-shadow: 10px 10px 5px #888888;
-  padding-top: 12px;
-  padding-left: 20px;
-  padding-right: 20px;
-  padding-bottom: 20px; 
-  cursor: pointer; }
+  padding-top: 15px;
+  padding-left: 15px;
+  padding-right: 15px;
+  padding-bottom: 15px; 
+  cursor: pointer; 
+  position: relative; }
+
+.image-box { position: absolute;
+  bottom: 15px; }
 
 .video-thumb-box.user-thumb-box {
   margin-right: 40px; }
