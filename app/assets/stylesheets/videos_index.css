@@ -7,7 +7,14 @@
   height: 140px;
   margin-right: 40px;
   margin-top: 20px;
-  float: left; }
+  float: left; 
+  border: solid 1px #888888; 
+  box-shadow: 10px 10px 5px #888888;
+  padding-top: 12px;
+  padding-left: 20px;
+  padding-right: 20px;
+  padding-bottom: 20px; 
+  cursor: pointer; }
 
 .video-thumb-box.user-thumb-box {
   margin-right: 40px; }
@@ -33,14 +40,7 @@
 .video-thumb-box.result-thumb-box {
   margin-right: 0px;
   margin-left: 40px;
-  margin-top: 40px;
-  border: solid 1px #888888; 
-  box-shadow: 10px 10px 5px #888888; 
-  padding-top: 12px;
-  padding-left: 20px;
-  padding-right: 20px;
-  padding-bottom: 20px;
-  cursor: pointer; }
+  margin-top: 40px; }
 
 .button-text-wrapper { 
   padding-left: 30px; 
