@@ -5,6 +5,11 @@ $ ->
   window.video_id = false
   window.langtwo_entered = false
 
+  $('.language-selector').click ->
+    lang = $(this).attr('id')
+    $('.video-thumb-box').hide()
+    $(".#{lang}").show()
+
   $('#ask-youtube').keyup ->
     $('#progress-bar').html('
       <div class="progress progress-info progress-striped active">

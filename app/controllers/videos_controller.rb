@@ -55,34 +55,33 @@ class VideosController < ApplicationController
       Interpretation.find(98)
     ]
 
-    # MOST RECENTLY TRANSLATED VIDEOS
+    interps_with_some_content = []
+    Interpretation.where(:published => true).all.each do |i|
+      l = Line.where(:interpretation_id => i.id).length
+      if l > 10
+        interps_with_some_content << { :id => i.id, :length => l }
+      end
+    end
+    @interps_with_some_content = []
+    interps_with_some_content.sort_by { |hash| hash[:length] }.reverse.take(6).each do |i|
+      @interps_with_some_content << Interpretation.find(i[:id])
+    end
+
+    @langs_with_some_content = []
+    interps_with_some_content.each do |i|
+      lang1 = Interpretation.find(i[:id]).video.lang1
+      if @langs_with_some_content.index(lang1).blank? 
+        @langs_with_some_content << lang1
+      end
+    end
 
     @latest_translated_videos = Array.new
-
     Video.order('created_at DESC').each do |v|
       if v.number_of_interpretations > 0
         @latest_translated_videos << v
       end 
     end
-    
     @latest_translated_videos = @latest_translated_videos[0..9]
-
-    # TOP 10 REQUESTES
-
-    array = Array.new
-    @top_requested_videos = Array.new
-
-    Request.order("created_at ASC").each do |r|
-      @video = Video.find_by_id(r.video_id)
-      if @video.number_of_interpretations == 0
-        array << { :id => @video.id, :number_of_requests => @video.number_of_requests }
-      end
-    end
-
-    array = array.sort_by { |hash| hash[:number_of_requests] }.reverse[0..9]
-    array.each do |h|
-      @top_requested_videos << Video.find_by_id(h[:id])
-    end
 
   end
 
