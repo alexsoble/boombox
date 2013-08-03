@@ -37,7 +37,9 @@ $ ->
                 <div class='quiet'>#{r.label}</div>
                 <strong class='center blue'>#{r.label.slice(0,30)}</strong>
                 <br>
-                <img alt='video_#{r.label}' src='http://img.youtube.com/vi/#{r.value}/1.jpg' />
+                <div class='image-box'>
+                  <img alt='video_#{r.label}' src='http://img.youtube.com/vi/#{r.value}/1.jpg' />
+                </div>
               </div>")
           $('#ask-youtube').autocomplete('close')
           $('#progress-bar').children(':first').removeClass('active')
