@@ -63,7 +63,7 @@
   height: 40px;
   float: right; }
 
-label { float: left; }
+label.index-page-label { float: left; }
 
 .lang1-input { float: right; }
 .lang2-input { float: right; }

@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130730213212) do
+ActiveRecord::Schema.define(:version => 20130803032740) do
 
   create_table "clips", :force => true do |t|
     t.integer   "start"
@@ -50,6 +50,7 @@ ActiveRecord::Schema.define(:version => 20130730213212) do
     t.string   "name"
     t.string   "description"
     t.string   "quiz_type"
+    t.integer  "user_id"
   end
 
   create_table "requests", :force => true do |t|

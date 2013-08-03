@@ -164,7 +164,7 @@ class InterpretationsController < ApplicationController
     @lines.each do |l|
       l.destroy
     end
-    redirect_to '/welcome'
+    redirect_to :back
   end
 
   def get_by_language
