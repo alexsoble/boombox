@@ -758,8 +758,7 @@ $ ->
         $(this).append("
           <br>
           <span style='float: right; margin: 10px;' class='toolbox-lower'>
-            <div class='btn btn-primary btn-small rounded tight-margins' id='mark-chorus'> &uarr; set as chorus </div>
-            <div class='btn btn-primary btn-small rounded tight-margins' id='add-chorus'> add chorus &darr; </div>
+            <div class='btn btn-primary btn-small rounded tight-margins' id='copy-paste'> copy/paste lines &darr; </div>
           </span>
           <span style='float: left; margin: 10px;' class='toolbox-lower'>
             <div class='btn btn-small btn-warning rounded tight-margins' id='edit-timing' data-line-id=#{id}> adjust timing </div>
@@ -770,26 +769,10 @@ $ ->
           -> $(this).attr('style','background-color: #F9F9F9;')
           )
 
-  $('#mark-chorus').livequery ->
+  $('#copy-paste').livequery ->
     $(this).click -> 
-      window.choruslang1 = $('#edit-line-lang1').val()
-      window.choruslang2 = $('#edit-line-lang2').val()
-      doneEditing()
-
-  $('#add-chorus').livequery ->
-    $(this).click -> 
-      if window.choruslang2 isnt ''
-        new_time = parseInt($(this).parent().parent().attr('data-time')) - 4
-        $('.edited-line').after("
-          <div class='line' data-time=#{new_time} data-duration=4>
-            <div class='lyrics-container'>
-              <p>#{window.choruslang1}</p>
-            </div>
-            <div class='lyrics-container'>
-              <p>#{window.choruslang2}</p>
-            </div>
-          </div>")
-        doneEditing()
+      $('.lang1-line').val($('#edit-line-lang1').val())
+      $('.lang2-line').val($('#edit-line-lang2').val())
 
   # QUIZ WORDS GET ADDED HERE v
 
