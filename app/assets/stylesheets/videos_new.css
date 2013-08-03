@@ -24,6 +24,9 @@
 #lyrics-box { overflow-y: scroll;
  width: 580px; }
 
+#lyrics-box.extra-large { overflow-y: scroll;
+ height: 530px; }
+
 .video-container {
   margin-left: 80px;
   margin-right: 40px;
@@ -46,6 +49,8 @@
   float: left; 
   max-height: 420px;
   overflow-y: scroll; }
+
+.lyrics-container.wide.tall { max-height: 500px; }
 
 .line { float: left; background-color: white; }
 

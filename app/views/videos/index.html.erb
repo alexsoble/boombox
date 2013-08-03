@@ -21,17 +21,49 @@
 </div>
 <div id="results-box">
 </div>
+
 <br>
-<hr id="hr">
 <br>
+<br>
+<br>
+
 <div class="row-fluid">
   <div class="span11 offset1">
-    <div class="row-fluid">
-      <div class="span12">
-        <h3>Demo videos:</h3></a>
-      </div>
-    </div>
-    <div class="row-fluid">
+
+    <h2> Show me videos in:   
+      <div class="btn btn-info" style="border-radius: 25px;">Spanish</div>
+      <div class="btn btn-info" style="border-radius: 25px;">French</div>
+      <div class="btn btn-info" style="border-radius: 25px;">Hindi</div>
+      <div class="btn btn-info" style="border-radius: 25px; background-color: white; border: 1px solid black; color: black;"><i>More to come!</i></div>
+    </h2>
+
+    <br>
+    <h3><strong>Popular:</strong></h3></a>
+    <hr id="hr">
+
+      <% @demo_videos.each do |i| %>
+        <% v = i.video %>
+        <div class="video-thumb-box interp <%= v.lang1 %>">
+          <strong class="center"><%= link_to "#{v.title.slice(0,32)}", "/interpretations/#{i.id}/discuss" %></strong>
+          <br>
+          <div class="image-box">
+            <%= image_tag "http://img.youtube.com/vi/#{v.youtube_id}/1.jpg" %>
+          </div>
+        </div>
+      <% end %>
+
+  </div>
+</div>
+
+<br>
+
+<div class="row-fluid">
+  <div class="span11 offset1">
+
+    <br>
+    <h3><strong>Recent:</strong></h3></a>
+    <hr id="hr">
+
       <% @demo_videos.each do |i| %>
         <% v = i.video %>
         <div class="video-thumb-box interp <%= v.lang1 %>">
@@ -42,9 +74,6 @@
           </div>
         </div>
       <% end %>
-    </div>
+
   </div>
 </div>
-<br>
-<hr id="hr">
-<br>

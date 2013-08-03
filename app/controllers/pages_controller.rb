@@ -15,4 +15,7 @@ class PagesController < ApplicationController
   def experiment
   end
 
+  def browsers
+  end
+
 end

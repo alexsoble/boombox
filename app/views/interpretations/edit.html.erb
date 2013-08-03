@@ -17,7 +17,6 @@
 
   </div> 
 
-
   <% if @lang1_and_lang2 %>
 
     <div class="span5 offset2">
@@ -39,32 +38,36 @@
         <% end %>
       </div>
 
-      <div class="lyrics-container wide">
-        <div class="lyrics-container">
-          <div id="lang1-input">
-            <i class='left'><%= @lang1 %>&nbsp;</i>
-            <small class='left'>(<small class='current-loop-time'></small>)</small></div>
-            <br>
-            <div class='control-group'>
-            <div class='controls'>
-              <input type='text' class='input-xlarge lang1-line'>
+    <% if action_name == "edit" || action_name == "new" %>
+
+        <div class="lyrics-container wide">
+          <div class="lyrics-container">
+            <div id="lang1-input">
+              <i class='left'><%= @lang1 %>&nbsp;</i>
+              <small class='left'>(<small class='current-loop-time'></small>)</small></div>
+              <br>
+              <div class='control-group'>
+              <div class='controls'>
+                <input type='text' class='input-xlarge lang1-line'>
+              </div>
             </div>
           </div>
-        </div>
-        <div class="lyrics-container">
-          <div id="lang2-input">
-            <i class='left'><%= @lang2 %>&nbsp;</i>
-            <small class='left'>(<small id='current-loop-time' class='current-loop-time'></small>)</small></div>
+          <div class="lyrics-container">
+            <div id="lang2-input">
+              <i class='left'><%= @lang2 %>&nbsp;</i>
+              <small class='left'>(<small id='current-loop-time' class='current-loop-time'></small>)</small></div>
+              <br>
+              <div class='controls'>
+                <input type='text' class='input-xlarge lang2-line'>
+              </div>
             <br>
-            <div class='controls'>
-              <input type='text' class='input-xlarge lang2-line'>
-            </div>
-          <br>
-          <div class="preview-button" style="float: right;"></div>
+            <div class="preview-button" style="float: right;"></div>
+          </div>
         </div>
       </div>
-    </div>
 
+    <% end %>
+  
   <% else %>
   
     <div class="span3">

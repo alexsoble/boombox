@@ -1,0 +1,266 @@
+$ ->
+
+  youtube_id = $('#data').attr('data-youtube-id')
+  lang1 = $('#data').attr('data-lang-one')
+  lang2 = $('#data').attr('data-lang-two')
+  window.lang1 = lang1
+  window.lang2 = lang2
+  interp_id = $('#data').attr('data-interp-id')
+  action_name = $('#data').attr('data-action-name')
+  translation_type = $('#data').attr('data-translation-type')
+  published = $('#data').attr('data-published')
+  console.log youtube_id + " " + lang1 + " " + lang2 + " " + interp_id + " " + action_name + " "+ translation_type
+
+  $('.lyrics-container').addClass('tall')
+
+  formatTime = (time) ->
+    time = Math.floor(time)
+    if time <= 9 then formatted_time = "00:0" + time
+    if 9 < time <= 59 then formatted_time = "00:" + time
+    if 60 <= time < 540
+      if time%60 <= 9 then formatted_time = "0" + Math.floor((time)/60) + ":0" + (time)%60
+      if 9 < time%60 <= 59 then formatted_time = "0" + Math.floor((time)/60) + ":" + (time)%60
+    if 540 <= time < 3600
+      if time%60 <= 9 then formatted_time = Math.floor((time)/60) + ":0" + (time)%60
+      if 9 < time%60 <= 59 then formatted_time = Math.floor((time)/60) + ":" + (time)%60
+    formatted_time
+
+  shortFormatTime = (time) ->
+    time = Math.floor(time)
+    if time <= 9 then formatted_time = ":0" + time
+    if 9 < time <= 59 then formatted_time = ":" + time
+    if 60 <= time < 540
+      if time%60 <= 9 then formatted_time = Math.floor((time)/60) + ":0" + (time)%60
+      if 9 < time%60 <= 59 then formatted_time = Math.floor((time)/60) + ":" + (time)%60
+    if 540 <= time < 3600
+      if time%60 <= 9 then formatted_time = Math.floor((time)/60) + ":0" + (time)%60
+      if 9 < time%60 <= 59 then formatted_time = Math.floor((time)/60) + ":" + (time)%60
+    formatted_time
+
+  window.loop = false
+  window.valuesChanging = false
+  window.quiz_making_mode = false
+  window.quiz_words = []
+  window.tool_helptip_displayed = false
+  window.editing_line = 'off'
+  window.editing_line_timing = 'off'
+  window.editing_line_ask_heyu = 'off'
+  window.choruslang2 = ''
+  window.loop_range_appended = false
+  $('#timer-box').html('<div id="timer">
+    <h2 class="timer-text" id="big-timer"></h2>
+    </div>')
+  $('#lyrics').hide()
+  $('#timer').hide()
+
+  sliderSetup = ->
+
+    $('#settings').append("
+      <div id='playback-buttons' style='float: right; margin-right: 20px; margin-top: 20px; margin-bottom: 5px;'>
+        <div class='btn btn-info btn-small rounded tight-pack' id='backward'> &larr; </div>
+        <div class='btn btn-info btn-small rounded tight-pack' id='play-pause'> pause </div> 
+        <div class='btn btn-info btn-small rounded tight-pack' id='forward'> &rarr; </div>
+        <div class='btn btn-info btn-small rounded tight-pack' id='volume'> <i class='icon-volume-up'></i> </div>
+        <div class='btn btn-info btn-small rounded tight-pack' id='helpz'> ? </div>
+      </div>")
+
+    if window.loop != false
+      loop_toggle_initalize = "turn off loops"
+      loop_toggle_initalize_style = "float: right;"
+      $('#settings').addClass('looping')
+    else
+      loop_toggle_initalize = "turn on loops"
+      loop_toggle_initalize_style = "float: left;"
+
+    $('#settings').append("
+      <div style='float: left; margin-left: 20px; margin-top: 20px; width: 140px;'>
+        <div class='loop-toggle'>
+          <div class='btn btn-primary btn-small rounded tight-pack' id='loop-on' style='#{loop_toggle_initalize_style}'> #{loop_toggle_initalize} </div>
+        </div>
+      </div>")
+
+    $('#settings').append("
+      <div id='loop-settings'>
+        <div class='playback-left-label end-label'><div class='playback-left-label inner-label'></div></div>
+          <div id='playback-slider'></div>
+        <div class='playback-right-label end-label'><div class='playback-right-label inner-label'></div></div>
+        <div id='loop-status'></div>
+      </div>")
+
+  sliderSetup()
+
+  playbackControls = (video_duration) ->
+
+    $('.playback-left-label.inner-label').html(":00")
+    $('.playback-right-label.inner-label').html("#{shortFormatTime(video_duration)}")
+
+  straightPlaybackBehavior = ->
+
+    if $('#playback-slider').hasClass('ui-rangeSlider')
+      $('#playback-slider').rangeSlider('destroy')
+
+    $('.ui-slider-handle').addClass('loop-handle-label')
+
+    $('#playback-slider').slider(
+      min: 0,
+      max: window.video_duration,
+      value: window.time,
+      step: 1
+      slide: (event, ui) ->
+        player.seekTo($('#playback-slider').slider("value"))
+    )
+
+# YOUTUBE PLAYER COMES IN HERE
+
+  window.rollover_pause = false
+
+  tag = document.createElement("script")
+  tag.src = "https://www.youtube.com/iframe_api"
+  firstScriptTag = document.getElementsByTagName("script")[0]
+  firstScriptTag.parentNode.insertBefore tag, firstScriptTag
+
+  window.section = 0 
+  window.time = 0
+  window.got_volume = false
+
+  window.onYouTubeIframeAPIReady = ->
+    player = new YT.Player("new-video-box", {
+      height: "315"
+      width: "420"
+      videoId: youtube_id
+      playerVars: 
+        {
+        controls: 0
+        cc_load_policy: 1
+        }
+      events:
+        onReady: onPlayerReady
+        onStateChange: onPlayerStateChange })
+    console.log "Checking for cc..." + player.getOptions().indexOf('cc')
+    window.player = player
+
+  onPlayerReady = (event) ->
+    video_duration = window.player.getDuration()
+    window.video_duration = video_duration
+    playbackControls(video_duration)
+    if window.loop == false
+      straightPlaybackBehavior()
+    else
+      loopingBehavior()
+    event.target.playVideo()
+
+    # CONTROLS FOR LONG VIDEOS COME IN HERE    
+    if video_duration > 300
+      longVideoControls()
+
+  countVideoPlayTime = ->
+
+    exact_time = player.getCurrentTime()
+    window.time = Math.floor(exact_time)
+    this_line = $("[data-time=#{window.time}]")
+    if this_line.length != 0
+      this_line.effect("highlight", { color: "yellow" }, 4000)
+      $("#lyrics-box").scrollTo(this_line.prev().prev(), { duration : 250 } )
+
+    current_loop_time = window.loop * window.section
+    current_loop_end = window.loop * (window.section + 1)
+
+    # PLAYBACK SLIDER MOVES HERE
+    if window.loop is false and window.valuesChanging is false
+      $('#playback-slider').slider("value", window.time)
+      $('.ui-slider-handle').html(shortFormatTime(window.time))
+
+    # LOOP BAR INCHES FORWARD HERE
+    if window.loop isnt false
+      $('#loop-bar').animate(
+        { width: "#{((window.time - current_loop_time)/(window.loop)) * 330 * (window.loop / 60)}px" }, 
+      )
+
+    # DISPLAYING THE TIMING ABOVE THE TRANSLATION INPUT LINES 
+    if window.loop isnt false
+      $(".current-loop-time").html(formatTime(current_loop_time) + " to " + formatTime(current_loop_end))
+    else
+      $(".current-loop-time").html(formatTime(window.time))
+
+    # LOOPING HAPPENS HERE
+    if window.loop isnt false
+      loopNow = ->
+        loopingNow = ->
+          $('#loop-bar').animate({width: 'toggle'})
+          player.seekTo(window.loop * window.section, true)
+          player.setVolume(window.volume)
+          player.pauseVideo()
+          startUpAgain = ->
+            player.playVideo()
+            # $('#loop-bar').animate({width: "#{330 * (window.loop / 60)}px"}, duration: "#{window.loop * 1000}")
+            window.got_volume = false
+          window.setTimeout(startUpAgain, 1200)
+        window.setTimeout(loopingNow, 1000)
+      fadeOut = ->
+        if window.got_volume == false
+          window.volume = player.getVolume()
+          window.got_volume = true
+          halfVolume = 0.5 * window.volume
+          quarterVolume = 0.25 * window.volume
+          tinyVolume = 0.1 * window.volume
+          player.setVolume(halfVolume)
+          softAndSlow = ->
+            player.setVolume(quarterVolume)
+          window.setTimeout(softAndSlow, 500)
+      modifier = .69 + (window.loop * 0.015)
+      if window.time > (window.loop) * (window.section + modifier)
+        fadeOut()
+        loopNow()
+
+  counter = setInterval(countVideoPlayTime, 1000)
+  done = false
+
+  onPlayerStateChange = (event) ->
+    if event.data == YT.PlayerState.PAUSED
+      exact_time = player.getCurrentTime()
+      window.time = Math.round(exact_time)
+      window.section = window.time / window.loop
+
+  delayedShow = -> 
+    window.player.playVideo()
+  window.setTimeout(delayedShow, 1000)
+    
+  # LOGIC FOR THE CONTROLS 
+
+  $("#forward").livequery ->
+    $(this).click -> 
+      console.log "forward"
+      if window.loop != false
+        window.section += 1
+        window.player.seekTo(window.loop * window.section, true)
+        $('#loop-slider').rangeSlider("values", window.loop * window.section, window.loop * (window.section + 1))
+        $('.ui-rangeSlider-leftLabel.loop-handle-label').children(':first').html("<div class='text-padding'>#{shortFormatTime(window.loop * window.section)}</div>")
+        $('.ui-rangeSlider-rightLabel.loop-handle-label').children(':first').html("<div class='text-padding'>#{shortFormatTime(window.loop * (window.section + 1))}</div>")
+      else
+        player.seekTo(window.time + 15)
+
+  $("#backward").livequery ->
+    $(this).click -> 
+      console.log "backward"
+      if window.loop != false
+        window.section -= 1
+        window.player.seekTo((window.section - 1) * window.loop, true)
+        $('#loop-slider').rangeSlider("values", window.loop * (window.section - 1), window.loop * window.section)
+        $('.ui-rangeSlider-leftLabel.loop-handle-label').html("<div class='text-padding'>#{shortFormatTime(window.loop * (window.section - 1))}</div>")
+        $('.ui-rangeSlider-rightLabel.loop-handle-label').html("<div class='text-padding'>#{shortFormatTime(window.loop * window.section)}</div>")
+      else
+        if window.time > 14
+          player.seekTo(window.time - 15)
+        else
+          player.seekTo(0)
+
+  $('#play-pause').livequery ->
+    $(this).click ->
+      console.log "play/pause"
+      state = window.player.getPlayerState()
+      if state == 1
+        player.pauseVideo()
+        $(this).html('play')
+      if state == 2
+        player.playVideo()
+        $(this).html('pause')

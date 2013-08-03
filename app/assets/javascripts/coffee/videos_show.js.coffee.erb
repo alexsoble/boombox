@@ -175,6 +175,9 @@ $ ->
   $('#video-bottom').click ->
     $('#lyrics').addClass('bottom').removeClass('top')
 
+  $('#lyrics-side').click ->
+    window.location.href = "/interpretations/#{interp_id}/discuss"
+
   # TWEET BUTTON
 
   not ((d, s, id) ->

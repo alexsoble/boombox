@@ -611,6 +611,10 @@ $ ->
     exact_time = player.getCurrentTime()
     window.time = Math.floor(exact_time)
     $(".timer-text").html(formatTime(window.time))
+    this_line = $("[data-time=#{window.time}]")
+    if this_line.length != 0
+      this_line.effect("highlight", { color: "yellow" }, 4000)
+      $("#lyrics-box").scrollTo(this_line.prev().prev(), { duration : 250 } )
 
     current_loop_time = window.loop * window.section
     current_loop_end = window.loop * (window.section + 1)

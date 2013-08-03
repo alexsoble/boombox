@@ -15,7 +15,7 @@ Boombox::Application.routes.draw do
   resources :users
   resources :sessions
 
-  get '/interpretations/:id/quiz' => 'interpretations#show'
+  get '/interpretations/:id/discuss' => 'interpretations#discuss'
   
   post '/new_video' => 'videos#create'
   post '/new_interp' => 'interpretations#create'
@@ -29,5 +29,6 @@ Boombox::Application.routes.draw do
   get '/philosophy' => 'pages#philosophy'
   get '/survey' => 'pages#survey'
   get '/experiment' => 'pages#experiment'
+  get '/browsers' => 'pages#browsers'
 
 end

@@ -16,6 +16,11 @@ $ ->
     if language_option is "english-page"
       $("#translate-button").html("Translate new video")
 
+  re = new RegExp("MSIE ([0-9]{1,}[\.0-9]{0,})")
+  if (re.exec(window.navigator.userAgent) != null)
+    console.log "Looks like you're using Internet Explorer!"
+    window.location.href = "/browsers"
+    
   # HELLO ARRAY
   helloArray = []
   helloArray['Spanish'] = 'Hola'
