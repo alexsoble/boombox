@@ -2,6 +2,8 @@ $ ->
 
   $('#results-box').hide()
   window.n = 0
+  window.video_id = false
+  window.langtwo_entered = false
 
   $('#ask-youtube').keyup ->
     $('#progress-bar').html('
@@ -124,8 +126,8 @@ $ ->
     )
 
   langOneInput = (event, ui) ->
-
     input = ui.item.value
+    $('.lang1-input').val(input)
     if availableTags.indexOf(input) > -1
 
     # ADD NEW VIDEO TO DATABASE HERE
@@ -133,15 +135,25 @@ $ ->
       $.post('/new_video', { 'video' : { 'youtube_id' : "#{window.youtube_id}", 'title' : "#{window.title}", 'lang1' : "#{window.lang1}" } }, (data) ->
         console.log data
         window.video_id = data.video.id
-        console.log "window.video_id: " + window.video_id )
+        if window.langtwo_entered == true
+          $.post('/new_interp', { 'interpretation' : { 'video_id' : "#{window.video_id}" , 'lang2' : "#{window.lang2}", 'user_id' : "#{window.user_id}" } }, (data) ->
+            window.interp = data.data.id
+            window.location = "/videos/new?interp=#{window.interp}"  )
+      )
       $('#lang2-input-translate').focus()
 
   langTwoInput = (event, ui) ->
-
     input = ui.item.value
-    if availableTags.indexOf(input) > -1 and window.video_id isnt undefined
+    $('.lang2-input').val(input)
+    if availableTags.indexOf(input) > -1 
       window.lang2 = input
-      if window.lang1 isnt window.lang2
-        $.post('/new_interp', { 'interpretation' : { 'video_id' : "#{window.video_id}" , 'lang2' : "#{window.lang2}", 'user_id' : "#{window.user_id}" } }, (data) ->
-          window.interp = data.data.id
-          window.location = "/videos/new?interp=#{window.interp}" )
+
+      if window.video_id isnt false
+        if window.lang1 isnt window.lang2
+          $.post('/new_interp', { 'interpretation' : { 'video_id' : "#{window.video_id}" , 'lang2' : "#{window.lang2}", 'user_id' : "#{window.user_id}" } }, (data) ->
+            window.interp = data.data.id
+            window.location = "/videos/new?interp=#{window.interp}" )
+      else
+        window.langtwo_entered = true
+        $('#lang1-input-translate').focus()
+
