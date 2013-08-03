@@ -20,7 +20,11 @@
 .image-box { position: absolute; bottom: 0px; }
 .video-thumb-box.result-thumb-box {
   margin-right: 40px;
-  margin-top: 20px; }
+  margin-top: 0px;
+  margin-bottom: 40px; 
+  height: 156px; }
+
+.tiny-text { font-size: 12px; margin: 4px; }
 
 .video-thumb-box.user-thumb-box {
   margin-right: 40px; }

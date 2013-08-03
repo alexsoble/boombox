@@ -27,58 +27,44 @@
 <br>
 <br>
 
-<div class="row-fluid">
-  <div class="span11 offset1">
+<div class="row">
 
-    <h2> Show me videos in:
+  <div class="span4 offset1">
+
+    <h2> Show me videos in:<br>
       <% @langs_with_some_content.each do |l| %>
         <div class="btn btn-info language-selector" style="border-radius: 25px;" id="<%=l %>"> <%= l %> </div>
       <% end %>
+      <div class="btn btn-info language-selector" style="border-radius: 25px;" id="All"> All </div>
       <div class="btn btn-info" style="border-radius: 25px; background-color: white; border: 1px solid black; color: black;"><i>More to come!</i></div>
     </h2>
 
-    <br>
-    <h3><strong>Recent:</strong></h3></a>
-    <hr id="hr">
+  </div>
 
-      <%  @interps_with_some_content.each do |i| %>
-        <% v = i.video %>
-        <div class="video-thumb-box result-thumb-box interp <%= v.lang1 %>">
-          <strong class="center"><%= link_to "#{v.title.slice(0,25)}", "/interpretations/#{i.id}/discuss" %></strong>
-          <br>
-          <div class="image-box">
-            <%= image_tag "http://img.youtube.com/vi/#{v.youtube_id}/1.jpg" %>
-            <p>Translator: <%= link_to "#{i.user.name}", user_url(i.user) %></p>
+  <div class="row">
+
+    <div class="span10">
+
+      <hr id="hr">
+
+        <%  @interps_with_some_content.each do |i| %>
+          <% v = i.video %>
+          <div class="video-thumb-box result-thumb-box interp <%= v.lang1 %>">
+            <strong class="center"><%= link_to "#{v.title.slice(0,25)}", "/interpretations/#{i.id}/discuss" %></strong>
+            <br>
+            <div class="image-box">
+              <%= image_tag "http://img.youtube.com/vi/#{v.youtube_id}/1.jpg" %>
+              <p class="tiny-text">Translation by <%= link_to "#{i.user.name}", user_url(i.user) %></p>
+            </div>
           </div>
-        </div>
-      <% end %>
+        <% end %>
+
+    </div>
 
   </div>
+
 </div>
 
 <br>
-
-<div class="row-fluid">
-  <div class="span11 offset1">
-
-    <br>
-    <h3><strong>Recent:</strong></h3></a>
-    <hr id="hr">
-
-      <%  @interps_with_some_content.each do |i| %>
-        <% v = i.video %>
-        <div class="video-thumb-box result-thumb-box interp <%= v.lang1 %>">
-          <strong class="center"><%= link_to "#{v.title.slice(0,25)}", "/interpretations/#{i.id}/discuss" %></strong>
-          <br>
-          <div class="image-box">
-            <%= image_tag "http://img.youtube.com/vi/#{v.youtube_id}/1.jpg" %>
-            <p>Translator: <%= link_to "#{i.user.name}", user_url(i.user) %></p>
-          </div>
-        </div>
-      <% end %>
-
-  </div>
-</div>
-
 <br>
 <br>

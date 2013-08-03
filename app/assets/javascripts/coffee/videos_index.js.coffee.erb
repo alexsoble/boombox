@@ -7,14 +7,18 @@ $ ->
 
   $('.language-selector').click ->
     lang = $(this).attr('id')
-    $('.video-thumb-box').hide()
-    $(".#{lang}").show()
+    if lang == "All"
+      $('.video-thumb-box').show()
+    else
+      $('.video-thumb-box').hide()
+      $(".#{lang}").show()
 
   $('#ask-youtube').keyup ->
     $('#progress-bar').html('
       <div class="progress progress-info progress-striped active">
         <div class="bar" style="width: 100%;"></div>
-      </div>')
+      </div>
+    ')
 
   $('#ask-youtube').autocomplete(
     source: (request, response) ->

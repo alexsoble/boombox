@@ -12,6 +12,7 @@ $ ->
   console.log youtube_id + " " + lang1 + " " + lang2 + " " + interp_id + " " + action_name + " "+ translation_type
 
   $('.lyrics-container').addClass('tall')
+  $('#settings').addClass('discuss-mode')
 
   formatTime = (time) ->
     time = Math.floor(time)
@@ -45,7 +46,7 @@ $ ->
   window.editing_line = 'off'
   window.editing_line_timing = 'off'
   window.editing_line_ask_heyu = 'off'
-  window.choruslang2 = ''
+  window.volume_slider_on = false
   window.loop_range_appended = false
   $('#timer-box').html('<div id="timer">
     <h2 class="timer-text" id="big-timer"></h2>
@@ -56,27 +57,24 @@ $ ->
   sliderSetup = ->
 
     $('#settings').append("
-      <div id='playback-buttons' style='float: right; margin-right: 20px; margin-top: 20px; margin-bottom: 5px;'>
+      <div id='playback-buttons' style='float: right; margin-right: 20px; margin-top: 20px;'>
         <div class='btn btn-info btn-small rounded tight-pack' id='backward'> &larr; </div>
         <div class='btn btn-info btn-small rounded tight-pack' id='play-pause'> pause </div> 
         <div class='btn btn-info btn-small rounded tight-pack' id='forward'> &rarr; </div>
-        <div class='btn btn-info btn-small rounded tight-pack' id='volume'> <i class='icon-volume-up'></i> </div>
-        <div class='btn btn-info btn-small rounded tight-pack' id='helpz'> ? </div>
+        <div class='btn btn-info btn-small rounded tight-pack' id='volume' style='position: relative;'> <i class='icon-volume-up'></i>
+          <div id='volume-slider'> </div>
+       </div>
       </div>")
 
-    if window.loop != false
-      loop_toggle_initalize = "turn off loops"
-      loop_toggle_initalize_style = "float: right;"
-      $('#settings').addClass('looping')
-    else
-      loop_toggle_initalize = "turn on loops"
-      loop_toggle_initalize_style = "float: left;"
-
     $('#settings').append("
-      <div style='float: left; margin-left: 20px; margin-top: 20px; width: 140px;'>
-        <div class='loop-toggle'>
-          <div class='btn btn-primary btn-small rounded tight-pack' id='loop-on' style='#{loop_toggle_initalize_style}'> #{loop_toggle_initalize} </div>
-        </div>
+      <div style='float: left; margin-left: 20px; margin-top: 20px;' id='vote-button-container'>
+        <b class='tiny-text'>good translation?
+          <div class='btn btn-small rounded tight-pack vote-button' id='upvote'> <i class='icon-thumbs-up'></i> </div>
+          <div class='btn btn-small rounded tight-pack vote-button' id='downvote'> <i class='icon-thumbs-down'></i> </div>
+        </b>
+      </div>
+      <div style='float: left; margin-left: 20px;'>
+        <b class='tiny-text vote-button-status'></b>
       </div>")
 
     $('#settings').append("
@@ -168,7 +166,7 @@ $ ->
     # PLAYBACK SLIDER MOVES HERE
     if window.loop is false and window.valuesChanging is false
       $('#playback-slider').slider("value", window.time)
-      $('.ui-slider-handle').html(shortFormatTime(window.time))
+      $('#playback-slider').children().html(shortFormatTime(window.time))
 
     # LOOP BAR INCHES FORWARD HERE
     if window.loop isnt false
@@ -264,3 +262,34 @@ $ ->
       if state == 2
         player.playVideo()
         $(this).html('pause')
+
+  $('.vote-button').livequery ->
+    $(this).click ->
+      if window.user_id == null
+        $('.vote-button-status').html("<b><i>Please log in to vote on videos.</i></b>")
+      else
+        if $(this).hasClass('btn-primary')
+          $('.vote-button').removeClass('btn-primary')
+        else
+          $('.vote-button').removeClass('btn-primary')
+          $(this).addClass('btn-primary')
+        $.post('/downvote', { 'interp' : { 'id' : "#{interp_id}", 'difficulty' : "#{$(this).attr('value')}" } })
+
+  $('#volume').livequery ->
+    $(this).click ->
+      if window.volume_slider_on == false
+        volume = player.getVolume()
+        $('#volume-slider').slider(
+          value: volume
+          min: 0
+          max: 100
+          animate: true
+          orientation: "vertical"
+          slide: (event, ui) ->
+            player.setVolume(ui.value)
+        )
+        window.volume_slider_on = true
+      else
+        $('#volume-slider').slider('destroy')
+        window.volume_slider_on = false
+      
