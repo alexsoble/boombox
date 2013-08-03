@@ -69,11 +69,12 @@ $ ->
           <div class='translation-option'>
             <label>I want to translate this video into...</label>
             <div class='ui-widget'>
-              <input class='lang2-input short-text-box'/>
+              <input id='lang2-input-translate' class='lang2-input short-text-box'/>
             </div>
           </div>
         </div>
         ")
+      $('#lang1-input-translate').focus()
 
   availableTags = [ "English", "Dutch", "Afrikaans"
     "Chinese (Mandarin)", "Cantonese", "Japanese", "Korean"
@@ -103,7 +104,10 @@ $ ->
       messages: {
         noResults: '',
         results: '' }
-      minLength: 0 )
+      minLength: 0
+      select: (event, ui) ->
+        langOneInput(event, ui) {}
+    )
 
   $('.lang2-input').livequery ->
     $('.lang2-input').autocomplete(
@@ -114,33 +118,30 @@ $ ->
       messages: {
         noResults: '',
         results: '' }
-      minLength: 0 )
+      minLength: 0 
+      select: (event, ui) ->
+        langTwoInput(event, ui) {}
+    )
 
-  $('.lang1-input').livequery ->
-    $(this).keyup (e) ->
-      e.preventDefault
-      if e.which == 13
-        input = $(this).val()
-        if availableTags.indexOf(input) > -1
+  langOneInput = (event, ui) ->
 
-        # ADD NEW VIDEO TO DATABASE HERE
+    input = ui.item.value
+    if availableTags.indexOf(input) > -1
 
-          window.lang1 = input
-          $.post('/new_video', { 'video' : { 'youtube_id' : "#{window.youtube_id}", 'title' : "#{window.title}", 'lang1' : "#{window.lang1}" } }, (data) ->
-            console.log data
-            window.video_id = data.video.id
-            console.log "window.video_id: " + window.video_id )
+    # ADD NEW VIDEO TO DATABASE HERE
+      window.lang1 = input
+      $.post('/new_video', { 'video' : { 'youtube_id' : "#{window.youtube_id}", 'title' : "#{window.title}", 'lang1' : "#{window.lang1}" } }, (data) ->
+        console.log data
+        window.video_id = data.video.id
+        console.log "window.video_id: " + window.video_id )
+      $('#lang2-input-translate').focus()
 
-  $('.lang2-input').livequery ->
-    $(this).keyup (e) ->
-      e.preventDefault
-      if e.which == 13
+  langTwoInput = (event, ui) ->
 
-        input = $(this).val()
-        if availableTags.indexOf(input) > -1 and window.video_id isnt undefined
-
-          window.lang2 = input
-          if window.lang1 isnt window.lang2
-            $.post('/new_interp', { 'interpretation' : { 'video_id' : "#{window.video_id}" , 'lang2' : "#{window.lang2}", 'user_id' : "#{window.user_id}" } }, (data) ->
-              window.interp = data.data.id
-              window.location = "/videos/new?interp=#{window.interp}" )
+    input = ui.item.value
+    if availableTags.indexOf(input) > -1 and window.video_id isnt undefined
+      window.lang2 = input
+      if window.lang1 isnt window.lang2
+        $.post('/new_interp', { 'interpretation' : { 'video_id' : "#{window.video_id}" , 'lang2' : "#{window.lang2}", 'user_id' : "#{window.user_id}" } }, (data) ->
+          window.interp = data.data.id
+          window.location = "/videos/new?interp=#{window.interp}" )

@@ -58,10 +58,17 @@
   <div class="centerbox visible relative" id="below-video-box">
     <% if @published == false # HERE'S WHAT GOES BELOW THE VIDEO BOX WHEN THE INTERP IS IN 'PREVIEW' MODE %>
       <br>
-      <div class="btn btn-primary btn-large rounded" id="edit-button" style="float: left;"> <strong>&larr;</strong> Edit</div>
-      <div class="btn btn-primary btn-large rounded" id="publish-button" style="float: right;"> Publish &rarr; </div>
-    <% else %>
+      <div class="btn btn-primary btn-large rounded tight-pack" id="edit-button" style="float: left;"> <strong>&larr;</strong> Edit</div>
+      <div class="btn btn-primary btn-large rounded tight-pack" id="publish-button" style="float: right;"> Publish &rarr; </div>
+    <% else # HERE'S WHERE THE REPEAT LINE / PAUSE BUTTONS GO%>
       <div style="float: left;">
+        <div class="btn btn-info rounded" id="repeat-line">Repeat this line</div> <br>
+        <!-- <div class="btn btn-info rounded" style="background-color: white; border: 2px solid #9B59BB; color: black; margin-top: 5px;">Repeat each line <span id="repeat-status">0</span> times.
+          <div class="btn btn-info btn-small rounded tight-pack" id="repeat-plus"> + </div>
+          <div class="btn btn-info btn-small rounded tight-pack" id="repeat-minus"> - </div>
+        </div> -->
+      </div>
+      <div style="float: right; width: 180px;">
         <h3>Translated by 
         <% if @user == 'anon' # 'TRANSLATED BY' SECTION %>
           anonymous
@@ -76,14 +83,10 @@
             <%= link_to "#{@user.name}", user_url(@user) %>.</h3>
           <% end %>
         <% end %>
-      </div>
-      <div style="float: right; width: 180px; margin-top: 10px;">
         <% if current_user && @user != 'anon' # SOCIAL & SHARING BUTTONS %>
           <% if current_user.id == @user.id %>
-            <p>Show off your<br>translation:</p>
+            <p>Show off:</p>
               <a href="https://twitter.com/share" class="twitter-share-button" data-lang="en" data-size="medium" data-text="Check out this video I translated! <%= @url %>" data-hashtags="<%= @interp.lang1 %>,<%= @interp.lang2 %>,Languages">Tweet this Translation</a>
-              <br>
-              <div class="fb-like" data-send="false" data-width="75" data-layout="button_count" data-show-faces="true" data-font="arial"></div>
               <br>
               <i class="icon-envelope icon icon"></i><%= link_to "  E-mail", "" %>
             </div>

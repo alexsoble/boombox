@@ -1,7 +1,11 @@
 player = null
 
 $ ->
-
+  
+  window.r = 0
+  window.p = 0
+  window.r_counter = 0
+  window.p_counter = 0
   $('#lyrics').hide()
 
   interp_id = $('#data').attr('data-interp-id')
@@ -62,11 +66,15 @@ $ ->
     event.target.playVideo()
 
   arr = []
+  just_times_arr = []
   lyrics = $(".lyrics")
   jQuery.each lyrics, ->
     id = $(this).attr("id")
     arr.push id
+    just_times_arr.push id.substring(6)
   arr
+  window.arr = arr
+  window.just_times_arr = just_times_arr
 
   countVideoPlayTime = ->
 
@@ -74,6 +82,7 @@ $ ->
       time_id = 'lang2-' + time
       if array.indexOf(time_id) > -1
 
+        window.this_line_start = time
         if time != $("#lyrics").children(':first').children(':first').attr('id')
           if $('#lyrics').attr('style') == "display: none;"
             $('#lyrics').slideDown()
@@ -131,6 +140,18 @@ $ ->
     $('#below-video-box').hide()
 
   # CONTROLS
+
+  $("#repeat-line").click ->
+    window.player.seekTo(window.this_line_start)
+
+  $("#repeat-plus").click ->
+    window.r += 1
+    $("#repeat-status").html(window.r)
+
+  $("#repeat-minus").click ->
+    if window.r > 0
+      window.r -= 1
+      $("#repeat-status").html(window.r)
 
   $("#just-lang2").click ->
     $(".lang2").slideDown()
