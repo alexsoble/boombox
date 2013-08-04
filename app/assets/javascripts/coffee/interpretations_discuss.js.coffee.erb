@@ -156,13 +156,19 @@ $ ->
     exact_time = player.getCurrentTime()
     window.time = Math.floor(exact_time)
     this_line = $("[data-time=#{window.time}]")
-    if this_line.length != 0 and (!this_line.hasClass('highlighted'))
-      this_line.addClass("highlighted")
-      this_line.effect("highlight", { color: "yellow" }, 4000)
-      $("#lyrics-box").scrollTo(this_line.prev().prev(), { duration : 250 } )
+    if this_line.length != 0
+      if (!this_line.hasClass('highlighted'))
+        this_line.addClass("highlighted")
+        this_line.effect("highlight", { color: "yellow" }, 4000)
+        $("#lyrics-box").scrollTo(this_line.prev().prev(), { duration : 250 } )
 
     current_loop_time = window.loop * window.section
     current_loop_end = window.loop * (window.section + 1)
+
+    # PLAYBACK SLIDER MOVES HERE
+    if window.loop is false and window.valuesChanging is false
+      $('#playback-slider').slider("value", window.time)
+      $('#playback-slider').children().html(shortFormatTime(window.time))
 
   counter = setInterval(countVideoPlayTime, 400)
   done = false
