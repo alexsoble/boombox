@@ -22,7 +22,7 @@
     background-color: black;
     -webkit-box-shadow: 0 0 1px rgba(255,255,255,.5); }
 
-#lyrics-box::-webkit-scrollbar { opacity: 0; }
+::-webkit-scrollbar { opacity: 0; }
 
 .centerbox {  margin-right: auto; 
   margin-left: auto; 

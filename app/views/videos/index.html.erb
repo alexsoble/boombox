@@ -39,7 +39,7 @@
     <%  @interps_with_some_content.each do |i| %>
       <% v = i.video %>
       <div class="video-thumb-box frontpage-thumb-box <%= v.lang1 %>" data-interp-id=<%= i.id %>>
-        <strong class="center"><%= link_to "#{v.title.slice(0,25)}", "/interpretations/#{i.id}/discuss" %></strong>
+        <strong class="center" style="color: #2793E6;"><%= "#{v.title.slice(0,25)}" %></strong>
         <br>
         <div class="image-box">
           <%= image_tag "http://img.youtube.com/vi/#{v.youtube_id}/1.jpg" %>

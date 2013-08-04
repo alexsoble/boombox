@@ -37,14 +37,13 @@ $ ->
 
   window.loop = false
   window.valuesChanging = false
+  window.tool_helptip_displayed = false
+  window.editing_line = false
+  window.editing_line_timing = false
+  window.editing_line_ask_heyu = false
+  window.loop_range_appended = false
   window.quiz_making_mode = false
   window.quiz_words = []
-  window.tool_helptip_displayed = false
-  window.editing_line = 'off'
-  window.editing_line_timing = 'off'
-  window.editing_line_ask_heyu = 'off'
-  window.choruslang2 = ''
-  window.loop_range_appended = false
   $('#timer-box').html('<div id="timer">
     <h2 class="timer-text" id="big-timer"></h2>
     </div>')
@@ -106,11 +105,10 @@ $ ->
 
     $('#settings').append("
       <div id='playback-buttons' style='float: right; margin-right: 20px; margin-top: 20px; margin-bottom: 5px;'>
-        <div class='btn btn-info btn-small rounded tight-pack' id='backward'> &larr; </div>
-        <div class='btn btn-info btn-small rounded tight-pack' id='play-pause'> pause </div> 
-        <div class='btn btn-info btn-small rounded tight-pack' id='forward'> &rarr; </div>
+        <div class='btn btn-info btn-small rounded tight-pack' id='backward'> <i class='icon-backward'></i> </div>
+        <div class='btn btn-info btn-small rounded tight-pack' id='play-pause'> <i class='icon-pause'></i> </div> 
+        <div class='btn btn-info btn-small rounded tight-pack' id='forward'> <i class='icon-forward'></i>  </div>
         <div class='btn btn-info btn-small rounded tight-pack' id='volume'> <i class='icon-volume-up'></i> </div>
-        <div class='btn btn-info btn-small rounded tight-pack' id='helpz'> ? </div>
       </div>")
 
     if window.loop != false
@@ -612,9 +610,17 @@ $ ->
     window.time = Math.floor(exact_time)
     $(".timer-text").html(formatTime(window.time))
     this_line = $("[data-time=#{window.time}]")
-    if this_line.length != 0
+
+    # TRANSLATED LINES LIGHT UP HERE AS THE VIDEO PLAYS
+    if this_line.length != 0 and window.editing_line == false
       this_line.effect("highlight", { color: "yellow" }, 4000)
-      $("#lyrics-box").scrollTo(this_line.prev().prev(), { duration : 250 } )
+      if this_line.prev().prev().length != 0
+        $("#lyrics-box").scrollTo(this_line.prev().prev(), { duration : 250 } )
+      else
+        if this_line.prev().length != 0
+          $("#lyrics-box").scrollTo(this_line.prev(), { duration : 250 } )
+        else
+          $("#lyrics-box").scrollTo(this_line, { duration : 250 } )
 
     current_loop_time = window.loop * window.section
     current_loop_end = window.loop * (window.section + 1)
@@ -714,10 +720,10 @@ $ ->
       state = window.player.getPlayerState()
       if state == 1
         player.pauseVideo()
-        $(this).html('play')
+        $(this).html("<i class='icon-play'></i>")
       if state == 2
         player.playVideo()
-        $(this).html('pause')
+        $(this).html("<i class='icon-pause'></i>")
 
   # REVISING LINE CONTENT 
 
@@ -727,10 +733,10 @@ $ ->
       -> $(this).attr('style','background-color: white;')
       )
     $(this).click ->
-      if window.editing_line isnt 'on' and window.quiz_making_mode == false
-        window.editing_line = 'on'
+      if window.editing_line != true and window.quiz_making_mode == false
+        window.editing_line = true
         id = $(this).attr('data-line-id')
-        $(this).attr('class','line edited-line rounded')
+        $(this).addClass('edited-line')
         lang1 = $.trim($(this).children().eq(0).text())
         lang2 = $.trim($(this).children().eq(1).text())
         $(this).html("
@@ -801,7 +807,7 @@ $ ->
   $('#delete-line').livequery ->
     $(this).click ->
       console.log "deleting line"
-      window.editing_line = 'off'
+      window.editing_line = false
       line_id = $(this).attr('data-line-id')
       $(this).parent().parent().slideUp()
       # ^The slideUp would be nice but unfortunately js from YouTube/Google interferes with a delayed remove() and mucks up the whole thing
@@ -822,7 +828,7 @@ $ ->
 
   $('#ask-heyu').livequery ->
     $(this).click ->
-      if window.editing_line_ask_heyu isnt 'on'
+      if window.editing_line_ask_heyu isnt true
         $(this).parent().parent().after("
           <span id='coming-soon' style='float: left; background-color: orange; width: 500px;'>
             <span style='margin: 10px;'>
@@ -830,12 +836,12 @@ $ ->
             </span>
           </span>
           ")
-        window.editing_line_ask_heyu = 'on'
+        window.editing_line_ask_heyu = true
 
   doneEditing = ->
-    window.editing_line = 'off'
-    window.editing_line_timing = 'off'
-    window.editing_line_ask_heyu = 'off'
+    window.editing_line = false
+    window.editing_line_timing = false
+    window.editing_line_ask_heyu = false
     line_id = $('.edited-line').attr('data-line-id')
     time = $('.edited-line').attr('data-time')
     duration = $('.edited-line').attr('data-duration')
@@ -854,6 +860,7 @@ $ ->
     $('.edited-line').remove()
     $('#coming-soon').remove()
     $('#loop-settings').slideDown()
+    window.loop = false
 
   $('#done-editing').livequery ->
     $(this).click ->
@@ -865,8 +872,8 @@ $ ->
 
   $('#edit-timing').livequery ->
     $(this).click ->
-      if window.editing_line_timing isnt 'on'
-        window.editing_line_timing = 'on'
+      if window.editing_line_timing isnt true
+        window.editing_line_timing = true
 
         original_start_time = parseInt($(this).parent().parent().attr('data-time'))
         console.log "original_start_time: " + original_start_time
@@ -1034,13 +1041,25 @@ $ ->
   save = ->
     lines = []
     $('.line').each(->
-      if $(this).attr('class') == 'line'
-        this_lang1 = $.trim($(this).children().eq(0).text())
-        line = (time : $(this).attr('data-time'), duration : $(this).attr('data-duration'), lang1 : this_lang1, lang2 : $.trim($(this).children().eq(1).text()), interpretation_id : interp_id )
+      this_line = $(this)
+
+      # GATHER THE CURRENT TRANSLATION WITH JQUERY
+      unless this_line.hasClass('edited-line')
+        this_lang1 = $.trim(this_line.children().eq(0).text())
+        this_lang2 = $.trim(this_line.children().eq(1).text())
+
+      # IF THE USER IS CURRENTLY EDITING A LINE, LET'S CAPTURE ITS VALUE TOO
       else
         this_lang1 = $.trim($('#edit-line-lang1').val())
-        line = (time : $(this).attr('data-time'), duration : $(this).attr('data-duration'), lang1 : this_lang1, lang2 : $.trim($('#edit-line-lang2').val()), interpretation_id : interp_id )
-      lines.push line)
+        this_lang2 = $.trim($('#edit-line-lang2').val())
+
+      line = (time : this_line.attr('data-time'), duration : this_line.attr('data-duration'), lang1 : this_lang1, lang2 : this_lang2, interpretation_id : interp_id )
+      
+      lines.push line
+      
+      )
+
+    # TRANSLATION PASSED TO RAILS TO EVALUATE IF IT'S BEEN UPDATED
     $.post('/save', { 'interp_id' : "#{interp_id}", 'lines' : "#{JSON.stringify(lines)}" }, (data) ->
       console.log data )
 

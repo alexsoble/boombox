@@ -58,9 +58,9 @@ $ ->
 
     $('#settings').append("
       <div id='playback-buttons' style='float: right; margin-right: 20px; margin-top: 20px;'>
-        <div class='btn btn-info btn-small rounded tight-pack' id='backward'> &larr; </div>
-        <div class='btn btn-info btn-small rounded tight-pack' id='play-pause'> pause </div> 
-        <div class='btn btn-info btn-small rounded tight-pack' id='forward'> &rarr; </div>
+        <div class='btn btn-info btn-small rounded tight-pack' id='backward'> <i class='icon-backward'></i> </div>
+        <div class='btn btn-info btn-small rounded tight-pack' id='play-pause'> <i class='icon-pause'></i> </div> 
+        <div class='btn btn-info btn-small rounded tight-pack' id='forward'> <i class='icon-forward'></i>  </div>
         <div class='btn btn-info btn-small rounded tight-pack' id='volume' style='position: relative;'> <i class='icon-volume-up'></i>
           <div id='volume-slider'> </div>
        </div>
@@ -156,11 +156,17 @@ $ ->
     exact_time = player.getCurrentTime()
     window.time = Math.floor(exact_time)
     this_line = $("[data-time=#{window.time}]")
-    if this_line.length != 0
-      if (!this_line.hasClass('highlighted'))
-        this_line.addClass("highlighted")
-        this_line.effect("highlight", { color: "yellow" }, 4000)
+    
+    # TRANSLATED LINES LIGHT UP HERE AS THE VIDEO PLAYS
+    if this_line.length != 0 and window.editing_line == false
+      this_line.effect("highlight", { color: "yellow" }, 4000)
+      if this_line.prev().prev().length != 0
         $("#lyrics-box").scrollTo(this_line.prev().prev(), { duration : 250 } )
+      else
+        if this_line.prev().length != 0
+          $("#lyrics-box").scrollTo(this_line.prev(), { duration : 250 } )
+        else
+          $("#lyrics-box").scrollTo(this_line, { duration : 250 } )
 
     current_loop_time = window.loop * window.section
     current_loop_end = window.loop * (window.section + 1)
@@ -218,15 +224,15 @@ $ ->
       state = window.player.getPlayerState()
       if state == 1
         player.pauseVideo()
-        $(this).html('play')
+        $(this).html("<i class='icon-play'></i>")
       if state == 2
         player.playVideo()
-        $(this).html('pause')
+        $(this).html("<i class='icon-pause'></i>")
 
   $('.vote-button').livequery ->
     $(this).click ->
       if window.user_id == null
-        $('.vote-button-status').html("<b><i>Please log in to vote on videos.</i></b>")
+        $('.vote-button-status').html("<b><i>Please sign in to vote on videos.</i></b>")
       else
         if $(this).hasClass('btn-primary')
           $('.vote-button').removeClass('btn-primary')
