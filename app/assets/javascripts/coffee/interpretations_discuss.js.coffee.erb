@@ -156,17 +156,18 @@ $ ->
     exact_time = player.getCurrentTime()
     window.time = Math.floor(exact_time)
     this_line = $("[data-time=#{window.time}]")
-    
-    # TRANSLATED LINES LIGHT UP HERE AS THE VIDEO PLAYS
-    if this_line.length != 0 and window.editing_line == false
-      this_line.effect("highlight", { color: "yellow" }, 4000)
-      if this_line.prev().prev().length != 0
-        $("#lyrics-box").scrollTo(this_line.prev().prev(), { duration : 250 } )
-      else
-        if this_line.prev().length != 0
-          $("#lyrics-box").scrollTo(this_line.prev(), { duration : 250 } )
+
+    if this_line.length != 0
+      unless this_line.hasClass('highlighted')
+        this_line.effect("highlight", { color: "yellow" }, 4000)
+        this_line.addClass("highlighted")
+        if this_line.prev().prev().length != 0
+          $("#lyrics-box").scrollTo(this_line.prev().prev(), { duration : 250 } )
         else
-          $("#lyrics-box").scrollTo(this_line, { duration : 250 } )
+          if this_line.prev().length != 0
+            $("#lyrics-box").scrollTo(this_line.prev(), { duration : 250 } )
+          else
+            $("#lyrics-box").scrollTo(this_line, { duration : 250 } )
 
     current_loop_time = window.loop * window.section
     current_loop_end = window.loop * (window.section + 1)
