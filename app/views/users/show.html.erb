@@ -13,10 +13,12 @@
           <br>
           <div class="image-box">
             <img src="http://img.youtube.com/vi/<%= v.youtube_id %>/1.jpg">
+            <% if current_user && @user.id == current_user.id %>
+              <div class="tiny-text" > <%= link_to "Edit", edit_interpretation_url(i) %> // <%= link_to "Delete", interpretation_url(i), :method => :delete %> </div>
+            <% else %>
+                <div class="tiny-text" > <%= v.lang1 %> </div>
+            <% end %>
           </div>
-          <% if current_user && @user.id == current_user.id %>
-            <%= link_to "Edit", edit_interpretation_url(i) %> // <%= link_to "Delete", interpretation_url(i), :method => :delete %>
-          <% end %>
         </div>
       <% end %>
     <% end %>
@@ -37,10 +39,12 @@
             <br>
             <div class="image-box">
               <img src="http://img.youtube.com/vi/<%= v.youtube_id %>/1.jpg">
+              <% if current_user && @user.id == current_user.id %>
+              <div class="tiny-text" > <%= link_to "Edit", edit_interpretation_url(d) %> // <%= link_to "Delete", interpretation_url(d), :method => :delete %> </div>
+              <% else %>
+                <div class="tiny-text" > <%= v.lang1 %> </div>
+              <% end %>
             </div>
-            <% if current_user && @user.id == current_user.id %>
-              <%= link_to "Edit", edit_interpretation_url(d) %> //  <%= link_to "Delete", interpretation_url(d), :method => :delete %>
-            <% end %>
           </div>
         <% end %>
       <% end %>

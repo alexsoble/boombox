@@ -22,7 +22,9 @@
   margin-top: 0px;
   margin-bottom: 40px; 
   height: 156px; }
-.image-box > .frontpage-thumb-box { position: absolute; bottom: 0px; }
+.video-thumb-box .image-box { position: absolute; bottom: 15px; }
+.video-thumb-box.frontpage-thumb-box .image-box { position: absolute; bottom: 0px; }
+.video-thumb-box.user-thumb-box .image-box { position: absolute; bottom: 0px; }
 
 .tiny-text { font-size: 12px; margin: 4px; }
 

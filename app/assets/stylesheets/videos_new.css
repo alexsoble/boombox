@@ -250,17 +250,6 @@ select { width: 150px; }
 #editing-line-done { margin-left: 5px; }
 
 .rounded { margin-right: 10px; border-radius: 10px !important; }
-  
-#red-arrow {  position: absolute; top: 110px; left: 320px; }
-#red-arrow.shifted { left: 290px; }
-
-#red-arrow-text-box {
-  position: absolute;
-  top: 90px;
-  left: 365px;
-  height: 20px; 
-  width: 200px; }
-#red-arrow-text-box.shifted { left: 335px; }
 
 #language-options {
   margin-left: auto;
