@@ -1,9 +1,6 @@
 <br>
 <h1 style='text-align: center;'>Love languages?</h1>
-<br>
-<h2 style='text-align: center;'>YouTube is your new best friend.</h2>
-<br>
-<h3 style='text-align: center;'><i>Watch.  Listen.  Translate.  Welcome to Heyu.</i></h3>
+<h3 style='text-align: center;'>YouTube is your new best friend.</h3>
 <br>
 <br>
 <div class="index-button" id="new-translation-button">
@@ -19,8 +16,7 @@
     </div>
   </div>
 </div>
-<div id="results-box">
-</div>
+<div id="results-box"></div>
 
 <br>
 <br>
@@ -29,37 +25,28 @@
 
 <div class="row">
 
-  <div class="span4 offset1">
+  <div class="offset1">
 
-    <h2> Show me videos in:<br>
+    <h2> Show translated videos in:
       <% @langs_with_some_content.each do |l| %>
         <div class="btn btn-info language-selector" style="border-radius: 25px;" id="<%=l %>"> <%= l %> </div>
       <% end %>
       <div class="btn btn-info language-selector" style="border-radius: 25px;" id="All"> All </div>
       <div class="btn btn-info" style="border-radius: 25px; background-color: white; border: 1px solid black; color: black;"><i>More to come!</i></div>
     </h2>
+    <hr id="hr">
 
-  </div>
-
-  <div class="row">
-
-    <div class="span10">
-
-      <hr id="hr">
-
-        <%  @interps_with_some_content.each do |i| %>
-          <% v = i.video %>
-          <div class="video-thumb-box result-thumb-box interp <%= v.lang1 %>">
-            <strong class="center"><%= link_to "#{v.title.slice(0,25)}", "/interpretations/#{i.id}/discuss" %></strong>
-            <br>
-            <div class="image-box">
-              <%= image_tag "http://img.youtube.com/vi/#{v.youtube_id}/1.jpg" %>
-              <p class="tiny-text">Translation by <%= link_to "#{i.user.name}", user_url(i.user) %></p>
-            </div>
-          </div>
-        <% end %>
-
-    </div>
+    <%  @interps_with_some_content.each do |i| %>
+      <% v = i.video %>
+      <div class="video-thumb-box frontpage-thumb-box <%= v.lang1 %>" data-interp-id=<%= i.id %>>
+        <strong class="center"><%= link_to "#{v.title.slice(0,25)}", "/interpretations/#{i.id}/discuss" %></strong>
+        <br>
+        <div class="image-box">
+          <%= image_tag "http://img.youtube.com/vi/#{v.youtube_id}/1.jpg" %>
+          <p class="tiny-text">Translation by <%= link_to "#{i.user.name}", user_url(i.user) %></p>
+        </div>
+      </div>
+    <% end %>
 
   </div>
 

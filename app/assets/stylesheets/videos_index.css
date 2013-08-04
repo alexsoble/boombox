@@ -17,12 +17,12 @@
   cursor: pointer; 
   position: relative; }
 
-.image-box { position: absolute; bottom: 0px; }
-.video-thumb-box.result-thumb-box {
+.video-thumb-box.frontpage-thumb-box {
   margin-right: 40px;
   margin-top: 0px;
   margin-bottom: 40px; 
   height: 156px; }
+.image-box > .frontpage-thumb-box { position: absolute; bottom: 0px; }
 
 .tiny-text { font-size: 12px; margin: 4px; }
 

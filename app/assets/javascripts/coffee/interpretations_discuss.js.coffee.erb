@@ -156,61 +156,15 @@ $ ->
     exact_time = player.getCurrentTime()
     window.time = Math.floor(exact_time)
     this_line = $("[data-time=#{window.time}]")
-    if this_line.length != 0
+    if this_line.length != 0 and (!this_line.hasClass('highlighted'))
+      this_line.addClass("highlighted")
       this_line.effect("highlight", { color: "yellow" }, 4000)
       $("#lyrics-box").scrollTo(this_line.prev().prev(), { duration : 250 } )
 
     current_loop_time = window.loop * window.section
     current_loop_end = window.loop * (window.section + 1)
 
-    # PLAYBACK SLIDER MOVES HERE
-    if window.loop is false and window.valuesChanging is false
-      $('#playback-slider').slider("value", window.time)
-      $('#playback-slider').children().html(shortFormatTime(window.time))
-
-    # LOOP BAR INCHES FORWARD HERE
-    if window.loop isnt false
-      $('#loop-bar').animate(
-        { width: "#{((window.time - current_loop_time)/(window.loop)) * 330 * (window.loop / 60)}px" }, 
-      )
-
-    # DISPLAYING THE TIMING ABOVE THE TRANSLATION INPUT LINES 
-    if window.loop isnt false
-      $(".current-loop-time").html(formatTime(current_loop_time) + " to " + formatTime(current_loop_end))
-    else
-      $(".current-loop-time").html(formatTime(window.time))
-
-    # LOOPING HAPPENS HERE
-    if window.loop isnt false
-      loopNow = ->
-        loopingNow = ->
-          $('#loop-bar').animate({width: 'toggle'})
-          player.seekTo(window.loop * window.section, true)
-          player.setVolume(window.volume)
-          player.pauseVideo()
-          startUpAgain = ->
-            player.playVideo()
-            # $('#loop-bar').animate({width: "#{330 * (window.loop / 60)}px"}, duration: "#{window.loop * 1000}")
-            window.got_volume = false
-          window.setTimeout(startUpAgain, 1200)
-        window.setTimeout(loopingNow, 1000)
-      fadeOut = ->
-        if window.got_volume == false
-          window.volume = player.getVolume()
-          window.got_volume = true
-          halfVolume = 0.5 * window.volume
-          quarterVolume = 0.25 * window.volume
-          tinyVolume = 0.1 * window.volume
-          player.setVolume(halfVolume)
-          softAndSlow = ->
-            player.setVolume(quarterVolume)
-          window.setTimeout(softAndSlow, 500)
-      modifier = .69 + (window.loop * 0.015)
-      if window.time > (window.loop) * (window.section + modifier)
-        fadeOut()
-        loopNow()
-
-  counter = setInterval(countVideoPlayTime, 1000)
+  counter = setInterval(countVideoPlayTime, 400)
   done = false
 
   onPlayerStateChange = (event) ->

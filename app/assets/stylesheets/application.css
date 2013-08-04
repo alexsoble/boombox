@@ -12,18 +12,17 @@
  *= require_tree .
  */
 
-::-webkit-scrollbar {
-    -webkit-appearance: none;
-    width: 7px; }
+#lyrics-box::-webkit-scrollbar {
+    width: 7px;
+    background-color: #9b59bb;
+ }
 
-::-webkit-scrollbar-thumb {
+#lyrics-box::-webkit-scrollbar-thumb {
     border-radius: 4px;
     background-color: black;
     -webkit-box-shadow: 0 0 1px rgba(255,255,255,.5); }
 
-::-webkit-scrollbar { opacity: 0; }
-
-html { overflow-x: hidden; }
+#lyrics-box::-webkit-scrollbar { opacity: 0; }
 
 .centerbox {  margin-right: auto; 
   margin-left: auto; 

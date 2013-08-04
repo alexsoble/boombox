@@ -49,6 +49,7 @@ $ ->
                 <div class='image-box'>
                   <img alt='video_#{r.label}' src='http://img.youtube.com/vi/#{r.value}/1.jpg' />
                 </div>
+                <br>
               </div>")
           $('#ask-youtube').autocomplete('close')
           $('#progress-bar').children(':first').removeClass('active')
@@ -60,6 +61,11 @@ $ ->
           )
         )
       )
+
+  $('.video-thumb-box').livequery ->
+    $(this).click ->
+      interp_id = $(this).attr('data-interp-id')
+      window.location.href = "/interpretations/#{interp_id}/discuss"
 
   $('.result-thumb-box').livequery ->
     $(this).click ->

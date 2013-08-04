@@ -17,6 +17,8 @@ gem 'bcrypt-ruby', '~> 3.0.0'
 gem 'omniauth'
 gem 'omniauth-twitter'
 gem 'omniauth-facebook'
+gem 'whenever', :require => false
+gem 'google_drive'
 
 # Gems used only for assets and not required
 # in production environments by default.
