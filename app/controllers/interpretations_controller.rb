@@ -89,7 +89,7 @@ class InterpretationsController < ApplicationController
 
   def show
     @interp = Interpretation.find_by_id(params[:id])
-    @user = User.find_by_id(@interp.user_id)
+    @translator = User.find_by_id(@interp.user_id)
     @video = @interp.video
     @lines = Line.where(:interpretation_id => @interp.id).order("created_at ASC")
     @url = request.url
@@ -142,7 +142,7 @@ class InterpretationsController < ApplicationController
   def edit
 
     @interp = Interpretation.find_by_id(params[:id])
-    @user = User.find_by_id(@interp.user_id)
+    @translator = User.find_by_id(@interp.user_id)
     @lang2 = @interp.lang2
     @video = @interp.video
     @lang1 = @video.lang1
@@ -152,7 +152,7 @@ class InterpretationsController < ApplicationController
       if l.lang1.present? then @lang1_and_lang2 = true end
     end
 
-    unless @user.id == current_user.id
+    unless @translator.id == current_user.id
       redirect_to home_path
     end
 

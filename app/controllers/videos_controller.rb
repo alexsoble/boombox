@@ -89,7 +89,7 @@ class VideosController < ApplicationController
 
     @interp = Interpretation.find_by_id(params[:interp])
     @video = @interp.video
-    @user = User.find_by_id(@interp.user_id)
+    @translator = User.find_by_id(@interp.user_id)
     @url = request.url
     @lang2 = @interp.lang2
     @lang1 = @video.lang1

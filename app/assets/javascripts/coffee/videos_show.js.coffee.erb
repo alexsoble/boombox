@@ -9,7 +9,9 @@ $ ->
   action_name = $('#data').attr('data-action-name')
   translation_type = $('#data').attr('data-translation-type')
   published = $('#data').attr('data-published')
-  console.log youtube_id + " " + lang1 + " " + lang2 + " " + interp_id + " " + action_name + " "+ translation_type
+  translator_name = $('#data').attr('data-translator-name')
+  translator_image_url = $('#data').attr('data-translator-image-url')
+  console.log youtube_id + " " + lang1 + " " + lang2 + " " + interp_id + " " + action_name + " "+ translation_type + " " + translator_name
 
   $('.lyrics-container').addClass('tall')
   $('#settings').addClass('discuss-mode')
@@ -85,6 +87,11 @@ $ ->
         <div id='loop-status'></div>
       </div>")
 
+    $('#settings').append("
+      <div id='user-info' style='position: absolute; bottom: 10px; margin-left: 15px;'>
+        <p> Translated by #{translator_name} <img src=#{translator_image_url} class='profile-thumbnail'></p>
+      </div>")
+
   sliderSetup()
 
   playbackControls = (video_duration) ->
@@ -143,8 +150,6 @@ $ ->
     playbackControls(video_duration)
     if window.loop_length == false
       straightPlaybackBehavior()
-    else
-      loopingBehavior()
     event.target.playVideo()
 
     # CONTROLS FOR LONG VIDEOS COME IN HERE    

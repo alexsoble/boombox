@@ -1,4 +1,33 @@
 
+  vocabQuiz = ->
+
+    keyword = word_array[time]
+    keyword = remove_accents(keyword)
+    console.log keyword
+
+    n = 0
+    $(document).keypress( (e) ->
+      if String.fromCharCode(e.keyCode) == keyword.charAt(n)
+        $('#answer-box').append("#{keyword.charAt(n)}")
+        # lyrics_html = $("##{id}").html()
+        # lyrics_with_blanks = lyrics_html.replace("#{random_word}", "____")
+        # $("##{id}").html(lyrics_with_blanks)
+        n += 1
+        console.log n
+        console.log keyword.length
+        if n == keyword.length
+          q += 1
+          $('#answer-box').html("")
+          window.player.playVideo()
+          $('.lyrics-box.quizframe').addClass('success')
+          window.answered = true
+          window.slid_down = false
+          $("#score-text").html("<h2>#{q}/#{total}</h2>")
+      )  
+
+
+
+
   longVideoControls = ->
 
     left_boundary = Math.floor(window.time / 45) * 45

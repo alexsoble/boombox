@@ -13,38 +13,51 @@ $ ->
   type = $('#data').attr('data-quiz-type')
   name = $('#data').attr('data-quiz-name')
   description = $('#data').attr('data-quiz-description')
-  console.log "type: " + type
   interp_id = $('#data').attr('data-interp-id')
-  video_youtube_id = $('#data').attr('data-video-id')
+  youtube_id = $('#data').attr('data-youtube-id')
   title = $('#data').attr('data-video-title')
+  console.log "type: " + type
+  console.log "name: " + name
+  console.log "description: " + description
+  console.log "youtube_id: " + youtube_id
 
   window.keep_going = true
   window.pause_time = false
   $('#lyrics').addClass('quizframe')
-  $('.wrapper').addClass('quizframe')
-  $('#below-video-box').hide()
-  $('.wrapper').prepend('<div id="answer-box"></div>')
-  $('#lyrics').hide()
-  $('#lyrics-settings').hide()
-  window.score = 0
+  $('#lyrics-box').after('<div id="answer-box"></div>')
 
-  delayedFade = ->
-    $('#quiz-info-box').fadeOut(3000)
-  window.setTimeout(delayedFade, 60000)
+  $('#settings').append("
+    <div class='quiz-report'>
+      Name: #{name}
+      <br>
+      Description: #{description}
+      <br>
+      Video: #{title}
+      <br>
+      Video translator:
+      <br>
+      Quiz author: 
+    </div>
+  ")
+
+  $('#settings').append("<div id='score'></div>")
+  window.score = 0
 
   # BLANK OUT MISSING WORDS FOR VOCABULARY QUIZZES 
 
-  lyrics = $('.lyrics')
+  lyrics = $('.line')
 
   if type == 'vocabulary'
     for l in lyrics
       for w in window.words
+        console.log l
         $(l).html().replace("#{w}", "____")
 
   # PREP LINES TO BE CLICKED FOR GRAMMAR QUIZZES 
 
   if type == 'grammar'
     for l in lyrics
+      console.log l
       $(l).lettering('words')
 
     $('[class^="word"]').livequery ->
@@ -62,59 +75,6 @@ $ ->
             $('#score').html(window.score)
           window.keep_going = false
 
-  tag = document.createElement("script")
-  tag.src = "https://www.youtube.com/iframe_api"
-  firstScriptTag = document.getElementsByTagName("script")[0]
-  firstScriptTag.parentNode.insertBefore tag, firstScriptTag
-
-  window.onYouTubeIframeAPIReady = ->
-    player = new YT.Player("show-video-box",
-      height: "380"
-      width: "630"
-      videoId: video_youtube_id
-      playerVars: 
-        controls: 0
-      events:
-        onReady: onPlayerReady
-        onStateChange: onPlayerStateChange)
-    window.player = player
-
-  onPlayerReady = (event) ->
-    event.target.playVideo()
-
-  vocabQuiz = ->
-
-    keyword = word_array[time]
-    keyword = remove_accents(keyword)
-    console.log keyword
-
-    n = 0
-    $(document).keypress( (e) ->
-      if String.fromCharCode(e.keyCode) == keyword.charAt(n)
-        $('#answer-box').append("#{keyword.charAt(n)}")
-        # lyrics_html = $("##{id}").html()
-        # lyrics_with_blanks = lyrics_html.replace("#{random_word}", "____")
-        # $("##{id}").html(lyrics_with_blanks)
-        n += 1
-        console.log n
-        console.log keyword.length
-        if n == keyword.length
-          q += 1
-          $('#answer-box').html("")
-          window.player.playVideo()
-          $('.lyrics-box.quizframe').addClass('success')
-          window.answered = true
-          window.slid_down = false
-          $("#score-text").html("<h2>#{q}/#{total}</h2>")
-      )  
-
-  arr = []
-  lyrics = $(".lyrics")
-  jQuery.each lyrics, ->
-    id = $(this).attr("id")
-    arr.push id
-  console.log "arr = " + arr
-
   quiz = (array, time) ->
 
     time_id = 'lang2-' + time
@@ -129,7 +89,7 @@ $ ->
       window.pause_time = time + duration
 
       for w in window.words
-        $("#lang1-#{time}").children().each(->
+        $(".line").each(->
           console.log $(this).html()
         )
         console.log window.pause_lang1.match(/despierten/g)
@@ -145,6 +105,36 @@ $ ->
         $("#lyrics").children().eq(1).html("<p class='lyrics white'>#{lang2}</p>").hide().slideDown(800)
         window.keep_going = false
       
+  tag = document.createElement("script")
+  tag.src = "https://www.youtube.com/iframe_api"
+  firstScriptTag = document.getElementsByTagName("script")[0]
+  firstScriptTag.parentNode.insertBefore tag, firstScriptTag
+
+  window.onYouTubeIframeAPIReady = ->
+    player = new YT.Player("new-video-box", {
+      height: "315"
+      width: "420"
+      videoId: youtube_id
+      playerVars: 
+        {
+        controls: 0
+        cc_load_policy: 1
+        }
+      events:
+        onReady: onPlayerReady })
+
+    console.log "Checking for cc..." + player.getOptions().indexOf('cc')
+    window.player = player
+
+  onPlayerReady = (event) ->
+    event.target.playVideo()
+
+  arr = []
+  lyrics = $(".line")
+  jQuery.each lyrics, ->
+    time = $(this).attr("data-time")
+    arr.push time
+  console.log "arr = " + arr
   countVideoPlayTime = ->
 
     exact_time = player.getCurrentTime()

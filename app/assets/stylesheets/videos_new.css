@@ -141,8 +141,10 @@ height: 220px;
 overflow: visible; }
 
 #settings.discuss-mode {
-height: 140px;
+height: 180px;
 overflow: visible; }
+
+.profile-thumbnail { height: 50px; width: 50px; border-radius: 25px; }
 
 #difficulty-settings { float: left; }
 
@@ -155,15 +157,7 @@ overflow: visible; }
   height: 100px; 
   margin-left: 20px; }
 
-.quiz-toggle {
-  float: left; 
-  background-color: #DDDDDD; 
-  width: 120px; 
-  height: 24px;
-  position: relative;
-  bottom: 2px; 
-  border-radius: 10px;
-  margin-bottom: 6px; }
+.quiz-toggle { float: left; }
 
 #playback-slider { width: 313px;
   left: 43px; 

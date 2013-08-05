@@ -21,10 +21,18 @@ class QuizzesController < ApplicationController
 
     @quiz = Quiz.find(params[:id])
     @interp = Interpretation.find(@quiz.interpretation_id)
+    @translator = User.find(@interp.user_id)
+    @quiz_maker = User.find(@quiz.user_id)
+
     @title = @interp.video.title
     @lines = Line.where(:interpretation_id => @interp.id).order("created_at ASC")
-    @lines_have_lang1 = true
-    
+    @url = request.url
+
+    @video = @interp.video
+    @lang2 = @interp.lang2
+    @lang1 = @video.lang1
+    @published = @interp.published
+
     @words = []
 
     Word.where(:quiz_id => @quiz.id).all.each do |w|

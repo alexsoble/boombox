@@ -130,7 +130,7 @@ $ ->
     loop_initalizer = "loop " + window.loop + " times" 
 
     $('#settings').append("
-      <div style='float: left; margin-left: 20px; margin-top: 20px; width: 200px;'>
+      <div style='float: left; margin-left: 20px; margin-top: 20px; width: 200px;' id='loop-buttons'>
         <div class='loop-number btn btn-info btn-small rounded tight-pack' id='loop-status'> #{loop_initalizer} </div>
         <div class='btn btn-info btn-small rounded tight-pack adjust-loops' id='more-loops'> + </div>
         <div class='btn btn-info btn-small rounded tight-pack adjust-loops' id='fewer-loops'> - </div>
@@ -144,11 +144,16 @@ $ ->
       </div>")
 
     $('#loop-settings').append("
-      <div style='position: absolute; bottom: 0px; width: 300px'>
+      <div style='position: absolute; bottom: 0px; width: 300px' id='protip'>
         <div style='float: left; margin-left: 12px; width: 220px;'>
           <p>Tip: Use the <span class='loop-handle-label example'> &nbsp; handles &nbsp; </span> &nbsp; to select the line you want to translate.<p>
         </div>
         <div id=progress-report' style='float: right;'></div>
+      </div>")
+
+    $('#loop-settings').append("
+      <div style='position: absolute; bottom: 0px; width: 200px' id='learning-tools'>
+        <div class='btn btn-info rounded quiz-toggle'> make a quiz </div>
       </div>")
 
     $('#loop-settings').after("
@@ -745,6 +750,7 @@ $ ->
         $('.loop-toggle').slideUp()
         $('#loop-settings').slideUp()
         $('#new-video-box').slideUp()
+        $('#loop-buttons').slideUp()
         $('#timer').slideUp()
         $('#settings').addClass('quiz-mode')
         $('#playback-buttons').slideUp()
@@ -770,6 +776,7 @@ $ ->
         $('#loop-settings').slideDown()
         $('#new-video-box').slideDown()
         $('#settings').removeClass('quiz-mode')
+        $('#loop-buttons').slideDown()
         $('#timer').slideDown()
         $('#playback-buttons').slideDown()
 
@@ -810,7 +817,7 @@ $ ->
   quizSetup = -> 
     $('#quiz-done-button').livequery ->
       $(this).click -> 
-        $.post('/new_quiz', { 'quiz' : { 'interpretation_id' : "#{interp_id}", 'quiz_type' : "#{$("input:checked").attr('id')}", 'name' : "#{$('#quiz-name').val()}", 'description' : "#{$('#quiz-description').val()}"} }, (data) ->
+        $.post('/new_quiz', { 'quiz' : { 'interpretation_id' : "#{interp_id}", 'quiz_type' : "grammar", 'name' : "#{$('#quiz-name').val()}", 'description' : "#{$('#quiz-description').val()}", 'user_id' : "#{window.user_id}" } }, (data) ->
           console.log data.data
           quiz_id = data.data.id 
         
@@ -861,6 +868,12 @@ $ ->
     $(this).click ->
       save()
       window.location.href = "/interpretations/#{interp_id}?preview=yes"
+
+# FADE OUT PROTIP 
+  
+  delayedProTipFade = ->
+    $('#protip').fadeOut('slow')
+  window.setTimeout(delayedProTipFade, 30000)
 
 # AUTOSAVE EVERY 10 SECONDS 
 
