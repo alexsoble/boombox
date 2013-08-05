@@ -20,7 +20,31 @@ $ ->
   if (re.exec(window.navigator.userAgent) != null)
     console.log "Looks like you're using Internet Explorer!"
     window.location.href = "/browsers"
-    
+
+  formatTime = (time) ->
+    time = Math.floor(time)
+    if time <= 9 then formatted_time = "00:0" + time
+    if 9 < time <= 59 then formatted_time = "00:" + time
+    if 60 <= time < 540
+      if time%60 <= 9 then formatted_time = "0" + Math.floor((time)/60) + ":0" + (time)%60
+      if 9 < time%60 <= 59 then formatted_time = "0" + Math.floor((time)/60) + ":" + (time)%60
+    if 540 <= time < 3600
+      if time%60 <= 9 then formatted_time = Math.floor((time)/60) + ":0" + (time)%60
+      if 9 < time%60 <= 59 then formatted_time = Math.floor((time)/60) + ":" + (time)%60
+    formatted_time
+
+  shortFormatTime = (time) ->
+    time = Math.floor(time)
+    if time <= 9 then formatted_time = ":0" + time
+    if 9 < time <= 59 then formatted_time = ":" + time
+    if 60 <= time < 540
+      if time%60 <= 9 then formatted_time = Math.floor((time)/60) + ":0" + (time)%60
+      if 9 < time%60 <= 59 then formatted_time = Math.floor((time)/60) + ":" + (time)%60
+    if 540 <= time < 3600
+      if time%60 <= 9 then formatted_time = Math.floor((time)/60) + ":0" + (time)%60
+      if 9 < time%60 <= 59 then formatted_time = Math.floor((time)/60) + ":" + (time)%60
+    formatted_time
+
   # HELLO ARRAY
   helloArray = []
   helloArray['Spanish'] = 'Hola'

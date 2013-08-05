@@ -21,8 +21,7 @@
 
 .language-option { color: black; }
 
-#lyrics-box { overflow-y: scroll;
- width: 580px; }
+#lyrics-box { overflow-y: scroll; }
 
 #lyrics-box.extra-large { overflow-y: scroll;
  height: 530px; }
@@ -40,11 +39,11 @@
 .lyrics-container {
   margin: 8px; 
   float: left; 
-  width: 230px; }
+  width: 250px; }
 
 .lyrics-container.wide { 
   width: 640px;
-  margin-left: 30px; 
+  margin-left: 0px; 
   margin-top: 0px; 
   float: left; 
   max-height: 420px;
@@ -131,7 +130,7 @@
 
 #settings { position: relative; 
   top: -15px; 
-  height: 160px; 
+  height: 180px; 
   background-color: white;
   border: 2px solid black;
   border-bottom-left-radius: 10px;
@@ -148,23 +147,13 @@ overflow: visible; }
 #difficulty-settings { float: left; }
 
 #loop-settings { width: 360px; 
-  height: 100px; 
+  height: 40px; 
   margin-bottom: 10px;
   margin-left: 10px; }
 
 #quiz-settings { width: 400px; 
   height: 100px; 
   margin-left: 20px; }
-
-.loop-toggle {
-  float: left; 
-  background-color: #DDDDDD; 
-  width: 120px; 
-  height: 24px;
-  position: relative;
-  bottom: 2px; 
-  border-radius: 10px;
-  margin-bottom: 6px; }
 
 .quiz-toggle {
   float: left; 
@@ -176,13 +165,9 @@ overflow: visible; }
   border-radius: 10px;
   margin-bottom: 6px; }
 
-#loop-on {
-  margin-right: 0;
-  margin-left: 0;}
-
 #playback-slider { width: 313px;
   left: 43px; 
-  margin-top: 60px; }
+  margin-top: 40px; }
 
 .ui-slider { background-color: #DDDDDD; }
 
@@ -193,7 +178,7 @@ overflow: visible; }
 .end-label { 
   font-size: 12px; 
   color: white; 
-  background-color: #0F82F5; 
+  background-color: #9b59bb; 
   text-align: center;
   border-radius: 10px;
   position: relative; 
@@ -203,7 +188,7 @@ overflow: visible; }
 
 .loop-range-label { top: -4px; height: 18px; width: 30px; }
 
-.end-label.playback-left-label { top: 82px; left: 10px; }
+.end-label.playback-left-label { top: 62px; left: 10px; }
 .end-label.playback-right-label { top: -20px; left: 346px; }
 .end-label.playback-left-label.disabled { background-color: #DDDDDD; }
 .end-label.playback-right-label.disabled { background-color: #DDDDDD; }
@@ -218,9 +203,9 @@ overflow: visible; }
 
 .loop-handle-label {
   font-size: 12px; 
-  background-color: #134F5C;
+  background-color: #0f82f5;
   color: white;
-  height: 15px; width: 15px; 
+  height: 15px;
   position: relative;
   border-radius: 10px;
   width: 20px; }
@@ -233,7 +218,7 @@ overflow: visible; }
   font-size: 12px; 
   text-align: center; }
 
-#loop-bar { height: 2px; position: relative; top: 9px; background-color: white; }
+#loop-bar { background-color: #134F5C; }
 
 .timer-blue { background-color: #0F82F5; opacity: 1 }
 

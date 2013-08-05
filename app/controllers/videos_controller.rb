@@ -89,6 +89,17 @@ class VideosController < ApplicationController
 
     @interp = Interpretation.find_by_id(params[:interp])
     @video = @interp.video
+    @user = User.find_by_id(@interp.user_id)
+    @url = request.url
+    @lang2 = @interp.lang2
+    @lang1 = @video.lang1
+    @published = @interp.published
+    @lines = Line.where(:interpretation_id => @interp.id).order("created_at ASC")
+    @lines.each do |l|
+      if l.lang1.present? then @lang1_and_lang2 = true end
+    end
+
+    render "interpretations/show"
     
   end
 

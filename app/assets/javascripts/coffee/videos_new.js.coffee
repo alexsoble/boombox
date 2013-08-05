@@ -35,13 +35,16 @@ $ ->
       if 9 < time%60 <= 59 then formatted_time = Math.floor((time)/60) + ":" + (time)%60
     formatted_time
 
-  window.loop = false
+  window.loop = 0
+  window.loop_counter = 0
+  window.loop_length = 4
+  window.looping = false
   window.valuesChanging = false
   window.tool_helptip_displayed = false
   window.editing_line = false
   window.editing_line_timing = false
   window.editing_line_ask_heyu = false
-  window.loop_range_appended = false
+  window.loop_length_range_appended = false
   window.quiz_making_mode = false
   window.quiz_words = []
   $('#timer-box').html('<div id="timer">
@@ -65,6 +68,17 @@ $ ->
         <a class="btn btn-info btn-large center-pill rounded" id="start" style="position: absolute; left: 108px;">Start translating</a>
       </div>')
     $("#controls").fadeIn('slow')
+  if action_name is 'new'
+    $('.lyrics-container').hide()
+  # $('#timer').hide()
+
+  # ADJUSTING INPUT LINES FOR R-T-L VERSUS L-T-R
+  
+  if rtlArray.indexOf(window.lang2) > -1
+    $('.lang2-line').attr('style','direction: rtl;')
+  if $('.lang1-line').length > 0
+    if rtlArray.indexOf(window.lang1) > -1
+      $('.lang1-line').attr('style','direction: rtl;') 
 
   $("#start").livequery ->
     $(this).click -> 
@@ -85,20 +99,19 @@ $ ->
 
   $("#yes-loops").livequery ->
     $(this).click -> 
-      window.section = window.time / 4
       window.loop = 4
+      window.section = window.time / 4
       $(this).parent().parent().fadeOut()
       sliderSetup()
       playbackControls(window.video_duration)
-      loopingBehavior()
       langOneLangTwoStep()
 
   $("#no-loops").livequery ->
     $(this).click -> 
+      window.loop = 0
       $(this).parent().parent().fadeOut()
       sliderSetup()
       playbackControls(window.video_duration)
-      straightPlaybackBehavior()
       langOneLangTwoStep()
 
   sliderSetup = ->
@@ -108,25 +121,19 @@ $ ->
         <div class='btn btn-info btn-small rounded tight-pack' id='backward'> <i class='icon-backward'></i> </div>
         <div class='btn btn-info btn-small rounded tight-pack' id='play-pause'> <i class='icon-pause'></i> </div> 
         <div class='btn btn-info btn-small rounded tight-pack' id='forward'> <i class='icon-forward'></i>  </div>
-        <div class='btn btn-info btn-small rounded tight-pack' id='volume'> <i class='icon-volume-up'></i> </div>
-      </div>")
+          <div id='volume-slider'> </div>
+        <div class='btn btn-info btn-small rounded tight-pack' id='volume'> <i class='icon-volume-up'></i> 
+        </div>
+      </div>
+      ")
 
-    if window.loop != false
-      loop_toggle_initalize = "turn off loops"
-      loop_toggle_initalize_style = "float: right;"
-      $('#settings').addClass('looping')
-    else
-      loop_toggle_initalize = "turn on loops"
-      loop_toggle_initalize_style = "float: left;"
+    loop_initalizer = "loop " + window.loop + " times" 
 
     $('#settings').append("
-      <div style='float: left; margin-left: 20px; margin-top: 20px; width: 140px;'>
-        <div class='loop-toggle'>
-          <div class='btn btn-primary btn-small rounded tight-pack' id='loop-on' style='#{loop_toggle_initalize_style}'> #{loop_toggle_initalize} </div>
-        </div>
-        <div class='quiz-toggle'>
-          <div class='btn btn-info btn-small rounded tight-pack' id='quiz-on'> make it a quiz </div>
-        </div>
+      <div style='float: left; margin-left: 20px; margin-top: 20px; width: 200px;'>
+        <div class='loop-number btn btn-info btn-small rounded tight-pack' id='loop-status'> #{loop_initalizer} </div>
+        <div class='btn btn-info btn-small rounded tight-pack adjust-loops' id='more-loops'> + </div>
+        <div class='btn btn-info btn-small rounded tight-pack adjust-loops' id='fewer-loops'> - </div>
       </div>")
 
     $('#settings').append("
@@ -134,7 +141,14 @@ $ ->
         <div class='playback-left-label end-label'><div class='playback-left-label inner-label'></div></div>
           <div id='playback-slider'></div>
         <div class='playback-right-label end-label'><div class='playback-right-label inner-label'></div></div>
-        <div id=loop-status'></div>
+      </div>")
+
+    $('#loop-settings').append("
+      <div style='position: absolute; bottom: 0px; width: 300px'>
+        <div style='float: left; margin-left: 12px; width: 220px;'>
+          <p>Tip: Use the <span class='loop-handle-label example'> &nbsp; handles &nbsp; </span> &nbsp; to select the line you want to translate.<p>
+        </div>
+        <div id=progress-report' style='float: right;'></div>
       </div>")
 
     $('#loop-settings').after("
@@ -154,11 +168,6 @@ $ ->
     $('.playback-left-label.inner-label').html(":00")
     $('.playback-right-label.inner-label').html("#{shortFormatTime(video_duration)}")
 
-  loopingBehavior = ->
-
-    if $('#playback-slider').hasClass('ui-slider')
-      $('#playback-slider').slider('destroy')
-
     $('#playback-slider').rangeSlider(
       arrows: false
       step: 1
@@ -177,162 +186,26 @@ $ ->
     $('#playback-slider').children().eq(3).addClass('loop-handle-label')
     $('#playback-slider').children().eq(4).addClass('loop-handle-label')
 
-    if window.loop_range_appended == false
-      $('.ui-rangeSlider-bar').append('<div id="loop-bar"></div>')
-      window.loop_range_appended = true
+    $('.ui-rangeSlider-bar').append('<div id="loop-bar"></div>')
+    window.loop_length_range_appended = true
 
-    $('.loop-handle-label.ui-rangeSlider-rightLabel').show()
     $('.loop-handle-label.ui-rangeSlider-leftLabel').html("<div class='inner-label'>#{shortFormatTime($('#playback-slider').rangeSlider("values").min)}</div>")
     $('.loop-handle-label.ui-rangeSlider-rightLabel').html("<div class='inner-label'>#{shortFormatTime($('#playback-slider').rangeSlider("values").max)}</div>")
     
-    $('#playback-slider').off("valuesChanging").off("userValuesChanged")
     $('#playback-slider').on("valuesChanging", (e, data) ->
+      window.valuesChanging = true
       start = data.values.min
       end = data.values.max
       player.seekTo(start)
-      window.loop = end - start
-      window.section = start / window.loop
+      window.loop_length = end - start
+      window.section = start / window.loop_length
       $('.ui-rangeSlider-leftLabel.loop-handle-label').html("<div class='text-padding'>#{shortFormatTime(start)}</div>")
       $('.loop-handle-label.ui-rangeSlider-rightLabel').html("<div class='text-padding'>#{shortFormatTime(end)}</div>")
     )
 
-  straightPlaybackBehavior = ->
-
-    if $('#playback-slider').hasClass('ui-rangeSlider')
-      $('#playback-slider').rangeSlider('destroy')
-
-    $('.ui-slider-handle').addClass('loop-handle-label')
-
-    $('#playback-slider').slider(
-      min: 0,
-      max: window.video_duration,
-      value: window.time,
-      step: 1
-      slide: (event, ui) ->
-        player.seekTo($('#playback-slider').slider("value"))
-    )
-
-  longVideoControls = ->
-
-    left_boundary = Math.floor(window.time / 45) * 45
-    right_boundary = left_boundary + 60
-
-    $('#loop-slider').rangeSlider(
-      step: 1
-      bounds:
-        min: left_boundary
-        max: right_boundary
-      defaultValues:
-        min: window.time
-        max: window.time + 4
-      range:
-        min: 1
-        max: 12
-      formatter: (val) -> 
-        shortFormatTime(val)
-      )
-
-    # CHANGES TO THE PLAYBACK SLIDER (ORDER OF OPERATIONS MATTERS HERE v !!!)
-
-    $('.end-label.playback-left-label').addClass('disabled')
-    $('.end-label.playback-right-label').addClass('disabled')
-
-    $('#playback-slider').off("valuesChanging").off("userValuesChanged")
-    $('#playback-slider').rangeSlider("values", left_boundary, right_boundary)
-
-    $('#playback-slider').children().eq(3).addClass('end-label').addClass('loop-range-label').html("#{shortFormatTime(left_boundary)}")
-    $('#playback-slider').children().eq(4).addClass('end-label').addClass('loop-range-label').html("#{shortFormatTime(right_boundary)}")
-    $('#playback-slider').children().eq(0).children().eq(1).attr('style','background-color: #0F82F5;')
-
-    # BEHAVIOR FOR THE PLAYBACK SLIDER
-
-    $('#playback-slider').on("valuesChanging", (e, data) ->
-      start = data.values.min
-      end = data.values.max
-      player.seekTo(start)
-      $('.end-label.loop-range-label.ui-rangeSlider-leftLabel').html("#{shortFormatTime(start)}")
-      $('.end-label.loop-range-label.ui-rangeSlider-rightLabel').html("#{shortFormatTime(end)}")
-      $('.inner-label.looping-left-label').html("#{shortFormatTime(start)}")
-      $('.inner-label.looping-right-label').html("#{shortFormatTime(end)}")
-    )
-
     $('#playback-slider').on("userValuesChanged", (e, data) ->
-      start = data.values.min
-      end = data.values.max
-
-      $('#loop-slider').rangeSlider(
-        bounds:
-          min: start
-          max: end
-        )
-      $('#loop-slider').rangeSlider("values", start, start + window.loop)
-      $('.loop-handle-label.ui-rangeSlider-leftLabel').html("#{shortFormatTime(start)}")
-      $('.loop-handle-label.ui-rangeSlider-rightLabel').html("#{shortFormatTime(start + window.loop)}")
+      player.playVideo()
     )
-
-  # BEHAVIOR FOR THE LOOP SLIDER: SHIFT LEFT / SHIFT RIGHT CONTROLS
-
-    $('#loop-slider').on("userValuesChanged", (e, data) ->
-      bounds = $('#loop-slider').rangeSlider("bounds")
-      min = bounds.min
-      max = bounds.max
-      start = data.values.min
-      end = data.values.max
-
-      shiftRight = -> 
-        console.log "shiftRight"
-        video_duration = window.player.getDuration()
-        if end == max and max < video_duration
-          if max + 30 < video_duration
-            $('.inner-label.looping-left-label').text(shortFormatTime(min + 30))
-            $('.inner-label.looping-right-label').text(shortFormatTime(max + 30))
-            $('#loop-slider').rangeSlider(
-              bounds:
-                min: min + 30
-                max: max + 30
-            ).rangeSlider("values", start, end)
-            $('#playback-slider').rangeSlider("values", min + 30, max + 30)
-            $('.ui-rangeSlider-leftLabel.loop-range-label').html("#{shortFormatTime(min + 30)}")
-            $('.ui-rangeSlider-rightLabel.loop-range-label').html("#{shortFormatTime(max + 30)}")
-          else
-            $('.inner-label.looping-left-label').text(shortFormatTime(video_duration - 60))
-            $('.inner-label.looping-right-label').text(shortFormatTime(video_duration))
-            $('#loop-slider').rangeSlider(
-              bounds:
-                min: video_duration - 60
-                max: video_duration
-            ).rangeSlider("values", video_duration - 59, video_duration - 55)
-
-      shiftLeft = -> 
-        console.log "shiftLeft"
-        if start == min and min > 0
-          if min > 30
-            $('.inner-label.looping-left-label').text(shortFormatTime(min - 30))
-            $('.inner-label.looping-right-label').text(shortFormatTime(max - 30))
-            $('#loop-slider').rangeSlider(
-              bounds:
-                min: min - 30
-                max: max - 30
-            ).rangeSlider("values", start, end)
-            $('#playback-slider').rangeSlider("values", min - 30, max - 30)
-            $('.ui-rangeSlider-leftLabel.loop-range-label').html("#{shortFormatTime(min - 30)}")
-            $('.ui-rangeSlider-rightLabel.loop-range-label').html("#{shortFormatTime(max - 30)}")
-          else
-            $('.inner-label.looping-left-label').text(shortFormatTime(0))
-            $('.inner-label.looping-right-label').text(shortFormatTime(60))
-            $('#loop-slider').rangeSlider(
-              bounds:
-                min: 0
-                max: 60
-            ).rangeSlider("values", 55, 59)           
-
-      waitForIt = (direction) -> 
-        direction()
-      if end == max
-        window.setTimeout(waitForIt(shiftRight), 1000)
-      if start == min
-        window.setTimeout(waitForIt(shiftLeft), 1000)
-      )
 
   langOneLangTwoStep = ->
 
@@ -394,8 +267,8 @@ $ ->
       lines = []
       $('.line').each(->
         time = $(this).attr('data-time')
-        if window.loop != false 
-          if window.loop * window.section > time
+        if window.loop_length != false 
+          if window.loop_length * window.section > time
             lines.push time
         else
           if window.time > time
@@ -410,54 +283,47 @@ $ ->
         $('#lyrics-box').prepend("<div id='start-lyrics'></div>")
         correct_line = $("#start-lyrics")
 
-      if window.loop != false then duration = window.loop else duration = 4
+      current_loop_start = $('#playback-slider').rangeSlider("values").min
+      duration = $('#playback-slider').rangeSlider("values").max - current_loop_start
 
-      if window.translation_type == 'lang1_and_lang2'
-        correct_line.after("
-            <div class='line' data-time=#{window.time} data-duration=#{duration}>
-              <div class='lyrics-container'>
-                <p>#{lang1}</p>
-              </div>
-              <div class='lyrics-container'>
-                <p>#{lang2}</p>
-              </div>
-            </div>")
-      if window.translation_type == 'just_lang2'
-        correct_line.after("
-            <div class='line' data-time=#{window.time} data-duration=#{duration}>
-              <div class='lyrics-container'>
-                <p>#{lang2}</p>
-              </div>
-            </div>")
+      correct_line.after("
+        <div class='line rounded' data-time=#{current_loop_start} data-duration=#{duration}>
+          <div class='lyrics-container'>
+            <p>#{lang1}</p>
+          </div>
+          <div class='lyrics-container'>
+            <p>#{lang2}</p>
+          </div>
+        </div>")
 
       correct_line.next().effect("highlight", {}, 2000)
       resetForNextLine()
 
     moveLoopForward = -> 
-      $('#playback-slider').rangeSlider("values", window.section * window.loop, (window.section + 1) * window.loop)
-      $('.ui-rangeSlider-leftLabel.loop-handle-label').html("<div class='inner-label'>#{shortFormatTime(window.section * window.loop)}</div>")
-      $('.ui-rangeSlider-rightLabel.loop-handle-label').html("<div class='inner-label'>#{shortFormatTime((window.section + 1) * window.loop)}</div>")
-      window.player.seekTo(window.section * window.loop)
+      $('#playback-slider').rangeSlider("values", window.section * window.loop_length, (window.section + 1) * window.loop_length)
+      $('.ui-rangeSlider-leftLabel.loop-handle-label').html("<div class='inner-label'>#{shortFormatTime(window.section * window.loop_length)}</div>")
+      $('.ui-rangeSlider-rightLabel.loop-handle-label').html("<div class='inner-label'>#{shortFormatTime((window.section + 1) * window.loop_length)}</div>")
+      window.player.seekTo(window.section * window.loop_length)
+      window.loop_counter = 0
+      player.playVideo()
 
-      if window.loop != false
-        number_of_loops = $('.line').length
-        console.log "number_of_loops: " + number_of_loops
-        total_seconds = 0
-        $('.line').each(->
-          total_seconds += parseInt($(this).attr('data-duration'))
-        )
-        console.log "total_seconds: " + total_seconds
-        fraction = total_seconds / window.video_duration
-        percentage = (Math.round(fraction * 10000))/100 + '%'
-        if .4 > fraction then status = "Solid start!"
-        if .7 >= fraction >= .4 then status = "You got this!"
-        if fraction > .7 then status = "Nearly there!"
-        $('#loop-status').html("You've translated #{number_of_loops} loops, totalling #{total_seconds} out of #{total_seconds}, or approximately #{percentage} of the video. #{status}")
+    # PROGRESS REPORT
+      number_of_loops = $('.line').length
+      console.log "number_of_loops: " + number_of_loops
+      total_seconds = 0
+      $('.line').each(->
+        total_seconds += parseInt($(this).attr('data-duration'))
+      )
+      console.log "total_seconds: " + total_seconds
+      fraction = total_seconds / window.video_duration
+      percentage = (Math.round(fraction * 10000))/100 + '%'
+      if .4 > fraction then status = "Solid start!"
+      if .7 >= fraction >= .4 then status = "You got this!"
+      if fraction > .7 then status = "Nearly there!"
+      $('#progress-report').html("You've translated #{number_of_loops} loops, totalling #{total_seconds} out of #{total_seconds}, or approximately #{percentage} of the video. #{status}")
 
     resetForNextLine = -> 
       $('.preview-button').html('<div class="btn btn-info" id="preview-button">Preview</div>').effect('highlight')
-      $('.lyrics-box.small').children().eq(0).html("")
-      $('.lyrics-box.small').children().eq(1).html("")
       $('#lyrics-box').scrollTo('100%')
       $('#intro-text').fadeOut()
       $('.lang1-line').val('')
@@ -467,35 +333,25 @@ $ ->
       displayTooltip()
       moveLoopForward()
 
-    if window.translation_type == 'lang1_and_lang2'
-
-      $(".lang1-line").livequery ->
-        $(this).keyup (e) ->
+    $(".lang1-line").livequery ->
+      $(this).keyup (e) ->
+        if e.which == 13 and ($('.lang2-line').val() isnt '')
           entry = this.value
-          $('.lyrics-box.small').children().eq(0).html("<p class='white'>#{entry}</p>")
-          if e.which == 13 and ($('.lang2-line').val() isnt '')
-            $('#lyrics-box').parent().slideDown()
-            entry = this.value
-            that_entry = $('.lang2-line').val()
-            addNewLineInRightPlace(entry, that_entry)
+          that_entry = $('.lang2-line').val()
+          addNewLineInRightPlace(entry, that_entry)
 
-      $(".lang2-line").livequery ->
-        $(this).keyup (e) ->
+    $(".lang2-line").livequery ->
+      $(this).keyup (e) ->
+        if e.which == 13 and ($('.lang1-line').val() isnt '')
           entry = this.value
-          $('.lyrics-box.small').children().eq(1).html("<p class='white'>#{entry}</p>")
-          if e.which == 13 and ($('.lang1-line').val() isnt '')
-            $('#lyrics-box').parent().slideDown()
-            entry = this.value
-            that_entry = $('.lang1-line').val()
-            addNewLineInRightPlace(that_entry, entry)
+          that_entry = $('.lang1-line').val()
+          addNewLineInRightPlace(that_entry, entry)
 
-    if window.translation_type == 'just_lang2'
-
-      $(".lang2-line").livequery ->
-        $(this).keyup (e) ->
-          if e.which == 13
-            entry = this.value
-            addNewLineInRightPlace('', entry)
+    $('#next-line').click ->
+      this_entry = $('.lang1-line').val()
+      that_entry = $('.lang2-line').val()
+      if this_entry isnt '' and that_entry isnt ''
+        addNewLineInRightPlace(this_entry, that_entry)
 
   introText = ->
   
@@ -512,54 +368,8 @@ $ ->
     $("#input-lines-go").livequery -> 
       $(this).click ->
         $('#controls').slideUp()
-        inputLines()
+        $('.lyrics-container').slideDown()
         window.player.playVideo()
-
-  inputLines = ->
-
-    inputLineLogic()
-
-    if window.translation_type == 'lang1_and_lang2'
-      $('#lang1-input').html("<div><i class='left'>#{lang1}&nbsp;</i>
-        <small class='left'>(<small class='current-loop-time'></small>)</small></div>
-        <br>
-        <div class='control-group'>
-          <div class='controls'>
-            <input type='text' class='input-xlarge lang1-line'>
-          </div>
-        </div>")
-      $('#lang2-input').html("<div><i class='left'>#{lang2}&nbsp;</i>
-        <small class='left'>(<small id='current-loop-time' class='current-loop-time'></small>)</small></div>
-        <br>
-        <div class='controls'>
-          <input type='text' class='input-xlarge lang2-line'>
-        </div>")
-
-      # ADJUSTING INPUT LINES FOR R-T-L VERSUS L-T-R
-
-      if rtlArray.indexOf(window.lang1) > -1
-        $('.lang1-line').attr('style','direction: rtl;') 
-
-      if rtlArray.indexOf(window.lang2) > -1
-        $('.lang2-line').attr('style','direction: rtl;') 
-
-    if window.translation_type == 'just_lang2'
-      $('#lang2-input').html("
-        <div><i class='left'>#{lang2}&nbsp;</i>
-          <small class='left'>(<small id='current-loop-time' class='current-loop-time'></small>)</small></div>
-          <br>
-          <div class='control-group'>
-            <div class='controls'>
-              <input type='text' class='input-xlarge lang2-line'>
-            </div>
-          </div>")
-      $('#lang1-box').parent().parent().remove()
-      
-      if rtlArray.indexOf(window.lang2) > -1
-        $('.lang2-line').attr('style','direction: rtl;') 
-
-  if action_name == 'edit'
-    inputLineLogic()
 
 # YOUTUBE PLAYER COMES IN HERE
 
@@ -591,13 +401,10 @@ $ ->
     window.player = player
 
   onPlayerReady = (event) ->
+    inputLineLogic()
     video_duration = window.player.getDuration()
     window.video_duration = video_duration
     playbackControls(video_duration)
-    if window.loop == false
-      straightPlaybackBehavior()
-    else
-      loopingBehavior()
     event.target.playVideo()
 
     # CONTROLS FOR LONG VIDEOS COME IN HERE    
@@ -611,75 +418,74 @@ $ ->
     $(".timer-text").html(formatTime(window.time))
     this_line = $("[data-time=#{window.time}]")
 
-    # TRANSLATED LINES LIGHT UP HERE AS THE VIDEO PLAYS
-    if this_line.length != 0 and window.editing_line == false
-      this_line.effect("highlight", { color: "yellow" }, 4000)
-      if this_line.prev().prev().length != 0
-        $("#lyrics-box").scrollTo(this_line.prev().prev(), { duration : 250 } )
-      else
-        if this_line.prev().length != 0
-          $("#lyrics-box").scrollTo(this_line.prev(), { duration : 250 } )
-        else
-          $("#lyrics-box").scrollTo(this_line, { duration : 250 } )
-
-    current_loop_time = window.loop * window.section
-    current_loop_end = window.loop * (window.section + 1)
+    current_loop_start = $('#playback-slider').rangeSlider("values").min
+    current_loop_end = $('#playback-slider').rangeSlider("values").max
+    $(".current-loop-start").html('&nbsp;' + formatTime(current_loop_start) + '&nbsp;')
+    $(".current-loop-end").html('&nbsp;' + formatTime(current_loop_end) + '&nbsp;')
 
     # PLAYBACK SLIDER MOVES HERE
-    if window.loop is false and window.valuesChanging is false
-      $('#playback-slider').slider("value", window.time)
-      $('.ui-slider-handle').html(shortFormatTime(window.time))
-
-    # LOOP BAR INCHES FORWARD HERE
-    if window.loop isnt false
-      $('#loop-bar').animate(
-        { width: "#{((window.time - current_loop_time)/(window.loop)) * 330 * (window.loop / 60)}px" }, 
-      )
-
-    # DISPLAYING THE TIMING ABOVE THE TRANSLATION INPUT LINES 
-    if window.loop isnt false
-      $(".current-loop-time").html(formatTime(current_loop_time) + " to " + formatTime(current_loop_end))
-    else
-      $(".current-loop-time").html(formatTime(window.time))
+    if window.loop == 0 and window.valuesChanging == false
+      $('#playback-slider').rangeSlider("values", window.time, window.time + 4)
+      $('.loop-handle-label.ui-rangeSlider-leftLabel').html("<div class='inner-label'>#{shortFormatTime(window.time)}</div>")
+      $('.loop-handle-label.ui-rangeSlider-rightLabel').html("<div class='inner-label'>#{shortFormatTime(window.time + 4)}</div>")
 
     # LOOPING HAPPENS HERE
-    if window.loop isnt false
-      loopNow = ->
-        loopingNow = ->
-          $('#loop-bar').animate({width: 'toggle'})
-          player.seekTo(window.loop * window.section, true)
-          player.setVolume(window.volume)
-          player.pauseVideo()
-          startUpAgain = ->
-            player.playVideo()
-            # $('#loop-bar').animate({width: "#{330 * (window.loop / 60)}px"}, duration: "#{window.loop * 1000}")
-            window.got_volume = false
-          window.setTimeout(startUpAgain, 1200)
-        window.setTimeout(loopingNow, 1000)
-      fadeOut = ->
-        if window.got_volume == false
-          window.volume = player.getVolume()
-          window.got_volume = true
-          halfVolume = 0.5 * window.volume
-          quarterVolume = 0.25 * window.volume
-          tinyVolume = 0.1 * window.volume
-          player.setVolume(halfVolume)
-          softAndSlow = ->
-            player.setVolume(quarterVolume)
-          window.setTimeout(softAndSlow, 500)
-      modifier = .69 + (window.loop * 0.015)
-      if window.time > (window.loop) * (window.section + modifier)
-        fadeOut()
-        loopNow()
 
-  counter = setInterval(countVideoPlayTime, 1000)
+    loopNow = ->
+      loopingNow = ->
+        player.seekTo(window.loop_length * window.section, true)
+        player.setVolume(window.volume)
+        player.pauseVideo()
+        startUpAgain = ->
+          if window.loop_counter == window.loop
+            player.pauseVideo()
+          else
+            player.playVideo()
+          window.looping = false
+          window.got_volume = false
+        window.setTimeout(startUpAgain, 1200)
+      window.setTimeout(loopingNow, 1000)
+    fadeOut = ->
+      if window.got_volume == false
+        window.volume = player.getVolume()
+        window.got_volume = true
+        halfVolume = 0.5 * window.volume
+        quarterVolume = 0.25 * window.volume
+        tinyVolume = 0.1 * window.volume
+        player.setVolume(halfVolume)
+        softAndSlow = ->
+          player.setVolume(quarterVolume)
+        window.setTimeout(softAndSlow, 500)
+    modifier = .69 + (window.loop_length * 0.015)
+    if window.loop > 0
+      if window.loop > window.loop_counter
+        if window.time > (window.loop_length) * (window.section + modifier) and window.looping == false
+          window.looping = true
+          fadeOut()
+          loopNow()
+          window.loop_counter += 1
+
+    # TRANSLATED LINES LIGHT UP HERE AS THE VIDEO PLAYS
+    if this_line.length != 0 and window.editing_line == false
+      unless this_line.hasClass('highlighted')
+        this_line.effect("highlight", { color: "yellow" }, 4000)
+        this_line.addClass("highlighted")
+        if this_line.prev().prev().length != 0
+          $("#lyrics-box").scrollTo(this_line.prev().prev(), { duration : 250 } )
+        else
+          if this_line.prev().length != 0
+            $("#lyrics-box").scrollTo(this_line.prev(), { duration : 250 } )
+          else
+            $("#lyrics-box").scrollTo(this_line, { duration : 250 } )
+
+  counter = setInterval(countVideoPlayTime, 250)
   done = false
 
   onPlayerStateChange = (event) ->
     if event.data == YT.PlayerState.PAUSED
       exact_time = player.getCurrentTime()
       window.time = Math.round(exact_time)
-      window.section = window.time / window.loop
+      window.section = window.time / window.loop_length
 
   delayedShow = -> 
     window.player.playVideo()
@@ -690,40 +496,27 @@ $ ->
   $("#forward").livequery ->
     $(this).click -> 
       console.log "forward"
-      if window.loop != false
+      if window.loop > 0
         window.section += 1
-        window.player.seekTo(window.loop * window.section, true)
-        $('#loop-slider').rangeSlider("values", window.loop * window.section, window.loop * (window.section + 1))
-        $('.ui-rangeSlider-leftLabel.loop-handle-label').children(':first').html("<div class='text-padding'>#{shortFormatTime(window.loop * window.section)}</div>")
-        $('.ui-rangeSlider-rightLabel.loop-handle-label').children(':first').html("<div class='text-padding'>#{shortFormatTime(window.loop * (window.section + 1))}</div>")
+        window.player.seekTo(window.loop_length * window.section, true)
+        $('.ui-rangeSlider-leftLabel.loop-handle-label').children(':first').html("<div class='text-padding'>#{shortFormatTime(window.loop_length * window.section)}</div>")
+        $('.ui-rangeSlider-rightLabel.loop-handle-label').children(':first').html("<div class='text-padding'>#{shortFormatTime(window.loop_length * (window.section + 1))}</div>")
       else
         player.seekTo(window.time + 15)
 
   $("#backward").livequery ->
     $(this).click -> 
       console.log "backward"
-      if window.loop != false
+      if window.loop_length > 0
         window.section -= 1
-        window.player.seekTo((window.section - 1) * window.loop, true)
-        $('#loop-slider').rangeSlider("values", window.loop * (window.section - 1), window.loop * window.section)
-        $('.ui-rangeSlider-leftLabel.loop-handle-label').html("<div class='text-padding'>#{shortFormatTime(window.loop * (window.section - 1))}</div>")
-        $('.ui-rangeSlider-rightLabel.loop-handle-label').html("<div class='text-padding'>#{shortFormatTime(window.loop * window.section)}</div>")
+        window.player.seekTo((window.section - 1) * window.loop_length, true)
+        $('.ui-rangeSlider-leftLabel.loop-handle-label').html("<div class='text-padding'>#{shortFormatTime(window.loop_length * (window.section - 1))}</div>")
+        $('.ui-rangeSlider-rightLabel.loop-handle-label').html("<div class='text-padding'>#{shortFormatTime(window.loop_length * window.section)}</div>")
       else
         if window.time > 14
           player.seekTo(window.time - 15)
         else
           player.seekTo(0)
-
-  $('#play-pause').livequery ->
-    $(this).click ->
-      console.log "play/pause"
-      state = window.player.getPlayerState()
-      if state == 1
-        player.pauseVideo()
-        $(this).html("<i class='icon-play'></i>")
-      if state == 2
-        player.playVideo()
-        $(this).html("<i class='icon-pause'></i>")
 
   # REVISING LINE CONTENT 
 
@@ -783,6 +576,7 @@ $ ->
     $(this).click -> 
       $('.lang1-line').val($('#edit-line-lang1').val())
       $('.lang2-line').val($('#edit-line-lang2').val())
+      doneEditing()
 
   # QUIZ WORDS GET ADDED HERE v
 
@@ -848,7 +642,7 @@ $ ->
     lang1 = $('#edit-line-lang1').val()
     lang2 = $('#edit-line-lang2').val()
     $('.edited-line').before("
-      <div class='line' data-line-id=#{line_id} data-time=#{time} data-duration=#{duration}>
+      <div class='line rounded' data-line-id=#{line_id} data-time=#{time} data-duration=#{duration}>
         <div class='lyrics-container'>
           <p>#{lang1}</p>
         </div>
@@ -860,7 +654,7 @@ $ ->
     $('.edited-line').remove()
     $('#coming-soon').remove()
     $('#loop-settings').slideDown()
-    window.loop = false
+    window.loop_length = false
 
   $('#done-editing').livequery ->
     $(this).click ->
@@ -882,8 +676,8 @@ $ ->
         original_midpoint = Math.round((original_start_time + original_end_time) / 2)
 
         player.seekTo(original_start_time)
-        window.loop = original_end_time - original_start_time
-        window.section = original_start_time / window.loop
+        window.loop_length = original_end_time - original_start_time
+        window.section = original_start_time / window.loop_length
 
         $(this).replaceWith("<div class='btn btn-small btn-primary rounded tight-margins' id='done-editing-time' style='background-color: white; border: solid 1px; border-color: orange; color: orange;'> done adjusting timing</div>")
 
@@ -916,29 +710,12 @@ $ ->
             end = data.values.max
             $(this).parent().attr('data-duration', end - start)
             player.seekTo(start)
-            window.loop = end - start
-            window.section = start / window.loop
+            window.loop_length = end - start
+            window.section = start / window.loop_length
           ).bind("valuesChanging", (e, data) ->
             $('#loop-settings').slideUp()
           )
           $('#lyrics-box').scrollTo('.edited-line')
-
-  # LOOP TOGGLE AND DIFFICULTY SETTINGS 
-
-  $('.loop-toggle').livequery -> 
-    $(this).click -> 
-      if window.loop == false
-        window.loop = 4
-        window.section = window.time / window.loop
-        loopingBehavior()
-        $('#loop-on').html('turn off loops')
-        $('#loop-on').attr('style','float: right;')
-
-      else
-        window.loop = false
-        straightPlaybackBehavior()
-        $('#loop-on').html('turn on loops')
-        $('#loop-on').attr('style','float: left;')
 
   $('.quiz-toggle').livequery -> 
     $(this).click -> 
@@ -985,7 +762,6 @@ $ ->
 
       else
         window.quiz_making_mode = false
-        $('.loop-toggle').slideDown()
         $('#quiz-on').attr('style','float: left;')
         $('#quiz-on').html('make it a quiz')
         $('#quiz-settings').remove()
@@ -1010,6 +786,24 @@ $ ->
       $('#difficulty-settings').toggle()
       $('#set-difficulty').toggle()
       $.post('/update_difficulty', { 'interp' : { 'id' : "#{interp_id}", 'difficulty' : "#{$(this).attr('value')}" } })
+
+  $('.adjust-loops').livequery ->
+    $(this).click ->
+      window.player.seekTo($('#playback-slider').rangeSlider("values").min)
+      window.player.playVideo()
+      if $(this).attr('id') == 'more-loops'
+        if window.loop < 9 then window.loop += 1
+      if $(this).attr('id') == 'fewer-loops'
+        if window.loop > 0 then window.loop -= 1
+      loop_initalizer = "loop " + window.loop + " times" 
+      $('#loop-status').html(loop_initalizer)
+      window.section = window.time / window.loop_length
+      window.loop_counter = 0
+
+  $('#loop-status').livequery ->
+    $(this).click ->
+      window.loop_counter = 0 
+      player.playVideo()
 
   # QUIZ SETUP
 

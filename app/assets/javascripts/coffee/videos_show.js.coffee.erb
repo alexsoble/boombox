@@ -1,191 +1,230 @@
-player = null
-
 $ ->
-  
-  window.r = 0
-  window.p = 0
-  window.r_counter = 0
-  window.p_counter = 0
-  $('#lyrics').hide()
 
+  youtube_id = $('#data').attr('data-youtube-id')
+  lang1 = $('#data').attr('data-lang-one')
+  lang2 = $('#data').attr('data-lang-two')
+  window.lang1 = lang1
+  window.lang2 = lang2
   interp_id = $('#data').attr('data-interp-id')
-  video_youtube_id = $('#data').attr('data-video-id')
-  longest_line_length = parseInt($('#data').attr('data-longest-line'))
+  action_name = $('#data').attr('data-action-name')
+  translation_type = $('#data').attr('data-translation-type')
+  published = $('#data').attr('data-published')
+  console.log youtube_id + " " + lang1 + " " + lang2 + " " + interp_id + " " + action_name + " "+ translation_type
 
-  if longest_line_length > 100
-    console.log "Woah! You've got some long lines in that translation!"
-    $('.lyrics-box').addClass('extra-large')
+  $('.lyrics-container').addClass('tall')
+  $('#settings').addClass('discuss-mode')
 
-  if $('#data').attr('data-clip') is 'true'
-    clip = true
-    window.initialize = false
-    window.got_volume = false
-    console.log "clip = true!"
-    clip_start = parseInt($('#data').attr('data-start'))
-    clip_end = clip_start + parseInt($('#data').attr('data-duration'))
-    console.log "clip start: " + clip_start
-    console.log "clip end: " + clip_end
+  formatTime = (time) ->
+    time = Math.floor(time)
+    if time <= 9 then formatted_time = "00:0" + time
+    if 9 < time <= 59 then formatted_time = "00:" + time
+    if 60 <= time < 540
+      if time%60 <= 9 then formatted_time = "0" + Math.floor((time)/60) + ":0" + (time)%60
+      if 9 < time%60 <= 59 then formatted_time = "0" + Math.floor((time)/60) + ":" + (time)%60
+    if 540 <= time < 3600
+      if time%60 <= 9 then formatted_time = Math.floor((time)/60) + ":0" + (time)%60
+      if 9 < time%60 <= 59 then formatted_time = Math.floor((time)/60) + ":" + (time)%60
+    formatted_time
+
+  shortFormatTime = (time) ->
+    time = Math.floor(time)
+    if time <= 9 then formatted_time = ":0" + time
+    if 9 < time <= 59 then formatted_time = ":" + time
+    if 60 <= time < 540
+      if time%60 <= 9 then formatted_time = Math.floor((time)/60) + ":0" + (time)%60
+      if 9 < time%60 <= 59 then formatted_time = Math.floor((time)/60) + ":" + (time)%60
+    if 540 <= time < 3600
+      if time%60 <= 9 then formatted_time = Math.floor((time)/60) + ":0" + (time)%60
+      if 9 < time%60 <= 59 then formatted_time = Math.floor((time)/60) + ":" + (time)%60
+    formatted_time
+
+  window.loop_length = false
+  window.valuesChanging = false
+  window.quiz_making_mode = false
+  window.quiz_words = []
+  window.tool_helptip_displayed = false
+  window.editing_line = 'off'
+  window.editing_line_timing = 'off'
+  window.editing_line_ask_heyu = 'off'
+  window.volume_slider_on = false
+  window.loop_length_range_appended = false
+  $('#timer-box').html('<div id="timer">
+    <h2 class="timer-text" id="big-timer"></h2>
+    </div>')
+  $('#lyrics').hide()
+  $('#timer').hide()
+
+  sliderSetup = ->
+
+    $('#settings').append("
+      <div id='playback-buttons' style='float: right; margin-right: 20px; margin-top: 20px;'>
+        <div class='btn btn-info btn-small rounded tight-pack' id='backward'> <i class='icon-backward'></i> </div>
+        <div class='btn btn-info btn-small rounded tight-pack' id='play-pause'> <i class='icon-pause'></i> </div> 
+        <div class='btn btn-info btn-small rounded tight-pack' id='forward'> <i class='icon-forward'></i>  </div>
+        <div class='btn btn-info btn-small rounded tight-pack' id='volume' style='position: relative;'> <i class='icon-volume-up'></i>
+          <div id='volume-slider'> </div>
+       </div>
+      </div>")
+
+    $('#settings').append("
+      <div style='float: left; margin-left: 20px; margin-top: 20px;' id='vote-button-container'>
+        <b class='tiny-text'>good translation?
+          <div class='btn btn-small rounded tight-pack vote-button' id='upvote'> <i class='icon-thumbs-up'></i> </div>
+          <div class='btn btn-small rounded tight-pack vote-button' id='downvote'> <i class='icon-thumbs-down'></i> </div>
+        </b>
+      </div>
+      <div style='float: left; margin-left: 20px;'>
+        <b class='tiny-text vote-button-status'></b>
+      </div>")
+
+    $('#settings').append("
+      <div id='loop-settings'>
+        <div class='playback-left-label end-label'><div class='playback-left-label inner-label'></div></div>
+          <div id='playback-slider'></div>
+        <div class='playback-right-label end-label'><div class='playback-right-label inner-label'></div></div>
+        <div id='loop-status'></div>
+      </div>")
+
+  sliderSetup()
+
+  playbackControls = (video_duration) ->
+
+    $('.playback-left-label.inner-label').html(":00")
+    $('.playback-right-label.inner-label').html("#{shortFormatTime(video_duration)}")
+
+  straightPlaybackBehavior = ->
+
+    if $('#playback-slider').hasClass('ui-rangeSlider')
+      $('#playback-slider').rangeSlider('destroy')
+
+    $('.ui-slider-handle').addClass('loop-handle-label')
+
+    $('#playback-slider').slider(
+      min: 0,
+      max: window.video_duration,
+      value: window.time,
+      step: 1
+      slide: (event, ui) ->
+        player.seekTo($('#playback-slider').slider("value"))
+    )
+
+# YOUTUBE PLAYER COMES IN HERE
+
+  window.rollover_pause = false
 
   tag = document.createElement("script")
   tag.src = "https://www.youtube.com/iframe_api"
   firstScriptTag = document.getElementsByTagName("script")[0]
   firstScriptTag.parentNode.insertBefore tag, firstScriptTag
 
-  $("#publish-button").click ->
-    if $("#user-id").attr('data-user') != "logged-out"
-      $.post('/publish', { 'id' : "#{interp_id}" }, (data) ->
-        console.log data.data )
-      window.location.href = "/interpretations/#{interp_id}"
-    else
-      $("#edit-button").replaceWith("<p><a href='/sign_up?interp=#{interp_id}'><strong>Sign up for Heyu?</strong></a><br> That way your username will appear alongside your translation. Get props for excellent work!<br><br>(If you've already signed up, be sure to <a href='/sign_in?interp=#{interp_id}'><strong>sign in</strong></a>.)")
-
-  $("#edit-button").click ->
-    if $("#user-id").attr('data-user') != "logged-out"
-      window.location.href = "/interpretations/#{interp_id}/edit"
-    else
-      $("#edit-button").replaceWith("<p><a href='/sign_up?interp=#{interp_id}'><strong>Sign up for Heyu?</strong></a><br> That way your username will appear alongside your translation. Get props for excellent work!<br><br>(If you've already signed up, be sure to <a href='/sign_in?interp=#{interp_id}'><strong>sign in</strong></a>.)")
+  window.section = 0 
+  window.time = 0
+  window.got_volume = false
 
   window.onYouTubeIframeAPIReady = ->
-    player = new YT.Player("show-video-box",
-      height: "380"
-      width: "630"
-      videoId: video_youtube_id
+    player = new YT.Player("new-video-box", {
+      height: "315"
+      width: "420"
+      videoId: youtube_id
       playerVars: 
-        if clip == true
-          controls: 0
+        {
+        controls: 0
+        cc_load_policy: 1
+        }
       events:
         onReady: onPlayerReady
-        onStateChange: onPlayerStateChange)
+        onStateChange: onPlayerStateChange })
+    console.log "Checking for cc..." + player.getOptions().indexOf('cc')
     window.player = player
 
   onPlayerReady = (event) ->
-    if clip == true
-      if window.initialize == false
-        window.player.seekTo(clip_start)
-        window.initialize = true
+    video_duration = window.player.getDuration()
+    window.video_duration = video_duration
+    playbackControls(video_duration)
+    if window.loop_length == false
+      straightPlaybackBehavior()
+    else
+      loopingBehavior()
     event.target.playVideo()
 
-  arr = []
-  just_times_arr = []
-  lyrics = $(".lyrics")
-  jQuery.each lyrics, ->
-    id = $(this).attr("id")
-    arr.push id
-    just_times_arr.push id.substring(6)
-  arr
-  window.arr = arr
-  window.just_times_arr = just_times_arr
+    # CONTROLS FOR LONG VIDEOS COME IN HERE    
+    if video_duration > 300
+      longVideoControls()
 
   countVideoPlayTime = ->
 
-    scroll = (array, time) ->
-      time_id = 'lang2-' + time
-      if array.indexOf(time_id) > -1
-
-        window.this_line_start = time
-        if time != $("#lyrics").children(':first').children(':first').attr('id')
-          if $('#lyrics').attr('style') == "display: none;"
-            $('#lyrics').slideDown()
-          lang1 = $("#lang1-#{time}").html()
-          lang2 = $("#lang2-#{time}").html()
-          duration = $("#lang2-#{time}").attr('data-duration')
-          $("#lyrics").children().eq(0).html("<p class='lyrics white' id='#{time}'>#{lang1}</p>").hide().slideDown(800)
-          $("#lyrics").children().eq(1).html("<p class='lyrics white' id='#{time}'>#{lang2}</p>").hide().slideDown(800)
-
     exact_time = player.getCurrentTime()
-    time = Math.round(exact_time)
+    window.time = Math.floor(exact_time)
+    this_line = $("[data-time=#{window.time}]")
 
-    # LOOPING HAPPENS HERE (IF IT'S A CLIP)
-    if time > clip_end
-      fadeOut()
-      loopNow()
+    if this_line.length != 0
+      unless this_line.hasClass('highlighted')
+        this_line.effect("highlight", { color: "yellow" }, 4000)
+        this_line.addClass("highlighted")
+        if this_line.prev().prev().length != 0
+          $("#lyrics-box").scrollTo(this_line.prev().prev(), { duration : 250 } )
+        else
+          if this_line.prev().length != 0
+            $("#lyrics-box").scrollTo(this_line.prev(), { duration : 250 } )
+          else
+            $("#lyrics-box").scrollTo(this_line, { duration : 250 } )
 
-    do_scroll = scroll(arr, time)
+    current_loop_time = window.loop_length * window.section
+    current_loop_end = window.loop_length * (window.section + 1)
 
-  counter = setInterval(countVideoPlayTime, 1000)
+    # PLAYBACK SLIDER MOVES HERE
+    if window.loop_length is false and window.valuesChanging is false
+      $('#playback-slider').slider("value", window.time)
+      $('#playback-slider').children().html(shortFormatTime(window.time))
 
-  loopNow = ->
-    loopingNow = ->
-      player.seekTo(clip_start, true)
-      player.setVolume(window.volume)
-      player.pauseVideo()
-      startUpAgain = ->
-        player.playVideo()
-        window.got_volume = false
-      window.setTimeout(startUpAgain, 1200)
-    window.setTimeout(loopingNow, 1000)
-  fadeOut = ->
-    if window.got_volume == false
-      window.volume = player.getVolume()
-      window.got_volume = true
-      halfVolume = 0.5 * window.volume
-      quarterVolume = 0.25 * window.volume
-      tinyVolume = 0.1 * window.volume
-      player.setVolume(halfVolume)
-      softAndSlow = ->
-        player.setVolume(quarterVolume)
-      window.setTimeout(softAndSlow, 500)
-
-  onPlayerStateChange = (event) ->
-    if event.data is YT.PlayerState.PLAYING and not done
-      done = true
-
+  counter = setInterval(countVideoPlayTime, 400)
   done = false
 
-  quiz = $('#data').attr('data-quiz')
+  onPlayerStateChange = (event) ->
+    if event.data == YT.PlayerState.PAUSED
+      exact_time = player.getCurrentTime()
+      window.time = Math.round(exact_time)
+      window.section = window.time / window.loop_length
 
-  if quiz == 'true'
-    $('#lyrics').addClass('quizframe')
-    $('.wrapper').addClass('quizframe')
-    $('#below-video-box').hide()
+  delayedShow = -> 
+    window.player.playVideo()
+  window.setTimeout(delayedShow, 1000)
+    
+  $("#forward").livequery ->
+    $(this).click -> 
+      console.log "forward"
+      if window.loop_length != false
+        window.section += 1
+        window.player.seekTo(window.loop_length * window.section, true)
+        $('#loop-slider').rangeSlider("values", window.loop_length * window.section, window.loop_length * (window.section + 1))
+        $('.ui-rangeSlider-leftLabel.loop-handle-label').children(':first').html("<div class='text-padding'>#{shortFormatTime(window.loop_length * window.section)}</div>")
+        $('.ui-rangeSlider-rightLabel.loop-handle-label').children(':first').html("<div class='text-padding'>#{shortFormatTime(window.loop_length * (window.section + 1))}</div>")
+      else
+        player.seekTo(window.time + 15)
 
-  # CONTROLS
+  $("#backward").livequery ->
+    $(this).click -> 
+      console.log "backward"
+      if window.loop_length != false
+        window.section -= 1
+        window.player.seekTo((window.section - 1) * window.loop_length, true)
+        $('#loop-slider').rangeSlider("values", window.loop_length * (window.section - 1), window.loop_length * window.section)
+        $('.ui-rangeSlider-leftLabel.loop-handle-label').html("<div class='text-padding'>#{shortFormatTime(window.loop_length * (window.section - 1))}</div>")
+        $('.ui-rangeSlider-rightLabel.loop-handle-label').html("<div class='text-padding'>#{shortFormatTime(window.loop_length * window.section)}</div>")
+      else
+        if window.time > 14
+          player.seekTo(window.time - 15)
+        else
+          player.seekTo(0)
 
-  $("#repeat-line").click ->
-    window.player.seekTo(window.this_line_start)
-
-  $("#repeat-plus").click ->
-    window.r += 1
-    $("#repeat-status").html(window.r)
-
-  $("#repeat-minus").click ->
-    if window.r > 0
-      window.r -= 1
-      $("#repeat-status").html(window.r)
-
-  $("#just-lang2").click ->
-    $(".lang2").slideDown()
-    $(".lang1").hide()
-    $(".lang2").attr("class", "wide-lyrics-container lang2")
-
-  $("#lang1-and-lang2").click ->
-    $(".lang1").show()
-    $(".lang2").show()
-    $(".lang1").attr("class", "narrow-lyrics-container lang1")
-    $(".lang2").attr("class", "narrow-lyrics-container lang2")
-
-  $("#just-lang1").click ->
-    $(".lang1").slideDown()
-    $(".lang2").hide()
-    $(".lang1").attr("class", "wide-lyrics-container lang1")
-
-  $('#video-top').click ->
-    $('#lyrics').addClass('top').removeClass('bottom')
-
-  $('#video-bottom').click ->
-    $('#lyrics').addClass('bottom').removeClass('top')
-
-  $('#lyrics-side').click ->
-    window.location.href = "/interpretations/#{interp_id}/discuss"
-
-  # TWEET BUTTON
-
-  not ((d, s, id) ->
-    js = undefined
-    fjs = d.getElementsByTagName(s)[0]
-    unless d.getElementById(id)
-      js = d.createElement(s)
-      js.id = id
-      js.src = "//platform.twitter.com/widgets.js"
-      fjs.parentNode.insertBefore js, fjs
-  ) document, "script", "twitter-wjs"
+  $('.vote-button').livequery ->
+    $(this).click ->
+      if window.user_id == null
+        $('.vote-button-status').html("<b><i>Please sign in to vote on videos.</i></b>")
+      else
+        if $(this).hasClass('btn-primary')
+          $('.vote-button').removeClass('btn-primary')
+        else
+          $('.vote-button').removeClass('btn-primary')
+          $(this).addClass('btn-primary')
+        $.post('/downvote', { 'interp' : { 'id' : "#{interp_id}", 'difficulty' : "#{$(this).attr('value')}" } })

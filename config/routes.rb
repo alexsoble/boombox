@@ -14,8 +14,8 @@ Boombox::Application.routes.draw do
   resources :quizzes
   resources :users
   resources :sessions
-
-  get '/interpretations/:id/discuss' => 'interpretations#discuss'
+  
+  get '/interpretations/:id/discuss' => 'interpretations#show'
   
   post '/new_video' => 'videos#create'
   post '/new_interp' => 'interpretations#create'

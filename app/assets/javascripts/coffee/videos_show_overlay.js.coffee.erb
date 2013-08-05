@@ -1,0 +1,191 @@
+player = null
+
+$ ->
+  
+  window.r = 0
+  window.p = 0
+  window.r_counter = 0
+  window.p_counter = 0
+  $('#lyrics').hide()
+
+  interp_id = $('#data').attr('data-interp-id')
+  video_youtube_id = $('#data').attr('data-video-id')
+  longest_line_length = parseInt($('#data').attr('data-longest-line'))
+
+  if longest_line_length > 100
+    console.log "Woah! You've got some long lines in that translation!"
+    $('.lyrics-box').addClass('extra-large')
+
+  if $('#data').attr('data-clip') is 'true'
+    clip = true
+    window.initialize = false
+    window.got_volume = false
+    console.log "clip = true!"
+    clip_start = parseInt($('#data').attr('data-start'))
+    clip_end = clip_start + parseInt($('#data').attr('data-duration'))
+    console.log "clip start: " + clip_start
+    console.log "clip end: " + clip_end
+
+  tag = document.createElement("script")
+  tag.src = "https://www.youtube.com/iframe_api"
+  firstScriptTag = document.getElementsByTagName("script")[0]
+  firstScriptTag.parentNode.insertBefore tag, firstScriptTag
+
+  $("#publish-button").click ->
+    if $("#user-id").attr('data-user') != "logged-out"
+      $.post('/publish', { 'id' : "#{interp_id}" }, (data) ->
+        console.log data.data )
+      window.location.href = "/interpretations/#{interp_id}"
+    else
+      $("#edit-button").replaceWith("<p><a href='/sign_up?interp=#{interp_id}'><strong>Sign up for Heyu?</strong></a><br> That way your username will appear alongside your translation. Get props for excellent work!<br><br>(If you've already signed up, be sure to <a href='/sign_in?interp=#{interp_id}'><strong>sign in</strong></a>.)")
+
+  $("#edit-button").click ->
+    if $("#user-id").attr('data-user') != "logged-out"
+      window.location.href = "/interpretations/#{interp_id}/edit"
+    else
+      $("#edit-button").replaceWith("<p><a href='/sign_up?interp=#{interp_id}'><strong>Sign up for Heyu?</strong></a><br> That way your username will appear alongside your translation. Get props for excellent work!<br><br>(If you've already signed up, be sure to <a href='/sign_in?interp=#{interp_id}'><strong>sign in</strong></a>.)")
+
+  window.onYouTubeIframeAPIReady = ->
+    player = new YT.Player("show-video-box",
+      height: "380"
+      width: "630"
+      videoId: video_youtube_id
+      playerVars: 
+        if clip == true
+          controls: 0
+      events:
+        onReady: onPlayerReady
+        onStateChange: onPlayerStateChange)
+    window.player = player
+
+  onPlayerReady = (event) ->
+    if clip == true
+      if window.initialize == false
+        window.player.seekTo(clip_start)
+        window.initialize = true
+    event.target.playVideo()
+
+  arr = []
+  just_times_arr = []
+  lyrics = $(".lyrics")
+  jQuery.each lyrics, ->
+    id = $(this).attr("id")
+    arr.push id
+    just_times_arr.push id.substring(6)
+  arr
+  window.arr = arr
+  window.just_times_arr = just_times_arr
+
+  countVideoPlayTime = ->
+
+    scroll = (array, time) ->
+      time_id = 'lang2-' + time
+      if array.indexOf(time_id) > -1
+
+        window.this_line_start = time
+        if time != $("#lyrics").children(':first').children(':first').attr('id')
+          if $('#lyrics').attr('style') == "display: none;"
+            $('#lyrics').slideDown()
+          lang1 = $("#lang1-#{time}").html()
+          lang2 = $("#lang2-#{time}").html()
+          duration = $("#lang2-#{time}").attr('data-duration')
+          $("#lyrics").children().eq(0).html("<p class='lyrics white' id='#{time}'>#{lang1}</p>").hide().slideDown(800)
+          $("#lyrics").children().eq(1).html("<p class='lyrics white' id='#{time}'>#{lang2}</p>").hide().slideDown(800)
+
+    exact_time = player.getCurrentTime()
+    time = Math.round(exact_time)
+
+    # LOOPING HAPPENS HERE (IF IT'S A CLIP)
+    if time > clip_end
+      fadeOut()
+      loopNow()
+
+    do_scroll = scroll(arr, time)
+
+  counter = setInterval(countVideoPlayTime, 1000)
+
+  loopNow = ->
+    loopingNow = ->
+      player.seekTo(clip_start, true)
+      player.setVolume(window.volume)
+      player.pauseVideo()
+      startUpAgain = ->
+        player.playVideo()
+        window.got_volume = false
+      window.setTimeout(startUpAgain, 1200)
+    window.setTimeout(loopingNow, 1000)
+  fadeOut = ->
+    if window.got_volume == false
+      window.volume = player.getVolume()
+      window.got_volume = true
+      halfVolume = 0.5 * window.volume
+      quarterVolume = 0.25 * window.volume
+      tinyVolume = 0.1 * window.volume
+      player.setVolume(halfVolume)
+      softAndSlow = ->
+        player.setVolume(quarterVolume)
+      window.setTimeout(softAndSlow, 500)
+
+  onPlayerStateChange = (event) ->
+    if event.data is YT.PlayerState.PLAYING and not done
+      done = true
+
+  done = false
+
+  quiz = $('#data').attr('data-quiz')
+
+  if quiz == 'true'
+    $('#lyrics').addClass('quizframe')
+    $('.wrapper').addClass('quizframe')
+    $('#below-video-box').hide()
+
+  # CONTROLS
+
+  $("#repeat-line").click ->
+    window.player.seekTo(window.this_line_start)
+
+  $("#repeat-plus").click ->
+    window.r += 1
+    $("#repeat-status").html(window.r)
+
+  $("#repeat-minus").click ->
+    if window.r > 0
+      window.r -= 1
+      $("#repeat-status").html(window.r)
+
+  $("#just-lang2").click ->
+    $(".lang2").slideDown()
+    $(".lang1").hide()
+    $(".lang2").attr("class", "wide-lyrics-container lang2")
+
+  $("#lang1-and-lang2").click ->
+    $(".lang1").show()
+    $(".lang2").show()
+    $(".lang1").attr("class", "narrow-lyrics-container lang1")
+    $(".lang2").attr("class", "narrow-lyrics-container lang2")
+
+  $("#just-lang1").click ->
+    $(".lang1").slideDown()
+    $(".lang2").hide()
+    $(".lang1").attr("class", "wide-lyrics-container lang1")
+
+  $('#video-top').click ->
+    $('#lyrics').addClass('top').removeClass('bottom')
+
+  $('#video-bottom').click ->
+    $('#lyrics').addClass('bottom').removeClass('top')
+
+  $('#lyrics-side').click ->
+    window.location.href = "/interpretations/#{interp_id}/discuss"
+
+  # TWEET BUTTON
+
+  not ((d, s, id) ->
+    js = undefined
+    fjs = d.getElementsByTagName(s)[0]
+    unless d.getElementById(id)
+      js = d.createElement(s)
+      js.id = id
+      js.src = "//platform.twitter.com/widgets.js"
+      fjs.parentNode.insertBefore js, fjs
+  ) document, "script", "twitter-wjs"

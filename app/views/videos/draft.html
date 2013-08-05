@@ -1,4 +1,159 @@
 
+  longVideoControls = ->
+
+    left_boundary = Math.floor(window.time / 45) * 45
+    right_boundary = left_boundary + 60
+
+    $('#loop-slider').rangeSlider(
+      step: 1
+      bounds:
+        min: left_boundary
+        max: right_boundary
+      defaultValues:
+        min: window.time
+        max: window.time + 4
+      range:
+        min: 1
+        max: 12
+      formatter: (val) -> 
+        shortFormatTime(val)
+      )
+
+    # CHANGES TO THE PLAYBACK SLIDER (ORDER OF OPERATIONS MATTERS HERE v !!!)
+
+    $('.end-label.playback-left-label').addClass('disabled')
+    $('.end-label.playback-right-label').addClass('disabled')
+
+    $('#playback-slider').off("valuesChanging").off("userValuesChanged")
+    $('#playback-slider').rangeSlider("values", left_boundary, right_boundary)
+
+    $('#playback-slider').children().eq(3).addClass('end-label').addClass('loop-range-label').html("#{shortFormatTime(left_boundary)}")
+    $('#playback-slider').children().eq(4).addClass('end-label').addClass('loop-range-label').html("#{shortFormatTime(right_boundary)}")
+    $('#playback-slider').children().eq(0).children().eq(1).attr('style','background-color: #0F82F5;')
+
+    # BEHAVIOR FOR THE PLAYBACK SLIDER
+
+    $('#playback-slider').on("valuesChanging", (e, data) ->
+      start = data.values.min
+      end = data.values.max
+      player.seekTo(start)
+      $('.end-label.loop-range-label.ui-rangeSlider-leftLabel').html("#{shortFormatTime(start)}")
+      $('.end-label.loop-range-label.ui-rangeSlider-rightLabel').html("#{shortFormatTime(end)}")
+      $('.inner-label.looping-left-label').html("#{shortFormatTime(start)}")
+      $('.inner-label.looping-right-label').html("#{shortFormatTime(end)}")
+    )
+
+    $('#playback-slider').on("userValuesChanged", (e, data) ->
+      start = data.values.min
+      end = data.values.max
+
+      $('#loop-slider').rangeSlider(
+        bounds:
+          min: start
+          max: end
+        )
+      $('#loop-slider').rangeSlider("values", start, start + window.loop_length)
+      $('.loop-handle-label.ui-rangeSlider-leftLabel').html("#{shortFormatTime(start)}")
+      $('.loop-handle-label.ui-rangeSlider-rightLabel').html("#{shortFormatTime(start + window.loop_length)}")
+    )  # BEHAVIOR FOR THE LOOP SLIDER: SHIFT LEFT / SHIFT RIGHT CONTROLS
+
+    $('#loop-slider').on("userValuesChanged", (e, data) ->
+      bounds = $('#loop-slider').rangeSlider("bounds")
+      min = bounds.min
+      max = bounds.max
+      start = data.values.min
+      end = data.values.max
+
+      shiftRight = -> 
+        console.log "shiftRight"
+        video_duration = window.player.getDuration()
+        if end == max and max < video_duration
+          if max + 30 < video_duration
+            $('.inner-label.looping-left-label').text(shortFormatTime(min + 30))
+            $('.inner-label.looping-right-label').text(shortFormatTime(max + 30))
+            $('#loop-slider').rangeSlider(
+              bounds:
+                min: min + 30
+                max: max + 30
+            ).rangeSlider("values", start, end)
+            $('#playback-slider').rangeSlider("values", min + 30, max + 30)
+            $('.ui-rangeSlider-leftLabel.loop-range-label').html("#{shortFormatTime(min + 30)}")
+            $('.ui-rangeSlider-rightLabel.loop-range-label').html("#{shortFormatTime(max + 30)}")
+          else
+            $('.inner-label.looping-left-label').text(shortFormatTime(video_duration - 60))
+            $('.inner-label.looping-right-label').text(shortFormatTime(video_duration))
+            $('#loop-slider').rangeSlider(
+              bounds:
+                min: video_duration - 60
+                max: video_duration
+            ).rangeSlider("values", video_duration - 59, video_duration - 55)
+
+      shiftLeft = -> 
+        console.log "shiftLeft"
+        if start == min and min > 0
+          if min > 30
+            $('.inner-label.looping-left-label').text(shortFormatTime(min - 30))
+            $('.inner-label.looping-right-label').text(shortFormatTime(max - 30))
+            $('#loop-slider').rangeSlider(
+              bounds:
+                min: min - 30
+                max: max - 30
+            ).rangeSlider("values", start, end)
+            $('#playback-slider').rangeSlider("values", min - 30, max - 30)
+            $('.ui-rangeSlider-leftLabel.loop-range-label').html("#{shortFormatTime(min - 30)}")
+            $('.ui-rangeSlider-rightLabel.loop-range-label').html("#{shortFormatTime(max - 30)}")
+          else
+            $('.inner-label.looping-left-label').text(shortFormatTime(0))
+            $('.inner-label.looping-right-label').text(shortFormatTime(60))
+            $('#loop-slider').rangeSlider(
+              bounds:
+                min: 0
+                max: 60
+            ).rangeSlider("values", 55, 59)           
+
+      waitForIt = (direction) -> 
+        direction()
+      if end == max
+        window.setTimeout(waitForIt(shiftRight), 1000)
+      if start == min
+        window.setTimeout(waitForIt(shiftLeft), 1000)
+      )
+
+  # LOOP TOGGLE AND DIFFICULTY SETTINGS 
+
+  $('.loop-toggle').livequery -> 
+    $(this).click -> 
+      if window.loop_length == false
+        window.loop_length = 4
+        window.section = window.time / window.loop_length
+        loopingBehavior()
+        $('#loop-on').html('turn off loops')
+        $('#loop-on').attr('style','float: right;')
+
+      else
+        window.loop_length = false
+        straightPlaybackBehavior()
+        $('#loop-on').html('turn on loops')
+        $('#loop-on').attr('style','float: left;')
+
+
+.loop-toggle {
+  float: left; 
+  background-color: #DDDDDD; 
+  width: 120px; 
+  height: 24px;
+  position: relative;
+
+  bottom: 2px; 
+  border-radius: 10px;
+  margin-bottom: 6px; }
+
+  #loop-on {
+  margin-right: 0;
+  margin-left: 0;}
+
+
+
       id = $('#editing-div').parent().attr('data-line-id')
       window.this_editing_time = $("[data-line-id=#{id}]:eq(0)").children(":first").children(":first")
       window.that_editing_time = $("[data-line-id=#{id}]:eq(1)").children(":first").children(":first")
@@ -31,7 +186,7 @@
                     <br>
                     <div class='btn btn-info btn-small rounded marginless edit-button'>revise</div><div class='btn btn-success btn-small rounded marginless share-button'>share</div>
                     <br>
-                    <small><small class='edit-duration'><strong>#{formatTime(time_in_seconds)} to #{formatTime(time_in_seconds + window.loop)}</strong></small></small>
+                    <small><small class='edit-duration'><strong>#{formatTime(time_in_seconds)} to #{formatTime(time_in_seconds + window.loop_length)}</strong></small></small>
                   </div>
 
 
