@@ -434,9 +434,9 @@ $ ->
       resetForNextLine()
 
     moveLoopForward = -> 
-      $('#loop-slider').rangeSlider("values", window.section * window.loop, (window.section + 1) * window.loop)
-      $('.ui-rangeSlider-leftLabel.loop-handle-label').children(':first').html("<div class='text-padding'>#{shortFormatTime(window.time)}</div>")
-      $('.ui-rangeSlider-rightLabel.loop-handle-label').children(':first').html("<div class='text-padding'>#{shortFormatTime(window.time + window.loop)}</div>")
+      $('#playback-slider').rangeSlider("values", window.section * window.loop, (window.section + 1) * window.loop)
+      $('.ui-rangeSlider-leftLabel.loop-handle-label').html("<div class='inner-label'>#{shortFormatTime(window.section * window.loop)}</div>")
+      $('.ui-rangeSlider-rightLabel.loop-handle-label').html("<div class='inner-label'>#{shortFormatTime((window.section + 1) * window.loop)}</div>")
       window.player.seekTo(window.section * window.loop)
 
       if window.loop != false
