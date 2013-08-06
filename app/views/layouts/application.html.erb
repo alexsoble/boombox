@@ -23,7 +23,9 @@
       <a class="brand" href="/welcome"><%= image_tag "musicalnote.png", :size => '20x20' %>  Heyu <%= image_tag "musicalnote.png", :size => '20x20' %></a>
       <ul class="nav" id="main-menu-left">
         <li><a href="/philosophy">What's this all about?</a></li>
-        <li><a href="/survey">Survey</a></li>
+        <% if current_user %>
+          <li><a href="/survey">Survey</a></li>
+        <% end %>
       </ul>
       <% if current_user %>
         <ul class="nav pull-right signed-in-user" id="<%= current_user.id %>">

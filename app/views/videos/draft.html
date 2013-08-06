@@ -24,6 +24,15 @@
           window.slid_down = false
           $("#score-text").html("<h2>#{q}/#{total}</h2>")
       )  
+        delayedStop = ->
+          window.keep_going = false
+
+        duration = 1000 * parseInt(this_line.attr('data-duration'))
+        window.duration = duration
+        
+        unless window.right_answer || isNaN(duration)
+          window.setTimeout(delayedStop, duration)
+
 
 
 

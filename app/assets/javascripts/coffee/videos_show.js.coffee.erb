@@ -10,7 +10,7 @@ $ ->
   translation_type = $('#data').attr('data-translation-type')
   published = $('#data').attr('data-published')
   translator_name = $('#data').attr('data-translator-name')
-  translator_image_url = $('#data').attr('data-translator-image-url')
+  translator_image_url = $('#data').attr('data-translator-image-url') || null
   console.log youtube_id + " " + lang1 + " " + lang2 + " " + interp_id + " " + action_name + " "+ translation_type + " " + translator_name
 
   $('.lyrics-container').addClass('tall')
@@ -82,7 +82,7 @@ $ ->
 
     $('#settings').append("
       <div id='user-info' style='position: absolute; bottom: 10px; margin-left: 20px;'>
-        <p> Translated by #{translator_name} <img src=#{translator_image_url} class='profile-thumbnail'></p>
+        <p id='user-name'> Translated by #{translator_name} </p>
       </div>
       <div style='position: absolute; bottom: 30px; right: 20px;' id='vote-button-container'>
         <b class='tiny-text'>good translation?
@@ -93,6 +93,9 @@ $ ->
       <div style='float: left; margin-left: 20px;'>
         <b class='tiny-text vote-button-status'></b>
       </div>")
+    
+    if translator_image_url isnt null
+      $('#user-name').append("<img src=#{translator_image_url} class='profile-thumbnail'>")
 
   sliderSetup()
 

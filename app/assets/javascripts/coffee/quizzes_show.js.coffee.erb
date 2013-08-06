@@ -2,13 +2,25 @@ player = null
 
 $ ->
 
-  remove_accents = (str) ->
+  strip_accents = (str) ->
     str = str.replace(/^\s+|\s+$/g, "").toLowerCase() # trim and force lowercase
     from = "ãàáäâèéëêìíïîòóöôùúüûñç"
     to = "aaaaaeeeeiiiioooouuuunc"
     for i in [0..from.length]
       str = str.replace(from.charAt(i), to.charAt(i))
     return str
+
+  strip_punctuation = (str) ->
+    from = "\'\",.;"
+    for i in [0..from.length]
+      str = str.replace(from.charAt(i), '')
+    str = str.replace(' ', '')
+    return str
+
+  words = []
+  for w in window.words
+    words.push strip_punctuation(w)
+  console.log words 
 
   type = $('#data').attr('data-quiz-type')
   name = $('#data').attr('data-quiz-name')
@@ -24,9 +36,11 @@ $ ->
   $('#title-box').html("<h3>#{name}</h3>")
 
   window.keep_going = true
-  window.pause_time = false
-  $('#lyrics').addClass('quizframe')
-  $('#lyrics-box').attr('id','quiz-box')
+  window.question_asked = false
+  window.right_answer = false
+
+  $('#lyrics-box').after("<div id='quiz-box'></div>")
+  $('#lyrics-box').hide()
   $('#quiz-box').hide()
 
   $('#settings').append("
@@ -46,11 +60,23 @@ $ ->
   # BLANK OUT MISSING WORDS FOR VOCABULARY QUIZZES 
 
   arr = []
+  window.total_points = 0
   $('.line').each(->
     split = $(this).children(':first').lettering('words')
     $(this).html(split)
-    $(this).hide()
+
+    split.children().each(->
+      punctuation_stripped = strip_punctuation($(this).text())
+      $(this).text(punctuation_stripped)
+      console.log words.indexOf($(this).text())
+      if words.indexOf($(this).text()) > -1
+        console.log $(this).text()
+        window.total_points += 1
+        console.log window.total_points
+    )
+
     arr.push parseInt($(this).attr("data-time"))
+
   )
   console.log arr
 
@@ -63,49 +89,40 @@ $ ->
         this_word.addClass('blue')
         window.score += 1
         $('#score').html(window.score)
-        window.keep_going = true
+        window.right_answer = true
       else
         this_word.addClass('red')
         if window.score > 0
           window.score -= 1
           $('#score').html(window.score)
-        window.keep_going = false
+        window.right_answer = false
 
   $('[class^="word"]').attr('style','cursor: pointer;')
 
   quiz = (array, time) ->
 
-    if window.keep_going == true 
+    if array.indexOf(time) > -1
 
-      player.playVideo()
+      langOneArray = []
+      this_line = $("[data-time^=#{time}]")
 
-      if array.indexOf(time) > -1
+      this_line.children(':first').children().each(->
+        if $(this).text() != ''
+          langOneArray.push $(this).text()
+      )
+      for w in window.words
+        if langOneArray.indexOf(w) > -1
+          console.log w
 
-        langOneArray = []
-        this_line = $("[data-time^=#{time}]")
+      $('#quiz-box').html(this_line.html())
+      $('#quiz-box').slideDown()
 
-        this_line.children(':first').children().each(->
-          if $(this).text() != ''
-            langOneArray.push $(this).text().replace /,/, ''
-        )
-        for w in window.words
-          if langOneArray.indexOf(w) > -1
-            console.log w
-
-        $('#quiz-box').html(this_line.html())
-        $('#quiz-box').slideDown()
-
-        delayedStop = ->
-          window.keep_going = false
-
-        duration = 1000 * parseInt(this_line.attr('data-duration'))
-        window.duration = duration
-        
-        unless isNaN(duration)
-          window.setTimeout(delayedStop, duration)
-
-    else 
-      player.pauseVideo()
+    else
+      if window.question_asked == true
+        if window.right_answer == true
+          player.playVideo()
+        else
+          player.pauseVideo()
       
   tag = document.createElement("script")
   tag.src = "https://www.youtube.com/iframe_api"

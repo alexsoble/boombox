@@ -147,8 +147,8 @@ $ ->
       <div id='instructions' class='quiet'>
         <p>Tip: Use the <span class='loop-handle-label example'> &nbsp; handles &nbsp; </span> &nbsp; to select the line you want to translate.<p>
       </div>
-      <div style='position: absolute; bottom: 0px; left: 15px;'>
-        <div class='btn btn-info rounded' id='instructions-button'> help </div>
+      <div style='position: absolute; bottom: 15px; left: 15px;'>
+        <div class='btn btn-info rounded' id='instructions-button'> editing tips </div>
       </div>")
 
     $('#instructions-button').click ->
@@ -158,7 +158,6 @@ $ ->
       <div style='position: absolute; bottom: 0px; left: 300px;'>
         <div class='btn btn-info rounded quiz-toggle' id='learning-tools'> make a quiz </div>
       </div>")
-
 
     $('#loop-settings').after("
       <!---<div style='margin-left: 20px;'>
@@ -332,7 +331,6 @@ $ ->
       $('#progress-report').html("You've translated #{number_of_loops} loops, totalling #{total_seconds} out of #{total_seconds}, or approximately #{percentage} of the video. #{status}")
 
     resetForNextLine = -> 
-      $('.preview-button').html('<div class="btn btn-info" id="preview-button">Preview</div>').effect('highlight')
       $('#lyrics-box').scrollTo('100%')
       $('#intro-text').fadeOut()
       $('.lang1-line').val('')
@@ -874,10 +872,10 @@ $ ->
     $.post('/save', { 'interp_id' : "#{interp_id}", 'lines' : "#{JSON.stringify(lines)}" }, (data) ->
       console.log data )
 
-  $("#preview-button").livequery ->
+  $("#all-done").livequery ->
     $(this).click ->
       save()
-      window.location.href = "/interpretations/#{interp_id}?preview=yes"
+      window.location.href = "/interpretations/#{interp_id}/"
 
 # AUTOSAVE EVERY 10 SECONDS 
 

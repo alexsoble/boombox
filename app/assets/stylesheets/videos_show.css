@@ -12,6 +12,8 @@
 
 .wrapper { overflow: hidden; width: 600px; }
 
+#user-name { line-height: 50px; }
+
 .lyrics-box { background: rgba(0, 0, 0, .3);
   height: 80px;
   width: 610px;
