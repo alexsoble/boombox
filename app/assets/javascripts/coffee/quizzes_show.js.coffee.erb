@@ -15,6 +15,7 @@ $ ->
     for i in [0..from.length]
       str = str.replace(from.charAt(i), '')
     str = str.replace(' ', '')
+    str = str.replace(/(\r\n|\n|\r)/gm,"")
     return str
 
   words = []
@@ -54,7 +55,7 @@ $ ->
       Quiz author: 
     </div>")
 
-  $('#settings').append("<div id='score'></div>")
+  $('#settings').append("<p>Your score:</p><div id='score'></div>")
   window.score = 0
 
   # BLANK OUT MISSING WORDS FOR VOCABULARY QUIZZES 
@@ -65,10 +66,12 @@ $ ->
     split = $(this).children(':first').lettering('words')
     $(this).html(split)
 
+    console.log split 
+
     split.children().each(->
       punctuation_stripped = strip_punctuation($(this).text())
       $(this).text(punctuation_stripped)
-      console.log words.indexOf($(this).text())
+      console.log $(this).text()
       if words.indexOf($(this).text()) > -1
         console.log $(this).text()
         window.total_points += 1
@@ -85,7 +88,7 @@ $ ->
   $('[class^="word"]').livequery ->
     $(this).click ->
       this_word = $(this)
-      if window.words.indexOf(this_word.html()) > -1
+      if words.indexOf(this_word.html()) > -1
         this_word.addClass('blue')
         window.score += 1
         $('#score').html(window.score)
@@ -100,6 +103,9 @@ $ ->
   $('[class^="word"]').attr('style','cursor: pointer;')
 
   quiz = (array, time) ->
+
+    if window.score == window.total_points
+      $('#quiz-box').addClass('success').html("All done!")
 
     if array.indexOf(time) > -1
 
