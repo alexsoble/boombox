@@ -138,9 +138,6 @@
   data-action-name=<%= action_name %> 
   data-published=<%= @published %> 
   <% if @translator.present? %> 
-    <% if @translator.image_url.present? %> 
-      data-translator-image-url=<%= @translator.image_url %> 
-    <% end %>
     data-translator-name=<%= @translator.name %>
   <% end %>
   <% if @quiz.present? %>
