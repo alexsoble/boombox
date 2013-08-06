@@ -1,0 +1,12 @@
+$ ->
+
+  oauth = require("oauth")
+
+  heyu_access_token = "149528415-EuLr1OlTLxoGDGXXIolFxY8totPCp4W0IeWDmGI3"
+  heyu_access_token_secret = "1BJRdQn9thDcIfh9rW8irYmVyYpiRpdqJpV5L6EBTo"
+
+  twitterauth = new oauth.OAuth2(heyu_access_token, heyu_access_token_secret, "https://api.twitter.com/", null, "oauth2/token", null)
+
+  twitterauth.getOAuthAccessToken "", {grant_type:"client_credentials"}, (e, access_token, refresh_token, results) ->
+    twitter_bearer_token = access_token
+    console.log twitter_bearer_token
