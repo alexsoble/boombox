@@ -5,6 +5,6 @@ class CreateQuizzes < ActiveRecord::Migration
     #   t.string :type
 
     #   t.timestamps
-    end
+    # end
   end
 end
