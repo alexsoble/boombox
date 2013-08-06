@@ -1,3 +1,13 @@
+<div class="about-me-container">
+  <h2><strong>About me</strong></h2>
+  <span class="about-me"> <p><%= @user.bio %></p> </span>
+  (<a class="edit-about-me">edit</a>)
+  <br><br>
+  <a class="ajax-twitter-thumbnail"> Get thumbnail photo from Twitter. </a>
+  <br>
+  <a class="ajax-facebook-thumbnail"> Get thumbnail photo from Facebook. </a>
+</div>
+
 <div class="draft-container">
 <% if @published.present? %>
   <% if current_user && @user.id == current_user.id %>

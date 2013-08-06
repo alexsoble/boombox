@@ -5,6 +5,7 @@
 $ ->
 
   window.volume_slider_on = false
+  action_name = $('#data').attr('data-action-name')
 
   $('#volume').livequery ->
     $(this).click ->
@@ -19,6 +20,8 @@ $ ->
           slide: (event, ui) ->
             player.setVolume(ui.value)
         )
+        if action_name == 'edit'
+          $('#volume-slider').addClass('edit')
         window.volume_slider_on = true
       else
         $('#volume-slider').slider('destroy')

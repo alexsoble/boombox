@@ -124,6 +124,8 @@
   height: 40px;
   right: -15px; }
 
+#volume-slider.edit { bottom: 125px; right: 5px; }
+
 /*  --------- CONTROLS BELOW VIDEO --------- */
 
 #controls { position: relative; }
@@ -157,7 +159,7 @@ overflow: visible; }
   height: 100px; 
   margin-left: 20px; }
 
-.quiz-toggle { float: left; }
+.quiz-toggle { float: right; margin-bottom: 15px; }
 
 #playback-slider { width: 313px;
   left: 43px; 

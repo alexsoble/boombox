@@ -152,7 +152,7 @@ $ ->
       </div>")
 
     $('#loop-settings').append("
-      <div style='position: absolute; bottom: 0px; width: 200px' id='learning-tools'>
+      <div style='position: absolute; bottom: 0px; left: 300px;' id='learning-tools'>
         <div class='btn btn-info rounded quiz-toggle'> make a quiz </div>
       </div>")
 
