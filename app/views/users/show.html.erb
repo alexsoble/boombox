@@ -4,14 +4,12 @@
   (<a class="edit-about-me">edit</a>)
   <br><br>
   <a class="ajax-twitter-thumbnail"> Get thumbnail photo from Twitter. </a>
-  <br>
-  <a class="ajax-facebook-thumbnail"> Get thumbnail photo from Facebook. </a>
 </div>
 
 <div class="draft-container">
 <% if @published.present? %>
   <% if current_user && @user.id == current_user.id %>
-      <h2><i>My published translations</i></h2>
+      <h3><strong>My published translations</strong></h3>
     <% else %>
       <h2><i><%= @user.name %>'s translations:</i></h2>
   <% end %>
@@ -40,7 +38,7 @@
 <% if current_user && @user.id == current_user.id %>
   <% if @drafts %>
     <div class="draft-container">
-      <h2><i>My drafts</i></h2>
+      <h3><strong>My drafts</strong></h3>
       <% @drafts.all.each do |d| %>
         <% if d.video.present? %>
          <% v = d.video %>

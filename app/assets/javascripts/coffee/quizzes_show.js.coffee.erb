@@ -71,6 +71,8 @@ $ ->
           $('#score').html(window.score)
         window.keep_going = false
 
+  $('[class^="word"]').attr('style','cursor: pointer;')
+
   quiz = (array, time) ->
 
     if window.keep_going == true 

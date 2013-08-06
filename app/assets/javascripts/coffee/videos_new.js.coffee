@@ -144,17 +144,21 @@ $ ->
       </div>")
 
     $('#loop-settings').append("
-      <div style='position: absolute; bottom: 0px; width: 300px' id='protip'>
-        <div style='float: left; margin-left: 12px; width: 220px;'>
-          <p>Tip: Use the <span class='loop-handle-label example'> &nbsp; handles &nbsp; </span> &nbsp; to select the line you want to translate.<p>
-        </div>
-        <div id=progress-report' style='float: right;'></div>
+      <div id='instructions' class='quiet'>
+        <p>Tip: Use the <span class='loop-handle-label example'> &nbsp; handles &nbsp; </span> &nbsp; to select the line you want to translate.<p>
+      </div>
+      <div style='position: absolute; bottom: 0px; left: 15px;'>
+        <div class='btn btn-info rounded' id='instructions-button'> help </div>
       </div>")
 
+    $('#instructions-button').click ->
+      $("#instructions").dialog()
+
     $('#loop-settings').append("
-      <div style='position: absolute; bottom: 0px; left: 300px;' id='learning-tools'>
-        <div class='btn btn-info rounded quiz-toggle'> make a quiz </div>
+      <div style='position: absolute; bottom: 0px; left: 300px;'>
+        <div class='btn btn-info rounded quiz-toggle' id='learning-tools'> make a quiz </div>
       </div>")
+
 
     $('#loop-settings').after("
       <!---<div style='margin-left: 20px;'>
@@ -740,10 +744,16 @@ $ ->
             Description:<br> <input type='text' id='quiz-description' style='width: 200px;'><br>
           </div>
           <div style='float: left;'>
-            <input type='checkbox' id='grammar'> Grammar quiz (example: \"click all past-tense verbs\")<br>
-            <input type='checkbox' id='vocabulary'> Vocabulary quiz (fill-in-the-blank style)
+            Mark the words that quiz-takers should select. 
           </div>
           <div class='btn btn-info rounded' id='quiz-done-button' style='float: right;'>Create quiz</div> 
+        ")
+
+        $('#quiz-settings').append(" 
+          <!--- <div style='float: left;'>
+            <input type='checkbox' id='grammar'> Grammar quiz (example: \"click all past-tense verbs\")<br>
+            <input type='checkbox' id='vocabulary'> Vocabulary quiz (fill-in-the-blank style)
+          </div> --->
         ")
 
         # GET RID OF LOOP RELATED STUFF HERE 
@@ -868,12 +878,6 @@ $ ->
     $(this).click ->
       save()
       window.location.href = "/interpretations/#{interp_id}?preview=yes"
-
-# FADE OUT PROTIP 
-  
-  delayedProTipFade = ->
-    $('#protip').fadeOut('slow')
-  window.setTimeout(delayedProTipFade, 30000)
 
 # AUTOSAVE EVERY 10 SECONDS 
 
