@@ -1,10 +1,10 @@
 class CreateQuizzes < ActiveRecord::Migration
   def change
-    create_table :quizzes do |t|
-      t.integer :interpretation_id
-      t.string :type
+    # create_table :quizzes do |t|
+    #   t.integer :interpretation_id
+    #   t.string :type
 
-      t.timestamps
+    #   t.timestamps
     end
   end
 end
