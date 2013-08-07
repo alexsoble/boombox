@@ -880,7 +880,7 @@ $ ->
   quizSetup = -> 
     $('#quiz-done-button').livequery ->
       $(this).click -> 
-        $.post('/new_quiz', { 'quiz' : { 'interpretation_id' : "#{interp_id}", 'quiz_type' : "grammar", 'name' : "#{$('#quiz-name').val()}", 'description' : "#{$('#quiz-description').val()}", 'user_id' : "#{window.user_id}" } }, (data) ->
+        $.post('/new_quiz', { 'quiz' : { 'interpretation_id' : "#{interp_id}", 'quiz_type' : "grammar", 'name' : "#{$('#quiz-name').val()}", 'description' : "#{$('#quiz-description').val()}" } }, (data) ->
           console.log data.data
           quiz_id = data.data.id 
         
