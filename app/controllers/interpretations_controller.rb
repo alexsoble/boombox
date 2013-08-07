@@ -164,10 +164,13 @@ class InterpretationsController < ApplicationController
     @interp = Interpretation.find_by_id(params[:id])
     @interp.published = true
     @interp.save
+    render :json => { :data => @interp }
+  end
 
-    @requests = Request.where(:video_id == @interp.video.id)
-    # Send the relevant user an Alert here
-
+  def unpublish 
+    @interp = Interpretation.find_by_id(params[:id])
+    @interp.published = false
+    @interp.save
     render :json => { :data => @interp }
   end
 

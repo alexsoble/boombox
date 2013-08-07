@@ -159,6 +159,17 @@ overflow: visible; }
   height: 100px; 
   margin-left: 20px; }
 
+.publish-status { 
+  position: absolute; 
+  bottom: 15px; 
+  right: 150px; 
+  float: right; 
+  background-color: white; 
+  border: 1px solid black; 
+  color: black; }
+
+.publish-status.shift-right { right: 120px; }
+
 .quiz-toggle { float: right; margin-bottom: 15px; }
 
 #playback-slider { width: 313px;

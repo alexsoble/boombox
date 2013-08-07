@@ -13,6 +13,11 @@ $ ->
   translator_image_url = $('#data').attr('data-translator-image-url') || null
   console.log youtube_id + " " + lang1 + " " + lang2 + " " + interp_id + " " + action_name + " "+ translation_type + " " + translator_name
 
+  my_video = $('#data').attr('data-my-video')
+  if my_video == 'true' then my_video = true
+  if my_video == 'false' then my_video = false
+  window.my_video = my_video
+
   $('.lyrics-container').addClass('tall')
   $('#settings').addClass('discuss-mode')
 
@@ -81,7 +86,7 @@ $ ->
 
     $('#tweet-it').livequery -> 
       $(this).click ->
-        window.open "https://twitter.com/share?text=Hey,%20check%20out%20this%20video%20-->%20#{document.URL}.%20It's%20in%20#{lang1}%20with%20the%20#{lang2}%20side-by-side&hashtags=Heyu#{lang1},Heyu", "width=400, height=400"
+        window.open "https://twitter.com/share?text=Hey,%20check%20out%20this%20video,%20it's%20in%20#{lang1}%20with%20the%20#{lang2}%20side-by-side%20-->&hashtags=Heyu#{lang1},Heyu", "width=400, height=400"
 
     $('#settings').append("
       <div id='loop-settings'>
@@ -106,6 +111,11 @@ $ ->
       </div>
       ")
     
+    if window.my_video == true
+      $('#user-name').html("Translated by you")
+      $('#user-name').append("&nbsp;(<a href='#{document.URL + '/edit'}'>edit</a>)")
+      $('#vote-button-container').hide()
+
     if translator_image_url isnt null
       $('#user-name').append("<img src=#{translator_image_url} class='profile-thumbnail'>")
 

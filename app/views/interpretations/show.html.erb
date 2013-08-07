@@ -136,7 +136,6 @@
   data-lang-two=<%= @interp.lang2 %> 
   data-translation-type=<%= if @lang1_and_lang2 then 'lang1_and_lang2' else 'just_lang2' end %> 
   data-action-name=<%= action_name %> 
-  data-published=<%= @published %> 
   <% if @translator.present? %> 
     data-translator-name=<%= @translator.name %>
   <% end %>
@@ -145,7 +144,15 @@
     data-quiz-name="<%= @quiz.name %>"
     data-quiz-description="<%= @quiz.description %>"
     data-video-title="<%= @title %>"
-  <% end %>>
+  <% end %>
+  <% if current_user %>
+    <% unless current_user.id == @translator.id %>
+      data-my-video='false'
+    <% else %>
+      data-my-video='true'
+    <% end %>
+  <% end %>
+  data-published=<%= @published %>>
 </div>
 
 <% if @quiz.present? %>

@@ -20,6 +20,7 @@ Boombox::Application.routes.draw do
   post '/new_video' => 'videos#create'
   post '/new_interp' => 'interpretations#create'
   post '/publish' => 'interpretations#publish'
+  post '/unpublish' => 'interpretations#unpublish'
   post '/new_request' => 'requests#create'
   post '/save' => 'interpretations#save'
 

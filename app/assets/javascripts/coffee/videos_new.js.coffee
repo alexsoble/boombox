@@ -148,7 +148,17 @@ $ ->
 
     $('#loop-settings').append("
       <div id='instructions' class='quiet'>
-        <p>Tip: Use the <span class='loop-handle-label example'> &nbsp; handles &nbsp; </span> &nbsp; to select the line you want to translate.<p>
+        <p>Tips: 
+          <ul>
+            <li>Use the <div class='btn btn-primary btn-small rounded'> :00 </div> 
+              <div class='btn btn-primary btn-small rounded'> :04 </div> handles to select each line of the video you want to translate.</li>
+            <br>
+            <li>Use the <div class='btn btn-info btn-small rounded tight-pack'> + </div>
+              <div class='btn btn-info btn-small rounded tight-pack'> - </div> buttons to make the video loop over the line you're translating so that you can listen closely.</li>
+            <br>
+            <li> Hit the <div class='btn btn-info btn-small rounded tight-pack'> loop x times </div> button to make the video loop a few more times.</li>
+          </ul>
+        </p>
       </div>
       <div style='position: absolute; bottom: 15px; left: 15px;'>
         <div class='btn btn-primary btn-small rounded' id='instructions-button'> editing tips </div>
@@ -159,16 +169,18 @@ $ ->
 
     if published == 'true'
       published_initializer = 'status: published'
+      published_initializer_class = 'shift-right'
       publish_action_initializer = 'make private'
     else
       published_initializer = 'status: private'
+      published_initializer_class = ''
       publish_action_initializer = 'publish translation'
 
     $('#loop-settings').after("
       <div class='publish-toggle btn btn-primary btn-small rounded' style='position: absolute; bottom: 15px; right: 15px;'>
         #{publish_action_initializer}
       </div>
-      <div class='publish-status btn btn-primary btn-small rounded' style='position: absolute; bottom: 15px; right: 150px; float: right; background-color: white; border: 1px solid black; color: black;'>
+      <div class='publish-status btn btn-primary btn-small rounded #{published_initializer_class}'>
         #{published_initializer}
       </div>
       ")
@@ -176,14 +188,20 @@ $ ->
     $('.publish-toggle').livequery -> 
       $(this).click ->
         if window.published == true
+          $.post('/unpublish', { 'id' : "#{interp_id}" }, (data) ->
+            console.log data.data )
           window.published = false
           $(this).html('publish translation')
           $('.publish-status').html('status: private')
+          $('.publish-status').removeClass('shift-right')
         else
+          $.post('/publish', { 'id' : "#{interp_id}" }, (data) ->
+            console.log data.data )
           window.published = true
           $('#published-status').html('make private').attr('style','float: right;')
           $(this).html('make private')
           $('.publish-status').html('status: published')
+          $('.publish-status').addClass('shift-right')
 
     $('#loop-settings').after("
       <!---<div style='margin-left: 20px;'>
