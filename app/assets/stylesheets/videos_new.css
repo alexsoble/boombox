@@ -60,7 +60,7 @@
   margin-top: 10px;
   margin-bottom: -10px; }
 
-.btn-uniform-width { float: right; width: 60px; }
+.uniform-width { width: 80px; }
 
 .tight-margins { margin: 2px !important; }
 
@@ -91,12 +91,6 @@
   margin-right: auto; 
   margin-left: auto; 
   width: 142px;
-  text-align: center; }
-
-.center-pill-wide {
-  margin-right: auto; 
-  margin-left: auto; 
-  width: 212px;
   text-align: center; }
 
 .language-video-option {
@@ -132,7 +126,7 @@
 
 #settings { position: relative; 
   top: -15px; 
-  height: 180px; 
+  height: 210px; 
   background-color: white;
   border: 2px solid black;
   border-bottom-left-radius: 10px;
@@ -160,17 +154,21 @@ overflow: visible; }
   margin-left: 20px; }
 
 .publish-status { 
-  position: absolute; 
-  bottom: 15px; 
-  right: 150px; 
-  float: right; 
   background-color: white; 
   border: 1px solid black; 
   color: black; }
 
-.publish-status.shift-right { right: 120px; }
+.lower-right-button-a { position: absolute; 
+  bottom: 45px; 
+  right: 15px; 
+  float: right; }
 
-.quiz-toggle { float: right; margin-bottom: 15px; }
+.lower-right-button-b { position: absolute; 
+  bottom: 15px; 
+  right: 15px; 
+  float: right; }
+
+/*** PLAYBACK SLIDER STYLING ***/
 
 #playback-slider { width: 313px;
   left: 43px; 

@@ -146,6 +146,37 @@ $ ->
         <div class='playback-right-label end-label'><div class='playback-right-label inner-label'></div></div>
       </div>")
 
+    if published == 'true'
+      published_initializer = 'published'
+      publish_action_initializer = 'make private'
+    else
+      published_initializer = 'private'
+      publish_action_initializer = 'make public'
+
+    $('#loop-settings').after("
+      <div class='publish-toggle btn btn-primary btn-small rounded lower-right-button-b uniform-width'>
+        #{publish_action_initializer}
+      </div>
+      <div class='publish-status btn btn-primary btn-small rounded lower-right-button-a uniform-width'>
+        #{published_initializer}
+      </div>
+      ")
+
+    $('.publish-toggle').livequery -> 
+      $(this).click ->
+        if window.published == true
+          $.post('/unpublish', { 'id' : "#{interp_id}" }, (data) ->
+            console.log data.data )
+          window.published = false
+          $(this).html('make public')
+          $('.publish-status').html('private')
+        else
+          $.post('/publish', { 'id' : "#{interp_id}" }, (data) ->
+            console.log data.data )
+          window.published = true
+          $(this).html('make private')
+          $('.publish-status').html('published')
+
     $('#loop-settings').append("
       <div id='instructions' class='quiet'>
         <p>Tips: 
@@ -160,48 +191,26 @@ $ ->
           </ul>
         </p>
       </div>
-      <div style='position: absolute; bottom: 15px; left: 15px;'>
-        <div class='btn btn-primary btn-small rounded' id='instructions-button'> editing tips </div>
-      </div>")
-
-    $('#instructions-button').click ->
-      $("#instructions").dialog()
-
-    if published == 'true'
-      published_initializer = 'status: published'
-      published_initializer_class = 'shift-right'
-      publish_action_initializer = 'make private'
-    else
-      published_initializer = 'status: private'
-      published_initializer_class = ''
-      publish_action_initializer = 'publish translation'
-
-    $('#loop-settings').after("
-      <div class='publish-toggle btn btn-primary btn-small rounded' style='position: absolute; bottom: 15px; right: 15px;'>
-        #{publish_action_initializer}
+      <div style='position: absolute; bottom: 45px; left: 15px;'>
+        <div class='btn btn-primary btn-small rounded uniform-width' id='instructions-button'> editing tips </div>
       </div>
-      <div class='publish-status btn btn-primary btn-small rounded #{published_initializer_class}'>
-        #{published_initializer}
+      <div style='position: absolute; bottom: 15px; left: 15px;'>
+        <div class='btn btn-primary btn-small rounded uniform-width' id='teacher-tools'> teacher tools </div>
       </div>
       ")
 
-    $('.publish-toggle').livequery -> 
-      $(this).click ->
-        if window.published == true
-          $.post('/unpublish', { 'id' : "#{interp_id}" }, (data) ->
-            console.log data.data )
-          window.published = false
-          $(this).html('publish translation')
-          $('.publish-status').html('status: private')
-          $('.publish-status').removeClass('shift-right')
-        else
-          $.post('/publish', { 'id' : "#{interp_id}" }, (data) ->
-            console.log data.data )
-          window.published = true
-          $('#published-status').html('make private').attr('style','float: right;')
-          $(this).html('make private')
-          $('.publish-status').html('status: published')
-          $('.publish-status').addClass('shift-right')
+    $('#teacher-tools').livequery ->
+      $(this).click -> 
+        $('.publish-toggle').after("
+        <div class='teacher-tools'>
+          <div class='btn btn-small btn-info rounded lower-right-button-a quiz-toggle'> make quiz </div>
+          <div class='btn btn-small btn-info rounded lower-right-button-b'> set difficulty </div>
+        </div>
+        ").slideUp()
+        $('.publish-status').slideUp()
+
+    $('#instructions-button').click ->
+      $("#instructions").dialog()
 
     $('#loop-settings').after("
       <!---<div style='margin-left: 20px;'>
@@ -804,8 +813,9 @@ $ ->
         $('#new-video-box').slideUp()
         $('#loop-buttons').slideUp()
         $('#timer').slideUp()
-        $('#settings').addClass('quiz-mode')
+        $('.teacher-tools').slideUp()
         $('#playback-buttons').slideUp()
+        $('#settings').addClass('quiz-mode')
         quizSetup()
 
         # GRAMMAR AND VOCAB CHECKBOX BEHAVIOR HERE
@@ -827,6 +837,7 @@ $ ->
         # PUT BACK LOOP RELATED STUFF HERE 
         $('#loop-settings').slideDown()
         $('#new-video-box').slideDown()
+        $('.teacher-tools').slideDown()
         $('#settings').removeClass('quiz-mode')
         $('#loop-buttons').slideDown()
         $('#timer').slideDown()
