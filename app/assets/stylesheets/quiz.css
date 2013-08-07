@@ -18,7 +18,8 @@
 .quiz-report { margin: 15px;
   color: black; }
 
-#score { font-size: 30px; color: blue; margin-left: 40px; }
+#score { font-size: 30px; color: blue; }
+#score-box { margin-left: 40px; }
 
 #answer-box { font-size: 30px; 
   text-align: center; 

@@ -36,9 +36,9 @@ $ ->
   console.log "youtube_id: " + youtube_id
   $('#title-box').html("<h3>#{name}</h3>")
 
-  window.keep_going = true
   window.question_asked = false
   window.right_answer = false
+  window.this_line_end_time = false
 
   $('#lyrics-box').after("<div id='quiz-box'></div>")
   $('#lyrics-box').hide()
@@ -49,18 +49,14 @@ $ ->
       Video: #{title}
       <br>
       Quiz instructions: #{description}
-      <br>
-      Video translator: #{translator}
-      <br>
-      Quiz author: 
     </div>")
 
-  $('#settings').append("<p>Your score:</p><div id='score'></div>")
+  $('.quiz-report').append("<br><br><br><div id='score-box'><p>Your score:</p><div id='score'></div></div>")
   window.score = 0
 
   # BLANK OUT MISSING WORDS FOR VOCABULARY QUIZZES 
 
-  arr = []
+  window.arr = []
   window.total_points = 0
   $('.line').each(->
     split = $(this).children(':first').lettering('words')
@@ -78,10 +74,9 @@ $ ->
         console.log window.total_points
     )
 
-    arr.push parseInt($(this).attr("data-time"))
+    window.arr.push parseInt($(this).attr("data-time"))
 
   )
-  console.log arr
 
   # PREP LINES TO BE CLICKED FOR GRAMMAR QUIZZES 
 
@@ -91,13 +86,13 @@ $ ->
       if words.indexOf(this_word.html()) > -1
         this_word.addClass('blue')
         window.score += 1
-        $('#score').html(window.score)
+        $('#score').html(window.score + " / " + window.total_points)
         window.right_answer = true
       else
         this_word.addClass('red')
         if window.score > 0
           window.score -= 1
-          $('#score').html(window.score)
+          $('#score').html(window.score + " / " + window.total_points)
         window.right_answer = false
 
   $('[class^="word"]').attr('style','cursor: pointer;')
@@ -109,27 +104,33 @@ $ ->
 
     if array.indexOf(time) > -1
 
-      langOneArray = []
       this_line = $("[data-time^=#{time}]")
+      window.this_line_end_time = parseInt(this_line.attr('data-time')) + parseInt(this_line.attr('data-duration'))
+      index = window.arr.indexOf(time)
+      window.arr.splice(index, 1)
+      console.log window.arr
 
+      langOneArray = []
       this_line.children(':first').children().each(->
         if $(this).text() != ''
           langOneArray.push $(this).text()
       )
-      for w in window.words
-        if langOneArray.indexOf(w) > -1
-          console.log w
 
       $('#quiz-box').html(this_line.html())
       $('#quiz-box').slideDown()
+      window.question_asked = true
+      window.right_answer = false
 
-    else
-      if window.question_asked == true
-        if window.right_answer == true
-          player.playVideo()
-        else
+    if window.question_asked == true
+      if time + 2 > window.this_line_end_time
+        unless window.right_answer == true
           player.pauseVideo()
-      
+        else
+          player.playVideo()
+
+    console.log time + 2
+    console.log window.this_line_end_time 
+
   tag = document.createElement("script")
   tag.src = "https://www.youtube.com/iframe_api"
   firstScriptTag = document.getElementsByTagName("script")[0]
