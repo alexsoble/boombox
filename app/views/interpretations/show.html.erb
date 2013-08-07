@@ -139,18 +139,19 @@
   <% if @translator.present? %> 
     data-translator-name=<%= @translator.name %>
   <% end %>
-  <% if @quiz.present? %>
+  <% unless @quiz.present? %>
+    <% if current_user %>
+      <% unless current_user.id == @translator.id %>
+        data-my-video='false'
+      <% else %>
+        data-my-video='true'
+      <% end %>
+    <% end %>
+    <% else %>
     data-quiz-type="<%= @quiz.quiz_type %>"
     data-quiz-name="<%= @quiz.name %>"
     data-quiz-description="<%= @quiz.description %>"
     data-video-title="<%= @title %>"
-  <% end %>
-  <% if current_user %>
-    <% unless current_user.id == @translator.id %>
-      data-my-video='false'
-    <% else %>
-      data-my-video='true'
-    <% end %>
   <% end %>
   data-published=<%= @published %>>
 </div>

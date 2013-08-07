@@ -21,8 +21,6 @@ class QuizzesController < ApplicationController
 
     @quiz = Quiz.find(params[:id])
     @interp = Interpretation.find(@quiz.interpretation_id)
-    @translator = User.find(@interp.user_id)
-    @quiz_maker = User.find(@quiz.user_id)
 
     @title = @interp.video.title
     @lines = Line.where(:interpretation_id => @interp.id).order("created_at ASC")
