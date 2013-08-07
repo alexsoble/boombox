@@ -90,9 +90,10 @@ $ ->
           <div class='btn btn-small rounded tight-pack vote-button' id='downvote'> <i class='icon-thumbs-down'></i> </div>
         </b>
       </div>
-      <div style='float: left; margin-left: 20px;'>
+      <div style='position: absolute; bottom: 10px; right: 20px;' id='vote-button-container'>
         <b class='tiny-text vote-button-status'></b>
-      </div>")
+      </div>
+      ")
     
     if translator_image_url isnt null
       $('#user-name').append("<img src=#{translator_image_url} class='profile-thumbnail'>")
