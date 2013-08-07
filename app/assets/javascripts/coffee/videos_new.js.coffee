@@ -11,6 +11,9 @@ $ ->
   published = $('#data').attr('data-published')
   console.log youtube_id + " " + lang1 + " " + lang2 + " " + interp_id + " " + action_name + " "+ translation_type
 
+  if published == 'true' then window.published = true
+  if published == 'false' then window.published = false
+
   formatTime = (time) ->
     time = Math.floor(time)
     if time <= 9 then formatted_time = "00:0" + time
@@ -148,16 +151,39 @@ $ ->
         <p>Tip: Use the <span class='loop-handle-label example'> &nbsp; handles &nbsp; </span> &nbsp; to select the line you want to translate.<p>
       </div>
       <div style='position: absolute; bottom: 15px; left: 15px;'>
-        <div class='btn btn-info rounded' id='instructions-button'> editing tips </div>
+        <div class='btn btn-primary btn-small rounded' id='instructions-button'> editing tips </div>
       </div>")
 
     $('#instructions-button').click ->
       $("#instructions").dialog()
 
-    $('#loop-settings').append("
-      <div style='position: absolute; bottom: 0px; left: 300px;'>
-        <div class='btn btn-info rounded quiz-toggle' id='learning-tools'> make a quiz </div>
-      </div>")
+    if published == 'true'
+      published_initializer = 'status: published'
+      publish_action_initializer = 'make private'
+    else
+      published_initializer = 'status: private'
+      publish_action_initializer = 'publish translation'
+
+    $('#loop-settings').after("
+      <div class='publish-toggle btn btn-primary btn-small rounded' style='position: absolute; bottom: 15px; right: 15px;'>
+        #{publish_action_initializer}
+      </div>
+      <div class='publish-status btn btn-primary btn-small rounded' style='position: absolute; bottom: 15px; right: 150px; float: right; background-color: white; border: 1px solid black; color: black;'>
+        #{published_initializer}
+      </div>
+      ")
+
+    $('.publish-toggle').livequery -> 
+      $(this).click ->
+        if window.published == true
+          window.published = false
+          $(this).html('publish translation')
+          $('.publish-status').html('status: private')
+        else
+          window.published = true
+          $('#published-status').html('make private').attr('style','float: right;')
+          $(this).html('make private')
+          $('.publish-status').html('status: published')
 
     $('#loop-settings').after("
       <!---<div style='margin-left: 20px;'>
