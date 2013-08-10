@@ -4,14 +4,14 @@ Boombox::Application.routes.draw do
 
   get '/welcome' => 'videos#index'
 
-  get '/sign_up' => 'users#new'
+  get '/join' => 'users#new'
+  get '/steptwo' => 'pages#steptwo'
   get '/sign_in' => 'sessions#new'
   get '/sign_out' => 'sessions#destroy'
   get '/auth/:provider/callback' => 'sessions#create'
   
   resources :videos
   resources :interpretations
-  resources :quizzes
   resources :users
   resources :sessions
   
@@ -27,13 +27,14 @@ Boombox::Application.routes.draw do
 
   post '/upvote' => 'votes#up'
   post '/downvote' => 'votes#down'
-
-  post '/save_quiz_words' => 'quizzes#save_words'
-  post '/new_quiz' => 'quizzes#create'
   
   get '/philosophy' => 'pages#philosophy'
   get '/survey' => 'pages#survey'
   get '/experiment' => 'pages#experiment'
   get '/browsers' => 'pages#browsers'
+
+  resources :quizzes
+  post '/save_quiz_words' => 'quizzes#save_words'
+  post '/new_quiz' => 'quizzes#create'
 
 end

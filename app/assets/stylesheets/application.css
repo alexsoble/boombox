@@ -24,10 +24,13 @@
 
 ::-webkit-scrollbar { opacity: 0; }
 
-.centerbox {  margin-right: auto; 
+.centerbox { margin-right: auto; 
   margin-left: auto; 
-  width: 640px; 
+  width: 600px; 
   overflow: scroll; }
+
+.column-left { width: 500px; float: left; text-align: center; }
+.column-right { width: 500px; float: right; text-align: center; }
 
 .relative { position: relative; }
 
@@ -51,6 +54,9 @@ body { position: relative;
 p { color: black; }
 
 h3 { font-size: 18px !important; line-height: 22px !important }
+
+.field label { float: left; width: 90px; }
+.column { width: 360px; margin-left: auto; margin-right: auto; }
 
 .white { color: white; }
 

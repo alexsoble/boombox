@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130803214253) do
+ActiveRecord::Schema.define(:version => 20130810213845) do
 
   create_table "clips", :force => true do |t|
     t.integer   "start"
@@ -67,15 +67,17 @@ ActiveRecord::Schema.define(:version => 20130803214253) do
   end
 
   create_table "users", :force => true do |t|
-    t.timestamp "created_at",      :null => false
-    t.timestamp "updated_at",      :null => false
-    t.string    "provider"
-    t.string    "uid"
-    t.string    "name"
-    t.string    "email"
-    t.string    "password_digest"
-    t.string    "image_url"
-    t.text      "bio"
+    t.datetime "created_at",      :null => false
+    t.datetime "updated_at",      :null => false
+    t.string   "provider"
+    t.string   "uid"
+    t.string   "username"
+    t.string   "email"
+    t.string   "password_digest"
+    t.string   "image_url"
+    t.text     "bio"
+    t.string   "firstname"
+    t.string   "lastname"
   end
 
   create_table "videos", :force => true do |t|

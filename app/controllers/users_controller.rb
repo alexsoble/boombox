@@ -12,16 +12,12 @@ class UsersController < ApplicationController
     @interp = params[:interp]
   end 
 
-  def index
-    @top_ten_users = User.limit(10)
-  end
-
   def create
     @user = User.new(params[:user])
     if @user.save
       session[:user_id] = @user.id
       if params['data-interp'].blank?
-        redirect_to root_url, :notice => "Signed up!"
+        redirect_to "/steptwo"
       else
         @interp = Interpretation.find_by_id(params['data-interp'])
         @interp.user_id = @user.id

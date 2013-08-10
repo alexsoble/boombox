@@ -1,19 +1,14 @@
-
-
-<div class="row">
-
-  <div class="offset1">
-
-    <h2> Show translated videos in:
-      <% @langs_with_some_content.each do |l| %>
-        <div class="btn btn-info language-selector" style="border-radius: 25px;" id="<%=l %>"> <%= l %> </div>
-      <% end %>
-      <div class="btn btn-info language-selector" style="border-radius: 25px;" id="All"> All </div>
-      <div class="btn btn-info" style="border-radius: 25px; background-color: white; border: 1px solid black; color: black;"><i>More to come!</i></div>
-    </h2>
-    <hr id="hr">
-
-    <%  @interps_with_some_content.each do |i| %>
+<div class="centerbox center">
+  <h1 style="line-height: 48px;">Learning a language should be <strong>fun.</strong></h1>
+  <br>
+  <h2>If you agree, raise your hand! (And join Heyu.)</h2>
+  <br>
+  <p> Heyu is for language teachers and students who want to use pop songs, great videos, and other fun multimedia. Works with YouTube to create dual-language subtitles that can be used for practice, project, learning.</p>
+  <br>
+  <h2>Watch an example to see what Heyu's all about.</h2>
+  <br>
+  <br>
+      <%  @demo_videos.each do |i| %>
       <% v = i.video %>
       <div class="video-thumb-box frontpage-thumb-box <%= v.lang1 %>" data-interp-id=<%= i.id %>>
         <strong class="center" style="color: #2793E6;"><%= "#{v.title.slice(0,25)}" %></strong>
@@ -24,10 +19,7 @@
       </div>
     <% end %>
 
-  </div>
-
 </div>
-
 <br>
 <br>
 <br>

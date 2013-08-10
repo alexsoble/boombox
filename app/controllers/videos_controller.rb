@@ -50,9 +50,8 @@ class VideosController < ApplicationController
   def index
 
     @demo_videos = [
-      Interpretation.find(27),
       Interpretation.find(28),
-      Interpretation.find(98)
+      Interpretation.find(27)
     ]
 
     interps_with_some_content = []
