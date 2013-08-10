@@ -15,6 +15,7 @@ Boombox::Application.routes.draw do
   resources :users
   resources :sessions
   
+  get '/translate' => 'pages#translate'
   get '/interpretations/:id/discuss' => 'interpretations#show'
   
   post '/new_video' => 'videos#create'

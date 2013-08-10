@@ -3,6 +3,9 @@ require 'rexml/document'
 
 class PagesController < ApplicationController
 
+  def translate
+  end
+
   def philosophy 
   end 
   
