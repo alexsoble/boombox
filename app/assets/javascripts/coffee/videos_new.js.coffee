@@ -55,6 +55,13 @@ $ ->
     </div>')
   $('#lyrics').hide()
 
+  reorder_right = ->
+    lines = $('.line')
+    lines.sort( (a, b) ->
+      parseInt($(a).attr('data-time')) - parseInt($(b).attr('data-time'))
+    )
+    $('#lyrics-box').html(lines)
+
   if action_name is 'edit'
     $('.tools-container').toggle('width')
     if published is 'false'
@@ -167,16 +174,6 @@ $ ->
         <div class='btn btn-primary btn-small rounded' id='teacher-tools'> teacher tools </div>
       </div>
       ")
-
-    $('#teacher-tools').livequery ->
-      $(this).click -> 
-        $('.publish-toggle').after("
-        <div class='teacher-tools'>
-          <div class='btn btn-small btn-info rounded lower-right-button-a quiz-toggle'> make quiz </div>
-          <div class='btn btn-small btn-info rounded lower-right-button-b'> set difficulty </div>
-        </div>
-        ").slideUp()
-        $('.publish-status').slideUp()
 
     $('#instructions-button').click ->
       $("#instructions").dialog()
@@ -684,6 +681,7 @@ $ ->
     $('#coming-soon').remove()
     $('#loop-settings').slideDown()
     window.loop_length = false
+    reorder_right()
 
   $('#done-editing').livequery ->
     $(this).click ->
