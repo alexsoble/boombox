@@ -70,13 +70,42 @@ $ ->
   sliderSetup = ->
 
     $('#settings').append("
-      <div id='playback-buttons' style='float: right; margin-right: 20px; margin-top: 20px;'>
-        <div class='btn btn-info btn-small rounded tight-pack' id='volume' style='position: relative;'> <i class='icon-volume-up'></i>
+      <div id='playback-buttons' class='upper-right-btn'>
+        <div class='btn btn-info btn-small rounded tight-pack' id='play-again'> play again </div> 
+        <div class='btn btn-info btn-small rounded tight-pack' id='volume'> <i class='icon-volume-up'></i>
           <div id='volume-slider'> </div>
        </div>
       </div>
       ")
 
+    $('#settings').append("
+      <div class='upper-left-btn'>
+        <div class='btn btn-info btn-small rounded tight-pack' id='just-lang-one'> #{lang1} </div>
+        <div class='btn btn-info btn-small rounded tight-pack' id='just-lang-two'> #{lang2} </div>
+        <div class='btn btn-info btn-small rounded tight-pack' id='lang-one-and-lang-two'> both </div>
+      </div>
+      ")
+
+    $('#just-lang-one').livequery ->
+      $(this).click ->
+        $('.line').each(->
+          $(this).children().eq(1).slideUp().removeClass('wide-lyrics-container')
+          $(this).children().eq(0).slideDown().addClass('wide-lyrics-container')
+        )
+
+    $('#just-lang-two').livequery ->
+      $(this).click ->
+        $('.line').each(->
+          $(this).children().eq(1).slideDown().addClass('wide-lyrics-container')
+          $(this).children().eq(0).slideUp().removeClass('wide-lyrics-container')
+        )
+
+    $('#lang-one-and-lang-two').livequery ->
+      $(this).click ->
+        $('.line').each(->
+          $(this).children().eq(1).slideDown().removeClass('wide-lyrics-container')
+          $(this).children().eq(0).slideDown().removeClass('wide-lyrics-container')
+        )
 
     $('#settings').append("
       <div id='loop-settings'>
