@@ -3,13 +3,14 @@ $ ->
   youtube_id = $('#data').attr('data-youtube-id')
   lang1 = $('#data').attr('data-lang-one')
   lang2 = $('#data').attr('data-lang-two')
-  window.lang1 = lang1
-  window.lang2 = lang2
   interp_id = $('#data').attr('data-interp-id')
   action_name = $('#data').attr('data-action-name')
   translation_type = $('#data').attr('data-translation-type')
   published = $('#data').attr('data-published')
   console.log youtube_id + " " + lang1 + " " + lang2 + " " + interp_id + " " + action_name + " "+ translation_type
+  window.lang1 = lang1
+  window.lang2 = lang2
+  window.interp_id = interp_id 
 
   if published == 'true' then window.published = true
   if published == 'false' then window.published = false
@@ -579,7 +580,7 @@ $ ->
             <div class='btn btn-inverse btn-small rounded tight-margins' id='delete-line' data-line-id=#{id}> delete line </div>
           </span>
           <span style='float: right; margin: 10px;' class='toolbox-upper'>
-            <div class='btn btn-success btn-small rounded tight-margins' id='ask-twitter' data-twitter-url='https://twitter.com/share?text=Speak #{window.lang1}? What do you think about this translation? http://localhost:3000/interpretations/#{interp_id}'> get help from twitter </div>
+            <div class='btn btn-success btn-small rounded tight-margins' id='ask-twitter'> get help from twitter </div>
             <div class='btn btn-success btn-small rounded tight-margins' id='ask-heyu'> get help from heyu </div>
           </span>
           </span>
@@ -641,10 +642,12 @@ $ ->
 
   $('#ask-twitter').livequery ->
     $(this).click ->
-      start_time = parseInt($(this).parent().parent().attr('data-time'))
+      start = parseInt($(this).parent().parent().attr('data-time'))
       duration = parseInt($(this).parent().parent().attr('data-duration'))
-      url = $(this).attr('data-twitter-url') + '?clip=yes&start=' + start_time + '&duration=' + duration
-      window.open(url,'name','width=200,height=200')
+      $.post('/new_clip', { 'clip' : { 'start' : "#{start}", 'duration' : "#{duration}", 'interpretation_id' : "#{window.interp_id}" } }, (data) ->
+        id = data.data.id
+        window.location.href = "/clips/#{id}"
+      )
 
   $('#ask-heyu').livequery ->
     $(this).click ->

@@ -27,6 +27,7 @@ Boombox::Application.routes.draw do
   post '/new_request' => 'requests#create'
   post '/save' => 'interpretations#save'
 
+  post '/new_clip' => 'clips#create'
   post '/edit_bio' => 'users#stepthree'
   post '/upvote' => 'votes#up'
   post '/downvote' => 'votes#down'

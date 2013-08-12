@@ -67,6 +67,12 @@ $ ->
   $('#lyrics').hide()
   $('#timer').hide()
 
+  $('#email').click ->
+    window.location.href = "mailto:best.friend@gmail.com?Subject=#{lang1}%20video%20clip&body=Hey,%20check%20out%20this%20video%20clip:%20#{document.URL}.%20It's%20from%20a%20YouTube%20vid%20in%20#{lang1}%20with%20the%20#{lang2}%20side-by-side.%0A%0AFound%20it%20on%20a%20site%20called%20Heyu:%20www.heyuvideo.com"
+
+  $('#tweet-it').click ->
+    window.open "https://twitter.com/share?text=Hey,%20check%20out%20this%20video%20clip%20(in%20#{lang1}%20with%20the%20#{lang2}%20side-by-side)%20-->&hashtags=Heyu#{lang1},Heyu", "width=400, height=400"
+
   sliderSetup = ->
 
     $('#settings').append("
