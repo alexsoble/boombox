@@ -78,6 +78,13 @@ $ ->
       </div>
       ")
 
+    $('#play-again').livequery ->
+      $(this).click ->
+        $('.line').each(->
+          $(this).removeClass('highlighted')
+        )
+        player.playVideo()
+
     $('#settings').append("
       <div class='upper-left-btn'>
         <div class='btn btn-info btn-small rounded tight-pack' id='just-lang-one'> #{lang1} </div>
@@ -118,15 +125,6 @@ $ ->
     $('#settings').append("
       <div id='user-info' style='position: absolute; bottom: 10px; margin-left: 20px;'>
         <p id='user-name'> Translated by #{translator_name} </p>
-      </div>
-      <div style='position: absolute; bottom: 30px; right: 20px;' id='vote-button-container'>
-        <b class='tiny-text'>good translation?
-          <div class='btn btn-small rounded tight-pack vote-button' id='upvote'> <i class='icon-thumbs-up'></i> </div>
-          <div class='btn btn-small rounded tight-pack vote-button' id='downvote'> <i class='icon-thumbs-down'></i> </div>
-        </b>
-      </div>
-      <div style='position: absolute; bottom: 10px; right: 20px;' id='vote-button-container'>
-        <b class='tiny-text vote-button-status'></b>
       </div>
       ")
 
@@ -247,12 +245,11 @@ $ ->
         softAndSlow = ->
           player.setVolume(quarterVolume)
         window.setTimeout(softAndSlow, 500)
-    console.log window.time
-    console.log window.end
     if window.time > window.end
       window.looping = true
       fadeOut()
       player.seekTo(window.start)
+      player.pauseVideo()
 
   counter = setInterval(countVideoPlayTime, 400)
   done = false
