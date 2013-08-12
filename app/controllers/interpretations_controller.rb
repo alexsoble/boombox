@@ -90,20 +90,18 @@ class InterpretationsController < ApplicationController
     @translator = User.find_by_id(@interp.user_id)
     @video = @interp.video
     @lines = Line.where(:interpretation_id => @interp.id).order("time ASC")
+    
+    @comments = []
+    @lines.each do |l|
+      @comments << { l.id => Comment.where(:line_id => l.id).limit(10) }
+    end
+          
     @url = request.url
     @lang2 = @interp.lang2
     @lang1 = @video.lang1
     @published = @interp.published
 
     if @interp.published == true then @published = true else @published = false end
-
-    if params[:clip] == 'yes'
-      @clip = true
-      @start = params[:start]
-      @duration = params[:duration]
-    else 
-      @clip = false
-    end
 
     if @interp.user_id == 0
       @user = 'anon' 

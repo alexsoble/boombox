@@ -60,7 +60,7 @@
   margin-top: 10px;
   margin-bottom: -10px; }
 
-.uniform-width { width: 80px; }
+.uniform-width { width: 100px; }
 
 .tight-margins { margin: 2px !important; }
 
@@ -126,7 +126,7 @@
 
 #settings { position: relative; 
   top: -15px; 
-  height: 195px; 
+  height: 220px; 
   background-color: white;
   border: 2px solid black;
   border-bottom-left-radius: 10px;

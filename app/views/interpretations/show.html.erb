@@ -35,6 +35,17 @@
               <p><%= l.lang2 %></p>
             </div>
           <% end %>
+          <% if @comments.present? %>
+            <% @comments.each do |comments| %>
+              <% if comments[l.id].present? %>
+                <% comments[l.id].each do |c| %>
+                  <div class="comment">
+                    <span class="comment-text"><%= User.find_by_id(c.user_id).username %>: <%= c.comment_text %></span>
+                  </div>
+                <% end %>
+              <% end %>
+            <% end %>
+          <% end %>
         </div>
       <% end %>
     </div>

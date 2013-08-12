@@ -48,19 +48,33 @@ $ ->
 
   window.loop_length = false
   window.valuesChanging = false
+
   window.quiz_making_mode = false
   window.quiz_words = []
+
+  window.show_comments = false
+  window.adding_comment = false
+
   window.tool_helptip_displayed = false
   window.editing_line = 'off'
   window.editing_line_timing = 'off'
   window.editing_line_ask_heyu = 'off'
   window.volume_slider_on = false
-  window.loop_length_range_appended = false
+
   $('#timer-box').html('<div id="timer">
     <h2 class="timer-text" id="big-timer"></h2>
     </div>')
   $('#lyrics').hide()
   $('#timer').hide()
+  $('.comment').hide()
+
+  $('.line').livequery ->
+    $(this).hoverIntent(
+      -> $(this).effect("highlight", { color: "rgba(15, 130, 245, 0.3)" }, 2000)
+      -> $(this).attr("style", "background-color: white;")
+      )
+    $(this).click ->
+      player.seekTo(parseInt($(this).attr('data-time')))
 
   sliderSetup = ->
 
@@ -77,15 +91,19 @@ $ ->
 
     $('#settings').append("
         <div class='lower-right-btn'>
-          <div class='btn btn-info btn-small rounded tight-pack' id='comment'> add comment </div>
-          <div class='btn btn-info btn-small rounded tight-pack' id='show-comments'> show comments </div>
+          <div class='btn btn-info btn-small rounded tight-pack uniform-width' id='comments-toggle'> show comments </div>
+          <div class='btn btn-info btn-small rounded tight-pack uniform-width' id='add-comment'> add comment </div>
         </div>
       ")
 
-    if window.my_video == true
-      $('#show-comments').parent().append("
-        <div class='btn btn-primary btn-small rounded tight-pack' id='edit'> edit </div> 
-      ")
+    $('#comments-toggle').livequery ->
+      $(this).click ->
+        if window.show_comments == false
+          $('.comment').slideDown()
+          window.show_comments = true
+        else
+          $('.comment').slideUp()
+          window.show_comments = false
 
     $('#settings').append("
       <div class='upper-left-btn'>
@@ -126,12 +144,15 @@ $ ->
 
     $('#settings').append("
       <div class='lower-left-btn'>
-        <div class='btn btn-small btn-primary rounded'> <div id='user-name'> Translated by #{translator_name} </div> </div>
+        <p id='user-name'> Translated by #{translator_name}. </p>
       </div>
       ")
 
     if window.my_video == true
-      $('#user-name').html("Translated by you")
+      $('#user-name').html("Translated by you.")
+      $('#user-name').parent().append("
+        <div class='btn btn-primary btn-small rounded tight-pack' id='edit'> edit </div> 
+      ")
 
     $('#edit').livequery ->
       $(this).click ->

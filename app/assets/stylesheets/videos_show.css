@@ -18,15 +18,22 @@
   float: left;
   margin: 10px; }
 
+.commment { float: left; }
+.comment-text { margin-left: 20px;
+  color: blue; 
+  font-size: 10px; }
+
 .lower-right-btn { position: absolute; 
   bottom: 15px; 
   right: 20px; 
-  float: right; }
+  float: right; 
+  width: 125px; }
 
 .lower-left-btn { position: absolute; 
   bottom: 15px; 
   left: 20px; 
-  float: right; }
+  float: right;
+  width: 125px; }
 
 .upper-left-btn { margin-left: 20px; 
   margin-top: 20px; }
