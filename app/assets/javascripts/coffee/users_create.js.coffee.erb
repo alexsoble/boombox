@@ -4,4 +4,4 @@ $ ->
 
     bio = $('#bio').val()
     $.post('/edit_bio', { 'user' : "#{window.user_id}", 'bio' : "#{bio}" })
-    window.location.href = "/users/#{window.user_id}"
+    window.location.href = "/home"

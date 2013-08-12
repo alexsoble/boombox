@@ -20,13 +20,11 @@
 <div class="navbar navbar-inverse">
   <div class="navbar-inner" style="background-color: #9B59BB;">
     <div class="container" style="width: auto;">
-      <a class="brand"> Heyu <i class="icon-music"></i> </a>
-      <ul class="nav pull-left">
-        <% if current_user %>
-          <li><%= link_to "Home", "/home" %></li>
-        <% else %>
-          <li><%= link_to "Home", "/welcome" %></li>
-        <% end %> 
+      <% if current_user %>
+        <a class="brand" href="/home"> Heyu <i class="icon-music"></i> </a>
+      <% else %>
+        <a class="brand" href="/welcome"> Heyu <i class="icon-music"></i> </a>
+      <% end %> 
       </ul>
       <% if current_user %>
         <ul class="nav pull-right signed-in-user" id="<%= current_user.id %>">

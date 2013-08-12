@@ -4,6 +4,10 @@ class UsersController < ApplicationController
   def show
 
     @user = User.find_by_id(params[:id])
+    @bio = @user.bio
+    @firstname = @user.firstname
+    @lastname = @user.lastname
+    
     @interpretation = Interpretation.where(:user_id => @user.id).order("created_at ASC")
     @drafts = @interpretation.where(:published => false).order("created_at ASC")
     @published = @interpretation.where(:published => true).order("created_at ASC")
