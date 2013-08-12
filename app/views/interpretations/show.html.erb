@@ -19,113 +19,80 @@
     </div>
   <% end %>
 
-  <% if @lang1_and_lang2 %>
+  <div class="span5 offset2">
 
-    <div class="span5 offset2">
-
-      <div class="lyrics-container wide" id="lyrics-box">
-        <% @lines.each do |l| %>
-          <div class="line rounded" data-time=<%= l.time %> data-duration=<%= l.duration %>>
-            <% if l.lang1.present? %>
-              <div class="lyrics-container">
-                <p><%= l.lang1 %></p>
-              </div>
-            <% end %>
-            <% if l.lang2.present? %> 
-              <div class="lyrics-container">
-                <p><%= l.lang2 %></p>
-              </div>
-            <% end %>
-          </div>
-        <% end %>
-      </div>
-
-    <% if action_name == "edit" || action_name == "new" %>
-
-      <div class="lyrics-container wide">
-        <div class="lyrics-container">
-          <div id="lang1-input">
-            <i class='left'><%= @lang1 %>&nbsp;</i>
-            <span class='loop-handle-label example current-loop-start'></span> to <span class='loop-handle-label example current-loop-end'></span> 
-            <div class='control-group'>
-              <div class='controls'>
-                <input type='text' class='input-xlarge lang1-line'>
-              </div>
+  <% if @clip.blank? %>
+    <div class="lyrics-container wide" id="lyrics-box">
+      <% @lines.each do |l| %>
+        <div class="line rounded" data-time=<%= l.time %> data-duration=<%= l.duration %>>
+          <% if l.lang1.present? %>
+            <div class="lyrics-container">
+              <p><%= l.lang1 %></p>
             </div>
-          </div>
-        </div>
-        <div class="lyrics-container">
-          <div id="lang2-input">
-            <i class='left'><%= @lang2 %>&nbsp;</i>
-            <span class='loop-handle-label example current-loop-start'></span> to <span class='loop-handle-label example current-loop-end'></span> 
-            <div class='control-group'>
-              <div class='controls'>
-                <input type='text' class='input-xlarge lang2-line'>
-              </div>
+          <% end %>
+          <% if l.lang2.present? %> 
+            <div class="lyrics-container">
+              <p><%= l.lang2 %></p>
             </div>
-          </div>
+          <% end %>
         </div>
-      <div style="float: right; margin-top: 25px;">
-        <div class="btn btn-primary btn-small rounded tight-pack" id="next-line"> Next line! </div>
-        <br>
-        <div class="btn btn-primary btn-small rounded tight-pack" id="all-done"> All done. </div>
-      </div>
+      <% end %>
     </div>
-
-    <% end %>
-  
   <% else %>
-  
-    <div class="span5 offset2">
-
-      <div class="lyrics-container wide" id="lyrics-box">
-        <% @lines.each do |l| %>
-          <div class="line rounded" data-time=<%= l.time %> data-duration=<%= l.duration %>>
-            <% if l.lang1.present? %>
-              <div class="lyrics-container">
-                <p><%= l.lang1 %></p>
-              </div>
-            <% end %>
-            <% if l.lang2.present? %> 
-              <div class="lyrics-container">
-                <p><%= l.lang2 %></p>
-              </div>
-            <% end %>
-          </div>
-        <% end %>
-      </div>
-
-    <% if action_name == "edit" || action_name == "new" %>
-
-      <div class="lyrics-container wide">
-        <div class="lyrics-container">
-          <div id="lang1-input">
-            <i class='left'><%= @lang1 %>&nbsp;</i>
-            <span class='loop-handle-label example current-loop-start'></span> to <span class='loop-handle-label example current-loop-end'></span> 
-            <div class='control-group'>
-              <div class='controls'>
-                <input type='text' class='input-xlarge lang1-line'>
-              </div>
+    <div class="lyrics-container wide" id="lyrics-box">
+      <% @lines_within_clip.each do |l| %>
+        <div class="line rounded" data-time=<%= l.time %> data-duration=<%= l.duration %>>
+          <% if l.lang1.present? %>
+            <div class="lyrics-container">
+              <p><%= l.lang1 %></p>
             </div>
-          </div>
-        </div>
-        <div class="lyrics-container">
-          <div id="lang2-input">
-            <i class='left'><%= @lang2 %>&nbsp;</i>
-            <span class='loop-handle-label example current-loop-start'></span> to <span class='loop-handle-label example current-loop-end'></span> 
-            <div class='control-group'>
-              <div class='controls'>
-                <input type='text' class='input-xlarge lang2-line'>
-              </div>
+          <% end %>
+          <% if l.lang2.present? %> 
+            <div class="lyrics-container">
+              <p><%= l.lang2 %></p>
             </div>
-          </div>
+          <% end %>
         </div>
-      <div class="btn btn-primary btn-small rounded" style="float: right; margin-top: 32px;" id="next-line"> Next line! </div>
+      <% end %>
     </div>
-
+    <div class="lyrics-container wide" style="text-align: center;">
+      <i>end of clip</i>
+    </div>
   <% end %>
 
-<% end %>
+  <% if action_name == "edit" || action_name == "new" %>
+
+    <div class="lyrics-container wide">
+      <div class="lyrics-container">
+        <div id="lang1-input">
+          <i class='left'><%= @lang1 %>&nbsp;</i>
+          <span class='loop-handle-label example current-loop-start'></span> to <span class='loop-handle-label example current-loop-end'></span> 
+          <div class='control-group'>
+            <div class='controls'>
+              <input type='text' class='input-xlarge lang1-line'>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="lyrics-container">
+        <div id="lang2-input">
+          <i class='left'><%= @lang2 %>&nbsp;</i>
+          <span class='loop-handle-label example current-loop-start'></span> to <span class='loop-handle-label example current-loop-end'></span> 
+          <div class='control-group'>
+            <div class='controls'>
+              <input type='text' class='input-xlarge lang2-line'>
+            </div>
+          </div>
+        </div>
+      </div>
+    <div style="float: right; margin-top: 25px;">
+      <div class="btn btn-primary btn-small rounded tight-pack" id="next-line"> Next line! </div>
+      <br>
+      <div class="btn btn-primary btn-small rounded tight-pack" id="all-done"> All done. </div>
+    </div>
+  </div>
+
+  <% end %>
 
 </div>
 
@@ -137,7 +104,7 @@
   data-translation-type=<%= if @lang1_and_lang2 then 'lang1_and_lang2' else 'just_lang2' end %> 
   data-action-name=<%= action_name %> 
   <% if @translator.present? %> 
-    data-translator-name=<%= @translator.name %>
+    data-translator-name=<%= @translator.username %>
   <% end %>
   <% unless @quiz.present? %>
     <% if current_user %>
@@ -152,6 +119,11 @@
     data-quiz-name="<%= @quiz.name %>"
     data-quiz-description="<%= @quiz.description %>"
     data-video-title="<%= @title %>"
+  <% end %>
+  <% if @clip.present? %>
+  data-clip=<%= 'true' %>
+  data-duration=<%= @duration %>
+  data-start=<%= @start %>
   <% end %>
   data-published=<%= @published %>>
 </div>

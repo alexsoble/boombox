@@ -1,2 +1,8 @@
 $ ->
   
+  schools = [ "University of Chicago", "Northwestern University", "City Charter High School, Pittsburgh" ]
+  
+  $('#school-name').autocomplete(
+    source: schools
+    minLength: 0
+  )

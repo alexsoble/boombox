@@ -1,0 +1,53 @@
+<h1>Hi!</h1>
+
+<div class="row">
+
+<div class="index-button" id="new-translation-button">
+  <div class="button-text-wrapper">
+    <p class="index-button-text">Translate a video:</p>
+    <p class="index-button-text tiny">(Search or copy the YouTube URL.)</p>
+  </div>
+  <div class="button-text-wrapper" style="float: left;"> 
+    <div class="controls" style="position: absolute;">
+      <input type="text" class="short-text-box new-video-input" id="ask-youtube"><%= image_tag "youtube-logo.png", :size => '71x71', :style => 'position: relative; left: -12px; top: -5px;' %>
+      <input type="hidden" id="youtube_id">
+      <div id="progress-bar"></div>
+    </div>
+  </div>
+</div>
+<div id="results-box"></div>
+
+
+<br><br>
+
+<div class="row">
+
+  <div class="offset1">
+
+    <h2> Show translated videos in:
+      <% @langs_with_some_content.each do |l| %>
+        <div class="btn btn-info language-selector" style="border-radius: 25px;" id="<%=l %>"> <%= l %> </div>
+      <% end %>
+      <div class="btn btn-info language-selector" style="border-radius: 25px;" id="All"> All </div>
+      <div class="btn btn-info" style="border-radius: 25px; background-color: white; border: 1px solid black; color: black;"><i>More to come!</i></div>
+    </h2>
+    <hr id="hr">
+
+    <%  @interps_with_some_content.each do |i| %>
+      <% v = i.video %>
+      <div class="video-thumb-box frontpage-thumb-box <%= v.lang1 %>" data-interp-id=<%= i.id %>>
+        <strong class="center" style="color: #2793E6;"><%= "#{v.title.slice(0,25)}" %></strong>
+        <br>
+        <div class="image-box">
+          <%= image_tag "http://img.youtube.com/vi/#{v.youtube_id}/1.jpg" %>
+        </div>
+      </div>
+    <% end %>
+
+  </div>
+
+</div>
+
+<br>
+<br>
+<br>

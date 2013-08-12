@@ -1,4 +1,28 @@
 class ClipsController < ApplicationController
+  respond_to :json, :html
+
+  def show
+
+    @clip = Clip.find_by_id(params[:id])
+    @start = @clip.start
+    @duration = @clip.duration
+
+    @interp = Interpretation.find_by_id(@clip.interpretation_id)
+    @video = @interp.video
+    @translator = User.find_by_id(@interp.user_id)
+
+
+    @lines = Line.where(interpretation_id: @interp.id).order("created_at ASC")
+    @lines_within_clip = @lines.where(time: @start .. @start + @duration)
+
+    @lang2 = @interp.lang2
+    @lang1 = @video.lang1
+    @published = @interp.published
+    @clip = true
+
+    render template: 'interpretations/show'
+
+  end
 
   def create
 
@@ -7,10 +31,4 @@ class ClipsController < ApplicationController
 
   end
   
-  def show
-
-    render 'interpretations#show'
-
-  end 
-
 end

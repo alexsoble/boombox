@@ -14,6 +14,11 @@ $ ->
   translator_image_url = $('#data').attr('data-translator-image-url') || null
   console.log youtube_id + " " + lang1 + " " + lang2 + " " + interp_id + " " + action_name + " "+ translation_type + " " + translator_name
 
+  if $('#data').attr('data-clip') isnt null
+    window.start = parseInt($('#data').attr('data-start'))
+    window.duration = parseInt($('#data').attr('data-duration'))
+    window.end = window.duration + window.start
+
   my_video = $('#data').attr('data-my-video')
   if my_video == 'true' then my_video = true
   if my_video == 'false' then my_video = false
@@ -66,21 +71,11 @@ $ ->
 
     $('#settings').append("
       <div id='playback-buttons' style='float: right; margin-right: 20px; margin-top: 20px;'>
-        <div class='btn btn-info btn-small rounded tight-pack' id='backward'> <i class='icon-backward'></i> </div>
-        <div class='btn btn-info btn-small rounded tight-pack' id='play-pause'> <i class='icon-pause'></i> </div> 
-        <div class='btn btn-info btn-small rounded tight-pack' id='forward'> <i class='icon-forward'></i>  </div>
         <div class='btn btn-info btn-small rounded tight-pack' id='volume' style='position: relative;'> <i class='icon-volume-up'></i>
           <div id='volume-slider'> </div>
        </div>
       </div>
       ")
-
-    $('#settings').append("
-      <div id='social-buttons' style='float: left; margin-left: 20px; margin-top: 20px;'>
-        <div class='btn btn-info btn-small rounded tight-pack' id='email'> show 3 comments </div>
-        <br>
-        <div class='btn btn-info btn-small rounded tight-pack' id='tweet-it'> leave a comment </div>
-      </div>")
 
 
     $('#settings').append("
@@ -125,8 +120,8 @@ $ ->
 
   playbackControls = (video_duration) ->
 
-    $('.playback-left-label.inner-label').html(":00")
-    $('.playback-right-label.inner-label').html("#{shortFormatTime(video_duration)}")
+    $('.playback-left-label.inner-label').html("#{shortFormatTime(window.start)}")
+    $('.playback-right-label.inner-label').html("#{shortFormatTime(window.end)}")
 
   straightPlaybackBehavior = ->
 
@@ -136,8 +131,8 @@ $ ->
     $('.ui-slider-handle').addClass('loop-handle-label')
 
     $('#playback-slider').slider(
-      min: 0,
-      max: window.video_duration,
+      min: window.start,
+      max: window.end,
       value: window.time,
       step: 1
       slide: (event, ui) ->
@@ -179,6 +174,7 @@ $ ->
     playbackControls(video_duration)
     if window.loop_length == false
       straightPlaybackBehavior()
+    player.seekTo(window.start)
     event.target.playVideo()
 
     # CONTROLS FOR LONG VIDEOS COME IN HERE    
@@ -204,12 +200,30 @@ $ ->
             $("#lyrics-box").scrollTo(this_line, { duration : 250 } )
 
     current_loop_time = window.loop_length * window.section
-    current_loop_end = window.loop_length * (window.section + 1)
+    current_loop_end = window.end
 
     # PLAYBACK SLIDER MOVES HERE
     if window.loop_length is false and window.valuesChanging is false
       $('#playback-slider').slider("value", window.time)
       $('#playback-slider').children().html(shortFormatTime(window.time))
+
+    fadeOut = ->
+      if window.got_volume == false
+        window.volume = player.getVolume()
+        window.got_volume = true
+        halfVolume = 0.5 * window.volume
+        quarterVolume = 0.25 * window.volume
+        tinyVolume = 0.1 * window.volume
+        player.setVolume(halfVolume)
+        softAndSlow = ->
+          player.setVolume(quarterVolume)
+        window.setTimeout(softAndSlow, 500)
+    console.log window.time
+    console.log window.end
+    if window.time > window.end
+      window.looping = true
+      fadeOut()
+      player.seekTo(window.start)
 
   counter = setInterval(countVideoPlayTime, 400)
   done = false

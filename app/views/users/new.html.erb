@@ -1,56 +1,51 @@
 <div class="centerbox center">
-  <h2>Welcome aboard!</h2>
+
+  <h2>Hello there!</h2>
   <br>
-  <p>Heyu is a platform for language teachers and students to use video.</p>
-  <p>At the moment we can only accept sign ups at schools.</p>
+  <p>Heyu is a free service for teachers and students at educational institutions.</p>
+  <p>We're just starting out, so you may not see your school listed below.  In that case, please <a href="mailto:hello@heyuvideo.com?Subject=Getting%20started%20with%20%Heyu&body=Hey,%20set%20me%20up">contact us</a> and we'll get you set up in no time. </p>
   <br>
   <br>
+  
+  <%= form_tag("/steptwo", :method => 'get') do %>
 
     <div class="column">
 
-        <%= form_for(@user, :url => { :controller => :users, :action => :create, 'data-interp' => @interp }) do |f| %>
-
-          <% if @user.errors.any? %>
-            <div class="error_messages">
-              <h2 class="red"><i>Oops, let's try that again.</i></h2>
-                <% @user.errors.full_messages.each do |message| %>
-                  <i class="red"><%= message %>.</i><br>
-                <% end %>
-              <br>
-            </div>
-          <% end %>
-          
-          <div class="field">
-            <label for="teacher-student">I'm a</label>
-            <select name="teacher-student">
-              <option></option>
-              <option>teacher</option>
-              <option>student</option>
-            </select>
-          </div>
-          <div class="field">
-            <label for="school-type">at</label>
-            <select name="school-type">
-              <option></option>
-              <option>college or university</option>
-              <option>high school (secondary)</option>
-              <option>elementary or middle school</option>
-            </select>
-          </div>
-
-          <div class="field"><%= f.label :first_name %><%= f.text_field :name %></div>
-          <div class="field"><%= f.label :last_name %><%= f.text_field :name %></div>
-          <div class="field"><%= f.label :school_name %><%= f.text_field :name %></div>
-          <div class="field"><%= f.label :email %><%= f.text_field :email %></div>
-          <!--
-          <div class="field"><%= f.label :username %><%= f.text_field :name %></div>
-          <div class="field"><%= f.label :password %><%= f.password_field :password %></div>
-          <div class="field"><%= f.label :password_confirmation %><%= f.password_field :password_confirmation %></div>
-          -->
-          <br>
-          <div class="actions"><%= f.submit "Next" %></div>
-        <% end %>
-
+      <div class="field">
+        <label for="role">I'm a</label>
+        <select name="role">
+          <option></option>
+          <option>teacher</option>
+          <option>student</option>
+        </select>
       </div>
+
+      <div class="field">
+        <label for="school">at</label>
+        <select name="school">
+          <option></option>
+          <option>University of Chicago</option>
+          <option>Northwestern University</option>
+          <option>City Charter High School, Pittsburgh</option>
+        </select>
+      </div>
+
+      <div class="field">
+        <label for="firstname">First name</label>
+        <input type="text" name="firstname" %>
+      </div>
+      <div class="field">
+        <label for="lastname">Last name</label>
+        <input type="text" name="lastname" %>
+      </div>
+      <br>
+
+    </div>
+
+  <div class="actions"><input type="submit" class="btn btn-large btn-primary rounded" name="next" value="Next"></div>
+
+  <% end %>
+  
+  </div>
 
 </div>

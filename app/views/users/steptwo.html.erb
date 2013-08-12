@@ -1,0 +1,33 @@
+<div class="centerbox center">
+  <h2>Welcome aboard, <%= @firstname %>!</h2>
+  <br>
+
+  <div class="column">
+
+    <%= form_for(@user, :url => { :controller => :users, :action => :create, 'firstname' => @firstname, 'lastname' => @lastname }) do |f| %>
+
+      <% if @user.errors.any? %>
+        <div class="error_messages">
+          <h2 class="red"><i>Oops, let's try that again.</i></h2>
+            <% @user.errors.full_messages.each do |message| %>
+              <i class="red"><%= message %>.</i><br>
+            <% end %>
+          <br>
+        </div>
+      <% end %>
+
+      <div class="field"><%= f.label :email %><%= f.text_field :email %></div>
+      <div class="field"><%= f.label :username %><%= f.text_field :username %></div>
+      <div class="field"><%= f.label :password %><%= f.password_field :password %></div>
+      <div class="field"><%= f.label :password_confirmation %><%= f.password_field :password_confirmation %></div>
+
+
+      <br>
+
+      <div class="actions"><input type="submit" class="btn btn-large btn-primary rounded" id="next"> </div></div>
+
+    <% end %>
+
+  </div>
+
+</div>

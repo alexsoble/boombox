@@ -1,0 +1,7 @@
+$ ->
+
+  $('.video-thumb-box.frontpage-thumb-box').livequery ->
+    $(this).click ->
+      interp_id = $(this).attr('data-interp-id')
+      window.location.href = "/interpretations/#{interp_id}/"
+
