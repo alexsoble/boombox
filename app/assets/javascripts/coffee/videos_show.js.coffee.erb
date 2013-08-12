@@ -10,8 +10,12 @@ $ ->
   action_name = $('#data').attr('data-action-name')
   translation_type = $('#data').attr('data-translation-type')
   published = $('#data').attr('data-published')
+  
   translator_name = $('#data').attr('data-translator-name')
   translator_image_url = $('#data').attr('data-translator-image-url') || null
+  current_user_username = $('#data').attr('data-current-user-username')
+  current_user_id = $('#data').attr('data-current-user-id')
+
   console.log youtube_id + " " + lang1 + " " + lang2 + " " + interp_id + " " + action_name + " "+ translation_type + " " + translator_name
 
   my_video = $('#data').attr('data-my-video')
@@ -54,7 +58,8 @@ $ ->
 
   window.show_comments = false
   window.adding_comment = false
-
+  window.comment_input_area_added = false
+ 
   window.tool_helptip_displayed = false
   window.editing_line = 'off'
   window.editing_line_timing = 'off'
@@ -75,6 +80,29 @@ $ ->
       )
     $(this).click ->
       player.seekTo(parseInt($(this).attr('data-time')))
+      if window.adding_comment == true && window.comment_input_area_added == false
+        player.pauseVideo()
+        $(this).attr('style','background-color: rgba(15, 130, 245, 0.3);')
+        $(this).append("<input type='text' id='new-comment' style='margin-left: 10px;'/>")
+        window.comment_input_area_added = true
+
+  $('#new-comment').livequery ->
+    comment = $(this)
+    line = comment.parent()
+
+    comment.keyup (e) ->
+      e.preventDefault
+      if e.which == 13
+        comment_text = comment.val()
+        comment.remove()
+        line.append("
+          <div class='comment'>
+            <span class='comment-text'>#{current_user_username}: #{comment_text}</span>
+          </div>
+        ")
+        $.post('/new_comment', { 'comment' : { 'comment_text' : "#{comment_text}", 'line_id' : "#{parseInt(line.attr('id'))}", 'user_id' : "#{current_user_id}" } }, (data) ->
+          comment_id = data.data.id
+          console.log comment_id )
 
   sliderSetup = ->
 
@@ -100,10 +128,21 @@ $ ->
       $(this).click ->
         if window.show_comments == false
           $('.comment').slideDown()
+          $(this).html('showing comments')
           window.show_comments = true
         else
           $('.comment').slideUp()
+          $(this).html('show comments')
           window.show_comments = false
+
+    $('#add-comment').livequery ->
+      $(this).click ->
+        if window.adding_comment == false
+          window.adding_comment = true
+          $(this).html('adding a comment')
+        else
+          window.adding_comment = false
+          $(this).html('add comment')
 
     $('#settings').append("
       <div class='upper-left-btn'>

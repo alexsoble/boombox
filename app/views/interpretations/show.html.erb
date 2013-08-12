@@ -125,6 +125,9 @@
   <% end %>
   <% unless @quiz.present? %>
     <% if current_user %>
+        data-current-user-username=<%= current_user.username %>
+        data-current-user-firstname=<%= current_user.firstname %>
+        data-current-user-id=<%= current_user.id %>
       <% unless current_user.id == @translator.id %>
         data-my-video='false'
       <% else %>
