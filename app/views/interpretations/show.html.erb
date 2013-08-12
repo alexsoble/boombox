@@ -24,7 +24,7 @@
   <% if @clip.blank? %>
     <div class="lyrics-container wide" id="lyrics-box">
       <% @lines.each do |l| %>
-        <div class="line rounded" data-time=<%= l.time %> data-duration=<%= l.duration %>>
+        <div class="line rounded" data-time=<%= l.time %> data-duration=<%= l.duration %> id=<%= l.id %>>
           <% if l.lang1.present? %>
             <div class="lyrics-container">
               <p><%= l.lang1 %></p>
@@ -41,7 +41,7 @@
   <% else %>
     <div class="lyrics-container wide" id="lyrics-box">
       <% @lines_within_clip.each do |l| %>
-        <div class="line rounded" data-time=<%= l.time %> data-duration=<%= l.duration %>>
+        <div class="line rounded" data-time=<%= l.time %> data-duration=<%= l.duration %> <%= l.id %>>
           <% if l.lang1.present? %>
             <div class="lyrics-container">
               <p><%= l.lang1 %></p>

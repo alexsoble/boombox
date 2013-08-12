@@ -120,7 +120,7 @@ $ ->
   sliderSetup = ->
 
     $('#settings').append("
-      <div id='playback-buttons' style='float: right; margin-right: 20px; margin-top: 20px; margin-bottom: 5px;'>
+      <div id='playback-buttons' class='upper-right-btn'>
         <div class='btn btn-info btn-small rounded tight-pack' id='backward'> <i class='icon-backward'></i> </div>
         <div class='btn btn-info btn-small rounded tight-pack' id='play-pause'> <i class='icon-pause'></i> </div> 
         <div class='btn btn-info btn-small rounded tight-pack' id='forward'> <i class='icon-forward'></i>  </div>
@@ -133,7 +133,7 @@ $ ->
     loop_initalizer = "loop " + window.loop + " times" 
 
     $('#settings').append("
-      <div style='float: left; margin-left: 20px; margin-top: 20px; width: 200px;' id='loop-buttons'>
+      <div class='upper-left-btn' id='loop-buttons'>
         <div class='loop-number btn btn-info btn-small rounded tight-pack' id='loop-status'> #{loop_initalizer} </div>
         <div class='btn btn-info btn-small rounded tight-pack adjust-loops' id='more-loops'> + </div>
         <div class='btn btn-info btn-small rounded tight-pack adjust-loops' id='fewer-loops'> - </div>
@@ -145,37 +145,6 @@ $ ->
           <div id='playback-slider'></div>
         <div class='playback-right-label end-label'><div class='playback-right-label inner-label'></div></div>
       </div>")
-
-    if published == 'true'
-      published_initializer = 'published'
-      publish_action_initializer = 'make private'
-    else
-      published_initializer = 'private'
-      publish_action_initializer = 'make public'
-
-    $('#loop-settings').after("
-      <div class='publish-toggle btn btn-primary btn-small rounded lower-right-button-b uniform-width'>
-        #{publish_action_initializer}
-      </div>
-      <div class='publish-status btn btn-primary btn-small rounded lower-right-button-a uniform-width'>
-        #{published_initializer}
-      </div>
-      ")
-
-    $('.publish-toggle').livequery -> 
-      $(this).click ->
-        if window.published == true
-          $.post('/unpublish', { 'id' : "#{interp_id}" }, (data) ->
-            console.log data.data )
-          window.published = false
-          $(this).html('make public')
-          $('.publish-status').html('private')
-        else
-          $.post('/publish', { 'id' : "#{interp_id}" }, (data) ->
-            console.log data.data )
-          window.published = true
-          $(this).html('make private')
-          $('.publish-status').html('published')
 
     $('#loop-settings').append("
       <div id='instructions' class='quiet'>
@@ -190,12 +159,12 @@ $ ->
             <li> Hit the <div class='btn btn-info btn-small rounded tight-pack'> loop x times </div> button to make the video loop a few more times.</li>
           </ul>
         </p>
-      </div>
-      <div style='position: absolute; bottom: 45px; left: 15px;'>
-        <div class='btn btn-primary btn-small rounded uniform-width' id='instructions-button'> editing tips </div>
-      </div>
-      <div style='position: absolute; bottom: 15px; left: 15px;'>
-        <div class='btn btn-primary btn-small rounded uniform-width' id='teacher-tools'> teacher tools </div>
+      </div>")
+
+    $('#loop-settings').append("
+      <div class='lower-left-btn'>
+        <div class='btn btn-primary btn-small rounded' id='instructions-button'> editing tips </div>
+        <div class='btn btn-primary btn-small rounded' id='teacher-tools'> teacher tools </div>
       </div>
       ")
 
@@ -906,6 +875,7 @@ $ ->
     lines = []
     $('.line').each(->
       this_line = $(this)
+      this_id = $(this).attr('id')
 
       # GATHER THE CURRENT TRANSLATION WITH JQUERY
       unless this_line.hasClass('edited-line')
@@ -917,7 +887,7 @@ $ ->
         this_lang1 = $.trim($('#edit-line-lang1').val())
         this_lang2 = $.trim($('#edit-line-lang2').val())
 
-      line = (time : this_line.attr('data-time'), duration : this_line.attr('data-duration'), lang1 : this_lang1, lang2 : this_lang2, interpretation_id : interp_id )
+      line = (id : this_id, time : this_line.attr('data-time'), duration : this_line.attr('data-duration'), lang1 : this_lang1, lang2 : this_lang2, interpretation_id : interp_id )
       
       lines.push line
       

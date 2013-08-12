@@ -37,48 +37,42 @@ class InterpretationsController < ApplicationController
     
     @interp = Interpretation.find_by_id(params[:interp_id])
 
-    @original_lines = Line.where(:interpretation_id => @interp.id).to_a
-    @original_lang1 = Array.new
-    @original_lang2 = Array.new
-    @original_times = Array.new
-    @original_durations = Array.new
-    @original_lines.each do |l|
-      @original_lang1 << l.lang1
-      @original_lang2 << l.lang2
-      @original_times << l.time.to_i
-      @original_durations << l.duration.to_i
+    @raw_original_lines = Line.where(:interpretation_id => @interp.id).to_a
+    @original_lines = []
+
+    @raw_original_lines.each do |l|
+      @original_lines << {"id" => l.id, "lang1" => l.lang1, "lang2" => l.lang2, "time" => l.time.to_i, "duration" => l.duration.to_i }
     end
-    logger.debug "@original_lang1: #{@original_lang1}"
-    logger.debug "@original_lang2: #{@original_lang2}"
-    logger.debug "@original_times: #{@original_times}"
-    logger.debug "@original_durations: #{@original_durations}"
 
-    @new_lines = JSON.parse(params[:lines])
-    @new_lang1 = Array.new
-    @new_lang2 = Array.new
-    @new_times = Array.new
-    @new_durations = Array.new
-    @new_lines.each do |l|
-      @new_lang1 << l["lang1"]
-      @new_lang2 << l["lang2"]
-      @new_times << l["time"].to_i
-      @new_durations << l["duration"].to_i
-    end
-    logger.debug "@new_lang1: #{@new_lang1}"
-    logger.debug "@new_lang2: #{@new_lang2}"
-    logger.debug "@new_times: #{@new_times}"
-    logger.debug "@new_durations: #{@new_durations}"
+    @raw_new_lines = JSON.parse(params[:lines])
+    @new_lines = []
 
-    if @original_lang1 != @new_lang1 || @new_lang2 != @original_lang2 || @original_times != @new_times || @new_durations != @original_durations
+    @raw_new_lines.each do |l|
+      @new_lines << {"id" => l["id"].to_i, "lang1" => l["lang1"], "lang2" => l["lang2"], "time" => l["time"].to_i, "duration" => l["duration"].to_i }
+    end 
 
-      if @original_lines.present?
-        @original_lines.each do |o|
-          o.destroy
-          o.save
+
+    if @original_lines == @new_lines
+      
+      render :json => { :data => "no change" }
+
+    else 
+  
+      @shared_lines = @original_lines & @new_lines
+      @lines_to_delete = @original_lines - @shared_lines
+      @lines_to_add = @new_lines - @shared_lines
+
+      if @lines_to_delete.present?
+        @lines_to_delete.each do |l|
+          line = Line.find_by_id(l["id"])
+          line.destroy
+          line.save
         end
       end
 
-      @new_lines.each do |l|
+      @lines_to_add.each do |l|
+        l["interpretation_id"] = @interp.id
+        logger.debug "#{l}"
         Line.create(l)
       end
 
@@ -86,10 +80,6 @@ class InterpretationsController < ApplicationController
       logger.debug "@saved_lines: #{@saved_lines}"
 
       render :json => { :data => @saved_lines }
-
-    else
-
-      render :json => { :data => "no change" }
 
     end
 
@@ -99,7 +89,7 @@ class InterpretationsController < ApplicationController
     @interp = Interpretation.find_by_id(params[:id])
     @translator = User.find_by_id(@interp.user_id)
     @video = @interp.video
-    @lines = Line.where(:interpretation_id => @interp.id).order("created_at ASC")
+    @lines = Line.where(:interpretation_id => @interp.id).order("time ASC")
     @url = request.url
     @lang2 = @interp.lang2
     @lang1 = @video.lang1
@@ -141,7 +131,7 @@ class InterpretationsController < ApplicationController
     @video = @interp.video
     @lang1 = @video.lang1
     @published = @interp.published
-    @lines = Line.where(:interpretation_id => @interp.id).order("created_at ASC")
+    @lines = Line.where(:interpretation_id => @interp.id).order("time ASC")
     @lines.each do |l|
       if l.lang1.present? then @lang1_and_lang2 = true end
     end

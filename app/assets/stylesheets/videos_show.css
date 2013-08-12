@@ -1,45 +1,13 @@
-.lyrics { text-align: center;
-  font-family: 'Helvetica', sans-serif;
-  font-size: 20px; 
-  text-shadow: 2px 2px 2px black }
-
-.black { color: black; text-shadow: 2px 2px 2px white }
-.white { color: white; text-shadow: 2px 2px 2px black }
-
 .show-video-box { position: relative; 
   overflow: visible;
   text-align: left; }
 
 .wrapper { overflow: hidden; width: 600px; }
 
-#user-name { line-height: 50px; }
-
-.lyrics-box { background: rgba(0, 0, 0, .3);
-  height: 80px;
-  width: 610px;
-  top: 10px;
-  left: 10px;
-  border-radius: 10px;
-  position: absolute; 
-  overflow: auto; }
-
-.lyrics-box.extra-small { height: 40px; }
-.lyrics-box.small { height: 60px; }
-.lyrics-box.extra-large { height: 100px; }
-
-.lyrics-box.top { top: 10px; }
-.lyrics-box.bottom { top: 260px; }
-.lyrics-box.bottom.extra-large { top: 240px; }
-
-.text-container { margin-top: 10px; margin-bottom: 10px; }
-
-#lyrics-settings { position: absolute; top: 355px; left: 360px; }
-
-#lyrics-settings-dropdown { position: absolute; top: 375px; left: 288px; width: 60px; }
-
 .wide-lyrics-container {
   width: 600px;
-  height: 60px;
+  padding-left: 5px;
+  padding-top: 10px;
   float: left; 
   margin-top: 1px;
   margin-bottom: 1px; }
@@ -50,8 +18,28 @@
   float: left;
   margin: 10px; }
 
+.lower-right-btn { position: absolute; 
+  bottom: 15px; 
+  right: 20px; 
+  float: right; }
+
+.lower-left-btn { position: absolute; 
+  bottom: 10px; 
+  left: 20px; 
+  float: right; }
+
+.upper-left-btn { margin-left: 20px; 
+  margin-top: 20px; }
+
+.upper-right-btn {
+  float: right; 
+  margin-right: 20px;
+  margin-top: 20px; 
+  margin-bottom: 5px }
+
 .button-container {
   background-color: white;
   float: right;
   width: 10px;
   border-top: 2px solid white }
+

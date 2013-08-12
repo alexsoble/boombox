@@ -12,7 +12,7 @@ class ClipsController < ApplicationController
     @translator = User.find_by_id(@interp.user_id)
 
 
-    @lines = Line.where(interpretation_id: @interp.id).order("created_at ASC")
+    @lines = Line.where(interpretation_id: @interp.id).order("time ASC")
     @lines_within_clip = @lines.where(time: @start .. @start + @duration)
 
     @lang2 = @interp.lang2
