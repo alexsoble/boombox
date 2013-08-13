@@ -15,6 +15,8 @@ class UsersController < ApplicationController
   end
 
   def new
+
+    @schools = School.all
   
   end
 
