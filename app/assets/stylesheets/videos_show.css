@@ -1,3 +1,19 @@
+#lyrics-box { 
+  max-height: 530px;
+  width: 640px;
+  margin-top: 53px; 
+  float: left; 
+  overflow-y: scroll; 
+  margin: 8px; 
+  overflow-y: scroll; }
+
+.lyrics-container {
+  margin: 8px; 
+  float: left; 
+  width: 250px; }
+
+.line { float: left; background-color: white; }
+
 .show-video-box { position: relative; 
   overflow: visible;
   text-align: left; }
@@ -23,17 +39,21 @@
   color: blue; 
   font-size: 10px; }
 
+.btn-add-comment { margin: 10px; float: left; }
+
 .lower-right-btn { position: absolute; 
   bottom: 15px; 
   right: 20px; 
   float: right; 
-  width: 125px; }
+  width: 200px; }
+.lower-right-btn .btn { float: right; }
+#edit { margin-right: 5px !important; }
 
 .lower-left-btn { position: absolute; 
   bottom: 15px; 
   left: 20px; 
   float: right;
-  width: 125px; }
+  width: 240px; }
 
 .upper-left-btn { margin-left: 20px; 
   margin-top: 20px; }

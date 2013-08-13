@@ -54,7 +54,7 @@ $ ->
   $('#timer-box').html('<div id="timer">
     <h2 class="timer-text" id="big-timer"></h2>
     </div>')
-  $('#lyrics').hide()
+  $('#lyrics-box').addClass('short')
 
   reorder_right = ->
     lines = $('.line')
@@ -171,8 +171,8 @@ $ ->
 
     $('#loop-settings').append("
       <div class='lower-left-btn'>
-        <div class='btn btn-primary btn-small rounded' id='instructions-button'> editing tips </div>
-        <div class='btn btn-primary btn-small rounded' id='teacher-tools'> teacher tools </div>
+        <div class='btn btn-info btn-small rounded' id='instructions-button'> editing tips </div>
+        <div class='btn btn-info btn-small rounded' id='teacher-tools'> editing help video </div>
       </div>
       ")
 

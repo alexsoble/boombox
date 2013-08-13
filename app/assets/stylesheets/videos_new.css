@@ -1,3 +1,5 @@
+#lyrics-box.short { max-height: 458px; }
+
 #title-box { position: relative; 
   top: 42px;
   width: 420px; 
@@ -21,11 +23,6 @@
 
 .language-option { color: black; }
 
-#lyrics-box { overflow-y: scroll; }
-
-#lyrics-box.extra-large { overflow-y: scroll;
- height: 530px; }
-
 .video-container {
   margin-left: 80px;
   margin-right: 40px;
@@ -36,22 +33,14 @@
 
 /* LINES AND LYRICS EDITING AREA */
 
-.lyrics-container {
-  margin: 8px; 
+.input-line { 
+  margin-left: 16px; 
+  margin-top: 16px; 
   float: left; 
   width: 250px; }
 
-.lyrics-container.wide { 
-  width: 640px;
-  margin-left: 0px; 
-  margin-top: 0px; 
-  float: left; 
-  max-height: 420px;
-  overflow-y: scroll; }
-
-.lyrics-container.wide.tall { max-height: 500px; }
-
-.line { float: left; background-color: white; }
+.input-line-container { 
+  width: 640px; }
 
 .lines-being-edited { float: left; 
   width: 500px;
@@ -126,7 +115,7 @@
 
 #settings { position: relative; 
   top: -15px; 
-  height: 220px; 
+  height: 195px; 
   background-color: white;
   border: 2px solid black;
   border-bottom-left-radius: 10px;

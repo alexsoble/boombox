@@ -15,6 +15,7 @@ $ ->
   translator_image_url = $('#data').attr('data-translator-image-url') || null
   current_user_username = $('#data').attr('data-current-user-username')
   current_user_id = $('#data').attr('data-current-user-id')
+  window.current_user_id = current_user_id
 
   console.log youtube_id + " " + lang1 + " " + lang2 + " " + interp_id + " " + action_name + " "+ translation_type + " " + translator_name
 
@@ -23,7 +24,6 @@ $ ->
   if my_video == 'false' then my_video = false
   window.my_video = my_video
 
-  $('.lyrics-container').addClass('tall')
   $('#settings').addClass('discuss-mode')
 
   formatTime = (time) ->
@@ -57,7 +57,7 @@ $ ->
   window.quiz_words = []
 
   window.show_comments = false
-  window.adding_comment = false
+  window.comment_button_added = false
   window.comment_input_area_added = false
  
   window.tool_helptip_displayed = false
@@ -74,17 +74,25 @@ $ ->
   $('.comment').hide()
 
   $('.line').livequery ->
-    $(this).hoverIntent(
-      -> $(this).effect("highlight", { color: "rgba(15, 130, 245, 0.3)" }, 2000)
-      -> $(this).attr("style", "background-color: white;")
+    this_line = $(this)
+    this_line.hoverIntent(
+      -> this_line.effect("highlight", { color: "rgba(15, 130, 245, 0.3)" }, 2000)
+      -> this_line.attr("style", "background-color: white;")
       )
+    this_line.click ->
+      player.seekTo(parseInt(this_line.attr('data-time')))
+      if window.comment_button_added == false && window.comment_input_area_added == false
+        if $('.btn-add-comment').length > 0
+          $('.btn-add-comment').remove()
+        this_line.append("<div class='btn btn-small btn-primary rounded btn-add-comment'> comment?</div>")
+        window.comment_button_added = true
+
+  $('.btn-add-comment').livequery ->
     $(this).click ->
-      player.seekTo(parseInt($(this).attr('data-time')))
-      if window.adding_comment == true && window.comment_input_area_added == false
-        player.pauseVideo()
-        $(this).attr('style','background-color: rgba(15, 130, 245, 0.3);')
-        $(this).append("<input type='text' id='new-comment' style='margin-left: 10px;'/>")
-        window.comment_input_area_added = true
+      $(this).replaceWith("<input type='text' id='new-comment' style='margin-left: 10px;'/>")
+      player.pauseVideo()
+      window.comment_button_added = false
+      window.comment_input_area_added = true
 
   $('#new-comment').livequery ->
     comment = $(this)
@@ -95,14 +103,17 @@ $ ->
       if e.which == 13
         comment_text = comment.val()
         comment.remove()
-        line.append("
-          <div class='comment'>
-            <span class='comment-text'>#{current_user_username}: #{comment_text}</span>
-          </div>
-        ")
-        $.post('/new_comment', { 'comment' : { 'comment_text' : "#{comment_text}", 'line_id' : "#{parseInt(line.attr('id'))}", 'user_id' : "#{current_user_id}" } }, (data) ->
+        $.post('/new_comment', { 'comment' : { 'comment_text' : "#{comment_text}", 'line_id' : "#{parseInt(line.attr('id'))}", 'user_id' : "#{window.current_user_id}" } }, (data) ->
           comment_id = data.data.id
-          console.log comment_id )
+          console.log comment_id
+          line.append("
+            <div class='comment' data-comment-id=#{comment_id}>
+              <span class='comment-text'>#{current_user_username}: #{comment_text} &nbsp; &nbsp; [<a href='/delete_comment/'#{comment_id}'/'>x</a>]</span>
+            </div>
+          ")
+          window.comment_input_area_added = false
+          player.playVideo()
+        )
 
   sliderSetup = ->
 
@@ -120,7 +131,6 @@ $ ->
     $('#settings').append("
         <div class='lower-right-btn'>
           <div class='btn btn-info btn-small rounded tight-pack uniform-width' id='comments-toggle'> show comments </div>
-          <div class='btn btn-info btn-small rounded tight-pack uniform-width' id='add-comment'> add comment </div>
         </div>
       ")
 
@@ -128,21 +138,12 @@ $ ->
       $(this).click ->
         if window.show_comments == false
           $('.comment').slideDown()
-          $(this).html('showing comments')
+          $(this).html('hide comments')
           window.show_comments = true
         else
           $('.comment').slideUp()
           $(this).html('show comments')
           window.show_comments = false
-
-    $('#add-comment').livequery ->
-      $(this).click ->
-        if window.adding_comment == false
-          window.adding_comment = true
-          $(this).html('adding a comment')
-        else
-          window.adding_comment = false
-          $(this).html('add comment')
 
     $('#settings').append("
       <div class='upper-left-btn'>
@@ -183,14 +184,14 @@ $ ->
 
     $('#settings').append("
       <div class='lower-left-btn'>
-        <p id='user-name'> Translated by #{translator_name}. </p>
+        <p id='user-name'> Translated by #{translator_name}.</p>
       </div>
       ")
 
     if window.my_video == true
       $('#user-name').html("Translated by you.")
-      $('#user-name').parent().append("
-        <div class='btn btn-primary btn-small rounded tight-pack' id='edit'> edit </div> 
+      $('.lower-right-btn').append("
+        <div class='btn btn-info btn-small rounded tight-pack' id='edit'> edit </div> 
       ")
 
     $('#edit').livequery ->

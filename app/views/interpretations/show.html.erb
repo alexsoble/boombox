@@ -22,7 +22,7 @@
   <div class="span5 offset2">
 
   <% if @clip.blank? %>
-    <div class="lyrics-container wide" id="lyrics-box">
+    <div id="lyrics-box">
       <% @lines.each do |l| %>
         <div class="line rounded" data-time=<%= l.time %> data-duration=<%= l.duration %> id=<%= l.id %>>
           <% if l.lang1.present? %>
@@ -79,8 +79,8 @@
 
   <% if action_name == "edit" || action_name == "new" %>
 
-    <div class="lyrics-container wide">
-      <div class="lyrics-container">
+    <div class="input-line-container">
+      <div class="input-line">
         <div id="lang1-input">
           <i class='left'><%= @lang1 %>&nbsp;</i>
           <span class='loop-handle-label example current-loop-start'></span> to <span class='loop-handle-label example current-loop-end'></span> 
@@ -91,7 +91,7 @@
           </div>
         </div>
       </div>
-      <div class="lyrics-container">
+      <div class="input-line">
         <div id="lang2-input">
           <i class='left'><%= @lang2 %>&nbsp;</i>
           <span class='loop-handle-label example current-loop-start'></span> to <span class='loop-handle-label example current-loop-end'></span> 
@@ -102,10 +102,10 @@
           </div>
         </div>
       </div>
-    <div style="float: right; margin-top: 25px;">
-      <div class="btn btn-primary btn-small rounded tight-pack" id="next-line"> Next line! </div>
+    <div style="float: right; margin-top: 18px; margin-right: 8px;">
+      <span class="btn btn-primary btn-small rounded tight-pack" id="next-line"> Next line! </span>
       <br>
-      <div class="btn btn-primary btn-small rounded tight-pack" id="all-done"> All done. </div>
+      <span class="btn btn-primary btn-small rounded tight-pack" id="all-done"> All done. </span>
     </div>
   </div>
 
@@ -126,7 +126,9 @@
   <% unless @quiz.present? %>
     <% if current_user %>
         data-current-user-username=<%= current_user.username %>
-        data-current-user-firstname=<%= current_user.firstname %>
+        <% if current_user.firstname.present? %>
+          data-current-user-firstname=<%= current_user.firstname %>
+        <% end %>
         data-current-user-id=<%= current_user.id %>
       <% unless current_user.id == @translator.id %>
         data-my-video='false'
