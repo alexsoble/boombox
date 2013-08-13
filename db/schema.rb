@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130812201038) do
+ActiveRecord::Schema.define(:version => 20130813200939) do
 
   create_table "clips", :force => true do |t|
     t.integer   "start"
@@ -69,6 +69,12 @@ ActiveRecord::Schema.define(:version => 20130812201038) do
     t.integer   "user_id"
   end
 
+  create_table "schools", :force => true do |t|
+    t.string   "name"
+    t.datetime "created_at", :null => false
+    t.datetime "updated_at", :null => false
+  end
+
   create_table "sessions", :force => true do |t|
     t.timestamp "created_at", :null => false
     t.timestamp "updated_at", :null => false
@@ -86,6 +92,7 @@ ActiveRecord::Schema.define(:version => 20130812201038) do
     t.text     "bio"
     t.string   "firstname"
     t.string   "lastname"
+    t.integer  "school_id"
   end
 
   create_table "videos", :force => true do |t|

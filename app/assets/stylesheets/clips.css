@@ -3,3 +3,22 @@
 // You can use Sass (SCSS) here: http://sass-lang.com */
 
 .btn-share { margin-right: 10px !important; }
+
+.share-clip-container { 
+  width: 255px;
+  height: 300px; 
+  margin-top: 80px; 
+  margin-left: 100px; }
+
+.share-clip-text { text-align: center; }
+
+/**
+.share-clip-container .btn-large {
+  width: 35px;
+  height: 35px;
+  line-height: 35px;
+  text-align: center; }
+**/
+
+#settings.clip {
+  height: 120px; }

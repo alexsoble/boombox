@@ -24,9 +24,6 @@ $ ->
   if my_video == 'false' then my_video = false
   window.my_video = my_video
 
-  $('.lyrics-container').addClass('tall')
-  $('#settings').addClass('discuss-mode')
-
   formatTime = (time) ->
     time = Math.floor(time)
     if time <= 9 then formatted_time = "00:0" + time
@@ -64,7 +61,8 @@ $ ->
   $('#timer-box').html('<div id="timer">
     <h2 class="timer-text" id="big-timer"></h2>
     </div>')
-  $('#lyrics').hide()
+  $('#lyrics-box').addClass('clip')
+  $('#settings').addClass('clip')
   $('#timer').hide()
 
   $('#email').click ->
@@ -121,14 +119,6 @@ $ ->
         )
 
     $('#settings').append("
-      <div id='loop-settings'>
-        <div class='playback-left-label end-label'><div class='playback-left-label inner-label'></div></div>
-          <div id='playback-slider'></div>
-        <div class='playback-right-label end-label'><div class='playback-right-label inner-label'></div></div>
-        <div id='loop-status'></div>
-      </div>")
-
-    $('#settings').append("
       <div id='user-info' style='position: absolute; bottom: 10px; margin-left: 20px;'>
         <p id='user-name'> Translated by #{translator_name} </p>
       </div>
@@ -136,9 +126,10 @@ $ ->
 
     if window.my_video == true
       $('#user-name').html("Translated by you")
-      $('#user-name').append("
-        &nbsp;
-        <div class='btn btn-primary btn-small rounded tight-pack' id='edit'> edit </div> 
+      $('#settings').append("
+        <div class='lower-right-btn'>
+          <div class='btn btn-info btn-small rounded tight-pack' id='edit'> edit </div> 
+        </div>
       ")
       $('#vote-button-container').hide()
 
@@ -150,27 +141,6 @@ $ ->
       $('#user-name').append("<img src=#{translator_image_url} class='profile-thumbnail'>")
 
   sliderSetup()
-
-  playbackControls = (video_duration) ->
-
-    $('.playback-left-label.inner-label').html("#{shortFormatTime(window.start)}")
-    $('.playback-right-label.inner-label').html("#{shortFormatTime(window.end)}")
-
-  straightPlaybackBehavior = ->
-
-    if $('#playback-slider').hasClass('ui-rangeSlider')
-      $('#playback-slider').rangeSlider('destroy')
-
-    $('.ui-slider-handle').addClass('loop-handle-label')
-
-    $('#playback-slider').slider(
-      min: window.start,
-      max: window.end,
-      value: window.time,
-      step: 1
-      slide: (event, ui) ->
-        player.seekTo($('#playback-slider').slider("value"))
-    )
 
 # YOUTUBE PLAYER COMES IN HERE
 

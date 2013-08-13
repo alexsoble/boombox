@@ -21,6 +21,9 @@
     background-color: black;
     -webkit-box-shadow: 0 0 1px rgba(255,255,255,.5); }
 
+.clip#lyrics-box::-webkit-scrollbar { background-color: rgba(0,0,0,0); }
+.clip#lyrics-box::-webkit-scrollbar-thumb { background-color: rgba(0,0,0,0);  }
+
 ::-webkit-scrollbar { opacity: 0; }
 
 .centerbox { margin-right: auto; 

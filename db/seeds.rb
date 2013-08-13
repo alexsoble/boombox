@@ -1,8 +1,4 @@
 #encoding: utf-8
 
-User.destroy_all
-Session.destroy_all
-Video.destroy_all
-Interpretation.destroy_all
-Line.destroy_all
-Request.destroy_all
+School.destroy_all
+School.create([{:name => 'University of Chicago' }, {:name => 'Northwestern University' }, {:name => 'City Charter High School, Pittsburgh' }])
