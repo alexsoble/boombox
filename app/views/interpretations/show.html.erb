@@ -65,18 +65,18 @@
           <% end %>
         </div>
       <% end %>
-    <% unless current_user %>
-      <div class="wide-lyrics-container center">
-        <p><strong>Clip ends here. <a href="/join">Join Heyu</a> to view the full translation!</strong></p>
-      </div>
-      <% else %>
-        <div class="share-clip-container">
-          <h2 class="share-clip-text">Share this clip?</h2>
-          <div class="btn btn-primary btn-large btn-share rounded center" id="tweet-it"> <i class="icon-twitter icon-3x"></i> </div>
-          <div class="btn btn-primary btn-large btn-share rounded center" id="email"> <i class="icon-envelope icon-3x"></i> </div>
-        </div>
-      <% end %>
     </div>
+  <% unless current_user %>
+    <div class="share-clip-container">
+      <p class="center"><i>Clip ends here—<a href="/join">join Heyu</a> to view the full translation.</i></p>
+    </div>
+    <% else %>
+      <div class="share-clip-container">
+        <h3 class="share-clip-text">Share this clip?</h3>
+        <div class="btn btn-primary btn-share rounded" id="tweet-it"> <i class="icon-twitter icon-2x"></i> </div>
+        <div class="btn btn-primary btn-share rounded" id="email"> <i class="icon-envelope icon-2x"></i> </div>
+      </div>
+    <% end %>
   <% end %>
 
   <% if action_name == "edit" || action_name == "new" %>

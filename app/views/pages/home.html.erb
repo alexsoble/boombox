@@ -1,31 +1,12 @@
 <br><br>
-<h1 class="center">Welcome to Heyu!</h1>
+  <h2 class="center"><i> A selection of the finest translations you'll find anywhere. </i></h2>
 <br><br>
-
-<div class="row">
-
-<div class="index-button" id="new-translation-button">
-  <div class="button-text-wrapper">
-    <p class="index-button-text">Translate a video:</p>
-    <p class="index-button-text tiny">(Search or copy the YouTube URL.)</p>
-  </div>
-  <div class="button-text-wrapper" style="float: left;"> 
-    <div class="controls" style="position: absolute;">
-      <input type="text" class="short-text-box new-video-input" id="ask-youtube"><%= image_tag "youtube-logo.png", :size => '71x71', :style => 'position: relative; left: -12px; top: -5px;' %>
-      <input type="hidden" id="youtube_id">
-      <div id="progress-bar"></div>
-    </div>
-  </div>
-</div>
-<div id="results-box"></div>
-
-<br><br><br>
 
 <div class="row">
 
   <div class="offset1">
 
-    <h2> Show translated videos in:
+    <h2> Show translated videos in: <br>
       <% @langs_with_some_content.each do |l| %>
         <div class="btn btn-info language-selector" style="border-radius: 25px;" id="<%=l %>"> <%= l %> </div>
       <% end %>

@@ -38,12 +38,10 @@ class PagesController < ApplicationController
   end
 
   def welcome
+    @demo_clips = Clip.order("created_at ASC").limit(3)
+  end
 
-    @demo_videos = [
-      Interpretation.find(28),
-      Interpretation.find(27)
-    ]
-    
+  def translate
   end
 
   def philosophy 

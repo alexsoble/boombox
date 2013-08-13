@@ -76,10 +76,11 @@ $ ->
   $('.line').livequery ->
     this_line = $(this)
     this_line.hoverIntent(
-      -> this_line.effect("highlight", { color: "rgba(15, 130, 245, 0.3)" }, 2000)
+      -> this_line.attr("style", "background-color: rgba(15, 130, 245, 0.3);" )
       -> this_line.attr("style", "background-color: white;")
       )
     this_line.click ->
+      this_line.attr("style", "background-color: rgba(15, 130, 245, 0.3);")
       player.seekTo(parseInt(this_line.attr('data-time')))
       if window.comment_button_added == false && window.comment_input_area_added == false
         if $('.btn-add-comment').length > 0

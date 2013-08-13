@@ -2,15 +2,14 @@
 // They will automatically be included in application.css.
 // You can use Sass (SCSS) here: http://sass-lang.com */
 
-.btn-share { margin-right: 10px !important; }
+.btn-share { }
 
 .share-clip-container { 
-  width: 255px;
-  height: 300px; 
-  margin-top: 80px; 
-  margin-left: 100px; }
+  width: 180px;
+  margin-top: 160px; 
+  margin-left: 160px; }
 
-.share-clip-text { text-align: center; }
+.share-clip-text { text-align: left; }
 
 /**
 .share-clip-container .btn-large {

@@ -37,6 +37,7 @@ Boombox::Application.routes.draw do
   get '/survey' => 'pages#survey'
   get '/experiment' => 'pages#experiment'
   get '/browsers' => 'pages#browsers'
+  get '/translate' => 'pages#translate'
   get '/errors' => 'pages#error'
   
   resources :quizzes

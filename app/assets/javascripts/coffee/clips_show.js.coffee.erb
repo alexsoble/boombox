@@ -66,7 +66,7 @@ $ ->
   $('#timer').hide()
 
   $('#email').click ->
-    window.location.href = "mailto:best.friend@gmail.com?Subject=#{lang1}%20video%20clip&body=Hey,%20check%20out%20this%20video%20clip:%20#{document.URL}.%20It's%20from%20a%20YouTube%20vid%20in%20#{lang1}%20with%20the%20#{lang2}%20side-by-side.%0A%0AFound%20it%20on%20a%20site%20called%20Heyu:%20www.heyuvideo.com"
+    window.location.href = "mailto:best.friend@gmail.com?Subject=#{lang1}%20video%20clip&body=Hey,%20check%20out%20this%20video%20clip:%20#{document.URL}.%20It's%20in%20#{lang1}%20with%20the%20#{lang2}%20side-by-side."
 
   $('#tweet-it').click ->
     window.open "https://twitter.com/share?text=Hey,%20check%20out%20this%20video%20clip%20(in%20#{lang1}%20with%20the%20#{lang2}%20side-by-side)%20-->&hashtags=Heyu#{lang1},Heyu", "width=400, height=400"
@@ -87,6 +87,7 @@ $ ->
         $('.line').each(->
           $(this).removeClass('highlighted')
         )
+        player.seekTo(window.start)
         player.playVideo()
 
     $('#settings').append("
@@ -174,9 +175,6 @@ $ ->
   onPlayerReady = (event) ->
     video_duration = window.player.getDuration()
     window.video_duration = video_duration
-    playbackControls(video_duration)
-    if window.loop_length == false
-      straightPlaybackBehavior()
     player.seekTo(window.start)
     event.target.playVideo()
 
@@ -210,21 +208,8 @@ $ ->
       $('#playback-slider').slider("value", window.time)
       $('#playback-slider').children().html(shortFormatTime(window.time))
 
-    fadeOut = ->
-      if window.got_volume == false
-        window.volume = player.getVolume()
-        window.got_volume = true
-        halfVolume = 0.5 * window.volume
-        quarterVolume = 0.25 * window.volume
-        tinyVolume = 0.1 * window.volume
-        player.setVolume(halfVolume)
-        softAndSlow = ->
-          player.setVolume(quarterVolume)
-        window.setTimeout(softAndSlow, 500)
-    if window.time > window.end
+    if window.time > window.end + 1
       window.looping = true
-      fadeOut()
-      player.seekTo(window.start)
       player.pauseVideo()
 
   counter = setInterval(countVideoPlayTime, 400)
