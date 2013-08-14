@@ -43,14 +43,17 @@ $ ->
   window.loop_counter = 0
   window.loop_length = 4
   window.looping = false
+
   window.valuesChanging = false
   window.tool_helptip_displayed = false
   window.editing_line = false
   window.editing_line_timing = false
   window.editing_line_ask_heyu = false
   window.loop_length_range_appended = false
+
   window.quiz_making_mode = false
   window.quiz_words = []
+
   $('#timer-box').html('<div id="timer">
     <h2 class="timer-text" id="big-timer"></h2>
     </div>')
@@ -84,6 +87,13 @@ $ ->
     $('.lyrics-container').hide()
     $('.input-line-container').hide()
   # $('#timer').hide()
+  
+  pauseButtonReset = ->
+    state = window.player.getPlayerState()
+    if state == 1
+      $(this).html("<i class='icon-pause'></i>")
+    if state == 2
+      $(this).html("<i class='icon-play'></i>")
 
   # ADJUSTING INPUT LINES FOR R-T-L VERSUS L-T-R
   
@@ -844,11 +854,13 @@ $ ->
       $('#loop-status').html(loop_initalizer)
       window.section = window.time / window.loop_length
       window.loop_counter = 0
+      pauseButtonReset()
 
   $('#loop-status').livequery ->
     $(this).click ->
       window.loop_counter = 0 
       player.playVideo()
+      pauseButtonReset()
 
   # QUIZ SETUP
 
