@@ -529,8 +529,9 @@ $ ->
       if window.loop > 0
         window.section += 1
         window.player.seekTo(window.loop_length * window.section, true)
-        $('.ui-rangeSlider-leftLabel.loop-handle-label').children(':first').html("<div class='text-padding'>#{shortFormatTime(window.loop_length * window.section)}</div>")
-        $('.ui-rangeSlider-rightLabel.loop-handle-label').children(':first').html("<div class='text-padding'>#{shortFormatTime(window.loop_length * (window.section + 1))}</div>")
+        $('#playback-slider').rangeSlider("values", window.loop_length * window.section, window.loop_length * (window.section + 1))
+        $('.ui-rangeSlider-leftLabel.loop-handle-label').html("#{shortFormatTime(window.loop_length * window.section)}")
+        $('.ui-rangeSlider-rightLabel.loop-handle-label').html("#{shortFormatTime(window.loop_length * (window.section + 1))}")
       else
         player.seekTo(window.time + 15)
 
@@ -540,8 +541,9 @@ $ ->
       if window.loop_length > 0
         window.section -= 1
         window.player.seekTo((window.section - 1) * window.loop_length, true)
-        $('.ui-rangeSlider-leftLabel.loop-handle-label').html("<div class='text-padding'>#{shortFormatTime(window.loop_length * (window.section - 1))}</div>")
-        $('.ui-rangeSlider-rightLabel.loop-handle-label').html("<div class='text-padding'>#{shortFormatTime(window.loop_length * window.section)}</div>")
+        $('#playback-slider').rangeSlider("values", window.loop_length * window.section, window.loop_length * (window.section - 1))
+        $('.ui-rangeSlider-leftLabel.loop-handle-label').html("#{shortFormatTime(window.loop_length * (window.section - 1))}")
+        $('.ui-rangeSlider-rightLabel.loop-handle-label').html("#{shortFormatTime(window.loop_length * window.section)}")
       else
         if window.time > 14
           player.seekTo(window.time - 15)
