@@ -209,7 +209,7 @@ overflow: visible; }
 .ui-rangeSlider-leftLabel.loop-handle-label { bottom: -24px; }
 .ui-rangeSlider-rightLabel.loop-handle-label { bottom: -24px; }
 
-.tight-pack { margin-right: 1px !important; margin-left: 0px !important; margin-bottom: 5px; }
+.tight-pack { margin-right: 1px !important; margin-left: 1px !important; margin-bottom: 5px; }
 
 select { width: 150px; }
 

@@ -66,6 +66,21 @@ $ ->
     )
     $('#lyrics-box').html(lines)
 
+  pauseButtonReset = ->
+    state = window.player.getPlayerState()
+    if state == 1
+      $(this).html("<i class='icon-pause'></i>")
+    if state == 2
+      $(this).html("<i class='icon-play'></i>")
+
+  # ADJUSTING INPUT LINES FOR R-T-L VERSUS L-T-R
+  
+  if rtlArray.indexOf(window.lang2) > -1
+    $('.lang2-line').attr('style','direction: rtl;')
+  if $('.lang1-line').length > 0
+    if rtlArray.indexOf(window.lang1) > -1
+      $('.lang1-line').attr('style','direction: rtl;') 
+
   if action_name is 'edit'
     $('.tools-container').toggle('width')
     if published is 'false'
@@ -87,21 +102,6 @@ $ ->
     $('.lyrics-container').hide()
     $('.input-line-container').hide()
   # $('#timer').hide()
-
-  pauseButtonReset = ->
-    state = window.player.getPlayerState()
-    if state == 1
-      $(this).html("<i class='icon-pause'></i>")
-    if state == 2
-      $(this).html("<i class='icon-play'></i>")
-
-  # ADJUSTING INPUT LINES FOR R-T-L VERSUS L-T-R
-  
-  if rtlArray.indexOf(window.lang2) > -1
-    $('.lang2-line').attr('style','direction: rtl;')
-  if $('.lang1-line').length > 0
-    if rtlArray.indexOf(window.lang1) > -1
-      $('.lang1-line').attr('style','direction: rtl;') 
 
   $("#start").livequery ->
     $(this).click -> 
@@ -189,7 +189,6 @@ $ ->
         <div class='playback-right-label end-label'><div class='playback-right-label inner-label'></div></div>
       </div>")
 
-
     $('#loop-settings').after("
       <!---<div style='margin-left: 20px;'>
         <div class='btn btn-info btn-small rounded' style='position: absolute; left: 20px bottom: 400px;'> Teacher tools </div>
@@ -238,8 +237,8 @@ $ ->
       player.seekTo(start)
       window.loop_length = end - start
       window.section = start / window.loop_length
-      $('.ui-rangeSlider-leftLabel.loop-handle-label').html("<div class='text-padding'>#{shortFormatTime(start)}</div>")
-      $('.loop-handle-label.ui-rangeSlider-rightLabel').html("<div class='text-padding'>#{shortFormatTime(end)}</div>")
+      $('.ui-rangeSlider-leftLabel.loop-handle-label').html("#{shortFormatTime(start)}")
+      $('.loop-handle-label.ui-rangeSlider-rightLabel').html("#{shortFormatTime(end)}")
     )
 
     $('#playback-slider').on("userValuesChanged", (e, data) ->
@@ -448,6 +447,24 @@ $ ->
 
     # CONTROLS FOR LONG VIDEOS COME IN HERE    
     if video_duration > 300
+
+      longVideoControls = ->
+        $('#settings').append("
+          <div class='lower-right-btn'>
+            <div class='btn btn-info btn-small rounded tight-pack' id='shorter-loop'> shorter loop </div>
+            <div class='btn btn-info btn-small rounded tight-pack' id='longer-loop'> longer loop </div>
+          </div>")
+        $('#longer-loop').livequery ->
+          $(this).click ->
+            values = $('#playback-slider').rangeSlider("values")
+            if 11 > values.max - values.min
+              $('#playback-slider').rangeSlider("zoomOut", 1)
+        $('#shorter-loop').livequery ->
+          $(this).click -> 
+            values = $('#playback-slider').rangeSlider("values")
+            if 2 < values.max - values.min
+              $('#playback-slider').rangeSlider("zoomIn", 1)
+
       longVideoControls()
 
   countVideoPlayTime = ->
