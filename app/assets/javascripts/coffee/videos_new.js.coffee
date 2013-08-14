@@ -87,7 +87,7 @@ $ ->
     $('.lyrics-container').hide()
     $('.input-line-container').hide()
   # $('#timer').hide()
-  
+
   pauseButtonReset = ->
     state = window.player.getPlayerState()
     if state == 1
@@ -140,33 +140,6 @@ $ ->
   sliderSetup = ->
 
     $('#settings').append("
-      <div id='playback-buttons' class='upper-right-btn'>
-        <div class='btn btn-info btn-small rounded tight-pack' id='backward'> <i class='icon-backward'></i> </div>
-        <div class='btn btn-info btn-small rounded tight-pack' id='play-pause'> <i class='icon-pause'></i> </div> 
-        <div class='btn btn-info btn-small rounded tight-pack' id='forward'> <i class='icon-forward'></i>  </div>
-          <div id='volume-slider'> </div>
-        <div class='btn btn-info btn-small rounded tight-pack' id='volume'> <i class='icon-volume-up'></i> 
-        </div>
-      </div>
-      ")
-
-    loop_initalizer = "loop " + window.loop + " times" 
-
-    $('#settings').append("
-      <div class='upper-left-btn' id='loop-buttons'>
-        <div class='loop-number btn btn-info btn-small rounded tight-pack' id='loop-status'> #{loop_initalizer} </div>
-        <div class='btn btn-info btn-small rounded tight-pack adjust-loops' id='more-loops'> + </div>
-        <div class='btn btn-info btn-small rounded tight-pack adjust-loops' id='fewer-loops'> - </div>
-      </div>")
-
-    $('#settings').append("
-      <div id='loop-settings'>
-        <div class='playback-left-label end-label'><div class='playback-left-label inner-label'></div></div>
-          <div id='playback-slider'></div>
-        <div class='playback-right-label end-label'><div class='playback-right-label inner-label'></div></div>
-      </div>")
-
-    $('#loop-settings').append("
       <div id='instructions' class='quiet'>
         <p>Tips: 
           <ul>
@@ -181,15 +154,41 @@ $ ->
         </p>
       </div>")
 
-    $('#loop-settings').append("
-      <div class='lower-left-btn'>
+    $('#settings').append("
+      <div class='upper-left-btn'>
         <div class='btn btn-info btn-small rounded' id='instructions-button'> editing tips </div>
-        <div class='btn btn-info btn-small rounded' id='teacher-tools'> editing help video </div>
       </div>
       ")
 
     $('#instructions-button').click ->
       $("#instructions").dialog()
+
+    $('#settings').append("
+      <div id='playback-buttons' class='upper-right-btn'>
+        <div class='btn btn-info btn-small rounded tight-pack' id='backward'> <i class='icon-backward'></i> </div>
+        <div class='btn btn-info btn-small rounded tight-pack' id='play-pause'> <i class='icon-pause'></i> </div> 
+        <div class='btn btn-info btn-small rounded tight-pack' id='forward'> <i class='icon-forward'></i>  </div>
+          <div id='volume-slider'> </div>
+        <div class='btn btn-info btn-small rounded tight-pack' id='volume'> <i class='icon-volume-up'></i> </div>
+      </div>
+      ")
+
+    loop_initalizer = "loop " + window.loop + " times" 
+
+    $('#settings').append("
+      <div class='lower-left-btn' id='loop-buttons'>
+        <div class='loop-number btn btn-info btn-small rounded tight-pack' id='loop-status'> #{loop_initalizer} </div>
+        <div class='btn btn-info btn-small rounded tight-pack adjust-loops' id='more-loops'> + </div>
+        <div class='btn btn-info btn-small rounded tight-pack adjust-loops' id='fewer-loops'> - </div>
+      </div>")
+
+    $('#settings').append("
+      <div id='loop-settings'>
+        <div class='playback-left-label end-label'><div class='playback-left-label inner-label'></div></div>
+          <div id='playback-slider'></div>
+        <div class='playback-right-label end-label'><div class='playback-right-label inner-label'></div></div>
+      </div>")
+
 
     $('#loop-settings').after("
       <!---<div style='margin-left: 20px;'>

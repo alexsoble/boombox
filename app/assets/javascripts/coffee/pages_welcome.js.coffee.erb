@@ -1,7 +1,7 @@
 $ ->
 
-  $('.video-thumb-box.frontpage-thumb-box').livequery ->
+  $('.video-thumb-box').livequery ->
     $(this).click ->
-      clip_id = $(this).attr('data-clip-id')
+      clip_id = parseInt($(this).attr('data-clip-id'))
       window.location.href = "/clips/#{clip_id}/"
 
