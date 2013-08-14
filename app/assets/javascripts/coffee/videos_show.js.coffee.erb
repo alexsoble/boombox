@@ -75,11 +75,14 @@ $ ->
 
   $('.line').livequery ->
     this_line = $(this)
-    this_line.hoverIntent(
+    this_line.hover(
       -> this_line.attr("style", "background-color: rgba(15, 130, 245, 0.3);" )
-      -> this_line.attr("style", "background-color: white;")
+      -> 
+        this_line.attr("style", "background-color: white;")
+        $('.btn-add-comment').remove()
       )
     this_line.click ->
+      $('.line').removeClass('highlighted')
       this_line.attr("style", "background-color: rgba(15, 130, 245, 0.3);")
       player.seekTo(parseInt(this_line.attr('data-time')))
       if window.comment_input_area_added == false
