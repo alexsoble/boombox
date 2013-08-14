@@ -82,11 +82,11 @@ $ ->
     this_line.click ->
       this_line.attr("style", "background-color: rgba(15, 130, 245, 0.3);")
       player.seekTo(parseInt(this_line.attr('data-time')))
-      if window.comment_button_added == false && window.comment_input_area_added == false
-        if $('.btn-add-comment').length > 0
+      if window.comment_input_area_added == false
+        unless window.comment_button_added == parseInt(this_line.attr('id'))
           $('.btn-add-comment').remove()
-        this_line.append("<div class='btn btn-small btn-primary rounded btn-add-comment'> comment?</div>")
-        window.comment_button_added = true
+          this_line.append("<div class='btn btn-small btn-primary rounded btn-add-comment'> comment?</div>")
+          window.comment_button_added = parseInt(this_line.attr('id'))
 
   $('.btn-add-comment').livequery ->
     $(this).click ->
@@ -109,9 +109,10 @@ $ ->
           console.log comment_id
           line.append("
             <div class='comment' data-comment-id=#{comment_id}>
-              <span class='comment-text'>#{current_user_username}: #{comment_text} &nbsp; &nbsp; [<a href='/delete_comment/'#{comment_id}'/'>x</a>]</span>
+              <span class='comment-text'>#{current_user_username}: #{comment_text} </span>
             </div>
           ")
+          # delete link: &nbsp; &nbsp; [<a href=/delete_comment/#{comment_id}>x</a>]
           window.comment_input_area_added = false
           player.playVideo()
         )

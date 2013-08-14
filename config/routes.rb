@@ -18,7 +18,8 @@ Boombox::Application.routes.draw do
   resources :users
   resources :sessions
 
-  get '/interpretations/:id/discuss' => 'interpretations#show'
+  post '/new_comment' => 'comments#create'
+  get '/delete_comment/:id' => 'comments#destroy' # <= This makes me nervous! But I can't puzzle out how else to do it.
   
   post '/new_video' => 'videos#create'
   post '/new_interp' => 'interpretations#create'
@@ -28,7 +29,6 @@ Boombox::Application.routes.draw do
   post '/save' => 'interpretations#save'
 
   post '/new_clip' => 'clips#create'
-  post '/new_comment' => 'comments#create'
   post '/edit_bio' => 'users#stepthree'
   post '/upvote' => 'votes#up'
   post '/downvote' => 'votes#down'
@@ -43,5 +43,6 @@ Boombox::Application.routes.draw do
   resources :quizzes
   post '/save_quiz_words' => 'quizzes#save_words'
   post '/new_quiz' => 'quizzes#create'
+  get '/interpretations/:id/discuss' => 'interpretations#show'
 
 end
