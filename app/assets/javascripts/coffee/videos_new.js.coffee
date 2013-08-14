@@ -81,6 +81,8 @@ $ ->
     $("#controls").fadeIn('slow')
   if action_name is 'new'
     $('.lyrics-container').hide()
+    $('.lyrics-container').hide()
+    $('.input-line-container').hide()
   # $('#timer').hide()
 
   # ADJUSTING INPUT LINES FOR R-T-L VERSUS L-T-R
@@ -396,6 +398,7 @@ $ ->
       $(this).click ->
         $('#controls').slideUp()
         $('.lyrics-container').slideDown()
+        $('.input-line-container').slideDown()
         window.player.playVideo()
 
 # YOUTUBE PLAYER COMES IN HERE
