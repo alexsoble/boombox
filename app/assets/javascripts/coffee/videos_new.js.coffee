@@ -540,10 +540,10 @@ $ ->
       console.log "backward"
       if window.loop_length > 0
         window.section -= 1
-        window.player.seekTo((window.section - 1) * window.loop_length, true)
-        $('#playback-slider').rangeSlider("values", window.loop_length * window.section, window.loop_length * (window.section - 1))
-        $('.ui-rangeSlider-leftLabel.loop-handle-label').html("#{shortFormatTime(window.loop_length * (window.section - 1))}")
-        $('.ui-rangeSlider-rightLabel.loop-handle-label').html("#{shortFormatTime(window.loop_length * window.section)}")
+        window.player.seekTo(window.loop_length * window.section, true)
+        $('#playback-slider').rangeSlider("values", window.loop_length * window.section, window.loop_length * (window.section + 1))
+        $('.ui-rangeSlider-leftLabel.loop-handle-label').html("#{shortFormatTime(window.loop_length * window.section)}")
+        $('.ui-rangeSlider-rightLabel.loop-handle-label').html("#{shortFormatTime(window.loop_length * (window.section + 1))}")
       else
         if window.time > 14
           player.seekTo(window.time - 15)
