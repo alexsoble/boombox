@@ -19,8 +19,22 @@
 
 .video-thumb-box.frontpage-thumb-box {
   margin-right: 40px;
+  margin-left: 0px;
   margin-top: 0px;
   margin-bottom: 40px; }
+
+#results-box {
+  margin-right: auto;
+  margin-left: auto;
+  width: 600px;
+  text-align: center;
+  background-color: white; 
+  min-height: 400px;
+  margin-top: 30px; }
+
+.video-thumb-box.result-thumb-box {
+  margin-left: 20px; 
+  margin-right: 20px; }
 
 .video-thumb-box .image-box { position: absolute; bottom: 15px; }
 .video-thumb-box.user-thumb-box .image-box { position: absolute; bottom: 0px; }
@@ -39,14 +53,6 @@
   background-color: #9B59BB;
   position: relative;
   border-radius: 10px; }
-
-#results-box {
-  margin-right: auto;
-  margin-left: auto;
-  width: 800px;
-  background-color: white; 
-  min-height: 400px;
-  margin-top: 30px; }
 
 .button-text-wrapper { 
   padding-left: 30px; 
