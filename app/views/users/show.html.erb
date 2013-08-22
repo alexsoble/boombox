@@ -7,7 +7,7 @@
       <% if current_user && @user.id == current_user.id %>
         <h3><strong>My translations</strong></h3>
       <% else %>
-        <h2><i><%= @user.name %>'s translations:</i></h2>
+        <h2><i><%= @user.username %>'s translations:</i></h2>
       <% end %>
       <% if @interpretation.present? %>
         <% @interpretation.all.each do |i| %>

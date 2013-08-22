@@ -71,10 +71,10 @@
   height: 40px;
   float: right; }
 
-label.index-page-label { float: left; }
+label.index-page-label { float: left; margin-top: 10px; margin-right: 10px; }
 
-.lang1-input { float: right; }
-.lang2-input { float: right; }
+.lang1-input { float: right; margin-top: 10px; margin-right: 10px; }
+.lang2-input { float: right; margin-top: 10px; margin-right: 10px; }
 
 .index-button-text { color: white; 
   font-size: 20px; 

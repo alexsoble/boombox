@@ -43,6 +43,8 @@ class InterpretationsController < ApplicationController
     @raw_original_lines.each do |l|
       @original_lines << {"id" => l.id, "lang1" => l.lang1, "lang2" => l.lang2, "time" => l.time.to_i, "duration" => l.duration.to_i }
     end
+    @original_lines.sort { |a, b| a["time"] > b["time"] }
+    logger.debug "@original_lines: #{@original_lines}"
 
     @raw_new_lines = JSON.parse(params[:lines])
     @new_lines = []
@@ -50,7 +52,8 @@ class InterpretationsController < ApplicationController
     @raw_new_lines.each do |l|
       @new_lines << {"id" => l["id"].to_i, "lang1" => l["lang1"], "lang2" => l["lang2"], "time" => l["time"].to_i, "duration" => l["duration"].to_i }
     end 
-
+    @new_lines.sort { |a, b| a["time"] > b["time"] }
+    logger.debug "@new_lines: #{@new_lines}"
 
     if @original_lines == @new_lines
       
@@ -90,6 +93,7 @@ class InterpretationsController < ApplicationController
     @translator = User.find_by_id(@interp.user_id)
     @video = @interp.video
     @lines = Line.where(:interpretation_id => @interp.id).order("time ASC")
+    @note = @interp.note 
     
     @comments = []
     @lines.each do |l|

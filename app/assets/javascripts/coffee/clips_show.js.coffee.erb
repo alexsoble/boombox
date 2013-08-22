@@ -19,11 +19,6 @@ $ ->
     window.duration = parseInt($('#data').attr('data-duration'))
     window.end = window.duration + window.start
 
-  my_video = $('#data').attr('data-my-video')
-  if my_video == 'true' then my_video = true
-  if my_video == 'false' then my_video = false
-  window.my_video = my_video
-
   formatTime = (time) ->
     time = Math.floor(time)
     if time <= 9 then formatted_time = "00:0" + time
@@ -61,9 +56,9 @@ $ ->
   $('#timer-box').html('<div id="timer">
     <h2 class="timer-text" id="big-timer"></h2>
     </div>')
+  $('#timer').hide()
   $('#lyrics-box').addClass('clip')
   $('#settings').addClass('clip')
-  $('#timer').hide()
 
   $('#email').click ->
     window.location.href = "mailto:best.friend@gmail.com?Subject=#{lang1}%20video%20clip&body=Hey,%20check%20out%20this%20video%20clip:%20#{document.URL}.%20It's%20in%20#{lang1}%20with%20the%20#{lang2}%20side-by-side."
@@ -118,28 +113,6 @@ $ ->
           $(this).children().eq(1).slideDown().removeClass('wide-lyrics-container')
           $(this).children().eq(0).slideDown().removeClass('wide-lyrics-container')
         )
-
-    $('#settings').append("
-      <div id='user-info' style='position: absolute; bottom: 10px; margin-left: 20px;'>
-        <p id='user-name'> Translated by #{translator_name} </p>
-      </div>
-      ")
-
-    if window.my_video == true
-      $('#user-name').html("Translated by you")
-      $('#settings').append("
-        <div class='lower-right-btn'>
-          <div class='btn btn-info btn-small rounded tight-pack' id='edit'> edit </div> 
-        </div>
-      ")
-      $('#vote-button-container').hide()
-
-    $('#edit').livequery ->
-      $(this).click ->
-        window.location.href = "/interpretations/#{window.interp_id}/edit/"
-    
-    if translator_image_url isnt null
-      $('#user-name').append("<img src=#{translator_image_url} class='profile-thumbnail'>")
 
   sliderSetup()
 

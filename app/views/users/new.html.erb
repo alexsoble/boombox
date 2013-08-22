@@ -3,13 +3,21 @@
   <h2>Hello there!</h2>
   <br>
   <p>Heyu is a website for teachers and students at educational institutions.</p>
-  <p>We're just starting out, so you may not see your school listed below.  In that case, please <a href="mailto:asoble@gmail.com?Subject=Heyu%20account&body=Hi,%20my%20name%20is%20_____%20and%20I%20(teach%20/%20study)%20at%20______.">contact us</a> and we'll get you set up in no time, free of cost. </p>
-  <br>
-  <br>
-  
   <%= form_tag("/steptwo", :method => 'get') do %>
 
+  <p>I agree to the terms of use.</p>
+  <br>
+
     <div class="column">
+
+      <div class="field">
+        <label for="firstname">First name</label>
+        <input type="text" name="firstname" %>
+      </div>
+      <div class="field">
+        <label for="lastname">Last name</label>
+        <input type="text" name="lastname" %>
+      </div>
 
       <div class="field">
         <label for="role">I'm a</label>
@@ -30,17 +38,12 @@
         </select>
       </div>
 
-      <div class="field">
-        <label for="firstname">First name</label>
-        <input type="text" name="firstname" %>
-      </div>
-      <div class="field">
-        <label for="lastname">Last name</label>
-        <input type="text" name="lastname" %>
-      </div>
-      <br>
 
     </div>
+
+    <h3><strong>Don't see your school? <a href="mailto:asoble@gmail.com?Subject=Heyu%20account&body=Hi,%20my%20name%20is%20_____%20and%20I%20(teach%20/%20study)%20at%20______.">Contact us</a>. </strong></h3>
+
+    <br><br>
 
   <div class="actions"><input type="submit" class="btn btn-large btn-primary rounded" name="next" value="Next"></div>
 

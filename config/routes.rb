@@ -39,6 +39,7 @@ Boombox::Application.routes.draw do
   get '/browsers' => 'pages#browsers'
   get '/translate' => 'pages#translate'
   get '/errors' => 'pages#error'
+  get '/terms' => 'pages#terms'
   
   resources :quizzes
   post '/save_quiz_words' => 'quizzes#save_words'

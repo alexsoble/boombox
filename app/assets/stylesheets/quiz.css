@@ -27,3 +27,7 @@
 
 .lyrics-box.quizframe.success { top: 400px; 
   background: rgba(0, 155, 0, .3) }
+
+#settings.quiz-mode { top: 35px; 
+height: 220px;
+overflow: visible; }

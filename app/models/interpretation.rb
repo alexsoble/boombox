@@ -1,5 +1,5 @@
 class Interpretation < ActiveRecord::Base
-  attr_accessible :lang2, :video_id, :user_id, :published
+  attr_accessible :lang2, :video_id, :user_id, :published, :note
   belongs_to :video
   belongs_to :user
   has_many :clips

@@ -11,14 +11,14 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130813200939) do
+ActiveRecord::Schema.define(:version => 20130822145834) do
 
   create_table "clips", :force => true do |t|
-    t.integer   "start"
-    t.integer   "duration"
-    t.integer   "interpretation_id"
-    t.timestamp "created_at",        :null => false
-    t.timestamp "updated_at",        :null => false
+    t.integer  "start"
+    t.integer  "duration"
+    t.integer  "interpretation_id"
+    t.datetime "created_at",        :null => false
+    t.datetime "updated_at",        :null => false
   end
 
   create_table "comments", :force => true do |t|
@@ -30,25 +30,26 @@ ActiveRecord::Schema.define(:version => 20130813200939) do
   end
 
   create_table "interpretations", :force => true do |t|
-    t.string    "lang2"
-    t.integer   "video_id"
-    t.timestamp "created_at",                    :null => false
-    t.timestamp "updated_at",                    :null => false
-    t.integer   "user_id"
-    t.boolean   "published",  :default => false
-    t.string    "difficulty"
+    t.string   "lang2"
+    t.integer  "video_id"
+    t.datetime "created_at",                    :null => false
+    t.datetime "updated_at",                    :null => false
+    t.integer  "user_id"
+    t.boolean  "published",  :default => false
+    t.string   "difficulty"
+    t.text     "note"
   end
 
   create_table "lines", :force => true do |t|
-    t.string    "lang1"
-    t.string    "lang2"
-    t.integer   "time"
-    t.integer   "upvotes"
-    t.integer   "downvotes"
-    t.integer   "interpretation_id"
-    t.timestamp "created_at",                       :null => false
-    t.timestamp "updated_at",                       :null => false
-    t.integer   "duration",          :default => 4
+    t.string   "lang1"
+    t.string   "lang2"
+    t.integer  "time"
+    t.integer  "upvotes"
+    t.integer  "downvotes"
+    t.integer  "interpretation_id"
+    t.datetime "created_at",                       :null => false
+    t.datetime "updated_at",                       :null => false
+    t.integer  "duration",          :default => 4
   end
 
   create_table "quizzes", :force => true do |t|
@@ -62,11 +63,11 @@ ActiveRecord::Schema.define(:version => 20130813200939) do
   end
 
   create_table "requests", :force => true do |t|
-    t.timestamp "created_at", :null => false
-    t.timestamp "updated_at", :null => false
-    t.string    "lang2"
-    t.integer   "video_id"
-    t.integer   "user_id"
+    t.datetime "created_at", :null => false
+    t.datetime "updated_at", :null => false
+    t.string   "lang2"
+    t.integer  "video_id"
+    t.integer  "user_id"
   end
 
   create_table "schools", :force => true do |t|
@@ -76,8 +77,8 @@ ActiveRecord::Schema.define(:version => 20130813200939) do
   end
 
   create_table "sessions", :force => true do |t|
-    t.timestamp "created_at", :null => false
-    t.timestamp "updated_at", :null => false
+    t.datetime "created_at", :null => false
+    t.datetime "updated_at", :null => false
   end
 
   create_table "users", :force => true do |t|
@@ -96,11 +97,11 @@ ActiveRecord::Schema.define(:version => 20130813200939) do
   end
 
   create_table "videos", :force => true do |t|
-    t.string    "title"
-    t.timestamp "created_at", :null => false
-    t.timestamp "updated_at", :null => false
-    t.string    "lang1"
-    t.string    "youtube_id"
+    t.string   "title"
+    t.datetime "created_at", :null => false
+    t.datetime "updated_at", :null => false
+    t.string   "lang1"
+    t.string   "youtube_id"
   end
 
   create_table "votes", :force => true do |t|

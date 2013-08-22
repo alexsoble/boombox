@@ -24,8 +24,6 @@ $ ->
   if my_video == 'false' then my_video = false
   window.my_video = my_video
 
-  $('#settings').addClass('discuss-mode')
-
   formatTime = (time) ->
     time = Math.floor(time)
     if time <= 9 then formatted_time = "00:0" + time
@@ -56,7 +54,6 @@ $ ->
   window.quiz_making_mode = false
   window.quiz_words = []
 
-  window.show_comments = false
   window.comment_button_added = false
   window.comment_input_area_added = false
  
@@ -72,6 +69,17 @@ $ ->
   $('#lyrics').hide()
   $('#timer').hide()
   $('.comment').hide()
+
+  # ADJUSTING LINES FOR R-T-L VERSUS L-T-R
+  
+  if rtlArray.indexOf(window.lang2) > -1
+    $('.line').each(->
+      $(this).children().eq(1).addClass('right-to-left')
+    )
+  if rtlArray.indexOf(window.lang1) > -1
+    $('.line').each(->
+      $(this).children().eq(0).addClass('right-to-left')
+    )
 
   $('.line').livequery ->
     this_line = $(this)
@@ -134,23 +142,6 @@ $ ->
       ")
 
     $('#settings').append("
-        <div class='lower-right-btn'>
-          <div class='btn btn-info btn-small rounded tight-pack uniform-width' id='comments-toggle'> show comments </div>
-        </div>
-      ")
-
-    $('#comments-toggle').livequery ->
-      $(this).click ->
-        if window.show_comments == false
-          $('.comment').slideDown()
-          $(this).html('hide comments')
-          window.show_comments = true
-        else
-          $('.comment').slideUp()
-          $(this).html('show comments')
-          window.show_comments = false
-
-    $('#settings').append("
       <div class='upper-left-btn'>
         <div class='btn btn-info btn-small rounded tight-pack' id='just-lang-one'> #{lang1} </div>
         <div class='btn btn-info btn-small rounded tight-pack' id='just-lang-two'> #{lang2} </div>
@@ -180,25 +171,12 @@ $ ->
         )
 
     $('#settings').append("
-      <div id='loop-settings'>
-        <div class='playback-left-label end-label'><div class='playback-left-label inner-label'></div></div>
-          <div id='playback-slider'></div>
-        <div class='playback-right-label end-label'><div class='playback-right-label inner-label'></div></div>
-        <div id='loop-status'></div>
-      </div>")
-
-    $('#settings').append("
-      <div class='lower-left-btn'>
-        <p id='user-name'> Translated by #{translator_name}.</p>
-      </div>
-      ")
-
-    if window.my_video == true
-      $('#user-name').html("Translated by you.")
-      $('.lower-right-btn').prepend("
-        <div class='btn btn-info btn-small rounded tight-pack' id='edit'> edit </div> 
-      ")
-
+      <div class='playback-left-label end-label'><div class='playback-left-label inner-label'></div></div>
+        <div id='playback-slider'></div>
+      <div class='playback-right-label end-label'><div class='playback-right-label inner-label'></div></div>
+      <div id='loop-status'></div>
+    ")
+    
     $('#edit').livequery ->
       $(this).click ->
         window.location.href = "/interpretations/#{window.interp_id}/edit/"

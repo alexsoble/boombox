@@ -9,6 +9,16 @@
       <div id="new-video-box"></div>
       <div id="timer-box"></div>
       <div id="settings"></div>
+      <div id='notes-box'>
+        <% if @note.present? %>
+          <p id='note'><%= @note %></p>
+        <% end %>
+        <p><i>Translation by <%= link_to "#{@translator.username}", user_url(@translator) %>.</i></p>
+        <div class='notes-box-buttons'>
+          <div class='btn btn-info btn-small btn-tiny rounded' id='comments-toggle' style='float: right;'> show comments </div>
+          <div class='btn btn-info btn-small btn-tiny rounded' id='controls-toggle' style='float: right;'> hide controls </div>
+        </div>
+      </div>
     </div>
 
   </div> 
@@ -105,9 +115,9 @@
         </div>
       </div>
     <div style="float: right; margin-top: 18px; margin-right: 8px;">
-      <span class="btn btn-primary btn-small rounded tight-pack" id="next-line"> Next line! </span>
+      <span class="btn btn-primary btn-small rounded tight-pack uniform-width" id="next-line"> Next line! </span>
       <br>
-      <span class="btn btn-primary btn-small rounded tight-pack" id="all-done"> All done. </span>
+      <span class="btn btn-primary btn-small rounded tight-pack uniform-width" id="all-done"> All done. </span>
     </div>
   </div>
 

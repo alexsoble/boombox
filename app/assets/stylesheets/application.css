@@ -26,19 +26,17 @@
 
 ::-webkit-scrollbar { opacity: 0; }
 
+html { overflow-y: scroll; }
+
 .centerbox { margin-right: auto; 
   margin-left: auto; 
-  width: 600px; 
-  overflow: scroll; }
+  width: 600px; }
 
 .quiet { display: none; }
 .relative { position: relative; }
 .narrow { width: 200px; }
 .center { text-align: center; }
 
-body { position: relative;
-  background-color: #fff;
-  margin: 0 auto; }
 p { color: black; }
 h3 { font-size: 18px !important; line-height: 22px !important }
 

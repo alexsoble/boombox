@@ -52,19 +52,22 @@ $ ->
   window.loop_length_range_appended = false
 
   window.quiz_making_mode = false
+  window.word_marking_mode = false
   window.quiz_words = []
 
   $('#timer-box').html('<div id="timer">
     <h2 class="timer-text" id="big-timer"></h2>
     </div>')
   $('#lyrics-box').addClass('short')
+  $('#settings').addClass('edit')
 
-  reorder_right = ->
+  reorderRight = ->
     lines = $('.line')
     lines.sort( (a, b) ->
       parseInt($(a).attr('data-time')) - parseInt($(b).attr('data-time'))
     )
     $('#lyrics-box').html(lines)
+    lineEditingLogic()
 
   pauseButtonReset = ->
     state = window.player.getPlayerState()
@@ -77,9 +80,15 @@ $ ->
   
   if rtlArray.indexOf(window.lang2) > -1
     $('.lang2-line').attr('style','direction: rtl;')
+    $('.line').each(->
+      $(this).children().eq(1).addClass('right-to-left')
+    )
   if $('.lang1-line').length > 0
     if rtlArray.indexOf(window.lang1) > -1
       $('.lang1-line').attr('style','direction: rtl;') 
+      $('.line').each(->
+        $(this).children().eq(0).addClass('right-to-left')
+      )
 
   if action_name is 'edit'
     $('.tools-container').toggle('width')
@@ -467,6 +476,19 @@ $ ->
 
       longVideoControls()
 
+    else
+      $('#settings').append("
+        <div class='lower-right-btn'>
+          <div class='btn btn-info btn-small rounded tight-pack' id='word-marking-mode'> mark key words </div>
+        </div>")
+      $('#word-marking-mode').click ->
+        if window.word_marking_mode == false
+          window.word_marking_mode = true
+          $(this).text('marking key words')
+        else
+          window.word_marking_mode = false
+          $(this).text('mark key words')
+
   countVideoPlayTime = ->
 
     exact_time = player.getCurrentTime()
@@ -578,57 +600,59 @@ $ ->
 
   # REVISING LINE CONTENT 
 
-  $('.line').livequery ->
-    $(this).hover(
-      -> if window.quiz_making_mode == false then $(this).attr('style','background-color: yellow;')
-      -> $(this).attr('style','background-color: white;')
-      )
-    $(this).click ->
-      if window.editing_line != true and window.quiz_making_mode == false
-        window.editing_line = true
-        id = $(this).attr('data-line-id')
-        $(this).addClass('edited-line')
-        lang1 = $.trim($(this).children().eq(0).text())
-        lang2 = $.trim($(this).children().eq(1).text())
-        $(this).html("
-        <div class='lines-being-edited'>
-          <div class='control-group' style='float: left;'>
-            <div class='controls'>
-              <input type='text' class='input-xlarge edit-line' id='edit-line-lang1'>
+  lineEditingLogic = ->
+    $('.line').livequery ->
+      $(this).hover(
+        -> if window.quiz_making_mode == false and window.word_marking_mode == false then $(this).attr('style','background-color: yellow;')
+        -> $(this).attr('style','background-color: white;')
+        )
+      $(this).click ->
+        if window.editing_line != true and window.quiz_making_mode == false and window.word_marking_mode == false
+          window.editing_line = true
+          id = $(this).attr('id')
+          $(this).addClass('edited-line')
+          lang1 = $.trim($(this).children().eq(0).text())
+          lang2 = $.trim($(this).children().eq(1).text())
+          $(this).html("
+          <div class='lines-being-edited'>
+            <div class='control-group' style='float: left;'>
+              <div class='controls'>
+                <input type='text' class='input-xlarge edit-line' id='edit-line-lang1'>
+              </div>
             </div>
-          </div>
-          <div class='control-group' style='float: right;'>
-            <div class='controls'>
-              <input type='text' class='input-xlarge edit-line' id='edit-line-lang2'>
+            <div class='control-group' style='float: right;'>
+              <div class='controls'>
+                <input type='text' class='input-xlarge edit-line' id='edit-line-lang2'>
+              </div>
             </div>
-          </div>
-        </div>")
-        $('#edit-line-lang1').val(lang1)
-        $('#edit-line-lang2').val(lang2)
-        $(this).prepend("
-          <span style='float: left; margin: 10px;' class='toolbox-upper'>
-            <div class='btn btn-small btn-primary rounded tight-margins' id='done-editing' style='background-color: white; border: solid 1px; border-color: black; color: black;'> done editing </div>
-            <div class='btn btn-inverse btn-small rounded tight-margins' id='delete-line' data-line-id=#{id}> delete line </div>
-          </span>
-          <span style='float: right; margin: 10px;' class='toolbox-upper'>
-            <div class='btn btn-success btn-small rounded tight-margins' id='ask-twitter'> get help from twitter </div>
-            <div class='btn btn-success btn-small rounded tight-margins' id='ask-heyu'> get help from heyu </div>
-          </span>
-          </span>
-          <br>")
-        $(this).append("
-          <br>
-          <span style='float: right; margin: 10px;' class='toolbox-lower'>
-            <div class='btn btn-primary btn-small rounded tight-margins' id='copy-paste'> copy/paste lines &darr; </div>
-          </span>
-          <span style='float: left; margin: 10px;' class='toolbox-lower'>
-            <div class='btn btn-small btn-warning rounded tight-margins' id='edit-timing' data-line-id=#{id}> adjust timing </div>
-          </span>")
-        $('#lyrics-box').scrollTo($('.edited-line'))
-        $(this).hover(
-          -> $(this).attr('style','background-color: #F9F9F9;')
-          -> $(this).attr('style','background-color: #F9F9F9;')
-          )
+          </div>")
+          $('#edit-line-lang1').val(lang1)
+          $('#edit-line-lang2').val(lang2)
+          $(this).prepend("
+            <span style='float: left; margin: 10px;' class='toolbox-upper'>
+              <div class='btn btn-small btn-primary rounded tight-margins' id='done-editing' style='background-color: white; border: solid 1px; border-color: black; color: black;'> done editing </div>
+              <div class='btn btn-inverse btn-small rounded tight-margins' id='delete-line' data-line-id=#{id}> delete line </div>
+            </span>
+            <span style='float: right; margin: 10px;' class='toolbox-upper'>
+              <div class='btn btn-success btn-small rounded tight-margins' id='ask-twitter'> get help from twitter </div>
+              <div class='btn btn-success btn-small rounded tight-margins' id='ask-heyu'> get help from heyu </div>
+            </span>
+            </span>
+            <br>")
+          $(this).append("
+            <br>
+            <span style='float: right; margin: 10px;' class='toolbox-lower'>
+              <div class='btn btn-primary btn-small rounded tight-margins' id='copy-paste'> copy/paste lines &darr; </div>
+            </span>
+            <span style='float: left; margin: 10px;' class='toolbox-lower'>
+              <div class='btn btn-small btn-warning rounded tight-margins' id='edit-timing' data-line-id=#{id}> adjust timing </div>
+            </span>")
+          $('#lyrics-box').scrollTo($('.edited-line'))
+          $(this).hover(
+            -> $(this).attr('style','background-color: #F9F9F9;')
+            -> $(this).attr('style','background-color: #F9F9F9;')
+            )
+  lineEditingLogic()
 
   $('#copy-paste').livequery ->
     $(this).click -> 
@@ -636,10 +660,11 @@ $ ->
       $('.lang2-line').val($('#edit-line-lang2').val())
       doneEditing()
 
-  # QUIZ WORDS GET ADDED HERE v
-
   $('p').livequery ->
     $(this).hover -> 
+      if window.word_marking_mode == true and $(this).attr('class') != 'lettered'
+        $(this).lettering('words')
+        $(this).addClass('lettered')
       if window.quiz_making_mode == true and $(this).attr('class') != 'lettered'
         $(this).lettering('words')
         $(this).addClass('lettered')
@@ -647,14 +672,23 @@ $ ->
   $('[class^="word"]').livequery ->
     $(this).click ->
       this_word = $(this)
-      if this_word.hasClass('blue')
-        this_word.removeClass('blue')
-        index = window.quiz_words.indexOf(this_word.html())
-        window.quiz_words.splice(index, 1)
+      if this_word.hasClass('keyword')
+        this_word.removeClass('keyword')
       else
-        this_word.addClass('blue')
-        window.quiz_words.push this_word.html()
-        console.log JSON.stringify(window.quiz_words)
+        this_word.addClass('keyword')
+
+# OLD LOGIC FOR QUIZ-MAKING MODE HERE
+#  $('[class^="word"]').livequery ->
+#    $(this).click ->
+#      this_word = $(this)
+#      if this_word.hasClass('blue')
+#       this_word.removeClass('blue')
+#        index = window.quiz_words.indexOf(this_word.html())
+#        window.quiz_words.splice(index, 1)
+#      else
+#        this_word.addClass('blue')
+#        window.quiz_words.push this_word.html()
+#        console.log JSON.stringify(window.quiz_words)
 
   $('#delete-line').livequery ->
     $(this).click ->
@@ -696,13 +730,13 @@ $ ->
     window.editing_line = false
     window.editing_line_timing = false
     window.editing_line_ask_heyu = false
-    line_id = $('.edited-line').attr('data-line-id')
+    line_id = $('.edited-line').attr('id')
     time = $('.edited-line').attr('data-time')
     duration = $('.edited-line').attr('data-duration')
     lang1 = $('#edit-line-lang1').val()
     lang2 = $('#edit-line-lang2').val()
     $('.edited-line').before("
-      <div class='line rounded' data-line-id=#{line_id} data-time=#{time} data-duration=#{duration}>
+      <div class='line rounded' id=#{line_id} data-time=#{time} data-duration=#{duration}>
         <div class='lyrics-container'>
           <p>#{lang1}</p>
         </div>
@@ -715,7 +749,7 @@ $ ->
     $('#coming-soon').remove()
     $('#loop-settings').slideDown()
     window.loop_length = false
-    reorder_right()
+    reorderRight()
 
   $('#done-editing').livequery ->
     $(this).click ->

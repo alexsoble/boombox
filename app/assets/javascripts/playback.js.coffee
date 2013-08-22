@@ -1,10 +1,9 @@
-# Place all the behaviors and hooks related to the matching controller here.
-# All this logic will automatically be available in application.js.
-# You can use CoffeeScript in this file: http://jashkenas.github.com/coffee-script/
-
 $ ->
 
   window.volume_slider_on = false
+  window.show_comments = false
+  window.show_controls = true
+
   action_name = $('#data').attr('data-action-name')
 
   $('#volume').livequery ->
@@ -36,3 +35,25 @@ $ ->
       if state == 2
         player.playVideo()
         $(this).html("<i class='icon-pause'></i>")
+
+  $('#comments-toggle').click ->
+    if window.show_comments == false
+      $('.comment').slideDown()
+      $(this).html('hide comments')
+      window.show_comments = true
+    else
+      $('.comment').slideUp()
+      $(this).html('show comments')
+      window.show_comments = false
+
+  $('#controls-toggle').click ->
+    if window.show_controls == false
+      $('#settings').slideDown()
+      $(this).html('hide controls')
+      $('#notes-box').removeClass('controls-hidden')
+      window.show_controls = true
+    else
+      $('#settings').slideUp()
+      $(this).html('show controls')
+      $('#notes-box').addClass('controls-hidden')
+      window.show_controls = false
