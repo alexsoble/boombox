@@ -10,6 +10,12 @@
   border-top-left-radius: 10px;
   border-top-right-radius: 10px; }
 
+#start {
+  margin-right: auto; 
+  margin-left: auto; 
+  width: 142px;
+  text-align: center; }
+
 .very-wide-box {
   width: 1000px;
   text-align: center;
@@ -82,12 +88,6 @@
 
 /* --------------------------------------------------- */
 
-.center-pill {
-  margin-right: auto; 
-  margin-left: auto; 
-  width: 142px;
-  text-align: center; }
-
 .language-video-option {
   text-align: left; }
 
@@ -127,7 +127,7 @@
   border-bottom-left-radius: 10px;
   border-bottom-right-radius: 10px; }
 
-#settings.edit { height: 195px; }
+#settings.edit { height: 145px; }
 #settings.clip { height: 65px; }
 
 #notes-box {
@@ -142,11 +142,13 @@
   position: relative;
   top: -25px; }
 #notes-box.controls-hidden { padding-top: 42px; } 
+#note { padding-left: 12px; padding-bottom: 12px; }
+#translator-name { padding-left: 12px; }
 
+.show-button-suite { float: right; position: relative; bottom: 32px; right: 4px; }
+.show-button-suite .btn { float: right; margin-right: 0px; margin-left: 8px; }
+.edit-button-suite { padding: 9px; }
 .btn-tiny { font-size: 11px; }
-
-.notes-box-buttons { float: right; position: relative; bottom: 32px; }
-.notes-box-buttons .btn { float: right; margin-right: 0px; margin-left: 8px; }
 
 /*** PLAYBACK SLIDER STYLING ***/
 
@@ -187,16 +189,11 @@
 
 .inner-label { width: 36px; height: 26px; margin: 2px; color: white; position: absolute; top: 2px; }
 
-#adjust-playback-label { margin-left: 15px; margin-top: 15px; }
-#adjust-loops-label { margin-left: 15px; margin-top: 5px; }
-
 .loop-handle-label {
   font-size: 12px; 
   background-color: #0f82f5;
   color: white;
   height: 15px;
-  position: relative;
-  bottom: 20px;
   border-radius: 10px;
   width: 20px; }
 
@@ -220,9 +217,6 @@
 select { width: 150px; }
 
 /*  ---------------------------------------- */
-
-#revise-timing-done { float: left; }
-#editing-line-done { margin-left: 5px; }
 
 .rounded { margin-right: 10px; border-radius: 10px !important; }
 

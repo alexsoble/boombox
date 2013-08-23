@@ -129,6 +129,37 @@ $ ->
         </label>
       </div>")
 
+  $('#word-marking-mode').click ->
+    if window.word_marking_mode == false
+      window.word_marking_mode = true
+      $(this).text('marking key words')
+    else
+      window.word_marking_mode = false
+      $(this).text('mark key words')
+
+  $('#add-note').click ->
+    $('.edit-button-suite').replaceWith("
+      <div id='edit-note-area'>
+        <textarea id='note-input' style='width: 370px; height: 60px;'/>
+        <br>
+        <div class='btn btn-info btn-small btn-tiny rounded' id='done-with-note'> done </div>
+      </div>
+    ")
+    player.pauseVideo()
+
+  $('#done-with-note').livequery ->
+    $(this).click ->
+      note = $('#note-input').val()
+      $.post('/update_note', { 'id' : "#{window.interp_id}", 'note' : "#{note}" })
+      $('#edit-note-area').replaceWith("
+        <div class='edit-button-suite'>
+          <div class='btn btn-info btn-small btn-tiny rounded' id='edit-note'> edit explanation </div>
+          <div class='btn btn-info btn-small btn-tiny rounded' id='word-marking-mode'> mark key words </div>
+          <div class='btn btn-info btn-small btn-tiny rounded' id='instructions-button'> editing tips </div>
+        </div>
+      ")
+      player.playVideo()
+
   $("#yes-loops").livequery ->
     $(this).click -> 
       window.loop = 4
@@ -148,7 +179,7 @@ $ ->
 
   sliderSetup = ->
 
-    $('#settings').append("
+    $('#notes-box').append("
       <div id='instructions' class='quiet'>
         <p>Tips: 
           <ul>
@@ -162,12 +193,6 @@ $ ->
           </ul>
         </p>
       </div>")
-
-    $('#settings').append("
-      <div class='upper-left-btn'>
-        <div class='btn btn-info btn-small rounded' id='instructions-button'> editing tips </div>
-      </div>
-      ")
 
     $('#instructions-button').click ->
       $("#instructions").dialog()
@@ -185,18 +210,17 @@ $ ->
     loop_initalizer = "loop " + window.loop + " times" 
 
     $('#settings').append("
-      <div class='lower-left-btn' id='loop-buttons'>
+      <div class='upper-left-btn' id='loop-buttons'>
         <div class='loop-number btn btn-info btn-small rounded tight-pack' id='loop-status'> #{loop_initalizer} </div>
         <div class='btn btn-info btn-small rounded tight-pack adjust-loops' id='more-loops'> + </div>
         <div class='btn btn-info btn-small rounded tight-pack adjust-loops' id='fewer-loops'> - </div>
       </div>")
 
     $('#settings').append("
-      <div id='loop-settings'>
         <div class='playback-left-label end-label'><div class='playback-left-label inner-label'></div></div>
           <div id='playback-slider'></div>
         <div class='playback-right-label end-label'><div class='playback-right-label inner-label'></div></div>
-      </div>")
+      ")
 
     $('#loop-settings').after("
       <!---<div style='margin-left: 20px;'>
@@ -475,19 +499,6 @@ $ ->
               $('#playback-slider').rangeSlider("zoomIn", 1)
 
       longVideoControls()
-
-    else
-      $('#settings').append("
-        <div class='lower-right-btn'>
-          <div class='btn btn-info btn-small rounded tight-pack' id='word-marking-mode'> mark key words </div>
-        </div>")
-      $('#word-marking-mode').click ->
-        if window.word_marking_mode == false
-          window.word_marking_mode = true
-          $(this).text('marking key words')
-        else
-          window.word_marking_mode = false
-          $(this).text('mark key words')
 
   countVideoPlayTime = ->
 

@@ -10,17 +10,38 @@
       <div id="timer-box"></div>
       <div id="settings"></div>
       <div id='notes-box'>
-        <% if @note.present? %>
-          <p id='note'><%= @note %></p>
+        <p id='note'>
+          <% if @note.present? %>
+            <%= @note %>
+          <% end %>
+        </p>
+        <% if action_name == 'show' %>
+          <p id='translator-name'><i>Translation by <%= link_to "#{@translator.username}", user_url(@translator) %>.</i></p>
         <% end %>
-        <p><i>Translation by <%= link_to "#{@translator.username}", user_url(@translator) %>.</i></p>
-        <div class='notes-box-buttons'>
+        <% if action_name == 'show' %>
+          <div class='show-button-suite'>
+            <% if @translator.id == current_user.id %>
+              <div class='btn btn-info btn-small btn-tiny rounded' id='edit' style='float: right;'> edit </div>
+            <% end %>
+            <div class='btn btn-info btn-small btn-tiny rounded' id='controls-toggle' style='float: right;'> hide controls </div>
+          </div>
+        <% end %>
+        <% if action_name == 'edit' %>
+          <div class='edit-button-suite'>
+            <div class='btn btn-info btn-small btn-tiny rounded' id='word-marking-mode'> mark key words </div>
+            <% if @note.blank? %>
+              <div class='btn btn-info btn-small btn-tiny rounded' id='add-note'> add explanation </div>
+            <% else %>
+              <div class='btn btn-info btn-small btn-tiny rounded' id='edit-note'> edit explanation </div>
+            <% end %>
+            <div class='btn btn-info btn-small btn-tiny rounded' id='instructions-button'> editing tips </div>
+          </div>
+        <% end %>
+        <% if @comments.present? %>
           <div class='btn btn-info btn-small btn-tiny rounded' id='comments-toggle' style='float: right;'> show comments </div>
-          <div class='btn btn-info btn-small btn-tiny rounded' id='controls-toggle' style='float: right;'> hide controls </div>
-        </div>
+        <% end %>
       </div>
     </div>
-
   </div> 
 
   <% if action_name == 'new' %>

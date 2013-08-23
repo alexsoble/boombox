@@ -97,8 +97,11 @@ class InterpretationsController < ApplicationController
     
     @comments = []
     @lines.each do |l|
-      @comments << { l.id => Comment.where(:line_id => l.id).limit(10) }
+      if Comment.where(:line_id => l.id).present?
+        @comments << { l.id => Comment.where(:line_id => l.id).limit(10) }
+      end
     end
+    logger.debug "comments: #{@comments}"
           
     @url = request.url
     @lang2 = @interp.lang2
@@ -129,9 +132,10 @@ class InterpretationsController < ApplicationController
 
     @interp = Interpretation.find_by_id(params[:id])
     @translator = User.find_by_id(@interp.user_id)
-    @lang2 = @interp.lang2
+    @note = @interp.note
     @video = @interp.video
     @lang1 = @video.lang1
+    @lang2 = @interp.lang2
     @published = @interp.published
     @lines = Line.where(:interpretation_id => @interp.id).order("time ASC")
     @lines.each do |l|
@@ -144,6 +148,14 @@ class InterpretationsController < ApplicationController
 
     render "show"
     
+  end
+
+  def update_note
+    @interp = Interpretation.find_by_id(params[:id])
+    @note = params[:note]
+    @interp.note = @note
+    @interp.save
+    render :json => { :data => @interp.note }
   end
 
   def publish 
