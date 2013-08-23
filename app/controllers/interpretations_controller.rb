@@ -94,7 +94,12 @@ class InterpretationsController < ApplicationController
     @video = @interp.video
     @lines = Line.where(:interpretation_id => @interp.id).order("time ASC")
     @note = @interp.note 
-    
+
+    @keywords = []
+    Keyword.where(:interpretation_id => @interp.id).each do |k|
+      @keywords << k.word_text
+    end
+
     @comments = []
     @lines.each do |l|
       if Comment.where(:line_id => l.id).present?

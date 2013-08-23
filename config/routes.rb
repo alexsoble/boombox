@@ -22,12 +22,15 @@ Boombox::Application.routes.draw do
   get '/delete_comment/:id' => 'comments#destroy' # <= This makes me nervous! But I can't puzzle out how else to do it.
   
   post '/new_video' => 'videos#create'
-  
+
   post '/new_interp' => 'interpretations#create'
   post '/save' => 'interpretations#save'
   post '/update_note' => 'interpretations#update_note'
   post '/publish' => 'interpretations#publish'
   post '/unpublish' => 'interpretations#unpublish'
+
+  post '/create_keyword' => 'keywords#create'
+  post '/remove_keyword' => 'keywords#destroy'
   
   post '/new_request' => 'requests#create'
   post '/new_clip' => 'clips#create'

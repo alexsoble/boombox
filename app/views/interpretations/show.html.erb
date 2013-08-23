@@ -183,8 +183,8 @@
   data-published=<%= @published %>>
 </div>
 
-<% if @quiz.present? %>
+<% if @keywords.present? %>
   <%= javascript_tag do %>
-    window.words = <%=raw @words.to_json %>;
+    window.keywords = <%= raw @keywords.to_json %>;
   <% end %>
 <% end %>

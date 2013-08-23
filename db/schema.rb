@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130822145834) do
+ActiveRecord::Schema.define(:version => 20130823202612) do
 
   create_table "clips", :force => true do |t|
     t.integer  "start"
@@ -38,6 +38,14 @@ ActiveRecord::Schema.define(:version => 20130822145834) do
     t.boolean  "published",  :default => false
     t.string   "difficulty"
     t.text     "note"
+  end
+
+  create_table "keywords", :force => true do |t|
+    t.integer  "interpretation_id"
+    t.integer  "user_id"
+    t.string   "word_text"
+    t.datetime "created_at",        :null => false
+    t.datetime "updated_at",        :null => false
   end
 
   create_table "lines", :force => true do |t|

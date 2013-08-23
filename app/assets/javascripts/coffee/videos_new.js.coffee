@@ -687,6 +687,9 @@ $ ->
         this_word.removeClass('keyword')
       else
         this_word.addClass('keyword')
+        $.post('/create_keyword', { 'keyword' : { 'interpretation_id' : "#{window.interp_id}", 'user_id' : "#{window.user_id}", 'word_text' : "#{this_word.text()}" } }, (data) ->
+          console.log data
+        )
 
 # OLD LOGIC FOR QUIZ-MAKING MODE HERE
 #  $('[class^="word"]').livequery ->

@@ -216,21 +216,7 @@
 
 select { width: 150px; }
 
-/*  ---------------------------------------- */
-
 .rounded { margin-right: 10px; border-radius: 10px !important; }
-
-#language-options {
-  margin-left: auto;
-  margin-right: auto;
-  width: 160px;
-  text-align: left; }
-
-#request-options {
-  margin-left: auto;
-  margin-right: auto; 
-  width: 160px;
-  text-align: left; }
 
 .text-padding {
   margin: 3px;

@@ -1,9 +1,7 @@
 $ -> 
 
-  window.keywords = ["despierten", "muera", "recuerde", "quedes", "vayas", "descanse"]
-
   $('.line').each(->
-    for word in keywords
+    for word in window.keywords
       for i in [0..1]
         this_line = $(this).children().eq(i)
         if this_line.text().indexOf(word) != -1
