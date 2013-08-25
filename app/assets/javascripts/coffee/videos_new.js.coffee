@@ -147,13 +147,29 @@ $ ->
     ")
     player.pauseVideo()
 
+  $('#edit-note').click ->
+    current_note = $('#note-text').text()
+    $('#notes-box').html("
+      <div id='edit-note-area'>
+        <textarea id='note-input' style='width: 370px; height: 60px;'/>
+        <br>
+        <div class='btn btn-info btn-small btn-tiny rounded' id='done-with-note'> done </div>
+      </div>
+    ")
+    $('#note-input').html(current_note)
+    player.pauseVideo()
+
   $('#done-with-note').livequery ->
     $(this).click ->
       note = $('#note-input').val()
       $.post('/update_note', { 'id' : "#{window.interp_id}", 'note' : "#{note}" })
       $('#edit-note-area').replaceWith("
+        <p id='note'>
+          <strong>Your note: &nbsp;</strong>
+          <span id='note-text'>#{note}</span>
+        </p>
         <div class='edit-button-suite'>
-          <div class='btn btn-info btn-small btn-tiny rounded' id='edit-note'> edit explanation </div>
+          <div class='btn btn-info btn-small btn-tiny rounded' id='edit-note'> edit note </div>
           <div class='btn btn-info btn-small btn-tiny rounded' id='word-marking-mode'> mark key words </div>
           <div class='btn btn-info btn-small btn-tiny rounded' id='instructions-button'> editing tips </div>
         </div>
@@ -685,10 +701,32 @@ $ ->
       this_word = $(this)
       if this_word.hasClass('keyword')
         this_word.removeClass('keyword')
+        $.post('/remove_keyword', { 'keyword' : { 'interpretation_id' : "#{window.interp_id}", 'user_id' : "#{window.user_id}", 'word_text' : "#{this_word.text()}" } }, (data) ->
+          console.log data
+          $('.line').each(->
+            this_line = $(this).children().eq(0)
+            word = this_word.text()
+            if this_line.text().indexOf(word) != -1
+              console.log this_line.text()
+              console.log word
+              keyword_highlighted = this_line.html().replace(word, "<span class='keyword'>#{word}</span>")
+              this_line.html(keyword_highlighted)
+            )
+          ) 
+
       else
         this_word.addClass('keyword')
         $.post('/create_keyword', { 'keyword' : { 'interpretation_id' : "#{window.interp_id}", 'user_id' : "#{window.user_id}", 'word_text' : "#{this_word.text()}" } }, (data) ->
           console.log data
+          $('.line').each(->
+            this_line = $(this).children().eq(0)
+            word = this_word.text()
+            if this_line.text().indexOf(word) != -1
+              console.log this_line.text()
+              console.log word
+              keyword_highlighted = this_line.html().replace(word, "<span class='keyword'>#{word}</span>")
+              this_line.html(keyword_highlighted)
+          ) 
         )
 
 # OLD LOGIC FOR QUIZ-MAKING MODE HERE

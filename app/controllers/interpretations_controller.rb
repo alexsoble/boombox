@@ -1,29 +1,25 @@
 class InterpretationsController < ApplicationController
   respond_to :json, :html
 
-  before_filter only: [:show] do |controller|
+  # before_filter only: [:show] do |controller|
 
-    if current_user
-      true
-    else
-      flash[:notice] = "Sign up with Heyu first, please!"
-      redirect_to '/'
-    end
-
-    # if params[:id].present?
-    #   @interp = Interpretation.find_by_id(params[:id])
-    #   @user_id = @interp.user_id
-    #   if @interp.published == true
-    #     true
-    #   elsif params[:clip].present? && params[:clip] == 'yes' && params[:duration].to_i < 12
-    #     true
-    #   elsif params[:preview].present? && params[:preview] == 'yes'
-    #     true
-    #   elsif current_user
-    #     controller.correct_user(@user_id)
-    #   end
-    # end
-  end
+  #   if current_user
+  #     true
+  #   else
+  #   if params[:id].present?
+  #     @interp = Interpretation.find_by_id(params[:id])
+  #     @user_id = @interp.user_id
+  #     if @interp.published == true
+  #       true
+  #     elsif params[:clip].present? && params[:clip] == 'yes' && params[:duration].to_i < 12
+  #       true
+  #     elsif params[:preview].present? && params[:preview] == 'yes'
+  #       true
+  #     elsif current_user
+  #       controller.correct_user(@user_id)
+  #     end
+  #   end
+  # end
 
   before_filter only: [:edit, :publish, :destroy] do |controller|
     if params[:id].present?
@@ -43,7 +39,7 @@ class InterpretationsController < ApplicationController
     @raw_original_lines.each do |l|
       @original_lines << {"id" => l.id, "lang1" => l.lang1, "lang2" => l.lang2, "time" => l.time.to_i, "duration" => l.duration.to_i }
     end
-    @original_lines.sort { |a, b| a["time"] > b["time"] }
+    @original_lines.sort { |a, b| a["time"] <=> b["time"] }
     logger.debug "@original_lines: #{@original_lines}"
 
     @raw_new_lines = JSON.parse(params[:lines])
@@ -52,7 +48,7 @@ class InterpretationsController < ApplicationController
     @raw_new_lines.each do |l|
       @new_lines << {"id" => l["id"].to_i, "lang1" => l["lang1"], "lang2" => l["lang2"], "time" => l["time"].to_i, "duration" => l["duration"].to_i }
     end 
-    @new_lines.sort { |a, b| a["time"] > b["time"] }
+    @new_lines.sort { |a, b| a["time"] <=> b["time"] }
     logger.debug "@new_lines: #{@new_lines}"
 
     if @original_lines == @new_lines
