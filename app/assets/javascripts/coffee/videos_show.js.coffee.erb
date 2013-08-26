@@ -325,3 +325,10 @@ $ ->
           $('.vote-button').removeClass('btn-primary')
           $(this).addClass('btn-primary')
         $.post('/downvote', { 'interp' : { 'id' : "#{interp_id}", 'difficulty' : "#{$(this).attr('value')}" } })
+
+  # CONTROLS INITIALIZE AS HIDDEN
+  
+  window.show_controls = false
+  $('#settings').hide()
+  $('#controls-toggle').html('show controls')
+  $('#notes-box').addClass('controls-hidden')
