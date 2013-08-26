@@ -39,7 +39,7 @@ class InterpretationsController < ApplicationController
     @raw_original_lines.each do |l|
       @original_lines << {"id" => l.id, "lang1" => l.lang1, "lang2" => l.lang2, "time" => l.time.to_i, "duration" => l.duration.to_i }
     end
-    @original_lines.sort { |a, b| a["time"] <=> b["time"] }
+    @original_lines = @original_lines.sort { |a, b| a["time"] <=> b["time"] }
 
     @raw_new_lines = JSON.parse(params[:lines])
     @new_lines = []
@@ -47,7 +47,7 @@ class InterpretationsController < ApplicationController
     @raw_new_lines.each do |l|
       @new_lines << {"id" => l["id"].to_i, "lang1" => l["lang1"], "lang2" => l["lang2"], "time" => l["time"].to_i, "duration" => l["duration"].to_i }
     end 
-    @new_lines.sort { |a, b| a["time"] <=> b["time"] }
+    @new_lines = @new_lines.sort { |a, b| a["time"] <=> b["time"] }
 
     if @original_lines == @new_lines
       
@@ -58,10 +58,11 @@ class InterpretationsController < ApplicationController
       @shared_lines = @original_lines & @new_lines
       @lines_to_delete = @original_lines - @shared_lines
       @lines_to_add = @new_lines - @shared_lines
+      logger.debug "@lines_to_delete: #{@lines_to_delete}"
+      logger.debug "@lines_to_add: #{@lines_to_add}"
 
       if @lines_to_delete.present?
         @lines_to_delete.each do |l|
-          logger.debug "deleting line: #{l}"
           line = Line.find_by_id(l["id"])
           line.destroy
           line.save
@@ -71,12 +72,11 @@ class InterpretationsController < ApplicationController
       @lines_to_add.each do |l|
         logger.debug "adding line: #{l}"
         l["interpretation_id"] = @interp.id
-        logger.debug "#{l}"
         Line.create(l)
       end
 
       @saved_lines = Line.where(:interpretation_id => @interp.id)
-      logger.debug "@saved_lines: #{@saved_lines}"
+      logger.debug "@saved_lines: #{@saved_lines.all}"
 
       render :json => { :data => @saved_lines }
 
