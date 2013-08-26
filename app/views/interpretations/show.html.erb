@@ -15,6 +15,9 @@
             <% if action_name == 'edit' %>
               <strong>Your note: &nbsp;</strong>
             <% end %>
+            <% if action_name == 'show' %>
+              <strong>Note: &nbsp;</strong>
+            <% end %>
             <span id='note-text'><%= @note %></span>
           </p>
         <% end %>
