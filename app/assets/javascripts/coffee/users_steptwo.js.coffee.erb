@@ -1,0 +1,15 @@
+$ ->
+  
+  $('#teach-or-study-form').hide()
+
+  $('#teach-or-study-toggle').click ->
+    $('#teach-or-study-form').slideDown()
+    $('#teach-or-study-toggle').parent().slideUp()
+
+  $('#done').click ->
+
+    school = $('[name="school"]').val()
+    role = $('[name="role"]').val()
+    bio = $('#bio').val()
+    $.post('/update_user', { 'user' : "#{window.user_id}", 'bio' : "#{bio}", 'school' : "#{school}", 'role' : "#{role}" })
+    window.location.href = "/home"

@@ -59,4 +59,7 @@ class PagesController < ApplicationController
   def browsers
   end
 
+  def dmca
+  end
+
 end

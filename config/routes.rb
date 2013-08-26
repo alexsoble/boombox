@@ -22,7 +22,6 @@ Boombox::Application.routes.draw do
   get '/delete_comment/:id' => 'comments#destroy' # <= This makes me nervous! But I can't puzzle out how else to do it.
   
   post '/new_video' => 'videos#create'
-
   post '/new_interp' => 'interpretations#create'
   post '/save' => 'interpretations#save'
   post '/update_note' => 'interpretations#update_note'
@@ -31,13 +30,12 @@ Boombox::Application.routes.draw do
 
   post '/create_keyword' => 'keywords#create'
   post '/remove_keyword' => 'keywords#destroy'
-  
-  post '/new_request' => 'requests#create'
   post '/new_clip' => 'clips#create'
-  post '/edit_bio' => 'users#stepthree'
   post '/upvote' => 'votes#up'
   post '/downvote' => 'votes#down'
   
+  post '/update_user' => 'users#update'
+    
   get '/philosophy' => 'pages#philosophy'
   get '/survey' => 'pages#survey'
   get '/experiment' => 'pages#experiment'
@@ -45,6 +43,7 @@ Boombox::Application.routes.draw do
   get '/translate' => 'pages#translate'
   get '/errors' => 'pages#error'
   get '/terms' => 'pages#terms'
+  get '/dmca' => 'pages#dmca'
   
   resources :quizzes
   post '/save_quiz_words' => 'quizzes#save_words'

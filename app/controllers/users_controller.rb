@@ -16,46 +16,45 @@ class UsersController < ApplicationController
 
   def new
 
-    @schools = School.all
+    @user = User.new
   
   end
 
   def create
 
-    @user = User.new(params[:user])
-      if @user.save
-      @user.firstname = params[:firstname]
-      @user.lastname = params[:lastname]
-      @user.save
-        session[:user_id] = @user.id
-        render "stepthree", :user => @user
-      else
-        render "steptwo"
-      end
+    @user = User.create(params[:user])
+    @schools = School.all
+    if @user.save
+      session[:user_id] = @user.id
+      redirect_to "/steptwo?user=#{@user.id}"
+    else
+      render "new"
     end
+
+  end
 
   def steptwo
 
-    if params[:school].blank? || params[:lastname].blank? || params[:firstname].blank? || params[:role].blank?
-      flash[:notice] = "Please make sure you've filled out all of the fields."
-      redirect_to '/join'
-    else
-      @firstname = params[:firstname]
-      @lastname = params[:lastname]
-    end
+    @schools = School.all
+    @user = User.find_by_id(params[:user])
+    @firstname = @user.firstname
 
-    @user = User.new
-    @firstname = params[:firstname]
-    @interp = params[:interp]
-  end 
+  end
 
-  def stepthree
+  def update
 
     @user = User.find_by_id(params[:user])
-    @bio = params[:bio]
-    @user.bio = @bio
-    @user.save
+    if params[:bio].present?
+      @user.bio = params[:bio]
+      @user.save
+    end
     
+    if params[:school].present?
+      @school = School.where(:name => params[:school]).first
+      @user.school_id = @school.id
+      @user.save
+    end
+
   end
-    
+
 end

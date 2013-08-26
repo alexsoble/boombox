@@ -1,7 +1,0 @@
-$ ->
-
-  $('#done').click ->
-
-    bio = $('#bio').val()
-    $.post('/edit_bio', { 'user' : "#{window.user_id}", 'bio' : "#{bio}" })
-    window.location.href = "/home"

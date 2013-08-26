@@ -1,53 +1,43 @@
-<div class="centerbox center">
+<div class="centerbox center" style="width: 400px;">
 
-  <h2>Hello there!</h2>
   <br>
-  <p>Heyu is a website for teachers and students at educational institutions.</p>
-  <%= form_tag("/steptwo", :method => 'get') do %>
+  
+  <h2>Welcome to Heyu!</h2>
 
-  <p>I agree to the terms of use.</p>
+  <br>
   <br>
 
-    <div class="column">
+    <%= form_for(@user) do |f| %>
 
-      <div class="field">
-        <label for="firstname">First name</label>
-        <input type="text" name="firstname" %>
-      </div>
-      <div class="field">
-        <label for="lastname">Last name</label>
-        <input type="text" name="lastname" %>
-      </div>
-
-      <div class="field">
-        <label for="role">I'm a</label>
-        <select name="role">
-          <option></option>
-          <option>teacher</option>
-          <option>student</option>
-        </select>
-      </div>
-
-      <div class="field">
-        <label for="school">at</label>
-        <select name="school">
-          <option></option>
-          <%= @schools.each do |s| %>
-            <option><%= s.name %></option>
+    <% if @user.errors.any? %>
+      <div class="error_messages">
+        <h2 class="red"><i>Oops, let's try that again.</i></h2>
+          <% @user.errors.full_messages.each do |message| %>
+            <i class="red"><%= message %>.</i><br>
           <% end %>
-        </select>
+        <br>
       </div>
+    <% end %>
 
-
+    <div >
+      <div class="field"><%= f.label :first_name %><%= f.text_field :firstname %></div>
+      <div class="field"><%= f.label :last_name %><%= f.text_field :lastname %></div>
+      <div class="field"><%= f.label :username %><%= f.text_field :username %></div>
+      <div class="field"><%= f.label :email %><%= f.text_field :email %></div>
+      <div class="field"><%= f.label :password %><%= f.password_field :password %></div>
+      <div class="field"><%= f.label :password_confirmation %><%= f.password_field :password_confirmation %></div>
     </div>
 
-    <h3><strong>Don't see your school? <a href="mailto:asoble@gmail.com?Subject=Heyu%20account&body=Hi,%20my%20name%20is%20_____%20and%20I%20(teach%20/%20study)%20at%20______.">Contact us</a>. </strong></h3>
+    <br>
+    <br>
 
-    <br><br>
-
-  <div class="actions"><input type="submit" class="btn btn-large btn-primary rounded" name="next" value="Next"></div>
+    <div class="actions"><input type="submit" class="btn btn-large btn-primary rounded" id="next"> </div></div>
 
   <% end %>
+
+  <br>
+
+  <p style="text-align: center;">By clicking "submit," you agree to Heyu's <a href="/terms">terms of use</a>.</p>
   
   </div>
 

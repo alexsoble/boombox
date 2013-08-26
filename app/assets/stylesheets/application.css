@@ -44,7 +44,7 @@ h3 { font-size: 18px !important; line-height: 22px !important }
 .right { float: right; }
 
 .field label { width: 90px; float: left; }
-.field select { width: 220px; }
+.field select { width: 180px; margin-left: auto; margin-right: auto; }
 .column { width: 360px; margin-left: auto; margin-right: auto; }
 
 .white { color: white; }
