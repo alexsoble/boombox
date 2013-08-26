@@ -802,8 +802,6 @@ $ ->
     $('.edited-line').prev().effect("highlight", {}, 2000)
     $('.edited-line').remove()
     $('#coming-soon').remove()
-    $('#loop-settings').slideDown()
-    window.loop_length = false
     reorderRight()
 
   $('#done-editing').livequery ->
