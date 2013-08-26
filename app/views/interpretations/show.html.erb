@@ -101,17 +101,18 @@
         </div>
       <% end %>
     </div>
-  <% unless current_user %>
-    <div class="share-clip-container">
-      <p class="center"><i>Clip ends here—<a href="/join">join Heyu</a> to view the full translation.</i></p>
-    </div>
+    <% unless current_user %>
+      <div class="share-clip-container">
+        <p class="center"><i>Click <a href="/interpretations/<%= @interp.id %>">here</a> for the full translation.</i></p>
+      </div>
     <% else %>
       <div class="share-clip-container">
-        <h3 class="share-clip-text">Share this clip?</h3>
-        <div class="btn btn-primary btn-share rounded" id="tweet-it"> <i class="icon-twitter icon-2x"></i> </div>
-        <div class="btn btn-primary btn-share rounded" id="email"> <i class="icon-envelope icon-2x"></i> </div>
+        <h3 style="text-align: center;">Share this clip?</h3>
+        <div class="btn btn-primary btn-share rounded" id="tweet-it" style="text-align: center;"> <i class="icon-twitter icon-2x"></i> </div>
+        <div class="btn btn-primary btn-share rounded" id="email" style="text-align: center;"> <i class="icon-envelope icon-2x"></i> </div>
       </div>
     <% end %>
+  </div>
   <% end %>
 
   <% if action_name == "edit" || action_name == "new" %>

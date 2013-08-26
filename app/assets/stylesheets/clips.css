@@ -5,19 +5,16 @@
 .btn-share { }
 
 .share-clip-container { 
-  width: 180px;
-  margin-top: 160px; 
-  margin-left: 160px; }
+  width: 240px;
+  margin-top: 120px; 
+  margin-left: 120px;
+  text-align: center; }
 
-.share-clip-text { text-align: left; }
-
-/**
 .share-clip-container .btn-large {
   width: 35px;
   height: 35px;
   line-height: 35px;
   text-align: center; }
-**/
 
 #settings.clip {
   height: 120px; }

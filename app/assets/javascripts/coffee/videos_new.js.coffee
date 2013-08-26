@@ -129,35 +129,38 @@ $ ->
         </label>
       </div>")
 
-  $('#word-marking-mode').click ->
-    if window.word_marking_mode == false
-      window.word_marking_mode = true
-      $(this).text('marking key words')
-    else
-      window.word_marking_mode = false
-      $(this).text('mark key words')
+  $('#word-marking-mode').livequery ->
+    $(this).click ->
+      if window.word_marking_mode == false
+        window.word_marking_mode = true
+        $(this).text('marking key words')
+      else
+        window.word_marking_mode = false
+        $(this).text('mark key words')
 
-  $('#add-note').click ->
-    $('.edit-button-suite').replaceWith("
-      <div id='edit-note-area'>
-        <textarea id='note-input' style='width: 370px; height: 60px;'/>
-        <br>
-        <div class='btn btn-info btn-small btn-tiny rounded' id='done-with-note'> done </div>
-      </div>
-    ")
-    player.pauseVideo()
+  $('#add-note').livequery ->
+    $(this).click ->
+      $('.edit-button-suite').replaceWith("
+        <div id='edit-note-area'>
+          <textarea id='note-input' style='width: 370px; height: 60px;'/>
+          <br>
+          <div class='btn btn-info btn-small btn-tiny rounded' id='done-with-note'> done </div>
+        </div>
+      ")
+      player.pauseVideo()
 
-  $('#edit-note').click ->
-    current_note = $('#note-text').text()
-    $('#notes-box').html("
-      <div id='edit-note-area'>
-        <textarea id='note-input' style='width: 370px; height: 60px;'/>
-        <br>
-        <div class='btn btn-info btn-small btn-tiny rounded' id='done-with-note'> done </div>
-      </div>
-    ")
-    $('#note-input').html(current_note)
-    player.pauseVideo()
+  $('#edit-note').livequery ->
+    $(this).click ->
+      current_note = $('#note-text').text()
+      $('#notes-box').html("
+        <div id='edit-note-area'>
+          <textarea id='note-input' style='width: 370px; height: 60px;'/>
+          <br>
+          <div class='btn btn-info btn-small btn-tiny rounded' id='done-with-note'> done </div>
+        </div>
+      ")
+      $('#note-input').html(current_note)
+      player.pauseVideo()
 
   $('#done-with-note').livequery ->
     $(this).click ->
