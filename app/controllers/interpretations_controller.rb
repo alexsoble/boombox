@@ -40,7 +40,6 @@ class InterpretationsController < ApplicationController
       @original_lines << {"id" => l.id, "lang1" => l.lang1, "lang2" => l.lang2, "time" => l.time.to_i, "duration" => l.duration.to_i }
     end
     @original_lines.sort { |a, b| a["time"] <=> b["time"] }
-    logger.debug "@original_lines: #{@original_lines}"
 
     @raw_new_lines = JSON.parse(params[:lines])
     @new_lines = []
@@ -49,7 +48,6 @@ class InterpretationsController < ApplicationController
       @new_lines << {"id" => l["id"].to_i, "lang1" => l["lang1"], "lang2" => l["lang2"], "time" => l["time"].to_i, "duration" => l["duration"].to_i }
     end 
     @new_lines.sort { |a, b| a["time"] <=> b["time"] }
-    logger.debug "@new_lines: #{@new_lines}"
 
     if @original_lines == @new_lines
       
@@ -63,6 +61,7 @@ class InterpretationsController < ApplicationController
 
       if @lines_to_delete.present?
         @lines_to_delete.each do |l|
+          logger.debug "deleting line: #{l}"
           line = Line.find_by_id(l["id"])
           line.destroy
           line.save
@@ -70,6 +69,7 @@ class InterpretationsController < ApplicationController
       end
 
       @lines_to_add.each do |l|
+        logger.debug "adding line: #{l}"
         l["interpretation_id"] = @interp.id
         logger.debug "#{l}"
         Line.create(l)
@@ -139,6 +139,12 @@ class InterpretationsController < ApplicationController
     @lang2 = @interp.lang2
     @published = @interp.published
     @lines = Line.where(:interpretation_id => @interp.id).order("time ASC")
+
+    @keywords = []
+    Keyword.where(:interpretation_id => @interp.id).each do |k|
+      @keywords << k.word_text
+    end
+
     @lines.each do |l|
       if l.lang1.present? then @lang1_and_lang2 = true end
     end
