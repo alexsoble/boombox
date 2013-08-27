@@ -11,6 +11,10 @@ class ClipsController < ApplicationController
     @video = @interp.video
     @translator = User.find_by_id(@interp.user_id)
 
+    @keywords = []
+    Keyword.where(:interpretation_id => @interp.id).each do |k|
+      @keywords << k.word_text
+    end
 
     @lines = Line.where(interpretation_id: @interp.id).order("time ASC")
     @lines_within_clip = @lines.where(time: @start .. @start + @duration)

@@ -190,11 +190,3 @@
   <% end %>
   data-published=<%= @published %>>
 </div>
-
-<%= javascript_tag do %>
-  <% if @keywords.present? %>
-    window.keywords = <%= raw @keywords.to_json %>;
-  <% else %>
-    window.keywords = false;
-  <% end %>
-<% end %>
