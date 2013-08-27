@@ -60,6 +60,7 @@ $ ->
     </div>')
   $('#lyrics-box').addClass('short')
   $('#settings').addClass('edit')
+  $('#notes-box').hide()
 
   reorderRight = ->
     lines = $('.line')
@@ -387,6 +388,7 @@ $ ->
         </div>")
 
       correct_line.next().effect("highlight", {}, 2000)
+      $('#notes-box').slideDown()
       resetForNextLine()
 
     moveLoopForward = -> 
