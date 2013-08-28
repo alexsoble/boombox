@@ -10,14 +10,13 @@
   <br>
   <br>
 
-    <% @demo_clips.each do |c| %>
-      <% i = c.interpretation %>
+    <% @demo_interps.each do |i| %>
       <% v = i.video %>
-    <div class="video-thumb-box frontpage-thumb-box <%= v.lang1 %>" data-clip-id=<%= c.id %>>
-      <strong class="center" style="color: #2793E6;"><%= "#{v.title.slice(0,25)}" %></strong>
-      <br>
-      <div class="image-box">
-        <%= image_tag "http://img.youtube.com/vi/#{v.youtube_id}/1.jpg" %>
+      <div class="video-thumb-box frontpage-thumb-box <%= v.lang1 %>" data-interp-id=<%= i.id %>>
+        <strong class="center" style="color: #2793E6;"><%= "#{v.title.slice(0,25)}" %></strong>
+        <br>
+        <div class="image-box">
+      <%= image_tag "http://img.youtube.com/vi/#{v.youtube_id}/1.jpg" %>
       </div>
     </div>
   <% end %>

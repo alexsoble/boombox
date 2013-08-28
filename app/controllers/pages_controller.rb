@@ -38,7 +38,7 @@ class PagesController < ApplicationController
   end
 
   def welcome
-    @demo_clips = Clip.order("created_at ASC").limit(3)
+    @demo_interps = [Interpretation.find_by_id(43), Interpretation.find_by_id(27), Interpretation.find_by_id(119)]
   end
 
   def translate
