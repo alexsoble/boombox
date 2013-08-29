@@ -389,13 +389,13 @@ $ ->
 
       correct_line.next().effect("highlight", {}, 2000)
       $('#notes-box').slideDown()
-      resetForNextLine()
+      resetForNextLine(current_loop_start + duration)
 
-    moveLoopForward = -> 
-      $('#playback-slider').rangeSlider("values", window.section * window.loop_length, (window.section + 1) * window.loop_length)
-      $('.ui-rangeSlider-leftLabel.loop-handle-label').html("<div class='inner-label'>#{shortFormatTime(window.section * window.loop_length)}</div>")
-      $('.ui-rangeSlider-rightLabel.loop-handle-label').html("<div class='inner-label'>#{shortFormatTime((window.section + 1) * window.loop_length)}</div>")
-      window.player.seekTo(window.section * window.loop_length)
+    moveLoopForward = (next_line_start) -> 
+      $('#playback-slider').rangeSlider("values", next_line_start, next_line_start + window.loop_length)
+      $('.ui-rangeSlider-leftLabel.loop-handle-label').html("<div class='inner-label'>#{shortFormatTime(next_line_start)}</div>")
+      $('.ui-rangeSlider-rightLabel.loop-handle-label').html("<div class='inner-label'>#{shortFormatTime(next_line_start + window.loop_length)}</div>")
+      window.player.seekTo(next_line_start)
       window.loop_counter = 0
       player.playVideo()
 
@@ -414,7 +414,7 @@ $ ->
       if fraction > .7 then status = "Nearly there!"
       $('#progress-report').html("You've translated #{number_of_loops} loops, totalling #{total_seconds} out of #{total_seconds}, or approximately #{percentage} of the video. #{status}")
 
-    resetForNextLine = -> 
+    resetForNextLine = (next_line_start) -> 
       $('#lyrics-box').scrollTo('100%')
       $('#intro-text').fadeOut()
       $('.lang1-line').val('')
@@ -422,7 +422,7 @@ $ ->
       $('.lang1-line').focus()
       window.section += 1
       displayTooltip()
-      moveLoopForward()
+      moveLoopForward(next_line_start)
 
     $(".lang1-line").livequery ->
       $(this).keyup (e) ->
@@ -677,6 +677,8 @@ $ ->
               <div class='btn btn-primary btn-small rounded tight-margins' id='copy-paste'> copy/paste lines &darr; </div>
             </span>
             <span style='float: left; margin: 10px;' class='toolbox-lower'>
+              <div class='btn btn-small btn-warning rounded tight-margins' id='bump-line-up' data-line-id=#{id}> &uarr; </div>
+              <div class='btn btn-small btn-warning rounded tight-margins' id='bump-line-down' data-line-id=#{id}> &darr; </div>
               <div class='btn btn-small btn-warning rounded tight-margins' id='edit-timing' data-line-id=#{id}> adjust timing </div>
             </span>")
           $('#lyrics-box').scrollTo($('.edited-line'))
@@ -812,6 +814,21 @@ $ ->
 
   $('#done-editing-time').livequery ->
     $(this).click ->
+      doneEditing()
+
+  $('#bump-line-up').livequery ->
+    $(this).click ->
+      this_line = $(this).parent().parent()
+      prev_line = this_line.prev()
+      this_line.attr("data-time","#{parseInt(prev_line.attr('data-time')) - parseInt(this_line.attr('data-duration'))}")
+      doneEditing()
+
+  $('#bump-line-down').livequery ->
+    $(this).click ->
+      this_line = $(this).parent().parent()
+      next_line = this_line.next()
+      this_line.attr("data-time","#{parseInt(next_line.attr('data-time')) + parseInt(this_line.attr('data-duration'))}")
+      console.log next_line.attr('data-time') + this_line.attr('data-duration')
       doneEditing()
 
   $('#edit-timing').livequery ->
