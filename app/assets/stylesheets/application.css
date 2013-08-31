@@ -24,8 +24,6 @@
 .clip#lyrics-box::-webkit-scrollbar { background-color: rgba(0,0,0,0); }
 .clip#lyrics-box::-webkit-scrollbar-thumb { background-color: rgba(0,0,0,0);  }
 
-::-webkit-scrollbar { opacity: 0; }
-
 html { overflow-y: scroll; }
 
 .centerbox { margin-right: auto; 
