@@ -60,7 +60,8 @@ $ ->
     </div>')
   $('#lyrics-box').addClass('short')
   $('#settings').addClass('edit')
-  $('#notes-box').hide()
+  if action_name == 'new'
+    $('#notes-box').hide()
 
   reorderRight = ->
     lines = $('.line')
@@ -139,6 +140,13 @@ $ ->
         window.word_marking_mode = false
         $(this).text('mark key words')
 
+  $('.dropdown-toggle').click ->
+    $('#settings').slideUp()
+    player.pauseVideo()
+
+  $('.dropdown-option').click ->
+    $('#settings').slideDown()
+
   $('#add-note').livequery ->
     $(this).click ->
       $('.edit-button-suite').replaceWith("
@@ -166,18 +174,34 @@ $ ->
   $('#done-with-note').livequery ->
     $(this).click ->
       note = $('#note-input').val()
-      $.post('/update_note', { 'id' : "#{window.interp_id}", 'note' : "#{note}" })
+      $.post('/update_note', { 'id' : '#{window.interp_id}', 'note' : '#{note}' })
       $('#edit-note-area').replaceWith("
-        <p id='note'>
-          <strong>Your note: &nbsp;</strong>
-          <span id='note-text'>#{note}</span>
-        </p>
-        <div class='edit-button-suite'>
-          <div class='btn btn-info btn-small btn-tiny rounded' id='edit-note'> edit note </div>
-          <div class='btn btn-info btn-small btn-tiny rounded' id='word-marking-mode'> mark key words </div>
-          <div class='btn btn-info btn-small btn-tiny rounded' id='instructions-button'> editing tips </div>
-        </div>
-      ")
+          <p id='note'><strong>Your note: &nbsp;</strong>
+            <span id='note-text'>#{note}</span>
+          </p>
+          <div class='edit-button-suite'>
+            <div class='btn-group'>
+              <div class='btn btn-info btn-small rounded dropdown-toggle' data-toggle='dropdown'> teaching tools </div>
+              <ul class='dropdown-menu'>
+                <li><a href='#' id='word-marking-mode' class='dropdown-option'> mark key words </a></li>
+                <li><a href='#' id='edit-note' class='dropdown-option'> edit note </div></li>
+              </ul>
+            </div>
+            <div class='btn-group'>
+              <div class='btn btn-info btn-small rounded dropdown-toggle' data-toggle='dropdown'> help </div>
+              <ul class='dropdown-menu'>
+                <li><a href='#' id='instructions-button' class='dropdown-option'> editing tips </a></li>
+              </ul>
+            </div>
+            <div class='btn-group'>
+              <div class='btn btn-info btn-small rounded dropdown-toggle' data-toggle='dropdown'> print </div>
+              <ul class='dropdown-menu'>
+                <li><a href='#' id='print-pdf' class='dropdown-option'> print pdf </a></li>
+                <li><a href='#' id='print-txt' class='dropdown-option'> print .txt </a></li>
+              </ul>
+            </div>
+          </div>
+          ")
       player.playVideo()
 
   $("#yes-loops").livequery ->
@@ -214,8 +238,15 @@ $ ->
         </p>
       </div>")
 
+    $('#print-pdf').click ->
+      window.location.href = "/print_pdf/#{window.interp_id}"
+    $('#print-txt').click ->
+      window.location.href = "/print_txt/#{window.interp_id}"
+    $('#print-google').click ->
+      window.location.href = "https://www.googleapis.com/auth/drive"
+      
     $('#instructions-button').click ->
-      $("#instructions").dialog()
+      $("#instructions").dialog()      
 
     $('#settings').append("
       <div id='playback-buttons' class='upper-right-btn'>
@@ -450,11 +481,16 @@ $ ->
       window.player.pauseVideo()
   
     if action_name is 'new'
-      $('#controls').html("
-        <strong>Here we go!</strong><br><br>  
-        Your goal: translate the video <strong>line-by-line.</strong><br><br> Once you've translated a line, hit <strong>ENTER</strong> to move to the next line. <br><br>
-        Be sure to <strong><a href='/sign_up?interp=#{interp_id}'>sign up for a Heyu account</strong></a> if you'd like to save or publish your translation.<br><br>
-        <h3><a href='#' id='input-lines-go'><strong>I'm ready!</strong></a></h3>")
+      if window.user_id == null
+        $('#controls').html("
+          <br><br>
+          <strong>Here we go!</strong><br><br>
+          Be sure to <strong><a href='/join?interp=#{interp_id}'>sign up for a Heyu account</strong></a> if you'd like to save or publish your translation.<br><br>
+          <h3><a href='#' id='input-lines-go'><strong>I'm ready!</strong></a></h3>")
+      else
+        $('#controls').html("
+        <br><br><br><br>
+        <a class='btn btn-info btn-large center-pill rounded' id='input-lines-go' style='position: absolute; left: 108px;'>I'm ready!</a>")
 
     $("#input-lines-go").livequery -> 
       $(this).click ->

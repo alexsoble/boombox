@@ -24,7 +24,7 @@
   position: relative;
   overflow: visible; }
 
-#outer-video-box { overflow: visible; position: relative; }
+#outer-video-box { overflow: visible !important; position: relative; }
 
 #new-video-box { border: 2px solid black; }
 
@@ -146,9 +146,10 @@
 #note { padding-left: 12px; padding-bottom: 12px; }
 #translator-name { padding-left: 12px; }
 
+#edit-button-suite { }
+.btn-group { margin: 5px; }
 .show-button-suite { float: right; position: relative; bottom: 32px; right: 4px; }
 .show-button-suite .btn { float: right; margin-right: 0px; margin-left: 8px; }
-.edit-button-suite { padding: 9px; }
 .btn-tiny { font-size: 11px; }
 
 /*** PLAYBACK SLIDER STYLING ***/

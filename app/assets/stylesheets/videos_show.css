@@ -4,8 +4,10 @@
   margin-top: 53px; 
   float: left; 
   overflow-y: scroll; 
-  margin: 8px; 
-  overflow-y: scroll; }
+  margin: 8px; }
+
+#lyrics-box.skinny { width: 320px;
+  max-height: 530px; }
 
 .lyrics-container {
   margin: 8px; 

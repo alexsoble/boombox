@@ -1,21 +1,24 @@
 class PagesController < ApplicationController
 
-  def home
+  def welcome
 
-    @demo_videos = [
+    @featured_videos = [
+      Interpretation.find(27),
       Interpretation.find(28),
-      Interpretation.find(27)
+      Interpretation.find(43),
+      Interpretation.find(131),
+      Interpretation.find(142)
     ]
 
     interps_with_some_content = []
-    Interpretation.where(:published => true).all.each do |i|
+    Interpretation.all.each do |i|
       l = Line.where(:interpretation_id => i.id).length
       if l > 10
         interps_with_some_content << { :id => i.id, :length => l }
       end
     end
     @interps_with_some_content = []
-    interps_with_some_content.sort_by { |hash| hash[:length] }.reverse.take(6).each do |i|
+    interps_with_some_content.sort_by { |hash| hash[:length] }.reverse.take(12).each do |i|
       @interps_with_some_content << Interpretation.find(i[:id])
     end
 
@@ -25,6 +28,7 @@ class PagesController < ApplicationController
       if @langs_with_some_content.index(lang1).blank? 
         @langs_with_some_content << lang1
       end
+    @langs_with_some_content = @langs_with_some_content.sort
     end
 
     @latest_translated_videos = Array.new
@@ -35,9 +39,6 @@ class PagesController < ApplicationController
     end
     @latest_translated_videos = @latest_translated_videos[0..9]
 
-  end
-
-  def welcome
     @demo_interps = [Interpretation.find_by_id(43), Interpretation.find_by_id(27), Interpretation.find_by_id(119)]
   end
 

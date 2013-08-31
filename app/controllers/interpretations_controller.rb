@@ -103,7 +103,12 @@ class InterpretationsController < ApplicationController
       end
     end
     logger.debug "comments: #{@comments}"
-          
+
+    @lang1_and_lang2 = false
+    @lines.each do |l|
+      if l.lang1.present? then @lang1_and_lang2 = true end
+    end
+
     @url = request.url
     @lang2 = @interp.lang2
     @lang1 = @video.lang1
@@ -187,6 +192,96 @@ class InterpretationsController < ApplicationController
       l.destroy
     end
     redirect_to :back
+  end
+
+  def print_pdf
+    require 'prawn'
+
+    @interp = Interpretation.find_by_id(params[:id])
+    @video = @interp.video
+    @translator = User.find_by_id(@interp.user_id)
+    @lines = Line.where(:interpretation_id => @interp.id)
+ 
+    Prawn::Document.generate("#{@video.title} - translation by #{@translator.firstname}.pdf") do |pdf|
+
+      pdf.text "#{@video.title}", :align => :center, :size => 18
+      pdf.text "Translated from #{@video.lang1} by #{@translator.username}", :align => :center, :size => 14
+      pdf.move_down 12
+      link = "www.heyuvideo.com/interpretations/#{@interp.id}"
+      pdf.text "Watch on Heyu: <color rgb='15130245'><u><link href=#{link}>#{link}</link></u></color>", :align => :center, :size => 10, :inline_format => true
+
+      pdf.move_down 36
+
+      @lines.each do |l|
+        pdf.column_box([0, pdf.cursor], :columns => 2, :width => pdf.bounds.width) do
+          pdf.text("#{l.lang1}")
+          pdf.bounds.move_past_bottom
+          pdf.text("#{l.lang2}")
+        end
+        pdf.move_down 12
+        if pdf.cursor < 20 then pdf.start_new_page end
+      end
+    end
+
+    send_file "#{@video.title} - translation by #{@translator.firstname}.pdf"
+
+  end
+
+  def print_txt
+
+    @interp = Interpretation.find_by_id(params[:id])
+    @video = @interp.video
+    @translator = User.find_by_id(@interp.user_id)
+    @lines = Line.where(:interpretation_id => @interp.id)
+
+    File.new "#{@video.title} - translation by #{@translator.firstname}.txt", "w+"
+
+    File.open("#{@video.title} - translation by #{@translator.firstname}.txt", 'w') do |f|  
+      f.puts "#{@video.title}"  
+      f.puts "\n"  
+      f.puts "Translated from #{@video.lang1} by #{@translator.username}" 
+      f.puts "\n"  
+      f.puts "#{@video.lang1.upcase}"  
+      @lines.each do |l|
+        f.puts l.lang1  
+      end
+      f.puts "\n"  
+      f.puts "#{@interp.lang2.upcase}"  
+      @lines.each do |l|
+        f.puts l.lang2
+      end
+    end  
+    send_file "#{@video.title} - translation by #{@translator.firstname}.txt"
+
+  end
+
+  def print_google
+    
+    @interp = Interpretation.find_by_id(params[:id])
+    @video = @interp.video
+    @translator = User.find_by_id(@interp.user_id)
+    @lines = Line.where(:interpretation_id => @interp.id)
+
+    File.new "#{@video.title} - translation by #{@translator.firstname}.txt", "w+"
+
+    File.open("#{@video.title} - translation by #{@translator.firstname}.txt", 'w') do |f|  
+      f.puts "#{@video.title}"  
+      f.puts "\n"  
+      f.puts "Translated from #{@video.lang1} by #{@translator.username}" 
+      f.puts "\n"  
+      f.puts "#{@video.lang1.upcase}"  
+      @lines.each do |l|
+        f.puts l.lang1  
+      end
+      f.puts "\n"  
+      f.puts "#{@interp.lang2.upcase}"  
+      @lines.each do |l|
+        f.puts l.lang2
+      end
+    end  
+
+    session.upload_from_file("/path/to/hello.txt", "hello.txt", :convert => false)
+
   end
 
   def get_by_language

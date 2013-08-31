@@ -18,6 +18,9 @@ Boombox::Application.routes.draw do
   resources :users
   resources :sessions
 
+  get '/print_pdf/:id' => 'interpretations#print_pdf'
+  get '/print_txt/:id' => 'interpretations#print_txt'
+
   post '/new_comment' => 'comments#create'
   get '/delete_comment/:id' => 'comments#destroy' # <= This makes me nervous! But I can't puzzle out how else to do it.
   

@@ -31,16 +31,13 @@
 <div class="navbar navbar-inverse">
   <div class="navbar-inner" style="background-color: #9B59BB;">
     <div class="container" style="width: auto;">
-      <% if current_user %>
-        <a class="brand" href="/home"> Heyu <i class="icon-music"></i> </a>
-      <% else %>
-        <a class="brand" href="/welcome"> Heyu <i class="icon-music"></i> </a>
-      <% end %> 
+      <a class="brand" href="/welcome"> Heyu <i class="icon-music"></i> </a>
+      <ul class="nav pull-left">
+        <li> <%= link_to "Home", "/welcome" %> </li>
       </ul>
       <% if current_user %>
         <ul class="nav pull-right signed-in-user" id="<%= current_user.id %>">
           <li><%= link_to "My profile", user_url(current_user) %></li>
-          <li><%= link_to "Translate video", "/translate" %></li>
           <li><a href="/survey">Survey</a></li>
           <li><%= link_to "Sign out", "/sign_out" %></li>
         </ul>

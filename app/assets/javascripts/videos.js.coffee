@@ -1,20 +1,10 @@
 $ -> 
 
-  if $('#user-id').attr('data-user') isnt 'logged-out'
-    window.user_id = $('#user-id').attr('data-user')
-  else
+  window.user = $('#user-id').attr('data-user')
+  if window.user == "logged-out"
     window.user_id = null
-
-  $("body").css("overflow", "hidden")
-
-  $(".page-language-option").click (e) =>
-    language_option = e.currentTarget.id
-
-    if language_option is "french-page"
-      $("#translate-button").html("Nouvelle vidéo")
-
-    if language_option is "english-page"
-      $("#translate-button").html("Translate new video")
+  else
+    window.user_id = parseInt(window.user)
 
   re = new RegExp("MSIE ([0-9]{1,}[\.0-9]{0,})")
   if (re.exec(window.navigator.userAgent) != null)

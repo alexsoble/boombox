@@ -1,25 +1,93 @@
 <div class="centerbox center">
   <br>
-  <h1 style="line-height: 48px;">Learning a language should be <strong>fun.</strong></h1>
+  <% if current_user %>
+    <% if current_user.firstname %>
+      <h1>Welcome <%= current_user.firstname %></h1>
+    <% else %>
+      <h1>Welcome, <%= current_user.username %>!</h1>
+    <% end %>
+    <br>
+  <% else %>
+    <h1 style='text-align: center;'>Love languages?</h1>
+    <h3 style='text-align: center;'>YouTube and Heyu are your new best friends.</h3>
+    <br>
+    <h3>Join teachers and students around the world who<br> love learning new langauges through music.</h3>
+  <% end %>
   <br>
-  <h2>Raise your hand if you agree! (And join Heyu.)</h2>
   <br>
-  <h3>Heyu helps language teachers and students use music and video.</h3>
-  <br>
-  <h3><strong>Watch an example:</strong></h3>
-  <br>
-  <br>
+</div>
+<div class="index-button" id="new-translation-button">
+  <div class="button-text-wrapper">
+    <p class="index-button-text">Search YouTube or copy the video address here:</p>
+  </div>
+  <div class="button-text-wrapper" style="float: left;"> 
+    <div class="controls" style="position: absolute;">
+      <input type="text" class="short-text-box new-video-input" id="ask-youtube"><%= image_tag "youtube-logo.png", :size => '71x71', :style => 'position: relative; left: -12px; top: -5px;' %>
+      <input type="hidden" id="youtube_id">
+      <div id="progress-bar"></div>
+    </div>
+  </div>
+</div>
+<div id="results-box"></div>
+<br>
+<br>
+<div class="row">
+  <div class="offset1">
+    <h2> Featured videos: </h2>
 
-    <% @demo_interps.each do |i| %>
+      <hr id="hr">
+
+      <%  @featured_videos.each do |i| %>
+        <% v = i.video %>
+        <div class="video-thumb-box frontpage-thumb-box <%= v.lang1 %>" data-interp-id=<%= i.id %>>
+          <strong class="center" style="color: #2793E6;"><%= "#{v.title.slice(0,25)}" %></strong>
+          <br>
+          <div class="image-box">
+            <%= image_tag "http://img.youtube.com/vi/#{v.youtube_id}/1.jpg" %>
+          </div>
+        </div>
+      <% end %>
+
+  </div>
+</div>
+
+<div class="row">
+
+  <div class="offset1">
+
+    <span>
+
+      <h2> Show me videos in... &nbsp;
+
+      <div class="btn-group">
+        <div class="btn btn-info rounded dropdown-toggle" data-toggle="dropdown"> (select language) </div>
+        <ul class="dropdown-menu">
+          <% @langs_with_some_content.each do |l| %>
+            <li><a href="#" class="language-selector <%= l %>"><%= l %></a></li>
+          <% end %>
+        </ul>
+      </div>
+
+    </h2>
+
+    </span>
+    <hr id="hr">
+
+    <%  @interps_with_some_content.each do |i| %>
       <% v = i.video %>
       <div class="video-thumb-box frontpage-thumb-box <%= v.lang1 %>" data-interp-id=<%= i.id %>>
         <strong class="center" style="color: #2793E6;"><%= "#{v.title.slice(0,25)}" %></strong>
         <br>
         <div class="image-box">
-      <%= image_tag "http://img.youtube.com/vi/#{v.youtube_id}/1.jpg" %>
+          <%= image_tag "http://img.youtube.com/vi/#{v.youtube_id}/1.jpg" %>
+        </div>
       </div>
-    </div>
-  <% end %>
+    <% end %>
+
+  </div>
+
+</div>
+
 
 </div>
 <br>
