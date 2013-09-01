@@ -9,6 +9,7 @@ $ ->
     lang = $(this).attr('id')
     $('.frontpage-thumb-box').hide()
     $(".#{lang}").show()
+    $("#featured-videos").slideUp()
 
   $('#results-box').hide()
   window.n = 0

@@ -200,9 +200,10 @@ class InterpretationsController < ApplicationController
     @interp = Interpretation.find_by_id(params[:id])
     @video = @interp.video
     @translator = User.find_by_id(@interp.user_id)
-    @lines = Line.where(:interpretation_id => @interp.id)
+    @lines = Line.where(:interpretation_id => @interp.id).sort { |a, b| a.time <=> b.time }
  
-    Prawn::Document.generate("#{@video.title} - translation by #{@translator.firstname}.pdf") do |pdf|
+    tmp_file = Tempfile.new(Digest::MD5.hexdigest(rand(12).to_s))
+    Prawn::Document.generate(tmp_file.path()) do |pdf|
 
       pdf.text "#{@video.title}", :align => :center, :size => 18
       pdf.text "Translated from #{@video.lang1} by #{@translator.username}", :align => :center, :size => 14
@@ -223,7 +224,7 @@ class InterpretationsController < ApplicationController
       end
     end
 
-    send_file "#{@video.title} - translation by #{@translator.firstname}.pdf"
+    send_file tmp_file
 
   end
 

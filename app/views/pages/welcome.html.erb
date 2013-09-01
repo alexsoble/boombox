@@ -10,7 +10,7 @@
   <% else %>
     <h1 style='text-align: center;'><strong>Heyu = Music + Language Learning</strong></h1>
     <br>
-    <h2 style='text-align: center;'><i>create translations // highlight keywords // explain, discuss, and compare</i></h2>
+    <h2 style='text-align: center;'><i>create translations // link with lessons // explain, discuss, and compare</i></h2>
     <br>
     <h3>Join teachers and students around the world who are changing langauge education.</h3>
   <% end %>
@@ -19,7 +19,7 @@
 </div>
 <div class="index-button" id="new-translation-button">
   <div class="button-text-wrapper">
-    <p class="index-button-text">Search YouTube or copy the video address here:</p>
+    <p class="index-button-text">Search YouTube here to translate a new video:</p>
   </div>
   <div class="button-text-wrapper" style="float: left;"> 
     <div class="controls" style="position: absolute;">
@@ -32,7 +32,7 @@
 <div id="results-box"></div>
 <br>
 <br>
-<div class="row">
+<div class="row" id="featured-videos">
   <div class="offset1">
     <h2> Featured videos: </h2>
 
@@ -64,7 +64,7 @@
         <div class="btn btn-info rounded dropdown-toggle" data-toggle="dropdown"> (select language) </div>
         <ul class="dropdown-menu">
           <% @langs_with_some_content.each do |l| %>
-            <li><a href="#" class="language-selector <%= l %>"><%= l %></a></li>
+            <li><a class="language-selector" id="<%= l %>"><%= l %></a></li>
           <% end %>
         </ul>
       </div>
