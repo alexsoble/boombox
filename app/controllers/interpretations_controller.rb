@@ -224,7 +224,9 @@ class InterpretationsController < ApplicationController
       end
     end
 
-    send_file tmp_file
+    send_file tmp_file,
+              :content_type => "application/pdf",
+              :filename => "#{@video.title} - translation by #{@translator.firstname}.pdf"
 
   end
 
@@ -233,11 +235,10 @@ class InterpretationsController < ApplicationController
     @interp = Interpretation.find_by_id(params[:id])
     @video = @interp.video
     @translator = User.find_by_id(@interp.user_id)
-    @lines = Line.where(:interpretation_id => @interp.id)
-
-    File.new "#{@video.title} - translation by #{@translator.firstname}.txt", "w+"
-
-    File.open("#{@video.title} - translation by #{@translator.firstname}.txt", 'w') do |f|  
+    @lines = Line.where(:interpretation_id => @interp.id).sort { |a, b| a.time <=> b.time }
+ 
+    tmp_file = Tempfile.new(Digest::MD5.hexdigest(rand(12).to_s))
+    File.open(tmp_file, 'w') do |f|  
       f.puts "#{@video.title}"  
       f.puts "\n"  
       f.puts "Translated from #{@video.lang1} by #{@translator.username}" 
@@ -252,7 +253,9 @@ class InterpretationsController < ApplicationController
         f.puts l.lang2
       end
     end  
-    send_file "#{@video.title} - translation by #{@translator.firstname}.txt"
+
+    send_file tmp_file,
+              :filename => "#{@video.title} - translation by #{@translator.firstname}.txt"
 
   end
 
