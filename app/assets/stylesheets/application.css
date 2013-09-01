@@ -30,6 +30,11 @@ html { overflow-y: scroll; }
   margin-left: auto; 
   width: 600px; }
 
+.wide-centerbox {
+  margin-right: auto; 
+  margin-left: auto; 
+  width: 1200px; }
+
 .quiet { display: none; }
 .relative { position: relative; }
 .narrow { width: 200px; }
