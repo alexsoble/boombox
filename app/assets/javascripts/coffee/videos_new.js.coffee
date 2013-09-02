@@ -496,6 +496,8 @@ $ ->
     if video_duration != 0
       console.log "INITIALIZING PLAYBACK CONTROLS! VIDEO DURATION = #{video_duration}!"
       playbackControls(video_duration)
+    else
+      checkAgain(player)
 
 # YOUTUBE PLAYER COMES IN HERE
 
@@ -527,9 +529,7 @@ $ ->
     window.player = player
 
   onPlayerReady = (event) ->
-    console.log "PLAYER READY!"
     inputLineLogic()
-    console.log "INPUT LINE LOGIC LOADED!"
     video_duration = window.player.getDuration()
     console.log "VIDEO DURATION = #{video_duration}!"
     window.video_duration = video_duration
