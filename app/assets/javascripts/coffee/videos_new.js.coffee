@@ -536,7 +536,8 @@ $ ->
         playbackControls(video_duration)
 
     if video_duration == 0
-      keepChecking = window.setInterval(checkAgain(), 300)
+      keepChecking = window.setInterval(checkAgain(), 2000)
+    else
 
     # CONTROLS FOR LONG VIDEOS COME IN HERE    
     if video_duration > 300
