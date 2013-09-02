@@ -531,11 +531,11 @@ $ ->
       console.log "CHECKING AGAIN..."
       video_duration = window.player.getDuration()
       console.log "NEW VIDEO DURATION = #{video_duration}!"
+      if video_duration != 0
+        playbackControls(video_duration)
 
     if video_duration == 0
-      checkAgain()
-    else
-      playbackControls(video_duration)
+      keepChecking = window.setInterval(checkAgain(), 300)
 
     # CONTROLS FOR LONG VIDEOS COME IN HERE    
     if video_duration > 300
