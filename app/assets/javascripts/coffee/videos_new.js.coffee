@@ -493,7 +493,9 @@ $ ->
     console.log "CHECKING AGAIN..."
     player = window.player
     video_duration = player.getDuration()
+    current_time = player.getCurrentTime()
     console.log "NEW VIDEO DURATION = #{video_duration}!"
+    console.log "CURRENT TIME DURATION = #{current_time}!"
     if video_duration != 0
       console.log "INITIALIZING PLAYBACK CONTROLS! VIDEO DURATION = #{video_duration}!"
       playbackControls(video_duration)
