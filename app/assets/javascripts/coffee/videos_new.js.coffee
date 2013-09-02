@@ -489,15 +489,16 @@ $ ->
 
 # VIDEO DURATION CAN'T BE ZERO
 
-  checkAgain = (player) ->
+  checkAgain = ->
     console.log "CHECKING AGAIN..."
+    player = window.player
     video_duration = player.getDuration()
     console.log "NEW VIDEO DURATION = #{video_duration}!"
     if video_duration != 0
       console.log "INITIALIZING PLAYBACK CONTROLS! VIDEO DURATION = #{video_duration}!"
       playbackControls(video_duration)
     else
-      window.setTimeout(checkAgain(window.player), 1000)
+      window.setTimeout(checkAgain(), 1000)
 
 # YOUTUBE PLAYER COMES IN HERE
 
@@ -538,8 +539,7 @@ $ ->
     # VIDEO DURATION CAN'T BE ZERO
 
     if video_duration == 0
-      console.log "WAITING FIVE SECONDS..."
-      window.setInterval(checkAgain(player), 500)
+      checkAgain()
     else
       window.video_loaded = true
       playbackControls(window.video_duration)
