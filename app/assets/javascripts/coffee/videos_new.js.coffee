@@ -532,6 +532,7 @@ $ ->
       video_duration = window.player.getDuration()
       console.log "NEW VIDEO DURATION = #{video_duration}!"
       if video_duration != 0
+        console.log "INITIALIZING PLAYBACK CONTROLS! VIDEO DURATION = #{video_duration}!"
         playbackControls(video_duration)
 
     if video_duration == 0
