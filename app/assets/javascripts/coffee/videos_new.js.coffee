@@ -536,7 +536,7 @@ $ ->
         playbackControls(video_duration)
 
     if video_duration == 0
-      keepChecking = window.setInterval(checkAgain(), 2000)
+      keepChecking = window.setTimeout(checkAgain(), 2000)
     else
       window.video_loaded = true
       playbackControls(window.video_duration)
