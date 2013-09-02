@@ -273,18 +273,6 @@ $ ->
         <div class='playback-right-label end-label'><div class='playback-right-label inner-label'></div></div>
       ")
 
-    $('#loop-settings').after("
-      <!---<div style='margin-left: 20px;'>
-        <div class='btn btn-info btn-small rounded' style='position: absolute; left: 20px bottom: 400px;'> Teacher tools </div>
-         <span id='set-difficulty'><a>Video difficulty</a></span>
-        <div class='controls'>
-          <select id='difficulty-settings'>
-            <option value='beginner' class='difficulty-setting'>Beginner</option>
-            <option value='intermediate' class='difficulty-setting'>Intermediate</option>
-            <option value='advanced' class='difficulty-setting'>Advanced</option>
-          </select> -->
-      </div>")
-
   playbackControls = (video_duration) ->
 
     $('.playback-left-label.inner-label').html(":00")
@@ -529,8 +517,11 @@ $ ->
     window.player = player
 
   onPlayerReady = (event) ->
+    console.log "PLAYER READY!"
     inputLineLogic()
+    console.log "INPUT LINE LOGIC LOADED!"
     video_duration = window.player.getDuration()
+    console.log "VIDEO DURATION = #{video_duration}!"
     window.video_duration = video_duration
     playbackControls(video_duration)
     event.target.playVideo()
@@ -563,6 +554,9 @@ $ ->
     window.time = Math.floor(exact_time)
     $(".timer-text").html(formatTime(window.time))
     this_line = $("[data-time=#{window.time}]")
+
+    # THE LINES ABOVE THIS CODE WORK FINE IN IE. 
+    # THE LINES BELOW DON'T. IE IS NOT GETTING THE VALUES FOR PLAYBACK-SLIDER. 
 
     current_loop_start = $('#playback-slider').rangeSlider("values").min
     current_loop_end = $('#playback-slider').rangeSlider("values").max
