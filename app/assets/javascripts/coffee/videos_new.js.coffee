@@ -489,18 +489,20 @@ $ ->
 
 # VIDEO DURATION CAN'T BE ZERO
 
-  checkAgain = ->
-    console.log "CHECKING AGAIN..."
-    player = window.player
-    video_duration = player.getDuration()
-    current_time = player.getCurrentTime()
-    console.log "NEW VIDEO DURATION = #{video_duration}!"
-    console.log "CURRENT TIME DURATION = #{current_time}!"
-    if video_duration != 0
-      console.log "INITIALIZING PLAYBACK CONTROLS! VIDEO DURATION = #{video_duration}!"
-      playbackControls(video_duration)
-    else
-      window.setTimeout(checkAgain(), 1000)
+  checkDurationViaYouTubeAPI = ->
+
+    $.ajax(
+      url: "https://gdata.youtube.com/feeds/api/videos/#{youtube_id}?v=2"
+      dataType: "xml",
+      complete: (r) ->
+        console.log "Got a response!"
+        parser = new DOMParser
+        xml = parser.parseFromString(r.responseText, "application/xml")
+        window.xml = xml
+        media_content = xml.getElementsByTagName("media:content")
+        for m in media_content
+          console.log media_content
+       )
 
 # YOUTUBE PLAYER COMES IN HERE
 
@@ -541,7 +543,7 @@ $ ->
     # VIDEO DURATION CAN'T BE ZERO
 
     if video_duration == 0
-      checkAgain()
+      checkDurationViaYouTubeAPI()
     else
       window.video_loaded = true
       playbackControls(window.video_duration)
