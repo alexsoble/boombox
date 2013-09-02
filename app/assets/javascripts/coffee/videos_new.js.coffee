@@ -530,9 +530,10 @@ $ ->
     checkAgain = ->
       console.log "CHECKING AGAIN..."
       video_duration = window.player.getDuration()
+      console.log "NEW VIDEO DURATION = #{video_duration}!"
 
     if video_duration == 0
-      window.setTimeout(500, checkAgain)
+      checkAgain()
     else
       playbackControls(video_duration)
 
