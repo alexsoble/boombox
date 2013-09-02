@@ -497,7 +497,7 @@ $ ->
       console.log "INITIALIZING PLAYBACK CONTROLS! VIDEO DURATION = #{video_duration}!"
       playbackControls(video_duration)
     else
-      checkAgain(player)
+      window.setTimeout(checkAgain(window.player), 1000)
 
 # YOUTUBE PLAYER COMES IN HERE
 
