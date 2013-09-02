@@ -487,6 +487,16 @@ $ ->
         $('.input-line-container').slideDown()
         window.player.playVideo()
 
+# VIDEO DURATION CAN'T BE ZERO
+
+  checkAgain = (player) ->
+    console.log "CHECKING AGAIN..."
+    video_duration = player.getDuration()
+    console.log "NEW VIDEO DURATION = #{video_duration}!"
+    if video_duration != 0
+      console.log "INITIALIZING PLAYBACK CONTROLS! VIDEO DURATION = #{video_duration}!"
+      playbackControls(video_duration)
+
 # YOUTUBE PLAYER COMES IN HERE
 
   window.rollover_pause = false
@@ -527,17 +537,9 @@ $ ->
 
     # VIDEO DURATION CAN'T BE ZERO
 
-    checkAgain = ->
-      console.log "CHECKING AGAIN..."
-      video_duration = window.player.getDuration()
-      console.log "NEW VIDEO DURATION = #{video_duration}!"
-      if video_duration != 0
-        console.log "INITIALIZING PLAYBACK CONTROLS! VIDEO DURATION = #{video_duration}!"
-        playbackControls(video_duration)
-
     if video_duration == 0
       console.log "WAITING FIVE SECONDS..."
-      keepChecking = window.setTimeout(checkAgain(), 12000)
+      keepChecking = window.setInverval(checkAgain(player), 500)
     else
       window.video_loaded = true
       playbackControls(window.video_duration)
@@ -646,7 +648,7 @@ $ ->
   delayedShow = -> 
     window.player.playVideo()
   window.setTimeout(delayedShow, 1000)
-    
+
   # LOGIC FOR THE CONTROLS 
 
   $("#forward").livequery ->
