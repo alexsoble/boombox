@@ -536,7 +536,8 @@ $ ->
         playbackControls(video_duration)
 
     if video_duration == 0
-      keepChecking = window.setTimeout(checkAgain(), 2000)
+      console.log "WAITING FIVE SECONDS..."
+      keepChecking = window.setTimeout(checkAgain(), 5000)
     else
       window.video_loaded = true
       playbackControls(window.video_duration)
