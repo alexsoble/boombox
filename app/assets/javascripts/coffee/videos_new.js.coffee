@@ -502,6 +502,8 @@ $ ->
         media_content = xml.getElementsByTagName("media:content")
         for m in media_content
           console.log media_content
+          console.log media_content.duration
+          console.log media_content.getElementsByTagName("duration")
        )
 
 # YOUTUBE PLAYER COMES IN HERE
