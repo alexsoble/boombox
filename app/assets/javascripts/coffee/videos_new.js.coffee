@@ -539,7 +539,7 @@ $ ->
 
     if video_duration == 0
       console.log "WAITING FIVE SECONDS..."
-      keepChecking = window.setInverval(checkAgain(player), 500)
+      keepChecking = window.setInterval(checkAgain(player), 500)
     else
       window.video_loaded = true
       playbackControls(window.video_duration)
