@@ -523,8 +523,18 @@ $ ->
     video_duration = window.player.getDuration()
     console.log "VIDEO DURATION = #{video_duration}!"
     window.video_duration = video_duration
-    playbackControls(video_duration)
     event.target.playVideo()
+
+    # VIDEO DURATION CAN'T BE ZERO
+
+    checkAgain = ->
+      console.log "CHECKING AGAIN..."
+      video_duration = window.player.getDuration()
+
+    if video_duration == 0
+      window.setTimeout(500, checkAgain)
+    else
+      playbackControls(video_duration)
 
     # CONTROLS FOR LONG VIDEOS COME IN HERE    
     if video_duration > 300
@@ -554,9 +564,6 @@ $ ->
     window.time = Math.floor(exact_time)
     $(".timer-text").html(formatTime(window.time))
     this_line = $("[data-time=#{window.time}]")
-
-    # THE LINES ABOVE THIS CODE WORK FINE IN IE. 
-    # THE LINES BELOW DON'T. IE IS NOT GETTING THE VALUES FOR PLAYBACK-SLIDER. 
 
     current_loop_start = $('#playback-slider').rangeSlider("values").min
     current_loop_end = $('#playback-slider').rangeSlider("values").max
