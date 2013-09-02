@@ -538,6 +538,9 @@ $ ->
     if video_duration == 0
       keepChecking = window.setInterval(checkAgain(), 2000)
     else
+      window.video_loaded = true
+      playbackControls(window.video_duration)
+      console.log "PLAYBACK CONTROLS LOADED!"
 
     # CONTROLS FOR LONG VIDEOS COME IN HERE    
     if video_duration > 300
@@ -563,70 +566,72 @@ $ ->
 
   countVideoPlayTime = ->
 
-    exact_time = player.getCurrentTime()
-    window.time = Math.floor(exact_time)
-    $(".timer-text").html(formatTime(window.time))
-    this_line = $("[data-time=#{window.time}]")
+    if window.video_loaded == true
+      console.log "Counting video play time..."
+      exact_time = player.getCurrentTime()
+      window.time = Math.floor(exact_time)
+      $(".timer-text").html(formatTime(window.time))
+      this_line = $("[data-time=#{window.time}]")
 
-    current_loop_start = $('#playback-slider').rangeSlider("values").min
-    current_loop_end = $('#playback-slider').rangeSlider("values").max
-    $(".current-loop-start").html('&nbsp;' + formatTime(current_loop_start) + '&nbsp;')
-    $(".current-loop-end").html('&nbsp;' + formatTime(current_loop_end) + '&nbsp;')
+      current_loop_start = $('#playback-slider').rangeSlider("values").min
+      current_loop_end = $('#playback-slider').rangeSlider("values").max
+      $(".current-loop-start").html('&nbsp;' + formatTime(current_loop_start) + '&nbsp;')
+      $(".current-loop-end").html('&nbsp;' + formatTime(current_loop_end) + '&nbsp;')
 
-    # PLAYBACK SLIDER MOVES HERE
-    if window.loop == 0 and window.valuesChanging == false
-      $('#playback-slider').rangeSlider("values", window.time, window.time + 4)
-      $('.loop-handle-label.ui-rangeSlider-leftLabel').html("<div class='inner-label'>#{shortFormatTime(window.time)}</div>")
-      $('.loop-handle-label.ui-rangeSlider-rightLabel').html("<div class='inner-label'>#{shortFormatTime(window.time + 4)}</div>")
+      # PLAYBACK SLIDER MOVES HERE
+      if window.loop == 0 and window.valuesChanging == false
+        $('#playback-slider').rangeSlider("values", window.time, window.time + 4)
+        $('.loop-handle-label.ui-rangeSlider-leftLabel').html("<div class='inner-label'>#{shortFormatTime(window.time)}</div>")
+        $('.loop-handle-label.ui-rangeSlider-rightLabel').html("<div class='inner-label'>#{shortFormatTime(window.time + 4)}</div>")
 
-    # LOOPING HAPPENS HERE
+      # LOOPING HAPPENS HERE
 
-    loopNow = ->
-      loopingNow = ->
-        player.seekTo(window.loop_length * window.section, true)
-        player.setVolume(window.volume)
-        player.pauseVideo()
-        startUpAgain = ->
-          if window.loop_counter == window.loop
-            player.pauseVideo()
+      loopNow = ->
+        loopingNow = ->
+          player.seekTo(window.loop_length * window.section, true)
+          player.setVolume(window.volume)
+          player.pauseVideo()
+          startUpAgain = ->
+            if window.loop_counter == window.loop
+              player.pauseVideo()
+            else
+              player.playVideo()
+            window.looping = false
+            window.got_volume = false
+          window.setTimeout(startUpAgain, 1200)
+        window.setTimeout(loopingNow, 1000)
+      fadeOut = ->
+        if window.got_volume == false
+          window.volume = player.getVolume()
+          window.got_volume = true
+          halfVolume = 0.5 * window.volume
+          quarterVolume = 0.25 * window.volume
+          tinyVolume = 0.1 * window.volume
+          player.setVolume(halfVolume)
+          softAndSlow = ->
+            player.setVolume(quarterVolume)
+          window.setTimeout(softAndSlow, 500)
+      modifier = .69 + (window.loop_length * 0.015)
+      if window.loop > 0
+        if window.loop > window.loop_counter
+          if window.time > (window.loop_length) * (window.section + modifier) and window.looping == false
+            window.looping = true
+            fadeOut()
+            loopNow()
+            window.loop_counter += 1
+
+      # TRANSLATED LINES LIGHT UP HERE AS THE VIDEO PLAYS
+      if this_line.length != 0 and window.editing_line == false
+        unless this_line.hasClass('highlighted')
+          this_line.effect("highlight", { color: "yellow" }, 4000)
+          this_line.addClass("highlighted")
+          if this_line.prev().prev().length != 0
+            $("#lyrics-box").scrollTo(this_line.prev().prev(), { duration : 250 } )
           else
-            player.playVideo()
-          window.looping = false
-          window.got_volume = false
-        window.setTimeout(startUpAgain, 1200)
-      window.setTimeout(loopingNow, 1000)
-    fadeOut = ->
-      if window.got_volume == false
-        window.volume = player.getVolume()
-        window.got_volume = true
-        halfVolume = 0.5 * window.volume
-        quarterVolume = 0.25 * window.volume
-        tinyVolume = 0.1 * window.volume
-        player.setVolume(halfVolume)
-        softAndSlow = ->
-          player.setVolume(quarterVolume)
-        window.setTimeout(softAndSlow, 500)
-    modifier = .69 + (window.loop_length * 0.015)
-    if window.loop > 0
-      if window.loop > window.loop_counter
-        if window.time > (window.loop_length) * (window.section + modifier) and window.looping == false
-          window.looping = true
-          fadeOut()
-          loopNow()
-          window.loop_counter += 1
-
-    # TRANSLATED LINES LIGHT UP HERE AS THE VIDEO PLAYS
-    if this_line.length != 0 and window.editing_line == false
-      unless this_line.hasClass('highlighted')
-        this_line.effect("highlight", { color: "yellow" }, 4000)
-        this_line.addClass("highlighted")
-        if this_line.prev().prev().length != 0
-          $("#lyrics-box").scrollTo(this_line.prev().prev(), { duration : 250 } )
-        else
-          if this_line.prev().length != 0
-            $("#lyrics-box").scrollTo(this_line.prev(), { duration : 250 } )
-          else
-            $("#lyrics-box").scrollTo(this_line, { duration : 250 } )
+            if this_line.prev().length != 0
+              $("#lyrics-box").scrollTo(this_line.prev(), { duration : 250 } )
+            else
+              $("#lyrics-box").scrollTo(this_line, { duration : 250 } )
 
   counter = setInterval(countVideoPlayTime, 250)
   done = false
