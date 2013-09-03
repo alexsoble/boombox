@@ -99,11 +99,12 @@
   left: -45px;
   top: 160px; }
 
-#timer {  width: 90px;
+#timer { width: 90px;
   height: 90px;
   border-radius: 45px;
   background-color: #0F82F5;
-  text-align: center; }
+  text-align: center;
+  z-index: 1; }
 
 #big-timer {  color: white;
   line-height: 88px; }

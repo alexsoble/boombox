@@ -524,6 +524,7 @@ $ ->
         {
         controls: 0
         cc_load_policy: 1
+        wmode: "opaque"
         }
       events:
         onReady: onPlayerReady
