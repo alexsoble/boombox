@@ -406,7 +406,7 @@ $ ->
           </div>
         </div>")
 
-      correct_line.next().effect("highlight", {}, 2000)
+      correct_line.next().effect("highlight", {}, 10000)
       $('#notes-box').slideDown()
       resetForNextLine(current_loop_start + duration)
 

@@ -107,8 +107,15 @@
             <% @comments.each do |comments| %>
               <% if comments[l.id].present? %>
                 <% comments[l.id].each do |c| %>
-                  <div class="comment">
-                    <span class="comment-text"><%= User.find_by_id(c.user_id).username %>: <%= c.comment_text %></span>
+                <br>
+                  <div class="comment" data-comment-id=<%= c.id %>>
+                    <span class="comment-text"><%= User.find_by_id(c.user_id).username %>: <%= c.comment_text %>
+                      <% if current_user %>
+                        <% if c.user_id == current_user.id %>
+                          &nbsp; &nbsp; <a class='delete-comment'>[ X ] </a>
+                        <% end %>
+                      <% end %>
+                    </span>
                   </div>
                 <% end %>
               <% end %>

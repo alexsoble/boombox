@@ -36,10 +36,12 @@
   float: left;
   margin: 10px; }
 
-.commment { float: left; }
+.commment { clear: both !important; }
+
 .comment-text { margin-left: 20px;
   color: blue; 
-  font-size: 10px; }
+  font-size: 12px;
+  line-height: 0px; }
 
 .btn-add-comment { margin: 10px; float: left; }
 
