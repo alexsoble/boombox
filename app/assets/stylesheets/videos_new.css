@@ -139,18 +139,24 @@
   border-bottom-left-radius: 10px;
   border-bottom-right-radius: 10px;
   padding: 15px; 
-  padding-bottom: 10px; 
   padding-top: 32px; 
   position: relative;
   top: -25px; }
-#notes-box.controls-hidden { padding-top: 42px; } 
-#note { padding-left: 12px; padding-bottom: 12px; }
-#translator-name { padding-left: 12px; }
+  
+#note { padding: 12px; float: right; }
+#translator-name { padding: 12px; }
 
 #edit-button-suite { }
 .btn-group { margin: 5px; }
-.show-button-suite { float: right; position: relative; bottom: 32px; right: 4px; }
-.show-button-suite .btn { float: right; margin-right: 0px; margin-left: 8px; }
+
+.show-button-suite { 
+  float: left; 
+  position: relative; 
+  bottom: 28px; 
+  left: 4px; }
+.show-button-suite .btn { 
+  margin: 5px; 
+  float: right; }
 .btn-tiny { font-size: 11px; }
 
 /*** PLAYBACK SLIDER STYLING ***/

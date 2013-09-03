@@ -25,16 +25,20 @@
           <p id='translator-name'><i>Translation by <%= link_to "#{@translator.username}", user_url(@translator) %>.</i></p>
         <% end %>
         <% if action_name == 'show' %>
+          <br>
           <div class='show-button-suite'>
             <% if current_user && @translator.id == current_user.id %>
-              <div class='btn btn-info btn-small btn-tiny rounded' id='edit' style='float: right;'> edit </div>
+              <div class='btn btn-info btn-small btn-tiny rounded' id='edit'> edit </div>
             <% end %>
-            <div class='btn btn-info btn-small btn-tiny rounded' id='controls-toggle' style='float: right;'> hide controls </div>
+            <% if @comments.present? %>
+              <div class='btn btn-info btn-small btn-tiny rounded' id='comments-toggle'> show comments </div>
+            <% end %>
+            <div class='btn btn-info btn-small btn-tiny rounded' id='controls-toggle'> hide controls </div>
             <% unless controller_name == 'clips' %>
-              <div class='btn btn-info btn-small btn-tiny rounded' style='float: right;' id='email'> 
+              <div class='btn btn-info btn-small btn-tiny rounded' id='email'> 
                 <i class="icon-envelope icon"></i> 
               </div>
-              <div class='btn btn-info btn-small btn-tiny rounded' style='float: right;' id='tweet-it'> 
+              <div class='btn btn-info btn-small btn-tiny rounded' id='tweet-it'> 
                 <i class="icon-twitter icon"></i> 
               </div>
             <% end %>
@@ -70,9 +74,6 @@
           </div>
         <% end %>
       </div>
-        <% if @comments.present? %>
-          <div class='btn btn-info btn-small btn-tiny rounded' id='comments-toggle' style='float: right;'> show comments </div>
-        <% end %>
       </div>
     </div>
 
