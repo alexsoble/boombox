@@ -498,6 +498,7 @@ $ ->
         data = JSON.parse(r.responseText)
         video_duration = data.entry.media$group.media$content[0].duration
         playbackControls(video_duration)
+        window.video_loaded = true
         console.log "PLAYBACK CONTROLS LOADED! VIDEO DURATION = #{video_duration}"
        )
 
