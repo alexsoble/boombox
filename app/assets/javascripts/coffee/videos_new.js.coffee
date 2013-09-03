@@ -184,7 +184,7 @@ $ ->
               <div class='btn btn-info btn-small rounded dropdown-toggle' data-toggle='dropdown'> teaching tools </div>
               <ul class='dropdown-menu'>
                 <li><a href='#' id='word-marking-mode' class='dropdown-option'> mark key words </a></li>
-                <li><a href='#' id='edit-note' class='dropdown-option'> edit note </div></li>
+                <li><a href='#' id='edit-note' class='dropdown-option'> edit note </a></li>
               </ul>
             </div>
             <div class='btn-group'>
