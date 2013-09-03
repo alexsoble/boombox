@@ -22,7 +22,7 @@ Boombox::Application.routes.draw do
   get '/print_txt/:id' => 'interpretations#print_txt'
 
   post '/new_comment' => 'comments#create'
-  get '/delete_comment/:id' => 'comments#destroy' # <= This makes me nervous! But I can't puzzle out how else to do it.
+  post '/delete_comment/' => 'comments#destroy'
   
   post '/new_video' => 'videos#create'
   post '/new_interp' => 'interpretations#create'

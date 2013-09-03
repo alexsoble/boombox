@@ -91,9 +91,7 @@ $ ->
     this_line = $(this)
     this_line.hover(
       -> this_line.attr("style", "background-color: rgba(15, 130, 245, 0.3);" )
-      -> 
-        this_line.attr("style", "background-color: white;")
-        $('.btn-add-comment').remove()
+      -> this_line.attr("style", "background-color: white;")
       )
     this_line.click ->
       $('.line').removeClass('highlighted')
@@ -107,10 +105,17 @@ $ ->
 
   $('.btn-add-comment').livequery ->
     $(this).click ->
-      $(this).replaceWith("<input type='text' id='new-comment' style='margin-left: 10px;'/>")
+      $(this).replaceWith("<input type='text' id='new-comment' style='margin-left: 10px;'/> <a id='cancel-comment' rel='nofollow'><strong><u> [ X ]</strong></u></a>")
       player.pauseVideo()
       window.comment_button_added = false
       window.comment_input_area_added = true
+
+  $('#cancel-comment').livequery ->
+    $(this).click ->
+      window.comment_button_added = false
+      window.comment_input_area_added = false
+      $(this).prev().remove()
+      $(this).remove()
 
   $('#new-comment').livequery ->
     comment = $(this)
@@ -121,18 +126,28 @@ $ ->
       if e.which == 13
         comment_text = comment.val()
         comment.remove()
+        $('#cancel-comment').remove()
         $.post('/new_comment', { 'comment' : { 'comment_text' : "#{comment_text}", 'line_id' : "#{parseInt(line.attr('id'))}", 'user_id' : "#{window.current_user_id}" } }, (data) ->
           comment_id = data.data.id
           console.log comment_id
           line.append("
             <div class='comment' data-comment-id=#{comment_id}>
-              <span class='comment-text'>#{current_user_username}: #{comment_text} </span>
+              <span class='comment-text'>#{current_user_username}: #{comment_text}
+              &nbsp; &nbsp; <a class='delete-comment'>[ X ] </a> </span>
             </div>
           ")
-          # delete link: &nbsp; &nbsp; [<a href=/delete_comment/#{comment_id}>x</a>]
           window.comment_input_area_added = false
           player.playVideo()
         )
+
+  $('.delete-comment').livequery ->
+    $(this).click ->
+      comment = $(this).parent().parent()
+      comment_id = parseInt(comment.attr('data-comment-id'))
+      $.post('/delete_comment', { 'id' : "#{comment_id}" }, (data) ->
+        console.log data
+        comment.remove()
+      )
 
   sliderSetup = ->
 

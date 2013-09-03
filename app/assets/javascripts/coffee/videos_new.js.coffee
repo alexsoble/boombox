@@ -250,9 +250,9 @@ $ ->
 
     $('#settings').append("
       <div id='playback-buttons' class='upper-right-btn'>
-        <div class='btn btn-info btn-small rounded tight-pack' id='backward'> <i class='icon-backward'></i> </div>
+        <div class='btn btn-info btn-small rounded tight-pack' id='backward' title='Skip 15 seconds back'> <i class='icon-backward'></i> </div>
         <div class='btn btn-info btn-small rounded tight-pack' id='play-pause'> <i class='icon-pause'></i> </div> 
-        <div class='btn btn-info btn-small rounded tight-pack' id='forward'> <i class='icon-forward'></i>  </div>
+        <div class='btn btn-info btn-small rounded tight-pack' id='forward' title='Skip 15 seconds ahead'> <i class='icon-forward'></i>  </div>
           <div id='volume-slider'> </div>
         <div class='btn btn-info btn-small rounded tight-pack' id='volume'> <i class='icon-volume-up'></i> </div>
       </div>
