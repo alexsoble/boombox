@@ -47,6 +47,8 @@ Boombox::Application.routes.draw do
   get '/errors' => 'pages#error'
   get '/terms' => 'pages#terms'
   get '/dmca' => 'pages#dmca'
+  get '/thanks' => 'pages#thankyou'
+  get '/contact' => 'pages#contact'
   
   resources :quizzes
   post '/save_quiz_words' => 'quizzes#save_words'
