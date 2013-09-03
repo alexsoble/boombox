@@ -490,20 +490,15 @@ $ ->
 # VIDEO DURATION CAN'T BE ZERO
 
   checkDurationViaYouTubeAPI = ->
-
     $.ajax(
-      url: "https://gdata.youtube.com/feeds/api/videos/#{youtube_id}?v=2"
-      dataType: "xml",
+      url: "https://gdata.youtube.com/feeds/api/videos/#{youtube_id}?v=2&alt=json"
+      type: "GET"
+      dataType: "json",
       complete: (r) ->
-        console.log "Got a response!"
-        parser = new DOMParser
-        xml = parser.parseFromString(r.responseText, "application/xml")
-        window.xml = xml
-        media_content = xml.getElementsByTagName("media:content")
-        for m in media_content
-          console.log media_content
-          console.log media_content.duration
-          console.log media_content.getElementsByTagName("duration")
+        data = JSON.parse(r.responseText)
+        video_duration = data.entry.media$group.media$content[0].duration
+        playbackControls(video_duration)
+        console.log "PLAYBACK CONTROLS LOADED! VIDEO DURATION = #{video_duration}"
        )
 
 # YOUTUBE PLAYER COMES IN HERE
@@ -576,7 +571,6 @@ $ ->
   countVideoPlayTime = ->
 
     if window.video_loaded == true
-      console.log "Counting video play time..."
       exact_time = player.getCurrentTime()
       window.time = Math.floor(exact_time)
       $(".timer-text").html(formatTime(window.time))
