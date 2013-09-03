@@ -6,11 +6,6 @@ $ ->
   else
     window.user_id = parseInt(window.user)
 
-  re = new RegExp("MSIE ([0-9]{1,}[\.0-9]{0,})")
-  if (re.exec(window.navigator.userAgent) != null)
-    console.log "Looks like you're using Internet Explorer!"
-    window.location.href = "/browsers"
-
   # HELLO ARRAY
   helloArray = []
   helloArray['Spanish'] = 'Hola'
