@@ -70,7 +70,7 @@ $ ->
     )
     $('#lyrics-box').html(lines)
     lineEditingLogic()
-
+    
   pauseButtonReset = ->
     state = window.player.getPlayerState()
     if state == 1
@@ -210,7 +210,7 @@ $ ->
       window.section = window.time / 4
       $(this).parent().parent().fadeOut()
       sliderSetup()
-      playbackControls(window.video_duration)
+      checkDurationViaYouTubeAPI()
       langOneLangTwoStep()
 
   $("#no-loops").livequery ->
@@ -218,7 +218,7 @@ $ ->
       window.loop = 0
       $(this).parent().parent().fadeOut()
       sliderSetup()
-      playbackControls(window.video_duration)
+      checkDurationViaYouTubeAPI()
       langOneLangTwoStep()
 
   sliderSetup = ->
@@ -738,201 +738,205 @@ $ ->
             )
   lineEditingLogic()
 
-  $('#copy-paste').livequery ->
-    $(this).click -> 
-      $('.lang1-line').val($('#edit-line-lang1').val())
-      $('.lang2-line').val($('#edit-line-lang2').val())
-      doneEditing()
+  editingSuiteLogic = ->
 
-  $('p').livequery ->
-    $(this).hover -> 
-      if window.word_marking_mode == true and $(this).attr('class') != 'lettered'
-        $(this).lettering('words')
-        $(this).addClass('lettered')
-      if window.quiz_making_mode == true and $(this).attr('class') != 'lettered'
-        $(this).lettering('words')
-        $(this).addClass('lettered')
-
-  $('[class^="word"]').livequery ->
-    $(this).click ->
-      this_word = $(this)
-      if this_word.hasClass('keyword')
-        this_word.removeClass('keyword')
-        $.post('/remove_keyword', { 'keyword' : { 'interpretation_id' : "#{window.interp_id}", 'user_id' : "#{window.user_id}", 'word_text' : "#{this_word.text()}" } }, (data) ->
-          console.log data
-          $('.line').each(->
-            this_line = $(this).children().eq(0)
-            word = this_word.text()
-            if this_line.text().indexOf(word) != -1
-              console.log this_line.text()
-              console.log word
-              keyword_highlighted = this_line.html().replace(word, "<span class='keyword'>#{word}</span>")
-              this_line.html(keyword_highlighted)
-            )
-          ) 
-
-      else
-        this_word.addClass('keyword')
-        $.post('/create_keyword', { 'keyword' : { 'interpretation_id' : "#{window.interp_id}", 'user_id' : "#{window.user_id}", 'word_text' : "#{this_word.text()}" } }, (data) ->
-          console.log data
-          $('.line').each(->
-            this_line = $(this).children().eq(0)
-            word = this_word.text()
-            if this_line.text().indexOf(word) != -1
-              console.log this_line.text()
-              console.log word
-              keyword_highlighted = this_line.html().replace(word, "<span class='keyword'>#{word}</span>")
-              this_line.html(keyword_highlighted)
-          ) 
-        )
-
-# OLD LOGIC FOR QUIZ-MAKING MODE HERE
-#  $('[class^="word"]').livequery ->
-#    $(this).click ->
-#      this_word = $(this)
-#      if this_word.hasClass('blue')
-#       this_word.removeClass('blue')
-#        index = window.quiz_words.indexOf(this_word.html())
-#        window.quiz_words.splice(index, 1)
-#      else
-#        this_word.addClass('blue')
-#        window.quiz_words.push this_word.html()
-#        console.log JSON.stringify(window.quiz_words)
-
-  $('#delete-line').livequery ->
-    $(this).click ->
-      console.log "deleting line"
-      window.editing_line = false
-      line_id = $(this).attr('data-line-id')
-      $(this).parent().parent().slideUp()
-      # ^The slideUp would be nice but unfortunately js from YouTube/Google interferes with a delayed remove() and mucks up the whole thing
-      $(this).parent().parent().remove()
-
-  $('.edit-line').livequery ->
-    $(this).keyup (e) ->
-      e.preventDefault
-      if e.which == 13 and this.value isnt ''
+    $('#copy-paste').livequery ->
+      $(this).click -> 
+        $('.lang1-line').val($('#edit-line-lang1').val())
+        $('.lang2-line').val($('#edit-line-lang2').val())
         doneEditing()
 
-  $('#ask-twitter').livequery ->
-    $(this).click ->
-      start = parseInt($(this).parent().parent().attr('data-time'))
-      duration = parseInt($(this).parent().parent().attr('data-duration'))
-      $.post('/new_clip', { 'clip' : { 'start' : "#{start}", 'duration' : "#{duration}", 'interpretation_id' : "#{window.interp_id}" } }, (data) ->
-        id = data.data.id
-        window.location.href = "/clips/#{id}"
-      )
+    $('p').livequery ->
+      $(this).hover -> 
+        if window.word_marking_mode == true and $(this).attr('class') != 'lettered'
+          $(this).lettering('words')
+          $(this).addClass('lettered')
+        if window.quiz_making_mode == true and $(this).attr('class') != 'lettered'
+          $(this).lettering('words')
+          $(this).addClass('lettered')
 
-  $('#ask-heyu').livequery ->
-    $(this).click ->
-      if window.editing_line_ask_heyu isnt true
-        $(this).parent().parent().after("
-          <span id='coming-soon' style='float: left; background-color: orange; width: 500px;'>
-            <span style='margin: 10px;'>
-              <strong>Coming soon</strong>: compare your translation with other Heyu users'.
-            </span>
-          </span>
-          ")
-        window.editing_line_ask_heyu = true
+    $('[class^="word"]').livequery ->
+      $(this).click ->
+        this_word = $(this)
+        if this_word.hasClass('keyword')
+          this_word.removeClass('keyword')
+          $.post('/remove_keyword', { 'keyword' : { 'interpretation_id' : "#{window.interp_id}", 'user_id' : "#{window.user_id}", 'word_text' : "#{this_word.text()}" } }, (data) ->
+            console.log data
+            $('.line').each(->
+              this_line = $(this).children().eq(0)
+              word = this_word.text()
+              if this_line.text().indexOf(word) != -1
+                console.log this_line.text()
+                console.log word
+                keyword_highlighted = this_line.html().replace(word, "<span class='keyword'>#{word}</span>")
+                this_line.html(keyword_highlighted)
+              )
+            ) 
 
-  doneEditing = ->
-    window.editing_line = false
-    window.editing_line_timing = false
-    window.editing_line_ask_heyu = false
-    line_id = $('.edited-line').attr('id')
-    time = $('.edited-line').attr('data-time')
-    duration = $('.edited-line').attr('data-duration')
-    lang1 = $('#edit-line-lang1').val()
-    lang2 = $('#edit-line-lang2').val()
-    $('.edited-line').before("
-      <div class='line rounded' id=#{line_id} data-time=#{time} data-duration=#{duration}>
-        <div class='lyrics-container'>
-          <p>#{lang1}</p>
-        </div>
-        <div class='lyrics-container'>
-          <p>#{lang2}</p>
-        </div>
-      </div>")
-    $('.edited-line').prev().effect("highlight", {}, 2000)
-    $('.edited-line').remove()
-    $('#coming-soon').remove()
-    reorderRight()
-
-  $('#done-editing').livequery ->
-    $(this).click ->
-      doneEditing()
-
-  $('#done-editing-time').livequery ->
-    $(this).click ->
-      doneEditing()
-
-  $('#bump-line-up').livequery ->
-    $(this).click ->
-      this_line = $(this).parent().parent()
-      prev_line = this_line.prev()
-      this_line.attr("data-time","#{parseInt(prev_line.attr('data-time')) - parseInt(this_line.attr('data-duration'))}")
-      doneEditing()
-
-  $('#bump-line-down').livequery ->
-    $(this).click ->
-      this_line = $(this).parent().parent()
-      next_line = this_line.next()
-      this_line.attr("data-time","#{parseInt(next_line.attr('data-time')) + parseInt(this_line.attr('data-duration'))}")
-      console.log next_line.attr('data-time') + this_line.attr('data-duration')
-      doneEditing()
-
-  $('#edit-timing').livequery ->
-    $(this).click ->
-      if window.editing_line_timing isnt true
-        window.editing_line_timing = true
-
-        original_start_time = parseInt($(this).parent().parent().attr('data-time'))
-        console.log "original_start_time: " + original_start_time
-        original_end_time = original_start_time + parseInt($(this).parent().parent().attr('data-duration'))
-        console.log "original_end_time: " + original_end_time
-        original_midpoint = Math.round((original_start_time + original_end_time) / 2)
-
-        player.seekTo(original_start_time)
-        window.loop_length = original_end_time - original_start_time
-        window.section = original_start_time / window.loop_length
-
-        $(this).replaceWith("<div class='btn btn-small btn-primary rounded tight-margins' id='done-editing-time' style='background-color: white; border: solid 1px; border-color: orange; color: orange;'> done adjusting timing</div>")
-
-        $('#done-editing-time').parent().parent().append("
-            <br>
-            <div id='edit-timing-slider'></div>
-            ")
-        $('#edit-timing-slider').rangeSlider(
-          arrows: false
-          step: 1
-          defaultValues:
-            min: original_start_time
-            max: original_end_time
-          if original_start_time > 5
-            bounds:
-              min: original_start_time - 5
-              max: original_end_time + 5
-          else
-            bounds:
-              min: 0
-              max: original_end_time + 5
-          range:
-            min: 1
-            max: 12
-          formatter: (val) -> 
-            shortFormatTime(val)
-          ).bind("valuesChanged", (e, data) ->
-            start = data.values.min
-            $(this).parent().attr('data-time',start)
-            end = data.values.max
-            $(this).parent().attr('data-duration', end - start)
-            player.seekTo(start)
-            window.loop_length = end - start
-            window.section = start / window.loop_length
-          ).bind("valuesChanging", (e, data) ->
-            $('#loop-settings').slideUp()
+        else
+          this_word.addClass('keyword')
+          $.post('/create_keyword', { 'keyword' : { 'interpretation_id' : "#{window.interp_id}", 'user_id' : "#{window.user_id}", 'word_text' : "#{this_word.text()}" } }, (data) ->
+            console.log data
+            $('.line').each(->
+              this_line = $(this).children().eq(0)
+              word = this_word.text()
+              if this_line.text().indexOf(word) != -1
+                console.log this_line.text()
+                console.log word
+                keyword_highlighted = this_line.html().replace(word, "<span class='keyword'>#{word}</span>")
+                this_line.html(keyword_highlighted)
+            ) 
           )
-          $('#lyrics-box').scrollTo('.edited-line')
+
+  # OLD LOGIC FOR QUIZ-MAKING MODE HERE
+  #  $('[class^="word"]').livequery ->
+  #    $(this).click ->
+  #      this_word = $(this)
+  #      if this_word.hasClass('blue')
+  #       this_word.removeClass('blue')
+  #        index = window.quiz_words.indexOf(this_word.html())
+  #        window.quiz_words.splice(index, 1)
+  #      else
+  #        this_word.addClass('blue')
+  #        window.quiz_words.push this_word.html()
+  #        console.log JSON.stringify(window.quiz_words)
+
+    $('#delete-line').livequery ->
+      $(this).click ->
+        console.log "deleting line"
+        window.editing_line = false
+        line_id = $(this).attr('data-line-id')
+        $(this).parent().parent().slideUp()
+        # ^The slideUp would be nice but unfortunately js from YouTube/Google interferes with a delayed remove() and mucks up the whole thing
+        $(this).parent().parent().remove()
+
+    $('.edit-line').livequery ->
+      $(this).keyup (e) ->
+        e.preventDefault
+        if e.which == 13 and this.value isnt ''
+          doneEditing()
+
+    $('#ask-twitter').livequery ->
+      $(this).click ->
+        start = parseInt($(this).parent().parent().attr('data-time'))
+        duration = parseInt($(this).parent().parent().attr('data-duration'))
+        $.post('/new_clip', { 'clip' : { 'start' : "#{start}", 'duration' : "#{duration}", 'interpretation_id' : "#{window.interp_id}" } }, (data) ->
+          id = data.data.id
+          window.location.href = "/clips/#{id}"
+        )
+
+    $('#ask-heyu').livequery ->
+      $(this).click ->
+        if window.editing_line_ask_heyu isnt true
+          $(this).parent().parent().after("
+            <span id='coming-soon' style='float: left; background-color: orange; width: 500px;'>
+              <span style='margin: 10px;'>
+                <strong>Coming soon</strong>: compare your translation with other Heyu users'.
+              </span>
+            </span>
+            ")
+          window.editing_line_ask_heyu = true
+
+    doneEditing = ->
+      window.editing_line = false
+      window.editing_line_timing = false
+      window.editing_line_ask_heyu = false
+      line_id = $('.edited-line').attr('id')
+      time = $('.edited-line').attr('data-time')
+      duration = $('.edited-line').attr('data-duration')
+      lang1 = $('#edit-line-lang1').val()
+      lang2 = $('#edit-line-lang2').val()
+      $('.edited-line').before("
+        <div class='line rounded' id=#{line_id} data-time=#{time} data-duration=#{duration}>
+          <div class='lyrics-container'>
+            <p>#{lang1}</p>
+          </div>
+          <div class='lyrics-container'>
+            <p>#{lang2}</p>
+          </div>
+        </div>")
+      $('.edited-line').prev().effect("highlight", {}, 2000)
+      $('.edited-line').remove()
+      $('#coming-soon').remove()
+      reorderRight()
+
+    $('#done-editing').livequery ->
+      $(this).click ->
+        doneEditing()
+
+    $('#done-editing-time').livequery ->
+      $(this).click ->
+        doneEditing()
+
+    $('#bump-line-up').livequery ->
+      $(this).click ->
+        this_line = $(this).parent().parent()
+        prev_line = this_line.prev()
+        this_line.attr("data-time","#{parseInt(prev_line.attr('data-time')) - parseInt(this_line.attr('data-duration'))}")
+        reorderRight()
+
+    $('#bump-line-down').livequery ->
+      $(this).click ->
+        this_line = $(this).parent().parent()
+        next_line = this_line.next()
+        this_line.attr("data-time","#{parseInt(next_line.attr('data-time')) + parseInt(this_line.attr('data-duration'))}")
+        console.log next_line.attr('data-time') + this_line.attr('data-duration')
+        reorderRight()
+
+    $('#edit-timing').livequery ->
+      $(this).click ->
+        if window.editing_line_timing isnt true
+          window.editing_line_timing = true
+
+          original_start_time = parseInt($(this).parent().parent().attr('data-time'))
+          console.log "original_start_time: " + original_start_time
+          original_end_time = original_start_time + parseInt($(this).parent().parent().attr('data-duration'))
+          console.log "original_end_time: " + original_end_time
+          original_midpoint = Math.round((original_start_time + original_end_time) / 2)
+
+          player.seekTo(original_start_time)
+          window.loop_length = original_end_time - original_start_time
+          window.section = original_start_time / window.loop_length
+
+          $(this).replaceWith("<div class='btn btn-small btn-primary rounded tight-margins' id='done-editing-time' style='background-color: white; border: solid 1px; border-color: orange; color: orange;'> done adjusting timing</div>")
+
+          $('#done-editing-time').parent().parent().append("
+              <br>
+              <div id='edit-timing-slider'></div>
+              ")
+          $('#edit-timing-slider').rangeSlider(
+            arrows: false
+            step: 1
+            defaultValues:
+              min: original_start_time
+              max: original_end_time
+            if original_start_time > 5
+              bounds:
+                min: original_start_time - 5
+                max: original_end_time + 5
+            else
+              bounds:
+                min: 0
+                max: original_end_time + 5
+            range:
+              min: 1
+              max: 12
+            formatter: (val) -> 
+              shortFormatTime(val)
+            ).bind("valuesChanged", (e, data) ->
+              start = data.values.min
+              $(this).parent().attr('data-time',start)
+              end = data.values.max
+              $(this).parent().attr('data-duration', end - start)
+              player.seekTo(start)
+              window.loop_length = end - start
+              window.section = start / window.loop_length
+            ).bind("valuesChanging", (e, data) ->
+              $('#loop-settings').slideUp()
+            )
+            $('#lyrics-box').scrollTo('.edited-line')
+  
+  editingSuiteLogic()
 
   $('.quiz-toggle').livequery -> 
     $(this).click -> 
