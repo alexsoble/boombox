@@ -34,7 +34,7 @@
       <a class="brand" href="/welcome"> Heyu <i class="icon-music"></i> </a>
       <ul class="nav pull-left">
         <li> <%= link_to "Home", "/welcome" %> </li>
-        <!-- <li> <%= link_to "About", "/philosophy" %> </li> --> 
+        <li> <%= link_to "Philosophy", "/philosophy" %> </li>
       </ul>
       <% if current_user %>
         <ul class="nav pull-right signed-in-user" id="<%= current_user.id %>">
@@ -64,13 +64,15 @@
 
 <%= yield %>
 
-<% if controller_name == 'pages' && action_name != 'contact' %>
+<% if controller_name == 'pages' %>
   <br><br>
-    <p style="text-align: right;">
-      <a href="/contact">Contact Us</a> | 
-      <a href="/terms">Terms of Use</a> | 
-      <a href="/dmca">DMCA Notice</a> 
-    </p>
+    <div class="row">
+      <p style="text-align: center;">
+        <a href="/contact">Contact Us</a> | 
+        <a href="/terms">Terms of Use</a> | 
+        <a href="/dmca">DMCA Notice</a> 
+      </p>
+    </div>
 <% end %>
 
 <%= content_tag "div", id: "user-id", data: { user: if current_user then current_user.id else 'logged-out' end } do %>

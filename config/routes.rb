@@ -40,6 +40,7 @@ Boombox::Application.routes.draw do
   post '/update_user' => 'users#update'
     
   get '/philosophy' => 'pages#philosophy'
+  get '/about' => 'pages#philosophy'
   get '/survey' => 'pages#survey'
   get '/experiment' => 'pages#experiment'
   get '/browsers' => 'pages#browsers'
