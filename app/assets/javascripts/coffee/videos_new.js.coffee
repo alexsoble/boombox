@@ -873,7 +873,6 @@ $ ->
         this_line = $(this).parent().parent()
         prev_line = this_line.prev()
         this_line.attr("data-time","#{parseInt(prev_line.attr('data-time')) - parseInt(this_line.attr('data-duration'))}")
-        reorderRight()
 
     $('#bump-line-down').livequery ->
       $(this).click ->
@@ -881,7 +880,6 @@ $ ->
         next_line = this_line.next()
         this_line.attr("data-time","#{parseInt(next_line.attr('data-time')) + parseInt(this_line.attr('data-duration'))}")
         console.log next_line.attr('data-time') + this_line.attr('data-duration')
-        reorderRight()
 
     $('#edit-timing').livequery ->
       $(this).click ->
