@@ -17,16 +17,36 @@ class UsersController < ApplicationController
   def new
 
     @user = User.new
+
+    if params[:interp].present?
+      @interp = params[:interp]
+    else
+      @interp = nil
+    end
   
   end
 
   def create
 
     @user = User.create(params[:user])
+
+    if params[:interp].present?
+      @interp = Interpretation.find_by_id(params[:interp])
+    end
+
     @schools = School.all
     if @user.save
       session[:user_id] = @user.id
-      redirect_to "/steptwo?user=#{@user.id}"
+      if @interp.present?
+        if @interp.user_id == 0
+          @interp.user_id = @user.id
+          @interp.save
+          redirect_to interpretation_url(@interp)
+          return 
+        end 
+      else
+        redirect_to "/steptwo?user=#{@user.id}"
+      end
     else
       render "new"
     end

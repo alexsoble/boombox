@@ -1091,8 +1091,11 @@ $ ->
 
   $("#all-done").livequery ->
     $(this).click ->
-      save()
-      window.location.href = "/interpretations/#{interp_id}/"
+      if window.user_id == null
+        window.location.href = "/join?interp=#{interp_id}"
+      else
+        save()
+        window.location.href = "/interpretations/#{interp_id}/"
 
 # AUTOSAVE EVERY 10 SECONDS 
 

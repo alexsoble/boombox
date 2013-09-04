@@ -7,7 +7,7 @@
   <br>
   <br>
 
-    <%= form_for(@user) do |f| %>
+    <%= form_for(@user, :url => { :controller => :users, :action => :create, 'interp' => @interp }) do |f| %>
 
     <% if @user.errors.any? %>
       <div class="error_messages">
@@ -19,7 +19,7 @@
       </div>
     <% end %>
 
-    <div >
+    <div>
       <div class="field"><%= f.label :first_name %><%= f.text_field :firstname %></div>
       <div class="field"><%= f.label :last_name %><%= f.text_field :lastname %></div>
       <div class="field"><%= f.label :username %><%= f.text_field :username %></div>
