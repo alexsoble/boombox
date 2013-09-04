@@ -42,6 +42,14 @@ class PagesController < ApplicationController
     @demo_interps = [Interpretation.find_by_id(43), Interpretation.find_by_id(27), Interpretation.find_by_id(119)]
   end
 
+  def terms
+    if params[:from].present?
+      @from_join_page = true
+    else
+      @from_join_page = false
+    end
+  end
+
   def translate
   end
 

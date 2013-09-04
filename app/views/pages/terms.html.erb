@@ -26,10 +26,12 @@
 
     <br>
     
-    <div style="text-align: center;">
-      <a href="/join">
-        <div class="btn btn-large btn-primary rounded" > Back </div>
-      </a>
-    </div>
+    <% if @from_join_page == true %>
+      <div style="text-align: center;">
+        <a href="/join">
+          <div class="btn btn-large btn-primary rounded" > Back </div>
+        </a>
+      </div>
+    <% end %>
 
 </div>
