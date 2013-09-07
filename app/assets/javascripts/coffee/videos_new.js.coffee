@@ -310,7 +310,7 @@ $ ->
       <div class='inner-label'>#{shortFormatTime($('#playback-slider').rangeSlider("values").min)}</div>
       ")
     $('.loop-handle-label.ui-rangeSlider-rightLabel').html("
-      <div class='clicker-box right-clicker'>
+      <div class='clicker-box'>
         <i class='icon-caret-down' id='loop-end-minus'></i>
         <i class='icon-caret-up' id='loop-end-plus'></i>
       </div>
@@ -326,36 +326,28 @@ $ ->
       window.section = start / window.loop_length
       $('.ui-rangeSlider-leftLabel.loop-handle-label .inner-label').html("#{shortFormatTime(start)}")
       $('.ui-rangeSlider-rightLabel.loop-handle-label .inner-label').html("#{shortFormatTime(end)}")
-      $('.ui-rangeSlider-leftLabel.loop-handle-label').children(':first').removeClass("right-clicker")
-      $('.ui-rangeSlider-rightLabel.loop-handle-label').children(':first').addClass("right-clicker")
-      $('.ui-rangeSlider-rightLabel.loop-handle-label').children(':first').attr('style','float: right; margin-left: 6px;')
-      $('.ui-rangeSlider-leftLabel.loop-handle-label').children(':first').attr('style','float: left; margin-left: 6px;')
     )
 
     $('#playback-slider').on("userValuesChanged", (e, data) ->
       player.playVideo()
-      $('.ui-rangeSlider-rightLabel.loop-handle-label').children(':first').attr('style','float: right; margin-left: 6px;')
-      $('.ui-rangeSlider-leftLabel.loop-handle-label').children(':first').attr('style','float: left; margin-left: 6px;')
-
     )
 
     $('#loop-start-minus').livequery ->
       $(this).click ->
         values = $('#playback-slider').rangeSlider("values")
         if values.min > 0
-          window.player.seekTo(window.time - 1)
           $('#playback-slider').rangeSlider("values", values.min - 1, values.max)
           $('.loop-handle-label.ui-rangeSlider-leftLabel .inner-label').html("#{shortFormatTime(values.min - 1)}")
 
     $('#loop-start-plus').livequery ->
       $(this).click ->
-        window.player.seekTo(window.time + 1)
         values = $('#playback-slider').rangeSlider("values")
         $('#playback-slider').rangeSlider("values", values.min + 1, values.max)
         $('.loop-handle-label.ui-rangeSlider-leftLabel .inner-label').html("#{shortFormatTime(values.min + 1)}")
 
     $('#loop-end-minus').livequery ->
       $(this).click ->
+        console.log 'loop-end-minus'
         values = $('#playback-slider').rangeSlider("values")
         window.loop_length = window.loop_length - 1
         $('#playback-slider').rangeSlider("values", values.min, values.max - 1)
@@ -363,6 +355,7 @@ $ ->
 
     $('#loop-end-plus').livequery ->
       $(this).click ->
+        console.log 'loop-end-plus'
         values = $('#playback-slider').rangeSlider("values")
         window.loop_length = window.loop_length + 1
         $('#playback-slider').rangeSlider("values", values.min, values.max + 1)

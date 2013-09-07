@@ -2,7 +2,5 @@
 // They will automatically be included in application.css.
 // You can use Sass (SCSS) here: http://sass-lang.com */ 
 
-#poop-slider { width: 400px; 
-  position: relative;
-  left: 0px; 
-  top: -66px; }
+#philosophy li { font-size: 30px; color: black; }
+#philosophy li span { font-size: 14px; line-height: 13px; color: black; }

@@ -163,7 +163,7 @@
 #playback-slider { width: 313px;
   left: 53px; 
   position: absolute;
-  top: 85px; }
+  top: 95px; }
 
 .ui-slider { background-color: #DDDDDD; }
 
@@ -182,27 +182,27 @@
   width: 40px; 
   height: 30px; 
   z-index: 1; }
-
-.loop-range-label { top: -4px; height: 18px; width: 30px; }
+.end-label .inner-label { top: 6px; left: 9px; position: absolute; }
 
 .end-label.playback-left-label { 
   position: absolute;
-  top: 80px; 
+  top: 90px; 
   left: 20px;}
 
 .end-label.playback-right-label { 
   position: absolute; 
-  top: 80px; 
+  top: 90px; 
   right: 20px;}
 
-.inner-label { height: 26px; width: 30px; margin: 2px; color: white; position: absolute; top: 2px; }
+.inner-label { color: white; float: left; }
 .loop-handle-label.ui-rangeSlider-leftLabel .inner-label { left: 15px; }
 .loop-handle-label.ui-rangeSlider-rightLabel .inner-label { left: 5px; }
 
-.icon-caret-down { position: absolute; bottom: 2px; }
-.icon-caret-up { position: absolute; top: 2px; }
-.clicker-box { width: 15px; height: 20px; }
-.clicker-box.right-clicker { float: right; margin-left: 6px; }
+.clicker-box { width: 15px; height: 20px; float: right}
+#loop-start-minus { position: absolute; bottom: 2px; }
+#loop-end-minus { position: absolute; bottom: 2px; }
+#loop-start-plus { position: absolute; top: 2px; }
+#loop-end-plus { position: absolute; top: 2px; }
 
 .loop-handle-label {
   font-size: 12px; 
@@ -210,9 +210,15 @@
   color: white;
   height: 15px;
   border-radius: 10px;
-  width: 32px; 
+  width: 39px; 
   cursor: pointer; 
   z-index: 2; }
+.ui-rangeSlider-leftLabel.loop-handle-label { bottom: 16px; }
+.ui-rangeSlider-rightLabel.loop-handle-label { bottom: 16px; }
+
+.ui-rangeSlider-handle.ui-rangeSlider-rightHandle { background-color: #053d76; z-index: 3; }
+.ui-rangeSlider-handle.ui-rangeSlider-leftHandle { background-color: #053d76; z-index: 3; }
+#loop-bar { background-color: #0f82f5; width: 100%; height: 100%; }
 
 .ui-slider-horizontal .ui-slider-handle 
 { background-color: #134F5C ;
@@ -222,12 +228,7 @@
   font-size: 12px; 
   text-align: center; }
 
-#loop-bar { background-color: #134F5C; }
-
 .timer-blue { background-color: #0F82F5; opacity: 1 }
-
-.ui-rangeSlider-leftLabel.loop-handle-label { bottom: 16px; }
-.ui-rangeSlider-rightLabel.loop-handle-label { bottom: 16px; }
 
 .tight-pack { margin-right: 1px !important; margin-left: 1px !important; margin-bottom: 5px; }
 
