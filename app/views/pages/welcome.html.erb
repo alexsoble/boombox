@@ -8,9 +8,9 @@
     <% end %>
     <br>
   <% else %>
-    <h1 style='text-align: center;'><strong>Heyu = Music + Language Learning</strong></h1>
+    <h1 style='text-align: center;'><strong>Heyu = Language Learning + Music</strong></h1>
     <br>
-    <h2 style='text-align: center;'><i>create translations // link with lessons // explain, discuss, and compare</i></h2>
+    <h2 style='text-align: center;'><i>create translations &bull; link with lessons &bull; explain, discuss, and compare</i></h2>
   <% end %>
   <br>
   <br>
@@ -64,6 +64,7 @@
           <% @langs_with_some_content.each do |l| %>
             <li><a class="language-selector" id="<%= l %>"><%= l %></a></li>
           <% end %>
+          <li><a class="language-selector" id="all">all</a></li>
         </ul>
       </div>
 
@@ -87,8 +88,8 @@
 
 </div>
 
-
 </div>
 <br>
 <br>
 <br>
+<div id="data" class="quiet" data-edit-video-languages="<%= @interp.present? %>" <% if @interp.present? %>data-youtube-id='<%= @youtube_id %>' data-title='<%= @title %>'<% end %>>

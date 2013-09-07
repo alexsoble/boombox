@@ -10,7 +10,7 @@ Boombox::Application.routes.draw do
   get '/stepthree' => 'users#stepthree'
   get '/sign_in' => 'sessions#new'
   get '/sign_out' => 'sessions#destroy'
-  get '/auth/:provider/callback' => 'sessions#create'
+  get '/auth/:provider/callback' => 'sessions#create_with_omniauth'
   
   resources :videos
   resources :interpretations
@@ -20,6 +20,7 @@ Boombox::Application.routes.draw do
 
   get '/print_pdf/:id' => 'interpretations#print_pdf'
   get '/print_txt/:id' => 'interpretations#print_txt'
+  get '/print_google/:stage/:id' => 'interpretations#print_google'
 
   post '/new_comment' => 'comments#create'
   post '/delete_comment/' => 'comments#destroy'

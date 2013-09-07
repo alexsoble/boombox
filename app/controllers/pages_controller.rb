@@ -39,7 +39,12 @@ class PagesController < ApplicationController
     end
     @latest_translated_videos = @latest_translated_videos[0..9]
 
-    @demo_interps = [Interpretation.find_by_id(43), Interpretation.find_by_id(27), Interpretation.find_by_id(119)]
+    if params[:interp].present?
+      @interp = Interpretation.find_by_id(params[:interp])
+      @youtube_id = @interp.video.youtube_id
+      @title = @interp.video.title
+    end
+
   end
 
   def terms

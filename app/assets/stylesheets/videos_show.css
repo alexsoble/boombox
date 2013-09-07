@@ -58,7 +58,8 @@
   width: 240px; }
 
 .upper-left-btn { margin-left: 20px; 
-  margin-top: 20px; }
+  margin-top: 20px; 
+  height: 200px; }
 
 .upper-right-btn {
   float: right; 

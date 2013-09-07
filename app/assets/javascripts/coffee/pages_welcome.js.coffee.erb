@@ -7,22 +7,18 @@ $ ->
 
   $('.language-selector').click ->
     lang = $(this).attr('id')
-    $('.frontpage-thumb-box').hide()
-    $(".#{lang}").show()
-    $("#featured-videos").slideUp()
+    unless lang == 'all'
+      $('.frontpage-thumb-box').hide()
+      $(".#{lang}").show()
+      $("#featured-videos").slideUp()
+      $('#results-box').slideUp()
+    else
+      $('.video-thumb-box').show()
 
   $('#results-box').hide()
   window.n = 0
   window.video_id = false
   window.langtwo_entered = false
-
-  $('.language-selector').click ->
-    lang = $(this).attr('id')
-    if lang == "All"
-      $('.video-thumb-box').show()
-    else
-      $('.video-thumb-box').hide()
-      $(".#{lang}").show()
 
   $('#ask-youtube').keyup ->
     $('#progress-bar').html('
@@ -36,7 +32,7 @@ $ ->
       $.ajax(
         url: 
           if window.n < 5
-            "http://gdata.youtube.com/feeds/api/videos?q=#{request.term}&max-results=8&v=2"
+            "http://gdata.youtube.com/feeds/api/videos?q=#{request.term}&max-results=9&v=2"
           else
             "http://gdata.youtube.com/feeds/api/videos?q=#{request.term}&max-results=#{window.n}&v=2"
         dataType: "xml",
@@ -73,33 +69,53 @@ $ ->
         )
       )
 
+  userDefinesLangOneAndLangTwo = (this_video_result) ->
+    window.youtube_id = this_video_result.attr('data-youtube-id')
+    window.title = this_video_result.children(':first').html()
+    $('#new-translation-button').attr('style','height: 140px; background-color: blue; width: 720px;')
+    $('#new-translation-button').html("
+      <div class='button-text-wrapper' style='width: 200px;'>
+        <p class='index-button-text'>#{window.title}</p>
+      </div>
+      <div id='lang1-button'>
+        <div class='translation-option'>
+          <label class='index-page-label'>This video\'s original language is...</label>
+          <div class='ui-widget'>
+            <input id='lang1-input-translate' class='lang1-input short-text-box'/>
+          </div>
+        </div>
+      </div>
+      <div id='lang2-button'>
+        <div class='translation-option'>
+          <label class='index-page-label'>I want to translate this video into...</label>
+          <div class='ui-widget'>
+            <input id='lang2-input-translate' class='lang2-input short-text-box'/>
+          </div>
+        </div>
+      </div>
+      ")
+    $('#lang1-input-translate').focus()
+
   $('.result-thumb-box').livequery ->
     $(this).click ->
-      window.youtube_id = $(this).attr('data-youtube-id')
-      window.title = $(this).children(':first').html()
-      $('#new-translation-button').attr('style','height: 140px; background-color: blue; width: 720px;')
-      $('#new-translation-button').html("
-        <div class='button-text-wrapper' style='width: 200px;'>
-          <p class='index-button-text'>#{window.title}</p>
-        </div>
-        <div id='lang1-button'>
-          <div class='translation-option'>
-            <label class='index-page-label'>This video\'s original language is...</label>
-            <div class='ui-widget'>
-              <input id='lang1-input-translate' class='lang1-input short-text-box'/>
-            </div>
+      userDefinesLangOneAndLangTwo($(this))
+
+  if $('#data').attr('data-edit-video-languages') == 'true'
+    if $('#data').attr('data-youtube-id').length > 0
+      window.youtube_id = $('#data').attr('data-youtube-id')
+      window.title = $('#data').attr('data-title')
+      $('#results-box').html("
+        <div class='video-thumb-box result-thumb-box' data-youtube-id=#{window.youtube_id}>
+          <div class='quiet'>#{window.title}</div>
+          <strong class='center blue'>#{window.title.slice(0,30)}</strong>
+          <br>
+          <div class='image-box'>
+            <img alt='video_#{window.title}' src='http://img.youtube.com/vi/#{window.youtube_id}/1.jpg' />
           </div>
-        </div>
-        <div id='lang2-button'>
-          <div class='translation-option'>
-            <label class='index-page-label'>I want to translate this video into...</label>
-            <div class='ui-widget'>
-              <input id='lang2-input-translate' class='lang2-input short-text-box'/>
-            </div>
-          </div>
-        </div>
-        ")
-      $('#lang1-input-translate').focus()
+          <br>
+        </div>").show()
+      this_video = $('.result-thumb-box')
+      userDefinesLangOneAndLangTwo(this_video)
 
   availableTags = [ "English", "Dutch", "Afrikaans"
     "Chinese (Mandarin)", "Cantonese", "Japanese", "Korean"
@@ -134,7 +150,7 @@ $ ->
         langOneInput(event, ui) {}
     )
 
-  $('.lang2-input').livequery ->
+  $('.lang2-input').livequery -> 
     $('.lang2-input').autocomplete(
       source: (request, response) ->
         matches = $.map(availableTags, (tag) ->
@@ -179,4 +195,3 @@ $ ->
       else
         window.langtwo_entered = true
         $('#lang1-input-translate').focus()
-

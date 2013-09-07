@@ -22,7 +22,7 @@
           </p>
         <% end %>
         <% if action_name == 'show' %>
-          <p id='translator-name'><i>Translation by <%= link_to "#{@translator.username}", user_url(@translator) %>.</i></p>
+          <p id='translator-name'><i>Translation by <%= link_to "#{@translator.username}", user_url(@translator) %> from <%= @lang1 %> into <%= @lang2 %>.</i></p>
         <% end %>
         <% if action_name == 'show' %>
           <br>
@@ -58,17 +58,17 @@
               </ul>
             </div>
             <div class="btn-group">
-              <div class="btn btn-info btn-small rounded dropdown-toggle" data-toggle="dropdown"> help </div>
-              <ul class="dropdown-menu">
-                <li><a href="#" id='instructions-button' class='dropdown-option'> editing tips </a></li>
-              </ul>
-            </div>
-            <div class="btn-group">
               <div class="btn btn-info btn-small rounded dropdown-toggle" data-toggle="dropdown"> export / print </div>
               <ul class="dropdown-menu">
                 <li><a href="#" id='print-pdf' class='dropdown-option'> export pdf </a></li>
                 <li><a href="#" id='print-txt' class='dropdown-option'> export .txt </a></li>
-                <!-- <li><a href="#" id='print-google' class='dropdown-option'> export to google doc </a></li> -->
+                <li><a href="#" id='print-google' class='dropdown-option'> export to google doc </a></li>
+              </ul>
+            </div>
+            <div class="btn-group">
+              <div class="btn btn-info btn-small rounded dropdown-toggle" data-toggle="dropdown"> help! </div>
+              <ul class="dropdown-menu">
+                <li><a href="#" id='instructions-button' class='dropdown-option'> editing tips </a></li>
               </ul>
             </div>
           </div>

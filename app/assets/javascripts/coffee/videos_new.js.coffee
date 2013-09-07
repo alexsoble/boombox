@@ -106,6 +106,7 @@ $ ->
     $("#controls").append('<br><div class="btn-group relative" id="settings-and-start">
         <br><br><br><br>
         <a class="btn btn-info btn-large center-pill rounded" id="start" style="position: absolute; left: 108px;">Start translating</a>
+        <a class="btn btn-info center-pill rounded" id="go-back" style="position: absolute; top: 168px; left: 168px;">Go back</a>
       </div>')
     $("#controls").fadeIn('slow')
   if action_name is 'new'
@@ -130,6 +131,10 @@ $ ->
           <input type='checkbox' id='no-loops'>I'm a pro. Play the video without looping.
         </label>
       </div>")
+
+  $("#go-back").livequery ->
+    $(this).click -> 
+      window.location.href = "/welcome?interp=#{interp_id}"
 
   $('#word-marking-mode').livequery ->
     $(this).click ->
@@ -243,29 +248,27 @@ $ ->
     $('#print-txt').click ->
       window.location.href = "/print_txt/#{window.interp_id}"
     $('#print-google').click ->
-      window.location.href = "https://www.googleapis.com/auth/drive"
-      
+      window.location.href = "/print_google/new/#{window.interp_id}"
+
     $('#instructions-button').click ->
       $("#instructions").dialog()      
 
+    loop_initalizer = "loop " + window.loop + " times:" 
+
     $('#settings').append("
-      <div id='playback-buttons' class='upper-right-btn'>
-        <div class='btn btn-info btn-small rounded tight-pack' id='backward' title='Skip 15 seconds back'> <i class='icon-backward'></i> </div>
-        <div class='btn btn-info btn-small rounded tight-pack' id='play-pause'> <i class='icon-pause'></i> </div> 
-        <div class='btn btn-info btn-small rounded tight-pack' id='forward' title='Skip 15 seconds ahead'> <i class='icon-forward'></i>  </div>
+      <div id='playback-buttons' class='upper-left-btn'>
+        <span id='loop-status' style='color: black;'> #{loop_initalizer} </span>
+        <div class='btn btn-info btn-small rounded tight-pack adjust-loops' id='fewer-loops'> - </div>
+        <div class='btn btn-info btn-small rounded tight-pack adjust-loops' id='more-loops'> + </div>
+      </div>
+      <div class='upper-right-btn'>
+        <div class='btn btn-info btn-small btn-tiny rounded tight-pack' id='backward' title='Skip 15 seconds back'> <i class='icon-backward'></i> </div>
+        <div class='btn btn-info btn-small btn-tiny rounded tight-pack' id='play-pause'> <i class='icon-pause'></i> </div> 
+        <div class='btn btn-info btn-small btn-tiny rounded tight-pack' id='forward' title='Skip 15 seconds ahead'> <i class='icon-forward'></i>  </div>
           <div id='volume-slider'> </div>
-        <div class='btn btn-info btn-small rounded tight-pack' id='volume'> <i class='icon-volume-up'></i> </div>
+        <div class='btn btn-info btn-small btn-tiny rounded tight-pack' id='volume'> <i class='icon-volume-up'></i> </div>
       </div>
       ")
-
-    loop_initalizer = "loop " + window.loop + " times" 
-
-    $('#settings').append("
-      <div class='upper-left-btn' id='loop-buttons'>
-        <div class='loop-number btn btn-info btn-small rounded tight-pack' id='loop-status'> #{loop_initalizer} </div>
-        <div class='btn btn-info btn-small rounded tight-pack adjust-loops' id='more-loops'> + </div>
-        <div class='btn btn-info btn-small rounded tight-pack adjust-loops' id='fewer-loops'> - </div>
-      </div>")
 
     $('#settings').append("
         <div class='playback-left-label end-label'><div class='playback-left-label inner-label'></div></div>
@@ -288,7 +291,7 @@ $ ->
         min: 0
         max: video_duration
       range:
-        min: 0
+        min: 1
         max: 12
       formatter: (val) -> 
         shortFormatTime(val))
@@ -299,8 +302,20 @@ $ ->
     $('.ui-rangeSlider-bar').append('<div id="loop-bar"></div>')
     window.loop_length_range_appended = true
 
-    $('.loop-handle-label.ui-rangeSlider-leftLabel').html("<div class='inner-label'>#{shortFormatTime($('#playback-slider').rangeSlider("values").min)}</div>")
-    $('.loop-handle-label.ui-rangeSlider-rightLabel').html("<div class='inner-label'>#{shortFormatTime($('#playback-slider').rangeSlider("values").max)}</div>")
+    $('.loop-handle-label.ui-rangeSlider-leftLabel').html("
+      <div class='clicker-box'>
+        <i class='icon-caret-down' id='loop-start-minus'></i>
+        <i class='icon-caret-up' id='loop-start-plus'></i>
+      </div>
+      <div class='inner-label'>#{shortFormatTime($('#playback-slider').rangeSlider("values").min)}</div>
+      ")
+    $('.loop-handle-label.ui-rangeSlider-rightLabel').html("
+      <div class='clicker-box right-clicker'>
+        <i class='icon-caret-down' id='loop-end-minus'></i>
+        <i class='icon-caret-up' id='loop-end-plus'></i>
+      </div>
+      <div class='inner-label'>#{shortFormatTime($('#playback-slider').rangeSlider("values").max)}</div>
+      ")
     
     $('#playback-slider').on("valuesChanging", (e, data) ->
       window.valuesChanging = true
@@ -309,13 +324,55 @@ $ ->
       player.seekTo(start)
       window.loop_length = end - start
       window.section = start / window.loop_length
-      $('.ui-rangeSlider-leftLabel.loop-handle-label').html("#{shortFormatTime(start)}")
-      $('.loop-handle-label.ui-rangeSlider-rightLabel').html("#{shortFormatTime(end)}")
+      $('.ui-rangeSlider-leftLabel.loop-handle-label .inner-label').html("#{shortFormatTime(start)}")
+      $('.ui-rangeSlider-rightLabel.loop-handle-label .inner-label').html("#{shortFormatTime(end)}")
+      $('.ui-rangeSlider-leftLabel.loop-handle-label').children(':first').removeClass("right-clicker")
+      $('.ui-rangeSlider-rightLabel.loop-handle-label').children(':first').addClass("right-clicker")
+      $('.ui-rangeSlider-rightLabel.loop-handle-label').children(':first').attr('style','float: right; margin-left: 6px;')
+      $('.ui-rangeSlider-leftLabel.loop-handle-label').children(':first').attr('style','float: left; margin-left: 6px;')
     )
 
     $('#playback-slider').on("userValuesChanged", (e, data) ->
       player.playVideo()
+      $('.ui-rangeSlider-rightLabel.loop-handle-label').children(':first').attr('style','float: right; margin-left: 6px;')
+      $('.ui-rangeSlider-leftLabel.loop-handle-label').children(':first').attr('style','float: left; margin-left: 6px;')
+
     )
+
+    $('#loop-start-minus').livequery ->
+      $(this).click ->
+        values = $('#playback-slider').rangeSlider("values")
+        if values.min > 0
+          window.player.seekTo(window.time - 1)
+          $('#playback-slider').rangeSlider("values", values.min - 1, values.max)
+          $('.loop-handle-label.ui-rangeSlider-leftLabel .inner-label').html("#{shortFormatTime(values.min - 1)}")
+
+    $('#loop-start-plus').livequery ->
+      $(this).click ->
+        window.player.seekTo(window.time + 1)
+        values = $('#playback-slider').rangeSlider("values")
+        $('#playback-slider').rangeSlider("values", values.min + 1, values.max)
+        $('.loop-handle-label.ui-rangeSlider-leftLabel .inner-label').html("#{shortFormatTime(values.min + 1)}")
+
+    $('#loop-end-minus').livequery ->
+      $(this).click ->
+        values = $('#playback-slider').rangeSlider("values")
+        window.loop_length = window.loop_length - 1
+        $('#playback-slider').rangeSlider("values", values.min, values.max - 1)
+        $('.loop-handle-label.ui-rangeSlider-rightLabel .inner-label').html("#{shortFormatTime(values.max - 1)}")
+
+    $('#loop-end-plus').livequery ->
+      $(this).click ->
+        values = $('#playback-slider').rangeSlider("values")
+        window.loop_length = window.loop_length + 1
+        $('#playback-slider').rangeSlider("values", values.min, values.max + 1)
+        $('.loop-handle-label.ui-rangeSlider-rightLabel .inner-label').html("#{shortFormatTime(values.max + 1)}")
+
+    $('#loop-status').livequery ->
+      $(this).click ->
+        window.loop_counter = 0 
+        player.playVideo()
+        pauseButtonReset()
 
   langOneLangTwoStep = ->
 
@@ -412,8 +469,8 @@ $ ->
 
     moveLoopForward = (next_line_start) -> 
       $('#playback-slider').rangeSlider("values", next_line_start, next_line_start + window.loop_length)
-      $('.ui-rangeSlider-leftLabel.loop-handle-label').html("<div class='inner-label'>#{shortFormatTime(next_line_start)}</div>")
-      $('.ui-rangeSlider-rightLabel.loop-handle-label').html("<div class='inner-label'>#{shortFormatTime(next_line_start + window.loop_length)}</div>")
+      $('.ui-rangeSlider-leftLabel.loop-handle-label .inner-label').html("#{shortFormatTime(next_line_start)}")
+      $('.ui-rangeSlider-rightLabel.loop-handle-label .inner-label').html("#{shortFormatTime(next_line_start + window.loop_length)}")
       window.player.seekTo(next_line_start)
       window.loop_counter = 0
       player.playVideo()
@@ -548,28 +605,6 @@ $ ->
       playbackControls(window.video_duration)
       console.log "PLAYBACK CONTROLS LOADED!"
 
-    # CONTROLS FOR LONG VIDEOS COME IN HERE    
-    if video_duration > 300
-
-      longVideoControls = ->
-        $('#settings').append("
-          <div class='lower-right-btn'>
-            <div class='btn btn-info btn-small rounded tight-pack' id='shorter-loop'> shorter loop </div>
-            <div class='btn btn-info btn-small rounded tight-pack' id='longer-loop'> longer loop </div>
-          </div>")
-        $('#longer-loop').livequery ->
-          $(this).click ->
-            values = $('#playback-slider').rangeSlider("values")
-            if 11 > values.max - values.min
-              $('#playback-slider').rangeSlider("zoomOut", 1)
-        $('#shorter-loop').livequery ->
-          $(this).click -> 
-            values = $('#playback-slider').rangeSlider("values")
-            if 2 < values.max - values.min
-              $('#playback-slider').rangeSlider("zoomIn", 1)
-
-      longVideoControls()
-
   countVideoPlayTime = ->
 
     if window.video_loaded == true
@@ -586,8 +621,8 @@ $ ->
       # PLAYBACK SLIDER MOVES HERE
       if window.loop == 0 and window.valuesChanging == false
         $('#playback-slider').rangeSlider("values", window.time, window.time + 4)
-        $('.loop-handle-label.ui-rangeSlider-leftLabel').html("<div class='inner-label'>#{shortFormatTime(window.time)}</div>")
-        $('.loop-handle-label.ui-rangeSlider-rightLabel').html("<div class='inner-label'>#{shortFormatTime(window.time + 4)}</div>")
+        $('.loop-handle-label.ui-rangeSlider-leftLabel .inner-label').html("#{shortFormatTime(window.time)}")
+        $('.loop-handle-label.ui-rangeSlider-rightLabel .inner-label').html("#{shortFormatTime(window.time + 4)}")
 
       # LOOPING HAPPENS HERE
 
@@ -1024,16 +1059,10 @@ $ ->
         if window.loop < 9 then window.loop += 1
       if $(this).attr('id') == 'fewer-loops'
         if window.loop > 0 then window.loop -= 1
-      loop_initalizer = "loop " + window.loop + " times" 
+      loop_initalizer = "loop " + window.loop + " times:" 
       $('#loop-status').html(loop_initalizer)
       window.section = window.time / window.loop_length
       window.loop_counter = 0
-      pauseButtonReset()
-
-  $('#loop-status').livequery ->
-    $(this).click ->
-      window.loop_counter = 0 
-      player.playVideo()
       pauseButtonReset()
 
   # QUIZ SETUP

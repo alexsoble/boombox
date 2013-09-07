@@ -35,10 +35,13 @@ Boombox::Application.configure do
   # Expands the lines which load the assets
   config.assets.debug = true
 
-  ENV["CONSUMER_KEY"] = 'pjd8j4GzUFLgz5n397vw';
-  ENV["CONSUMER_SECRET"] = 'rOxr1r94ZYx5tcbirxlwfJhndHVdJ6TCz0Njo4h7eM';
+  ENV["GOOGLE_KEY"] = '724539842111.apps.googleusercontent.com';
+  ENV["GOOGLE_SECRET"] = 'iUGNYWMY0DLPwyyS_P-IhG-K';
+
+  ENV["TWITTER_KEY"] = 'pjd8j4GzUFLgz5n397vw';
+  ENV["TWITTER_SECRET"] = 'rOxr1r94ZYx5tcbirxlwfJhndHVdJ6TCz0Njo4h7eM';
   
-  ENV['FACEBOOK_KEY'] = '138509909678479'
-  ENV['FACEBOOK_SECRET'] = 'a7ecdde0ac992dd3675d2c3b386baa78'
+  ENV['FACEBOOK_KEY'] = '138509909678479';
+  ENV['FACEBOOK_SECRET'] = 'a7ecdde0ac992dd3675d2c3b386baa78';
 
 end

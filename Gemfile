@@ -11,7 +11,9 @@ gem 'bcrypt-ruby', '~> 3.0.0'
 gem 'omniauth'
 gem 'omniauth-twitter'
 gem 'omniauth-facebook'
+gem 'omniauth-google-oauth2'
 gem 'whenever', :require => false
+gem 'httparty'
 gem 'google_drive'
 gem 'prawn'
 

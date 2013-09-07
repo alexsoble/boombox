@@ -260,33 +260,13 @@ class InterpretationsController < ApplicationController
   end
 
   def print_google
+
+    if params[:stage] == 'new'
+       session[:interp_to_export_to_google] = params[:id]
+       redirect_to "/auth/google"
+    end
     
-    @interp = Interpretation.find_by_id(params[:id])
-    @video = @interp.video
-    @translator = User.find_by_id(@interp.user_id)
-    @lines = Line.where(:interpretation_id => @interp.id)
-
-    File.new "#{@video.title} - translation by #{@translator.firstname}.txt", "w+"
-
-    File.open("#{@video.title} - translation by #{@translator.firstname}.txt", 'w') do |f|  
-      f.puts "#{@video.title}"  
-      f.puts "\n"  
-      f.puts "Translated from #{@video.lang1} by #{@translator.username}" 
-      f.puts "\n"  
-      f.puts "#{@video.lang1.upcase}"  
-      @lines.each do |l|
-        f.puts l.lang1  
-      end
-      f.puts "\n"  
-      f.puts "#{@interp.lang2.upcase}"  
-      @lines.each do |l|
-        f.puts l.lang2
-      end
-    end  
-
-    session.upload_from_file("/path/to/hello.txt", "hello.txt", :convert => false)
-
-  end
+  end 
 
   def get_by_language
     # send the most popoular 20 videos that match whatever lang is sent in via AJAX

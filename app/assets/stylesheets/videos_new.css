@@ -25,7 +25,6 @@
   overflow: visible; }
 
 #outer-video-box { overflow: visible !important; position: relative; }
-
 #new-video-box { border: 2px solid black; }
 
 .language-option { color: black; }
@@ -164,7 +163,7 @@
 #playback-slider { width: 313px;
   left: 53px; 
   position: absolute;
-  top: 80px; }
+  top: 85px; }
 
 .ui-slider { background-color: #DDDDDD; }
 
@@ -188,15 +187,22 @@
 
 .end-label.playback-left-label { 
   position: absolute;
-  top: 75px; 
+  top: 80px; 
   left: 20px;}
 
 .end-label.playback-right-label { 
   position: absolute; 
-  top: 75px; 
+  top: 80px; 
   right: 20px;}
 
-.inner-label { width: 36px; height: 26px; margin: 2px; color: white; position: absolute; top: 2px; }
+.inner-label { height: 26px; width: 30px; margin: 2px; color: white; position: absolute; top: 2px; }
+.loop-handle-label.ui-rangeSlider-leftLabel .inner-label { left: 15px; }
+.loop-handle-label.ui-rangeSlider-rightLabel .inner-label { left: 5px; }
+
+.icon-caret-down { position: absolute; bottom: 2px; }
+.icon-caret-up { position: absolute; top: 2px; }
+.clicker-box { width: 15px; height: 20px; }
+.clicker-box.right-clicker { float: right; margin-left: 6px; }
 
 .loop-handle-label {
   font-size: 12px; 
@@ -204,7 +210,9 @@
   color: white;
   height: 15px;
   border-radius: 10px;
-  width: 20px; }
+  width: 32px; 
+  cursor: pointer; 
+  z-index: 2; }
 
 .ui-slider-horizontal .ui-slider-handle 
 { background-color: #134F5C ;
@@ -218,8 +226,8 @@
 
 .timer-blue { background-color: #0F82F5; opacity: 1 }
 
-.ui-rangeSlider-leftLabel.loop-handle-label { bottom: -24px; }
-.ui-rangeSlider-rightLabel.loop-handle-label { bottom: -24px; }
+.ui-rangeSlider-leftLabel.loop-handle-label { bottom: 16px; }
+.ui-rangeSlider-rightLabel.loop-handle-label { bottom: 16px; }
 
 .tight-pack { margin-right: 1px !important; margin-left: 1px !important; margin-bottom: 5px; }
 

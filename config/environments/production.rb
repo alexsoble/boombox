@@ -64,4 +64,14 @@ Boombox::Application.configure do
   # Log the query plan for queries taking more than this (works
   # with SQLite, MySQL, and PostgreSQL)
   # config.active_record.auto_explain_threshold_in_seconds = 0.5
+
+  ENV["TWITTER_KEY"] = 'pjd8j4GzUFLgz5n397vw';
+  ENV["TWITTER_SECRET"] = 'rOxr1r94ZYx5tcbirxlwfJhndHVdJ6TCz0Njo4h7eM';
+  
+  ENV['FACEBOOK_KEY'] = '138509909678479'
+  ENV['FACEBOOK_SECRET'] = 'a7ecdde0ac992dd3675d2c3b386baa78'
+  
+  ENV["GOOGLE_KEY"] = '724539842111.apps.googleusercontent.com';
+  ENV["GOOGLE_SECRET"] = 'iUGNYWMY0DLPwyyS_P-IhG-K';
+
 end
