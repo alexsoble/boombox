@@ -259,13 +259,17 @@ $ ->
 
   $('.lang1-line').focusout ->
     $('.lang2-line').focus()
-    
+
   $('.loop-length-input').focusin ->
     window.editing_loop_length = true
 
   $('.loop-length-input').focusout ->
     time = $(this).val()
-    setNewLoop(time)
+    if $(this).hasClass('current-loop-start')
+      part_being_edited = 'start'
+    if $(this).hasClass('current-loop-end')
+      part_being_edited = 'end'
+    setNewLoop(time, part_being_edited)
 
   $('.loop-length-input').keyup (e) ->
     e.preventDefault
@@ -510,6 +514,8 @@ $ ->
       $('#playback-slider').rangeSlider("values", next_line_start, next_line_start + window.loop_length)
       $('.ui-rangeSlider-leftLabel.loop-handle-label .inner-label').html("#{shortFormatTime(next_line_start)}")
       $('.ui-rangeSlider-rightLabel.loop-handle-label .inner-label').html("#{shortFormatTime(next_line_start + window.loop_length)}")
+      $('.current-loop-start').val(formatTime(next_line_start))
+      $('.current-loop-end').val(formatTime(next_line_start))
       window.player.seekTo(next_line_start)
       window.loop_counter = 0
       player.playVideo()
