@@ -160,8 +160,7 @@
     <div class="input-line-container">
       <div class="input-line">
         <div id="lang1-input">
-          <i class='left'><%= @lang1 %>&nbsp;</i>
-          <span class='loop-handle-label example current-loop-start'></span> to <span class='loop-handle-label example current-loop-end'></span> 
+          <span><i class='left'><%= @lang1 %>&nbsp;</i><input type="text" class="current-loop-start loop-length-input"> to <input type="text" class="current-loop-end loop-length-input"></span>
           <div class='control-group'>
             <div class='controls'>
               <input type='text' class='input-xlarge lang1-line'>
@@ -171,8 +170,7 @@
       </div>
       <div class="input-line">
         <div id="lang2-input">
-          <i class='left'><%= @lang2 %>&nbsp;</i>
-          <span class='loop-handle-label example current-loop-start'></span> to <span class='loop-handle-label example current-loop-end'></span> 
+          <span><i class='left'><%= @lang1 %>&nbsp;</i><input type="text" class="current-loop-start loop-length-input"> to <input type="text" class="current-loop-end loop-length-input"></span>
           <div class='control-group'>
             <div class='controls'>
               <input type='text' class='input-xlarge lang2-line'>
@@ -180,7 +178,7 @@
           </div>
         </div>
       </div>
-    <div style="float: right; margin-top: 18px; margin-right: 8px;">
+    <div style="float: right; margin-top: 18px; margin-right: 10px;">
       <span class="btn btn-primary btn-small rounded tight-pack uniform-width" id="next-line"> Next line! </span>
       <br>
       <span class="btn btn-primary btn-small rounded tight-pack uniform-width" id="all-done"> All done. </span>

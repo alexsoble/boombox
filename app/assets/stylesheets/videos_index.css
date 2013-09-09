@@ -23,6 +23,9 @@
   margin-top: 0px;
   margin-bottom: 40px; }
 
+.video-thumb-box.featured-video-box {
+  height: 180px; }
+
 #results-box {
   margin-right: auto;
   margin-left: auto;

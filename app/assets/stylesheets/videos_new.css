@@ -35,6 +35,8 @@
   margin-top: -30px;
   float: left; }
 
+.loop-length-input { width: 36px; height: 10px !important; }
+
 .input-xlarge { width: 220px; }
 
 .keyword { font-weight: bold; 
@@ -61,7 +63,7 @@
   margin-top: 10px;
   margin-bottom: -10px; }
 
-.uniform-width { width: 52px; }
+.uniform-width { width: 55px; }
 
 .tight-margins { margin: 2px !important; }
 
@@ -95,7 +97,7 @@
   text-align: left; }
 
 #timer-box { position: absolute;
-  left: -45px;
+  left: 375px;
   top: 160px; }
 
 #timer { width: 90px;
@@ -210,15 +212,14 @@
   color: white;
   height: 15px;
   border-radius: 10px;
-  width: 39px; 
   cursor: pointer; 
   z-index: 2; }
 .ui-rangeSlider-leftLabel.loop-handle-label { bottom: 16px; }
 .ui-rangeSlider-rightLabel.loop-handle-label { bottom: 16px; }
 
-.ui-rangeSlider-handle.ui-rangeSlider-rightHandle { background-color: #053d76; z-index: 3; }
-.ui-rangeSlider-handle.ui-rangeSlider-leftHandle { background-color: #053d76; z-index: 3; }
-#loop-bar { background-color: #0f82f5; width: 100%; height: 100%; }
+.ui-rangeSlider-handle.ui-rangeSlider-rightHandle { background-color: #0f82f5; opacity: 0.75; z-index: 3; }
+.ui-rangeSlider-handle.ui-rangeSlider-leftHandle { background-color: #0f82f5; opacity: 0.75; z-index: 3; }
+#loop-bar { background-color: #0f82f5; width: 100%; height: 100%; opacity: 0.5; }
 
 .ui-slider-horizontal .ui-slider-handle 
 { background-color: #134F5C ;

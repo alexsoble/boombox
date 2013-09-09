@@ -39,10 +39,18 @@ $ ->
       if 9 < time%60 <= 59 then formatted_time = Math.floor((time)/60) + ":" + (time)%60
     formatted_time
 
+  parseTimeToInt = (time) ->
+    split = time.split(/[:]/)
+    minutes = parseInt(split[0])
+    remainder_seconds = parseInt(split[1])
+    total_seconds = minutes * 60 + remainder_seconds
+    total_seconds
+
   window.loop = 0
   window.loop_counter = 0
   window.loop_length = 4
   window.looping = false
+  window.editing_loop_length = false
 
   window.valuesChanging = false
   window.tool_helptip_displayed = false
@@ -226,6 +234,76 @@ $ ->
       checkDurationViaYouTubeAPI()
       langOneLangTwoStep()
 
+  setNewLoop = (time, part_being_edited) ->
+    new_time = parseTimeToInt(time)
+    values = $('#playback-slider').rangeSlider("values")
+    if window.loop == 0 then window.loop = 1
+
+    if part_being_edited == 'start'
+      if values.max > new_time > -1
+        player.seekTo(new_time)
+        $('#playback-slider').rangeSlider("values", new_time, values.max)
+        $('.loop-handle-label.ui-rangeSlider-leftLabel .inner-label').html("#{shortFormatTime(new_time)}")
+        $('.loop-handle-label.ui-rangeSlider-rightLabel .inner-label').html("#{shortFormatTime(values.max)}")
+        $('.current-loop-start').val(formatTime(new_time))
+        window.loop_length = values.max - new_time
+
+    if part_being_edited == 'end'
+      if window.video_duration > new_time > values.min
+        window.loop_length = new_time - values.min
+        $('#playback-slider').rangeSlider("values", values.min, new_time)
+        $('.loop-handle-label.ui-rangeSlider-leftLabel .inner-label').html("#{shortFormatTime(values.min)}")
+        $('.loop-handle-label.ui-rangeSlider-rightLabel .inner-label').html("#{shortFormatTime(new_time)}")
+        $('.current-loop-end').val(formatTime(new_time))
+        window.loop_length = new_time - values.min
+
+  $('.loop-length-input').focusin ->
+    window.editing_loop_length = true
+
+  $('.loop-length-input').focusout ->
+    time = $(this).val()
+    setNewLoop(time)
+
+  $('.loop-length-input').keyup (e) ->
+    e.preventDefault
+    if e.which == 13
+      console.log "New loop times!"
+      time = $(this).val()
+      if $(this).hasClass('current-loop-start')
+        part_being_edited = 'start'
+      if $(this).hasClass('current-loop-end')
+        part_being_edited = 'end'
+      setNewLoop(time, part_being_edited)
+
+  $('#loop-start-minus').livequery ->
+    $(this).click ->
+      values = $('#playback-slider').rangeSlider("values")
+      if values.min > 0
+        $('#playback-slider').rangeSlider("values", values.min - 1, values.max)
+        $('.loop-handle-label.ui-rangeSlider-leftLabel .inner-label').html("#{shortFormatTime(values.min - 1)}")
+
+  $('#loop-start-plus').livequery ->
+    $(this).click ->
+      values = $('#playback-slider').rangeSlider("values")
+      $('#playback-slider').rangeSlider("values", values.min + 1, values.max)
+      $('.loop-handle-label.ui-rangeSlider-leftLabel .inner-label').html("#{shortFormatTime(values.min + 1)}")
+
+  $('#loop-end-minus').livequery ->
+    $(this).click ->
+      console.log 'loop-end-minus'
+      values = $('#playback-slider').rangeSlider("values")
+      window.loop_length = window.loop_length - 1
+      $('#playback-slider').rangeSlider("values", values.min, values.max - 1)
+      $('.loop-handle-label.ui-rangeSlider-rightLabel .inner-label').html("#{shortFormatTime(values.max - 1)}")
+
+  $('#loop-end-plus').livequery ->
+    $(this).click ->
+      console.log 'loop-end-plus'
+      values = $('#playback-slider').rangeSlider("values")
+      window.loop_length = window.loop_length + 1
+      $('#playback-slider').rangeSlider("values", values.min, values.max + 1)
+      $('.loop-handle-label.ui-rangeSlider-rightLabel .inner-label').html("#{shortFormatTime(values.max + 1)}")
+
   sliderSetup = ->
 
     $('#notes-box').append("
@@ -292,7 +370,7 @@ $ ->
         max: video_duration
       range:
         min: 1
-        max: 12
+        max: video_duration / 3 
       formatter: (val) -> 
         shortFormatTime(val))
 
@@ -303,17 +381,9 @@ $ ->
     window.loop_length_range_appended = true
 
     $('.loop-handle-label.ui-rangeSlider-leftLabel').html("
-      <div class='clicker-box'>
-        <i class='icon-caret-down' id='loop-start-minus'></i>
-        <i class='icon-caret-up' id='loop-start-plus'></i>
-      </div>
       <div class='inner-label'>#{shortFormatTime($('#playback-slider').rangeSlider("values").min)}</div>
       ")
     $('.loop-handle-label.ui-rangeSlider-rightLabel').html("
-      <div class='clicker-box'>
-        <i class='icon-caret-down' id='loop-end-minus'></i>
-        <i class='icon-caret-up' id='loop-end-plus'></i>
-      </div>
       <div class='inner-label'>#{shortFormatTime($('#playback-slider').rangeSlider("values").max)}</div>
       ")
     
@@ -328,38 +398,9 @@ $ ->
       $('.ui-rangeSlider-rightLabel.loop-handle-label .inner-label').html("#{shortFormatTime(end)}")
     )
 
-    $('#playback-slider').on("userValuesChanged", (e, data) ->
+    $('#playback-slider').on("valuesChanged", (e, data) ->
       player.playVideo()
     )
-
-    $('#loop-start-minus').livequery ->
-      $(this).click ->
-        values = $('#playback-slider').rangeSlider("values")
-        if values.min > 0
-          $('#playback-slider').rangeSlider("values", values.min - 1, values.max)
-          $('.loop-handle-label.ui-rangeSlider-leftLabel .inner-label').html("#{shortFormatTime(values.min - 1)}")
-
-    $('#loop-start-plus').livequery ->
-      $(this).click ->
-        values = $('#playback-slider').rangeSlider("values")
-        $('#playback-slider').rangeSlider("values", values.min + 1, values.max)
-        $('.loop-handle-label.ui-rangeSlider-leftLabel .inner-label').html("#{shortFormatTime(values.min + 1)}")
-
-    $('#loop-end-minus').livequery ->
-      $(this).click ->
-        console.log 'loop-end-minus'
-        values = $('#playback-slider').rangeSlider("values")
-        window.loop_length = window.loop_length - 1
-        $('#playback-slider').rangeSlider("values", values.min, values.max - 1)
-        $('.loop-handle-label.ui-rangeSlider-rightLabel .inner-label').html("#{shortFormatTime(values.max - 1)}")
-
-    $('#loop-end-plus').livequery ->
-      $(this).click ->
-        console.log 'loop-end-plus'
-        values = $('#playback-slider').rangeSlider("values")
-        window.loop_length = window.loop_length + 1
-        $('#playback-slider').rangeSlider("values", values.min, values.max + 1)
-        $('.loop-handle-label.ui-rangeSlider-rightLabel .inner-label').html("#{shortFormatTime(values.max + 1)}")
 
     $('#loop-status').livequery ->
       $(this).click ->
@@ -608,8 +649,10 @@ $ ->
 
       current_loop_start = $('#playback-slider').rangeSlider("values").min
       current_loop_end = $('#playback-slider').rangeSlider("values").max
-      $(".current-loop-start").html('&nbsp;' + formatTime(current_loop_start) + '&nbsp;')
-      $(".current-loop-end").html('&nbsp;' + formatTime(current_loop_end) + '&nbsp;')
+
+      if window.editing_loop_length == false
+        $(".current-loop-start").val(formatTime(current_loop_start))
+        $(".current-loop-end").val(formatTime(current_loop_end))
 
       # PLAYBACK SLIDER MOVES HERE
       if window.loop == 0 and window.valuesChanging == false
@@ -815,19 +858,6 @@ $ ->
                 this_line.html(keyword_highlighted)
             ) 
           )
-
-  # OLD LOGIC FOR QUIZ-MAKING MODE HERE
-  #  $('[class^="word"]').livequery ->
-  #    $(this).click ->
-  #      this_word = $(this)
-  #      if this_word.hasClass('blue')
-  #       this_word.removeClass('blue')
-  #        index = window.quiz_words.indexOf(this_word.html())
-  #        window.quiz_words.splice(index, 1)
-  #      else
-  #        this_word.addClass('blue')
-  #        window.quiz_words.push this_word.html()
-  #        console.log JSON.stringify(window.quiz_words)
 
     $('#delete-line').livequery ->
       $(this).click ->
