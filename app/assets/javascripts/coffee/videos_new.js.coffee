@@ -396,6 +396,8 @@ $ ->
       window.section = start / window.loop_length
       $('.ui-rangeSlider-leftLabel.loop-handle-label .inner-label').html("#{shortFormatTime(start)}")
       $('.ui-rangeSlider-rightLabel.loop-handle-label .inner-label').html("#{shortFormatTime(end)}")
+      $('.current-loop-start').val(formatTime(start))
+      $('.current-loop-end').val(formatTime(end))
     )
 
     $('#playback-slider').on("valuesChanged", (e, data) ->

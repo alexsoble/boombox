@@ -7,13 +7,16 @@ $ ->
 
   $('.language-selector').click ->
     lang = $(this).attr('id')
-    unless lang == 'all'
+    unless lang == 'all' or lang == 'featured'
       $('.frontpage-thumb-box').hide()
       $(".#{lang}").show()
       $("#featured-videos").slideUp()
       $('#results-box').slideUp()
-    else
+    if lang == 'all'
       $('.video-thumb-box').show()
+    if lang == 'featured'
+      $('#featured-videos').slideDown()
+      $('.featured-video-box').show()
 
   $('#results-box').hide()
   window.n = 0
