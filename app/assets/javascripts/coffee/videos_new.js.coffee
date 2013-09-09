@@ -515,7 +515,7 @@ $ ->
       $('.ui-rangeSlider-leftLabel.loop-handle-label .inner-label').html("#{shortFormatTime(next_line_start)}")
       $('.ui-rangeSlider-rightLabel.loop-handle-label .inner-label').html("#{shortFormatTime(next_line_start + window.loop_length)}")
       $('.current-loop-start').val(formatTime(next_line_start))
-      $('.current-loop-end').val(formatTime(next_line_start))
+      $('.current-loop-end').val(formatTime(next_line_start + window.loop_length))
       window.player.seekTo(next_line_start)
       window.loop_counter = 0
       player.playVideo()

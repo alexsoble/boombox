@@ -18,6 +18,9 @@ $ ->
       $('#featured-videos').slideDown()
       $('.featured-video-box').show()
 
+  $('#lang1-input-translate').focusout ->
+    $('#lang2-input-translate').focus()
+
   $('#results-box').hide()
   window.n = 0
   window.video_id = false
@@ -177,12 +180,12 @@ $ ->
       $.post('/new_video', { 'video' : { 'youtube_id' : "#{window.youtube_id}", 'title' : "#{window.title}", 'lang1' : "#{window.lang1}" } }, (data) ->
         console.log data
         window.video_id = data.video.id
+        $('#lang2-input-translate').focus()
         if window.langtwo_entered == true
           $.post('/new_interp', { 'interpretation' : { 'video_id' : "#{window.video_id}" , 'lang2' : "#{window.lang2}", 'user_id' : "#{window.user_id}" } }, (data) ->
             window.interp = data.data.id
             window.location = "/videos/new?interp=#{window.interp}"  )
       )
-      $('#lang2-input-translate').focus()
 
   langTwoInput = (event, ui) ->
     input = ui.item.value
