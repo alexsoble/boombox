@@ -257,6 +257,9 @@ $ ->
         $('.current-loop-end').val(formatTime(new_time))
         window.loop_length = new_time - values.min
 
+  $('.lang1-line').focusout ->
+    $('.lang2-line').focus()
+    
   $('.loop-length-input').focusin ->
     window.editing_loop_length = true
 
