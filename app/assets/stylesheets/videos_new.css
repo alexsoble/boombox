@@ -56,6 +56,14 @@
 .input-line-container { 
   width: 640px; }
 
+.lang-name { float: left; 
+  color: white; 
+  background-color: #0f82f5;
+  border-radius: 10px; 
+  margin: 5px;
+  padding-left: 6px; padding-right: 6px;
+  position: relative; bottom: 5px; }
+
 .lines-being-edited { float: left; 
   width: 500px;
   margin-left: 30px;
