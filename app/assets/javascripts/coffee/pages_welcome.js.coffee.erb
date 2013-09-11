@@ -78,7 +78,7 @@ $ ->
   userDefinesLangOneAndLangTwo = (this_video_result) ->
     window.youtube_id = this_video_result.attr('data-youtube-id')
     window.title = this_video_result.children(':first').html()
-    $('#new-translation-button').attr('style','height: 140px; background-color: blue; width: 720px;')
+    $('#new-translation-button').attr('style','height: 140px; background-color: #9b59bb; width: 720px;')
     $('#new-translation-button').html("
       <div class='button-text-wrapper' style='width: 200px;'>
         <p class='index-button-text'>#{window.title}</p>

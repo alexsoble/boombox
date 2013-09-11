@@ -323,6 +323,7 @@ $ ->
       <div class='playback-left-label end-label'><div class='playback-left-label inner-label'></div></div>
         <div id='playback-slider'></div>
       <div class='playback-right-label end-label'><div class='playback-right-label inner-label'></div></div>
+      <div id='tracker'></div>
       ")
 
   $('#play-loop-again').livequery ->
@@ -361,9 +362,6 @@ $ ->
 
     $('#playback-slider').children().eq(3).addClass('loop-handle-label')
     $('#playback-slider').children().eq(4).addClass('loop-handle-label')
-
-    $('#settings').append('<div id="tracker"></div>')
-    window.loop_length_range_appended = true
 
     $('.loop-handle-label.ui-rangeSlider-leftLabel').html("
       <div class='inner-label'>#{shortFormatTime($('#playback-slider').rangeSlider("values").min)}</div>
