@@ -46,7 +46,7 @@ $ ->
     total_seconds = minutes * 60 + remainder_seconds
     total_seconds
 
-  window.loop = 0
+  window.loop = false
   window.loop_counter = 0
   window.loop_length = 4
   window.looping = false
@@ -79,13 +79,6 @@ $ ->
     $('#lyrics-box').html(lines)
     lineEditingLogic()
     
-  pauseButtonReset = ->
-    state = window.player.getPlayerState()
-    if state == 1
-      $(this).html("<i class='icon-pause'></i>")
-    if state == 2
-      $(this).html("<i class='icon-play'></i>")
-
   # ADJUSTING INPUT LINES FOR R-T-L VERSUS L-T-R
   
   if rtlArray.indexOf(window.lang2) > -1
@@ -219,7 +212,7 @@ $ ->
 
   $("#yes-loops").livequery ->
     $(this).click -> 
-      window.loop = 4
+      window.loop = true
       window.section = window.time / 4
       $(this).parent().parent().fadeOut()
       sliderSetup()
@@ -228,7 +221,7 @@ $ ->
 
   $("#no-loops").livequery ->
     $(this).click -> 
-      window.loop = 0
+      window.loop = false
       $(this).parent().parent().fadeOut()
       sliderSetup()
       checkDurationViaYouTubeAPI()
@@ -237,7 +230,7 @@ $ ->
   setNewLoop = (time, part_being_edited) ->
     new_time = parseTimeToInt(time)
     values = $('#playback-slider').rangeSlider("values")
-    if window.loop == 0 then window.loop = 1
+    if window.loop == false then window.loop = true
 
     if part_being_edited == 'start'
       if values.max > new_time > -1
@@ -282,35 +275,6 @@ $ ->
         part_being_edited = 'end'
       setNewLoop(time, part_being_edited)
 
-  $('#loop-start-minus').livequery ->
-    $(this).click ->
-      values = $('#playback-slider').rangeSlider("values")
-      if values.min > 0
-        $('#playback-slider').rangeSlider("values", values.min - 1, values.max)
-        $('.loop-handle-label.ui-rangeSlider-leftLabel .inner-label').html("#{shortFormatTime(values.min - 1)}")
-
-  $('#loop-start-plus').livequery ->
-    $(this).click ->
-      values = $('#playback-slider').rangeSlider("values")
-      $('#playback-slider').rangeSlider("values", values.min + 1, values.max)
-      $('.loop-handle-label.ui-rangeSlider-leftLabel .inner-label').html("#{shortFormatTime(values.min + 1)}")
-
-  $('#loop-end-minus').livequery ->
-    $(this).click ->
-      console.log 'loop-end-minus'
-      values = $('#playback-slider').rangeSlider("values")
-      window.loop_length = window.loop_length - 1
-      $('#playback-slider').rangeSlider("values", values.min, values.max - 1)
-      $('.loop-handle-label.ui-rangeSlider-rightLabel .inner-label').html("#{shortFormatTime(values.max - 1)}")
-
-  $('#loop-end-plus').livequery ->
-    $(this).click ->
-      console.log 'loop-end-plus'
-      values = $('#playback-slider').rangeSlider("values")
-      window.loop_length = window.loop_length + 1
-      $('#playback-slider').rangeSlider("values", values.min, values.max + 1)
-      $('.loop-handle-label.ui-rangeSlider-rightLabel .inner-label').html("#{shortFormatTime(values.max + 1)}")
-
   sliderSetup = ->
 
     $('#notes-box').append("
@@ -338,28 +302,42 @@ $ ->
     $('#instructions-button').click ->
       $("#instructions").dialog()      
 
-    loop_initalizer = "loop " + window.loop + " times:" 
-
     $('#settings').append("
       <div id='playback-buttons' class='upper-left-btn'>
-        <span id='loop-status' style='color: black;'> #{loop_initalizer} </span>
-        <div class='btn btn-info btn-small rounded tight-pack adjust-loops' id='fewer-loops'> - </div>
-        <div class='btn btn-info btn-small rounded tight-pack adjust-loops' id='more-loops'> + </div>
-      </div>
-      <div class='upper-right-btn'>
-        <div class='btn btn-info btn-small btn-tiny rounded tight-pack' id='backward' title='Skip 15 seconds back'> <i class='icon-backward'></i> </div>
-        <div class='btn btn-info btn-small btn-tiny rounded tight-pack' id='play-pause'> <i class='icon-pause'></i> </div> 
-        <div class='btn btn-info btn-small btn-tiny rounded tight-pack' id='forward' title='Skip 15 seconds ahead'> <i class='icon-forward'></i>  </div>
+        <div class='btn btn-info btn-small rounded tight-pack' id='play-loop-again'> 
+          <i class='icon icon-refresh'></i>
+          play loop again 
+        </div>
+        <div class='btn btn-info btn-small rounded tight-pack' id='play-no-loops'> 
+          <i class='icon icon-play'></i>
+          play, don't loop 
+        </div>
+        <div class='btn btn-info btn-small btn-tiny rounded tight-pack' id='pause'> 
+          <i class='icon-pause'></i> 
+        </div>
+        <div class='btn btn-info btn-small btn-tiny rounded tight-pack' id='volume'> 
           <div id='volume-slider'> </div>
-        <div class='btn btn-info btn-small btn-tiny rounded tight-pack' id='volume'> <i class='icon-volume-up'></i> </div>
+          <i class='icon-volume-up'></i> 
+        </div>
       </div>
+      <div class='playback-left-label end-label'><div class='playback-left-label inner-label'></div></div>
+        <div id='playback-slider'></div>
+      <div class='playback-right-label end-label'><div class='playback-right-label inner-label'></div></div>
       ")
 
-    $('#settings').append("
-        <div class='playback-left-label end-label'><div class='playback-left-label inner-label'></div></div>
-          <div id='playback-slider'></div>
-        <div class='playback-right-label end-label'><div class='playback-right-label inner-label'></div></div>
-      ")
+  $('#play-loop-again').livequery ->
+    $(this).click ->
+      window.loop = true
+      player.seekTo(window.loop_length * window.section).playVideo()
+
+  $('#play-no-loops').livequery ->
+    $(this).click ->
+      window.loop = false
+      player.playVideo()
+
+  $('#pause').livequery ->
+    $(this).click ->
+      player.pauseVideo()
 
   playbackControls = (video_duration) ->
 
@@ -384,7 +362,7 @@ $ ->
     $('#playback-slider').children().eq(3).addClass('loop-handle-label')
     $('#playback-slider').children().eq(4).addClass('loop-handle-label')
 
-    $('.ui-rangeSlider-bar').append('<div id="loop-bar"></div>')
+    $('#settings').append('<div id="tracker"></div>')
     window.loop_length_range_appended = true
 
     $('.loop-handle-label.ui-rangeSlider-leftLabel').html("
@@ -410,12 +388,6 @@ $ ->
     $('#playback-slider').on("valuesChanged", (e, data) ->
       player.playVideo()
     )
-
-    $('#loop-status').livequery ->
-      $(this).click ->
-        window.loop_counter = 0 
-        player.playVideo()
-        pauseButtonReset()
 
   langOneLangTwoStep = ->
 
@@ -665,11 +637,14 @@ $ ->
         $(".current-loop-start").val(formatTime(current_loop_start))
         $(".current-loop-end").val(formatTime(current_loop_end))
 
+      tracker_position = window.time * 313 / window.video_duration
+      $('#tracker').attr("style","left: #{50 + tracker_position}px")
+
       # PLAYBACK SLIDER MOVES HERE
-      if window.loop == 0 and window.valuesChanging == false
-        $('#playback-slider').rangeSlider("values", window.time, window.time + 4)
-        $('.loop-handle-label.ui-rangeSlider-leftLabel .inner-label').html("#{shortFormatTime(window.time)}")
-        $('.loop-handle-label.ui-rangeSlider-rightLabel .inner-label').html("#{shortFormatTime(window.time + 4)}")
+      # if window.loop == false and window.valuesChanging == false
+        # $('#playback-slider').rangeSlider("values", window.time, window.time + 4)
+        # $('.loop-handle-label.ui-rangeSlider-leftLabel .inner-label').html("#{shortFormatTime(window.time)}")
+        # $('.loop-handle-label.ui-rangeSlider-rightLabel .inner-label').html("#{shortFormatTime(window.time + 4)}")
 
       # LOOPING HAPPENS HERE
 
@@ -679,10 +654,7 @@ $ ->
           player.setVolume(window.volume)
           player.pauseVideo()
           startUpAgain = ->
-            if window.loop_counter == window.loop
-              player.pauseVideo()
-            else
-              player.playVideo()
+            player.pauseVideo()
             window.looping = false
             window.got_volume = false
           window.setTimeout(startUpAgain, 1200)
@@ -699,13 +671,11 @@ $ ->
             player.setVolume(quarterVolume)
           window.setTimeout(softAndSlow, 500)
       modifier = .69 + (window.loop_length * 0.015)
-      if window.loop > 0
-        if window.loop > window.loop_counter
-          if window.time > (window.loop_length) * (window.section + modifier) and window.looping == false
-            window.looping = true
-            fadeOut()
-            loopNow()
-            window.loop_counter += 1
+      if window.loop == true and window.time > (window.loop_length) * (window.section + modifier) and window.looping == false
+        window.looping = true
+        fadeOut()
+        loopNow()
+        window.loop_counter += 1
 
       # TRANSLATED LINES LIGHT UP HERE AS THE VIDEO PLAYS
       if this_line.length != 0 and window.editing_line == false
@@ -732,35 +702,6 @@ $ ->
   delayedShow = -> 
     window.player.playVideo()
   window.setTimeout(delayedShow, 1000)
-
-  # LOGIC FOR THE CONTROLS 
-
-  $("#forward").livequery ->
-    $(this).click -> 
-      console.log "forward"
-      if window.loop > 0
-        window.section += 1
-        window.player.seekTo(window.loop_length * window.section, true)
-        $('#playback-slider').rangeSlider("values", window.loop_length * window.section, window.loop_length * (window.section + 1))
-        $('.ui-rangeSlider-leftLabel.loop-handle-label').html("#{shortFormatTime(window.loop_length * window.section)}")
-        $('.ui-rangeSlider-rightLabel.loop-handle-label').html("#{shortFormatTime(window.loop_length * (window.section + 1))}")
-      else
-        player.seekTo(window.time + 15)
-
-  $("#backward").livequery ->
-    $(this).click -> 
-      console.log "backward"
-      if window.loop_length > 0
-        window.section -= 1
-        window.player.seekTo(window.loop_length * window.section, true)
-        $('#playback-slider').rangeSlider("values", window.loop_length * window.section, window.loop_length * (window.section + 1))
-        $('.ui-rangeSlider-leftLabel.loop-handle-label').html("#{shortFormatTime(window.loop_length * window.section)}")
-        $('.ui-rangeSlider-rightLabel.loop-handle-label').html("#{shortFormatTime(window.loop_length * (window.section + 1))}")
-      else
-        if window.time > 14
-          player.seekTo(window.time - 15)
-        else
-          player.seekTo(0)
 
   # REVISING LINE CONTENT 
 
@@ -1004,125 +945,6 @@ $ ->
             $('#lyrics-box').scrollTo('.edited-line')
   
   editingSuiteLogic()
-
-  $('.quiz-toggle').livequery -> 
-    $(this).click -> 
-      if window.quiz_making_mode == false
-        window.quiz_making_mode = true
-        player.pauseVideo()
-        $('#quiz-on').attr('style','float: right;')
-        $('.loop-toggle').parent().attr('style','float: right; margin-right: 20px; margin-top: 20px;')
-        $('#quiz-on').html('quiz-making on')
-        $('#loop-settings').before('<div id="quiz-settings"></div>')
-
-        # ADD THE QUIZ CONTROLS HERE
-        $('#quiz-settings').append("
-          <div style='float: left; width: 160px;'>
-            <br>
-            Quiz name:<br> <input type='text' id='quiz-name' style='width: 200px;'><br>
-            Description:<br> <input type='text' id='quiz-description' style='width: 200px;'><br>
-          </div>
-          <div style='float: left;'>
-            Mark the words that quiz-takers should select. 
-          </div>
-          <div class='btn btn-info rounded' id='quiz-done-button' style='float: right;'>Create quiz</div> 
-        ")
-
-        $('#quiz-settings').append(" 
-          <!--- <div style='float: left;'>
-            <input type='checkbox' id='grammar'> Grammar quiz (example: \"click all past-tense verbs\")<br>
-            <input type='checkbox' id='vocabulary'> Vocabulary quiz (fill-in-the-blank style)
-          </div> --->
-        ")
-
-        # GET RID OF LOOP RELATED STUFF HERE 
-        $('.loop-toggle').slideUp()
-        $('#loop-settings').slideUp()
-        $('#new-video-box').slideUp()
-        $('#loop-buttons').slideUp()
-        $('#timer').slideUp()
-        $('.teacher-tools').slideUp()
-        $('#playback-buttons').slideUp()
-        $('#settings').addClass('quiz-mode')
-        quizSetup()
-
-        # GRAMMAR AND VOCAB CHECKBOX BEHAVIOR HERE
-
-        $('#grammar').livequery ->
-          $(this).click -> 
-            $('#vocabulary').prop('checked', false)
-
-        $('#vocabulary').livequery ->
-          $(this).click -> 
-            $('#grammar').prop('checked', false)
-
-      else
-        window.quiz_making_mode = false
-        $('#quiz-on').attr('style','float: left;')
-        $('#quiz-on').html('make it a quiz')
-        $('#quiz-settings').remove()
-
-        # PUT BACK LOOP RELATED STUFF HERE 
-        $('#loop-settings').slideDown()
-        $('#new-video-box').slideDown()
-        $('.teacher-tools').slideDown()
-        $('#settings').removeClass('quiz-mode')
-        $('#loop-buttons').slideDown()
-        $('#timer').slideDown()
-        $('#playback-buttons').slideDown()
-
-  $('#difficulty-settings').hide()
-
-  $('#set-difficulty').livequery ->
-    $(this).click ->
-      $('#set-difficulty').toggle()
-      $('#difficulty-settings').toggle()
-
-  $('#difficulty-settings').livequery ->
-    $(this).click ->
-      console.log "clicked!!"
-      $('#difficulty-settings').toggle()
-      $('#set-difficulty').toggle()
-      $.post('/update_difficulty', { 'interp' : { 'id' : "#{interp_id}", 'difficulty' : "#{$(this).attr('value')}" } })
-
-  $('.adjust-loops').livequery ->
-    $(this).click ->
-      window.player.seekTo($('#playback-slider').rangeSlider("values").min)
-      window.player.playVideo()
-      if $(this).attr('id') == 'more-loops'
-        if window.loop < 9 then window.loop += 1
-      if $(this).attr('id') == 'fewer-loops'
-        if window.loop > 0 then window.loop -= 1
-      loop_initalizer = "loop " + window.loop + " times:" 
-      $('#loop-status').html(loop_initalizer)
-      window.section = window.time / window.loop_length
-      window.loop_counter = 0
-      pauseButtonReset()
-
-  # QUIZ SETUP
-
-  quizSetup = -> 
-    $('#quiz-done-button').livequery ->
-      $(this).click -> 
-        $.post('/new_quiz', { 'quiz' : { 'interpretation_id' : "#{interp_id}", 'quiz_type' : "grammar", 'name' : "#{$('#quiz-name').val()}", 'description' : "#{$('#quiz-description').val()}" } }, (data) ->
-          console.log data.data
-          quiz_id = data.data.id 
-        
-          words_to_save = []
-          window.quiz_words.forEach (element, index) ->
-            word = (text : element, quiz_id : quiz_id )
-            words_to_save.push word
-
-          $.post('/save_quiz_words', { 'quiz_id' : "#{quiz_id}", 'words' : "#{JSON.stringify(words_to_save)}" }, (data) ->
-            console.log data
-            window.location.href = "/quizzes/#{quiz_id}" )
-        )
-
-  # OLD STUFF...  MAYBE NOT USELESS THOUGH? 
-
-  $("#timer-toggle").livequery ->
-    $(this).click ->
-      $("#timer-box").toggle()
 
 # PREVIEW/SAVE BUTTONS
 

@@ -103,12 +103,13 @@
 #timer { width: 90px;
   height: 90px;
   border-radius: 45px;
-  background-color: #0F82F5;
+  border: 2px solid black;
+  background-color: white;
   text-align: center;
   z-index: 1; }
 
-#big-timer {  color: white;
-  line-height: 88px; }
+#big-timer { color: black;
+  line-height: 70px; }
 
 #volume-slider { background-color: #9b59bb;
   position: absolute;
@@ -219,7 +220,15 @@
 
 .ui-rangeSlider-handle.ui-rangeSlider-rightHandle { background-color: #0f82f5; opacity: 0.75; z-index: 3; }
 .ui-rangeSlider-handle.ui-rangeSlider-leftHandle { background-color: #0f82f5; opacity: 0.75; z-index: 3; }
-#loop-bar { background-color: #0f82f5; width: 100%; height: 100%; opacity: 0.5; }
+
+#tracker { background-color: white; 
+  width: 12px; height: 12px; 
+  border-radius: 6px;
+  border: 1px solid black;
+  z-index: 4; 
+  position: absolute;
+  top: 100px; 
+  left: 50px; }
 
 .ui-slider-horizontal .ui-slider-handle 
 { background-color: #134F5C ;

@@ -106,7 +106,9 @@ class InterpretationsController < ApplicationController
 
     @lang1_and_lang2 = false
     @lines.each do |l|
-      if l.lang1.present? then @lang1_and_lang2 = true end
+      if l.lang1.present? && l.lang1 != "undefined"
+        @lang1_and_lang2 = true
+      end
     end
 
     @url = request.url
