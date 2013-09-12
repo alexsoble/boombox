@@ -122,15 +122,26 @@ $ ->
       window.player.pauseVideo()
       $(this).remove()
       $('#timer-box').show()
+
+      # EXPLANATION FOR HOW LOOPS WORK POPS UP HERE
+
       $("#controls").html("
       <div>
-        <h3>Heads up: It's hard to translate at the same speed as the video.</h3>
-        <label class='checkbox'>
-          <input type='checkbox' id='yes-loops'>Yeah. Play each section of the video in a loop until I'm done translating it.
-        </label>
-        <label class='checkbox'>
-          <input type='checkbox' id='no-loops'>I'm a pro. Play the video without looping.
-        </label>
+        <h3><strong>Heads up: It's hard to translate at the same speed as the video!</strong></h3>
+        <br>
+        <p>Don't worry though. You can break up the video into shorter segments called loops.</p>
+        <br>
+        <p>Listen to each loops as many times as you need to get the meaning!</p>
+        <br>
+        <p>You can use the blue handles to choose the loop you want to translate:</p>
+          <div class='btn btn-primary btn-small rounded'> :00 </div> 
+          <div class='btn btn-primary btn-small rounded'> :04 </div> 
+        <br>
+        <p>Or you can manually enter the start and end times of the loop you want to work on:</p>
+          <input type='text' class='loop-input-box' value='00:00'></input>
+          <input type='text' class='loop-input-box' value='00:04'></input>
+        </br>
+        <label class='checkbox'><input type='checkbox' id='yes-loops'><h3>Sounds good!</h3></label>
       </div>")
 
   $("#go-back").livequery ->
@@ -219,19 +230,10 @@ $ ->
       checkDurationViaYouTubeAPI()
       langOneLangTwoStep()
 
-  $("#no-loops").livequery ->
-    $(this).click -> 
-      window.loop = false
-      $(this).parent().parent().fadeOut()
-      sliderSetup()
-      checkDurationViaYouTubeAPI()
-      langOneLangTwoStep()
-
   setNewLoop = (time, part_being_edited) ->
     new_time = parseTimeToInt(time)
     values = $('#playback-slider').rangeSlider("values")
     if window.loop == false then window.loop = true
-
     if part_being_edited == 'start'
       if values.max > new_time > -1
         player.seekTo(new_time)
@@ -240,7 +242,6 @@ $ ->
         $('.loop-handle-label.ui-rangeSlider-rightLabel .inner-label').html("#{shortFormatTime(values.max)}")
         $('.current-loop-start').val(formatTime(new_time))
         window.loop_length = values.max - new_time
-
     if part_being_edited == 'end'
       if window.video_duration > new_time > values.min
         window.loop_length = new_time - values.min
@@ -255,25 +256,54 @@ $ ->
 
   $('.loop-length-input').focusin ->
     window.editing_loop_length = true
+  $('.loop-edit-input').focusin ->
+    window.editing_loop_length = true
 
   $('.loop-length-input').focusout ->
     time = $(this).val()
-    if $(this).hasClass('current-loop-start')
-      part_being_edited = 'start'
-    if $(this).hasClass('current-loop-end')
-      part_being_edited = 'end'
+    if $(this).hasClass('current-loop-start') then part_being_edited = 'start'
+    if $(this).hasClass('current-loop-end') then part_being_edited = 'end'
     setNewLoop(time, part_being_edited)
-
   $('.loop-length-input').keyup (e) ->
     e.preventDefault
     if e.which == 13
       console.log "New loop times!"
       time = $(this).val()
-      if $(this).hasClass('current-loop-start')
-        part_being_edited = 'start'
-      if $(this).hasClass('current-loop-end')
-        part_being_edited = 'end'
+      if $(this).hasClass('current-loop-start') then part_being_edited = 'start'
+      if $(this).hasClass('current-loop-end') then part_being_edited = 'end'
       setNewLoop(time, part_being_edited)
+
+  editExistingLoop = (time, part_being_edited, line_id) ->
+    new_time = parseTimeToInt(time)
+    line = $("##{line_id}")
+    current_start = line.attr('data-time')
+    current_end = current_start + parseInt(line.attr('data-duration'))
+    if part_being_edited == 'start'
+      if current_end > new_time > -1
+        window.player.seekTo(new_time)
+        line.attr("data-time","#{new_time}")
+    if part_being_edited == 'end'
+      if window.video_duration > new_time > current_start
+        line.attr("data-duration","#{new_time - current_start}")
+    window.editing_line_timing = false
+
+  $('.loop-edit-input').livequery ->
+  	$(this).focusout ->
+    	time = $(this).val()
+    	if $(this).hasClass('editing-loop-start')
+    		part_being_edited = 'start'
+    	if $(this).hasClass('editing-loop-end')
+    		part_being_edited = 'end'
+    	line_id = $(this).parent().parent().attr('id')
+    	editExistingLoop(time, part_being_edited, line_id)
+  	$(this).keyup (e) ->
+	    e.preventDefault
+	    if e.which == 13 then 
+				if $(this).hasClass('editing-loop-start') then part_being_edited = 'start'
+				if $(this).hasClass('editing-loop-end') then part_being_edited = 'end'
+				line_id = $(this).parent().parent().attr('id')
+				time = $(this).val()
+				editExistingLoop(time, part_being_edited, line_id)
 
   sliderSetup = ->
 
@@ -395,7 +425,7 @@ $ ->
       window.cc_status = "Unfortunately, this video doesn't have captions."
 
     $("#controls").html("
-      <h3>One more question...</h3>
+      <h3>One question before we get started!</h3>
       <div style='margin: 30px;'>
         <label class='checkbox'>
           <input type='checkbox' id='lang1-and-lang2'>I want to write down the #{lang1} and #{lang2} side-by-side.
@@ -716,6 +746,8 @@ $ ->
           $(this).addClass('edited-line')
           lang1 = $.trim($(this).children().eq(0).text())
           lang2 = $.trim($(this).children().eq(1).text())
+          start_time = parseInt($(this).attr('data-time'))
+          end_time = start_time + parseInt($(this).attr('data-duration'))
           $(this).html("
           <div class='lines-being-edited'>
             <div class='control-group' style='float: left;'>
@@ -733,24 +765,23 @@ $ ->
           $('#edit-line-lang2').val(lang2)
           $(this).prepend("
             <span style='float: left; margin: 10px;' class='toolbox-upper'>
-              <div class='btn btn-small btn-primary rounded tight-margins' id='done-editing' style='background-color: white; border: solid 1px; border-color: black; color: black;'> done editing </div>
-              <div class='btn btn-inverse btn-small rounded tight-margins' id='delete-line' data-line-id=#{id}> delete line </div>
+              <div class='btn btn-small btn-primary rounded tight-margins' style='background-color: white; border: solid 1px; border-color: black; color: black;'> Adjust timing: </div>
+              <input type='text' class='loop-input-box loop-edit-input editing-loop-start' value='#{formatTime(start_time)}' /> to 
+              <input type='text' class='loop-input-box loop-edit-input editing-loop-end' value='#{formatTime(end_time)}' />
             </span>
             <span style='float: right; margin: 10px;' class='toolbox-upper'>
-              <div class='btn btn-success btn-small rounded tight-margins' id='ask-twitter'> get help from twitter </div>
-              <div class='btn btn-success btn-small rounded tight-margins' id='ask-heyu'> get help from heyu </div>
+              <div class='btn btn-primary btn-small rounded tight-margins' id='copy-paste'> Copy/paste this line </div>
+              <div class='btn btn-primary btn-small rounded tight-margins' id='ask-twitter'> Get help from Twitter </div>
             </span>
             </span>
             <br>")
           $(this).append("
             <br>
             <span style='float: right; margin: 10px;' class='toolbox-lower'>
-              <div class='btn btn-primary btn-small rounded tight-margins' id='copy-paste'> copy/paste lines &darr; </div>
             </span>
             <span style='float: left; margin: 10px;' class='toolbox-lower'>
-              <div class='btn btn-small btn-warning rounded tight-margins' id='bump-line-up' data-line-id=#{id}> &uarr; </div>
-              <div class='btn btn-small btn-warning rounded tight-margins' id='bump-line-down' data-line-id=#{id}> &darr; </div>
-              <div class='btn btn-small btn-warning rounded tight-margins' id='edit-timing' data-line-id=#{id}> adjust timing </div>
+              <div class='btn btn-small btn-primary rounded tight-margins' id='done-editing' style='background-color: white; border: solid 1px; border-color: black; color: black;'> Done editing </div>
+              <div class='btn btn-inverse btn-small rounded tight-margins' id='delete-line' data-line-id=#{id}> Delete line </div>
             </span>")
           $('#lyrics-box').scrollTo($('.edited-line'))
           $(this).hover(
@@ -875,72 +906,6 @@ $ ->
     $('#done-editing-time').livequery ->
       $(this).click ->
         doneEditing()
-
-    $('#bump-line-up').livequery ->
-      $(this).click ->
-        this_line = $(this).parent().parent()
-        prev_line = this_line.prev()
-        this_line.attr("data-time","#{parseInt(prev_line.attr('data-time')) - parseInt(this_line.attr('data-duration'))}")
-
-    $('#bump-line-down').livequery ->
-      $(this).click ->
-        this_line = $(this).parent().parent()
-        next_line = this_line.next()
-        this_line.attr("data-time","#{parseInt(next_line.attr('data-time')) + parseInt(this_line.attr('data-duration'))}")
-        console.log next_line.attr('data-time') + this_line.attr('data-duration')
-
-    $('#edit-timing').livequery ->
-      $(this).click ->
-        if window.editing_line_timing isnt true
-          window.editing_line_timing = true
-
-          original_start_time = parseInt($(this).parent().parent().attr('data-time'))
-          console.log "original_start_time: " + original_start_time
-          original_end_time = original_start_time + parseInt($(this).parent().parent().attr('data-duration'))
-          console.log "original_end_time: " + original_end_time
-          original_midpoint = Math.round((original_start_time + original_end_time) / 2)
-
-          player.seekTo(original_start_time)
-          window.loop_length = original_end_time - original_start_time
-          window.section = original_start_time / window.loop_length
-
-          $(this).replaceWith("<div class='btn btn-small btn-primary rounded tight-margins' id='done-editing-time' style='background-color: white; border: solid 1px; border-color: orange; color: orange;'> done adjusting timing</div>")
-
-          $('#done-editing-time').parent().parent().append("
-              <br>
-              <div id='edit-timing-slider'></div>
-              ")
-          $('#edit-timing-slider').rangeSlider(
-            arrows: false
-            step: 1
-            defaultValues:
-              min: original_start_time
-              max: original_end_time
-            if original_start_time > 5
-              bounds:
-                min: original_start_time - 5
-                max: original_end_time + 5
-            else
-              bounds:
-                min: 0
-                max: original_end_time + 5
-            range:
-              min: 1
-              max: 12
-            formatter: (val) -> 
-              shortFormatTime(val)
-            ).bind("valuesChanged", (e, data) ->
-              start = data.values.min
-              $(this).parent().attr('data-time',start)
-              end = data.values.max
-              $(this).parent().attr('data-duration', end - start)
-              player.seekTo(start)
-              window.loop_length = end - start
-              window.section = start / window.loop_length
-            ).bind("valuesChanging", (e, data) ->
-              $('#loop-settings').slideUp()
-            )
-            $('#lyrics-box').scrollTo('.edited-line')
   
   editingSuiteLogic()
 

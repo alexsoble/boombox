@@ -35,7 +35,8 @@
   margin-top: -30px;
   float: left; }
 
-.loop-length-input { width: 36px; height: 10px !important; }
+.loop-input-box { width: 36px; height: 10px !important; }
+.loop-edit-input { position: relative; bottom: -5px; }
 
 .input-xlarge { width: 220px; }
 
@@ -129,7 +130,7 @@
 
 /*  --------- CONTROLS BELOW VIDEO --------- */
 
-#controls { position: relative; }
+#controls { position: relative; margin-left: 100px; width: 400px; }
 
 #settings { position: relative; 
   top: -15px; 
