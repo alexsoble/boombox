@@ -409,8 +409,12 @@ $ ->
       window.section = start / window.loop_length
       $('.ui-rangeSlider-leftLabel.loop-handle-label .inner-label').html("#{shortFormatTime(start)}")
       $('.ui-rangeSlider-rightLabel.loop-handle-label .inner-label').html("#{shortFormatTime(end)}")
-      $('.current-loop-start').val(formatTime(start))
-      $('.current-loop-end').val(formatTime(end))
+      if window.editing_line == false
+        $('.current-loop-start').val(formatTime(start))
+        $('.current-loop-end').val(formatTime(end))
+      else
+        $('.editing-loop-start').val(formatTime(start))
+        $('.editing-loop-end').val(formatTime(end))
     )
 
     $('#playback-slider').on("valuesChanged", (e, data) ->
@@ -740,14 +744,18 @@ $ ->
         -> $(this).attr('style','background-color: white;')
         )
       $(this).click ->
-        if window.editing_line != true and window.quiz_making_mode == false and window.word_marking_mode == false
+        if window.editing_line != true and window.word_marking_mode == false
           window.editing_line = true
           id = $(this).attr('id')
           $(this).addClass('edited-line')
+          $('.input-line-container').slideUp()
           lang1 = $.trim($(this).children().eq(0).text())
           lang2 = $.trim($(this).children().eq(1).text())
           start_time = parseInt($(this).attr('data-time'))
           end_time = start_time + parseInt($(this).attr('data-duration'))
+          $('#playback-slider').rangeSlider("values", start_time, end_time)
+          $('.loop-handle-label.ui-rangeSlider-leftLabel .inner-label').html("#{shortFormatTime(start_time)}")
+          $('.loop-handle-label.ui-rangeSlider-rightLabel .inner-label').html("#{shortFormatTime(end_time)}")
           $(this).html("
           <div class='lines-being-edited'>
             <div class='control-group' style='float: left;'>
@@ -880,6 +888,7 @@ $ ->
       window.editing_line = false
       window.editing_line_timing = false
       window.editing_line_ask_heyu = false
+      $('.input-line-container').slideDown()
       line_id = $('.edited-line').attr('id')
       time = $('.edited-line').attr('data-time')
       duration = $('.edited-line').attr('data-duration')
