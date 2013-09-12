@@ -824,8 +824,11 @@ $ ->
       $(this).click ->
         if window.word_marking_mode == false
           if window.editing_line == true
-            doneEditing()
-          editLine($(this))
+            unless parseInt($(this).attr('id')) == window.line_being_edited
+              doneEditing()
+              editLine($(this))
+          else
+            editLine($(this))
 
   editingSuiteLogic = ->
 
