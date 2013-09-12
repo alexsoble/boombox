@@ -735,6 +735,79 @@ $ ->
     window.player.playVideo()
   window.setTimeout(delayedShow, 1000)
 
+  doneEditing = ->
+    window.editing_line = false
+    window.editing_line_timing = false
+    window.editing_line_ask_heyu = false
+    $('.input-line-container').slideDown()
+    line_id = $('.edited-line').attr('id')
+    time = $('.edited-line').attr('data-time')
+    duration = $('.edited-line').attr('data-duration')
+    lang1 = $('#edit-line-lang1').val()
+    lang2 = $('#edit-line-lang2').val()
+    $('.edited-line').before("
+      <div class='line rounded' id=#{line_id} data-time=#{time} data-duration=#{duration}>
+        <div class='lyrics-container'>
+          <p>#{lang1}</p>
+        </div>
+        <div class='lyrics-container'>
+          <p>#{lang2}</p>
+        </div>
+      </div>")
+    $('.edited-line').prev().effect("highlight", {}, 2000)
+    $('.edited-line').remove()
+    $('#coming-soon').remove()
+    reorderRight()
+
+  editLine = (this_line) ->
+    window.editing_line = true
+    id = this_line.attr('id')
+    this_line.addClass('edited-line')
+    $('.input-line-container').slideUp()
+    lang1 = $.trim(this_line.children().eq(0).text())
+    lang2 = $.trim(this_line.children().eq(1).text())
+    start_time = parseInt(this_line.attr('data-time'))
+    end_time = start_time + parseInt(this_line.attr('data-duration'))
+    $('#playback-slider').rangeSlider("values", start_time, end_time)
+    $('.loop-handle-label.ui-rangeSlider-leftLabel .inner-label').html("#{shortFormatTime(start_time)}")
+    $('.loop-handle-label.ui-rangeSlider-rightLabel .inner-label').html("#{shortFormatTime(end_time)}")
+    this_line.html("
+    <div class='lines-being-edited'>
+      <div class='control-group' style='float: left;'>
+        <div class='controls'>
+          <input type='text' class='input-xlarge edit-line' id='edit-line-lang1'>
+        </div>
+      </div>
+      <div class='control-group' style='float: right;'>
+        <div class='controls'>
+          <input type='text' class='input-xlarge edit-line' id='edit-line-lang2'>
+        </div>
+      </div>
+    </div>")
+    $('#edit-line-lang1').val(lang1)
+    $('#edit-line-lang2').val(lang2)
+    this_line.prepend("
+      <span style='float: left; margin: 10px;' class='toolbox-upper'>
+        <div class='btn btn-small btn-primary rounded tight-margins' style='background-color: white; border: solid 1px; border-color: black; color: black;'> Adjust timing: </div>
+        <input type='text' class='loop-input-box loop-edit-input editing-loop-start' value='#{formatTime(start_time)}' /> to 
+        <input type='text' class='loop-input-box loop-edit-input editing-loop-end' value='#{formatTime(end_time)}' />
+      </span>
+      <span style='float: right; margin: 10px;' class='toolbox-upper'>
+        <div class='btn btn-primary btn-small rounded tight-margins' id='copy-paste'> Copy/paste this line </div>
+        <div class='btn btn-primary btn-small rounded tight-margins' id='ask-twitter'> Get help from Twitter </div>
+      </span>
+      </span>
+      <br>")
+    this_line.append("
+      <br>
+      <span style='float: right; margin: 10px;' class='toolbox-lower'>
+      </span>
+      <span style='float: left; margin: 10px;' class='toolbox-lower'>
+        <div class='btn btn-small btn-primary rounded tight-margins' id='done-editing' style='background-color: white; border: solid 1px; border-color: black; color: black;'> Done editing </div>
+        <div class='btn btn-inverse btn-small rounded tight-margins' id='delete-line' data-line-id=#{id}> Delete line </div>
+      </span>")
+    $('#lyrics-box').scrollTo($('.edited-line'))
+
   # REVISING LINE CONTENT 
 
   lineEditingLogic = ->
@@ -744,59 +817,10 @@ $ ->
         -> $(this).attr('style','background-color: white;')
         )
       $(this).click ->
-        if window.editing_line != true and window.word_marking_mode == false
-          window.editing_line = true
-          id = $(this).attr('id')
-          $(this).addClass('edited-line')
-          $('.input-line-container').slideUp()
-          lang1 = $.trim($(this).children().eq(0).text())
-          lang2 = $.trim($(this).children().eq(1).text())
-          start_time = parseInt($(this).attr('data-time'))
-          end_time = start_time + parseInt($(this).attr('data-duration'))
-          $('#playback-slider').rangeSlider("values", start_time, end_time)
-          $('.loop-handle-label.ui-rangeSlider-leftLabel .inner-label').html("#{shortFormatTime(start_time)}")
-          $('.loop-handle-label.ui-rangeSlider-rightLabel .inner-label').html("#{shortFormatTime(end_time)}")
-          $(this).html("
-          <div class='lines-being-edited'>
-            <div class='control-group' style='float: left;'>
-              <div class='controls'>
-                <input type='text' class='input-xlarge edit-line' id='edit-line-lang1'>
-              </div>
-            </div>
-            <div class='control-group' style='float: right;'>
-              <div class='controls'>
-                <input type='text' class='input-xlarge edit-line' id='edit-line-lang2'>
-              </div>
-            </div>
-          </div>")
-          $('#edit-line-lang1').val(lang1)
-          $('#edit-line-lang2').val(lang2)
-          $(this).prepend("
-            <span style='float: left; margin: 10px;' class='toolbox-upper'>
-              <div class='btn btn-small btn-primary rounded tight-margins' style='background-color: white; border: solid 1px; border-color: black; color: black;'> Adjust timing: </div>
-              <input type='text' class='loop-input-box loop-edit-input editing-loop-start' value='#{formatTime(start_time)}' /> to 
-              <input type='text' class='loop-input-box loop-edit-input editing-loop-end' value='#{formatTime(end_time)}' />
-            </span>
-            <span style='float: right; margin: 10px;' class='toolbox-upper'>
-              <div class='btn btn-primary btn-small rounded tight-margins' id='copy-paste'> Copy/paste this line </div>
-              <div class='btn btn-primary btn-small rounded tight-margins' id='ask-twitter'> Get help from Twitter </div>
-            </span>
-            </span>
-            <br>")
-          $(this).append("
-            <br>
-            <span style='float: right; margin: 10px;' class='toolbox-lower'>
-            </span>
-            <span style='float: left; margin: 10px;' class='toolbox-lower'>
-              <div class='btn btn-small btn-primary rounded tight-margins' id='done-editing' style='background-color: white; border: solid 1px; border-color: black; color: black;'> Done editing </div>
-              <div class='btn btn-inverse btn-small rounded tight-margins' id='delete-line' data-line-id=#{id}> Delete line </div>
-            </span>")
-          $('#lyrics-box').scrollTo($('.edited-line'))
-          $(this).hover(
-            -> $(this).attr('style','background-color: #F9F9F9;')
-            -> $(this).attr('style','background-color: #F9F9F9;')
-            )
-  lineEditingLogic()
+        if window.word_marking_mode == false
+          if window.editing_line == true
+            doneEditing()
+          editLine($(this))
 
   editingSuiteLogic = ->
 
@@ -884,30 +908,6 @@ $ ->
             ")
           window.editing_line_ask_heyu = true
 
-    doneEditing = ->
-      window.editing_line = false
-      window.editing_line_timing = false
-      window.editing_line_ask_heyu = false
-      $('.input-line-container').slideDown()
-      line_id = $('.edited-line').attr('id')
-      time = $('.edited-line').attr('data-time')
-      duration = $('.edited-line').attr('data-duration')
-      lang1 = $('#edit-line-lang1').val()
-      lang2 = $('#edit-line-lang2').val()
-      $('.edited-line').before("
-        <div class='line rounded' id=#{line_id} data-time=#{time} data-duration=#{duration}>
-          <div class='lyrics-container'>
-            <p>#{lang1}</p>
-          </div>
-          <div class='lyrics-container'>
-            <p>#{lang2}</p>
-          </div>
-        </div>")
-      $('.edited-line').prev().effect("highlight", {}, 2000)
-      $('.edited-line').remove()
-      $('#coming-soon').remove()
-      reorderRight()
-
     $('#done-editing').livequery ->
       $(this).click ->
         doneEditing()
@@ -917,6 +917,7 @@ $ ->
         doneEditing()
   
   editingSuiteLogic()
+  lineEditingLogic()
 
 # PREVIEW/SAVE BUTTONS
 
