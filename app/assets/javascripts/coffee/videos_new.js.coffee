@@ -55,8 +55,8 @@ $ ->
   window.valuesChanging = false
   window.tool_helptip_displayed = false
   window.editing_line = false
+  window.line_being_edited = false
   window.editing_line_timing = false
-  window.editing_line_ask_heyu = false
   window.loop_length_range_appended = false
 
   window.quiz_making_mode = false
@@ -419,6 +419,9 @@ $ ->
 
     $('#playback-slider').on("valuesChanged", (e, data) ->
       player.playVideo()
+      if window.editing_line == true
+        editExistingLoop(formatTime(data.values.min), 'start', window.line_being_edited)
+        editExistingLoop(formatTime(data.values.max), 'end', window.line_being_edited)
     )
 
   langOneLangTwoStep = ->
@@ -739,7 +742,7 @@ $ ->
     window.editing_line = false
     window.editing_line_timing = false
     window.editing_line_ask_heyu = false
-    $('.input-line-container').slideDown()
+    $('.input-line-container').show()
     line_id = $('.edited-line').attr('id')
     time = $('.edited-line').attr('data-time')
     duration = $('.edited-line').attr('data-duration')
@@ -761,9 +764,10 @@ $ ->
 
   editLine = (this_line) ->
     window.editing_line = true
-    id = this_line.attr('id')
+    id = parseInt(this_line.attr('id'))
+    window.line_being_edited = id
     this_line.addClass('edited-line')
-    $('.input-line-container').slideUp()
+    $('.input-line-container').hide()
     lang1 = $.trim(this_line.children().eq(0).text())
     lang2 = $.trim(this_line.children().eq(1).text())
     start_time = parseInt(this_line.attr('data-time'))
@@ -806,6 +810,7 @@ $ ->
         <div class='btn btn-small btn-primary rounded tight-margins' id='done-editing' style='background-color: white; border: solid 1px; border-color: black; color: black;'> Done editing </div>
         <div class='btn btn-inverse btn-small rounded tight-margins' id='delete-line' data-line-id=#{id}> Delete line </div>
       </span>")
+    this_line.attr('style','background-color: #DFE0E2')
     $('#lyrics-box').scrollTo($('.edited-line'))
 
   # REVISING LINE CONTENT 
@@ -813,8 +818,8 @@ $ ->
   lineEditingLogic = ->
     $('.line').livequery ->
       $(this).hover(
-        -> if window.quiz_making_mode == false and window.word_marking_mode == false then $(this).attr('style','background-color: yellow;')
-        -> $(this).attr('style','background-color: white;')
+        -> if window.quiz_making_mode == false and window.word_marking_mode == false and window.editing_line == false then $(this).attr('style','background-color: yellow;')
+        -> if window.editing_line == false then $(this).attr('style','background-color: white;')
         )
       $(this).click ->
         if window.word_marking_mode == false
