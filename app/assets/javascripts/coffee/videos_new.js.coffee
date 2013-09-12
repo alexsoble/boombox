@@ -336,11 +336,11 @@ $ ->
       <div id='playback-buttons' class='upper-left-btn'>
         <div class='btn btn-info btn-small rounded tight-pack' id='play-loop-again'> 
           <i class='icon icon-refresh'></i>
-          play loop again 
+          Play loop again 
         </div>
         <div class='btn btn-info btn-small rounded tight-pack' id='play-no-loops'> 
           <i class='icon icon-play'></i>
-          play, don't loop 
+          Play, don't loop 
         </div>
         <div class='btn btn-info btn-small btn-tiny rounded tight-pack' id='pause'> 
           <i class='icon-pause'></i> 

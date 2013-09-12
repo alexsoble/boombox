@@ -28,12 +28,12 @@
           <br>
           <div class='show-button-suite'>
             <% if current_user && @translator.id == current_user.id %>
-              <div class='btn btn-info btn-small btn-tiny rounded' id='edit'> edit </div>
+              <div class='btn btn-info btn-small btn-tiny rounded' id='edit'> Edit </div>
             <% end %>
             <% if @comments.present? %>
-              <div class='btn btn-info btn-small btn-tiny rounded' id='comments-toggle'> show comments </div>
+              <div class='btn btn-info btn-small btn-tiny rounded' id='comments-toggle'> Show comments </div>
             <% end %>
-            <div class='btn btn-info btn-small btn-tiny rounded' id='controls-toggle'> hide controls </div>
+            <div class='btn btn-info btn-small btn-tiny rounded' id='controls-toggle'> Hide controls </div>
             <% unless controller_name == 'clips' %>
               <div class='btn btn-info btn-small btn-tiny rounded' id='email'> 
                 <i class="icon-envelope icon"></i> 
@@ -47,26 +47,26 @@
         <% if action_name == 'edit' || action_name == 'new' %>
           <div class='edit-button-suite'>
             <div class="btn-group">
-              <div class="btn btn-info btn-small rounded dropdown-toggle" data-toggle="dropdown"> teaching tools </div>
+              <div class="btn btn-info btn-small rounded dropdown-toggle" data-toggle="dropdown"> Teaching tools </div>
               <ul class="dropdown-menu">
-                <li><a href="#" id='word-marking-mode' class='dropdown-option'> mark key words </a></li>
+                <li><a href="#" id='word-marking-mode' class='dropdown-option'> Mark key words </a></li>
                 <% if @note.blank? %>
-                  <li><a href="#" id='add-note' class='dropdown-option'> add explanation </a></li>
+                  <li><a href="#" id='add-note' class='dropdown-option'> Add explanation </a></li>
                 <% else %>
-                  <li><a href="#" id='edit-note' class='dropdown-option'> edit note </a></li>
+                  <li><a href="#" id='edit-note' class='dropdown-option'> Edit note </a></li>
                 <% end %>
               </ul>
             </div>
             <div class="btn-group">
-              <div class="btn btn-info btn-small rounded dropdown-toggle" data-toggle="dropdown"> export / print </div>
+              <div class="btn btn-info btn-small rounded dropdown-toggle" data-toggle="dropdown"> Export / print </div>
               <ul class="dropdown-menu">
-                <li><a href="#" id='print-pdf' class='dropdown-option'> export pdf </a></li>
-                <li><a href="#" id='print-txt' class='dropdown-option'> export .txt </a></li>
-                <li><a href="#" id='print-google' class='dropdown-option'> export to google doc </a></li>
+                <li><a href="#" id='print-pdf' class='dropdown-option'> Export pdf </a></li>
+                <li><a href="#" id='print-txt' class='dropdown-option'> Export .txt </a></li>
+                <li><a href="#" id='print-google' class='dropdown-option'> Export to google doc </a></li>
               </ul>
             </div>
             <div class="btn-group">
-              <div class="btn btn-info btn-small rounded dropdown-toggle" data-toggle="dropdown"> help! </div>
+              <div class="btn btn-info btn-small rounded dropdown-toggle" data-toggle="dropdown"> Help! </div>
               <ul class="dropdown-menu">
                 <li><a href="#" id='instructions-button' class='dropdown-option'> editing tips </a></li>
               </ul>
@@ -179,9 +179,9 @@
         </div>
       </div>
     <div style="float: right; margin-top: 18px; margin-right: 10px;">
-      <span class="btn btn-primary btn-small rounded tight-pack uniform-width" id="next-line"> Next line! </span>
+      <span class="btn btn-primary btn-small rounded tight-pack uniform-width" id="next-line"> Next line </span>
       <br>
-      <span class="btn btn-primary btn-small rounded tight-pack uniform-width" id="all-done"> All done. </span>
+      <span class="btn btn-primary btn-small rounded tight-pack uniform-width" id="all-done"> All done </span>
     </div>
   </div>
 
