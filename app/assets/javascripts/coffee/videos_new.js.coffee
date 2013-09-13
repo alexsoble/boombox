@@ -282,6 +282,11 @@ $ ->
       if current_end > new_time > -1
         window.player.seekTo(new_time)
         line.attr("data-time","#{new_time}")
+      else if new_time >= current_end
+        window.player.seekTo(new_time)
+        line.attr("data-time","#{new_time}")
+        line.attr("data-duration","#{new_time + window.loop}")
+        $('.editing-loop-end').val(formatTime(new_time + window.loop))
     if part_being_edited == 'end'
       if window.video_duration > new_time > current_start
         line.attr("data-duration","#{new_time - current_start}")
