@@ -14,7 +14,7 @@
     <%= javascript_include_tag "coffee/#{controller_name}_#{action_name}" %>
   <% end %>
   <%= csrf_meta_tags %>
-  <% if action_name == 'show' and controller_name == 'interpretations' %>
+  <% if action_name == 'show' && (controller_name == 'interpretations' || controller_name == 'clips') %>
     <meta name="twitter:card" content="summary">
     <meta name="twitter:site" content="@heyuvideo">
     <meta name="twitter:title" content="<%= @video.title.slice(0,30) %>, translated by <%= @translator.username %>"}>

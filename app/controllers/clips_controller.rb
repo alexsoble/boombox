@@ -18,7 +18,8 @@ class ClipsController < ApplicationController
 
     @lines = Line.where(interpretation_id: @interp.id).order("time ASC")
     @lines_within_clip = @lines.where(time: @start .. @start + @duration)
-
+    @first_line = @lines_within_clip.first
+    
     @lang2 = @interp.lang2
     @lang1 = @video.lang1
     @published = @interp.published
