@@ -293,7 +293,7 @@ $ ->
         window.player.seekTo(new_time)
         line.attr("data-time","#{new_time}")
         window.loop_length = current_end - new_time
-        window.section = start / window.loop_length
+        window.section = new_time / window.loop_length
       else if new_time >= current_end
         window.player.seekTo(new_time)
         line.attr("data-time","#{new_time}")
