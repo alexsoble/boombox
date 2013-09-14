@@ -49,11 +49,11 @@ $ ->
   $('#controls-toggle').click ->
     if window.show_controls == false
       $('#settings').slideDown()
-      $(this).html('hide controls')
+      $(this).html('Hide controls')
       $('#notes-box').removeClass('controls-hidden')
       window.show_controls = true
     else
       $('#settings').slideUp()
-      $(this).html('show controls')
+      $(this).html('Show controls')
       $('#notes-box').addClass('controls-hidden')
       window.show_controls = false

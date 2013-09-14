@@ -243,6 +243,14 @@ $ ->
         $('.current-loop-start').val(formatTime(new_time))
         window.loop_length = values.max - new_time
         window.section = new_time / window.loop_length
+      else if new_time >= values.max
+        window.player.seekTo(new_time)
+        $('#playback-slider').rangeSlider("values", new_time, new_time + window.loop_length)
+        $('.loop-handle-label.ui-rangeSlider-leftLabel .inner-label').html("#{shortFormatTime(new_time)}")
+        $('.loop-handle-label.ui-rangeSlider-rightLabel .inner-label').html("#{shortFormatTime(new_time + window.loop_length)}")
+        $('.current-loop-start').val(formatTime(new_time))
+        $('.current-loop-end').val(formatTime(new_time + window.loop_length))
+        window.section = new_time / window.loop_length
     if part_being_edited == 'end'
       if window.video_duration > new_time > values.min
         window.loop_length = new_time - values.min
@@ -289,8 +297,8 @@ $ ->
       else if new_time >= current_end
         window.player.seekTo(new_time)
         line.attr("data-time","#{new_time}")
-        line.attr("data-duration","#{new_time + window.loop}")
-        $('.editing-loop-end').val(formatTime(new_time + window.loop))
+        line.attr("data-duration","#{new_time + window.loop_length}")
+        $('.editing-loop-end').val(formatTime(new_time + window.loop_length))
     if part_being_edited == 'end'
       if window.video_duration > new_time > current_start
         line.attr("data-duration","#{new_time - current_start}")
