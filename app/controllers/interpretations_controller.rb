@@ -89,7 +89,8 @@ class InterpretationsController < ApplicationController
     @translator = User.find_by_id(@interp.user_id)
     @video = @interp.video
     @lines = Line.where(:interpretation_id => @interp.id).order("time ASC")
-    @first_line = @lines.where("lang1 <> ''").first
+    @first_line = @lines.where("lang2 <> ''").first
+    @next_line = @lines.where("lang2 <> ''").offset(1).first
     @note = @interp.note
 
     @keywords = []
