@@ -242,6 +242,7 @@ $ ->
         $('.loop-handle-label.ui-rangeSlider-rightLabel .inner-label').html("#{shortFormatTime(values.max)}")
         $('.current-loop-start').val(formatTime(new_time))
         window.loop_length = values.max - new_time
+        window.section = new_time / window.loop_length
     if part_being_edited == 'end'
       if window.video_duration > new_time > values.min
         window.loop_length = new_time - values.min
@@ -250,6 +251,7 @@ $ ->
         $('.loop-handle-label.ui-rangeSlider-rightLabel .inner-label').html("#{shortFormatTime(new_time)}")
         $('.current-loop-end').val(formatTime(new_time))
         window.loop_length = new_time - values.min
+        window.section = values.min / window.loop_length
 
   $('.lang1-line').focusout ->
     $('.lang2-line').focus()
@@ -282,6 +284,8 @@ $ ->
       if current_end > new_time > -1
         window.player.seekTo(new_time)
         line.attr("data-time","#{new_time}")
+        window.loop_length = current_end - new_time
+        window.section = start / window.loop_length
       else if new_time >= current_end
         window.player.seekTo(new_time)
         line.attr("data-time","#{new_time}")
@@ -290,6 +294,8 @@ $ ->
     if part_being_edited == 'end'
       if window.video_duration > new_time > current_start
         line.attr("data-duration","#{new_time - current_start}")
+        window.loop_length = new_time - current_start
+        window.section = current_start / window.loop_length
     window.editing_line_timing = false
 
   $('.loop-edit-input').livequery ->
