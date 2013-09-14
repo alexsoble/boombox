@@ -129,9 +129,9 @@ $ ->
       <div>
         <h3><strong>Heads up: It's hard to translate at the same speed as the video!</strong></h3>
         <br>
-        <p>Don't worry though. You can break up the video into shorter segments called loops.</p>
+        <p>Don't worry though. Heyu will help you break up the video into shorter segments called loops.</p>
         <br>
-        <p>Listen to each loops as many times as you need to get the meaning!</p>
+        <p>Listen to each loop as many times as you need to get the meaning!</p>
         <br>
         <p>You can use the blue handles to choose the loop you want to translate:</p>
           <div class='btn btn-primary btn-small rounded'> :00 </div> 
@@ -140,7 +140,7 @@ $ ->
         <p>Or you can manually enter the start and end times of the loop you want to work on:</p>
           <input type='text' class='loop-input-box' value='00:00'></input>
           <input type='text' class='loop-input-box' value='00:04'></input>
-        </br>
+        </br><br>
         <label class='checkbox'><input type='checkbox' id='yes-loops'><h3>Sounds good!</h3></label>
       </div>")
 
