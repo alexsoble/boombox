@@ -278,7 +278,7 @@ $ ->
 
     if this_line.length != 0
       unless this_line.hasClass('highlighted')
-        this_line.effect("highlight", { color: "yellow" }, 4000)
+        this_line.effect("highlight", { color: "#FFFF00" }, 4000)
         this_line.addClass("highlighted")
         if this_line.prev().prev().length != 0
           $("#lyrics-box").scrollTo(this_line.prev().prev(), { duration : 250 } )

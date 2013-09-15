@@ -907,6 +907,7 @@ $ ->
         $(this).parent().parent().slideUp()
         # ^The slideUp would be nice but unfortunately js from YouTube/Google interferes with a delayed remove() and mucks up the whole thing
         $(this).parent().parent().remove()
+        $('.input-line-container').slideDown()
 
     $('.edit-line').livequery ->
       $(this).keyup (e) ->
