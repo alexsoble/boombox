@@ -38,9 +38,9 @@ $ ->
       $.ajax(
         url: 
           if window.n < 5
-            "http://gdata.youtube.com/feeds/api/videos?q=#{request.term}&max-results=9&v=2"
+            "https://gdata.youtube.com/feeds/api/videos?q=#{request.term}&max-results=9&v=2"
           else
-            "http://gdata.youtube.com/feeds/api/videos?q=#{request.term}&max-results=#{window.n}&v=2"
+            "https://gdata.youtube.com/feeds/api/videos?q=#{request.term}&max-results=#{window.n}&v=2"
         dataType: "xml",
         complete: (r) ->
           parser = new DOMParser
