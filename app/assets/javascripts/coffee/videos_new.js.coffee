@@ -391,6 +391,21 @@ $ ->
 
   playbackControls = (video_duration) ->
 
+    for n in [video_duration..1]
+      $('#timing-ruler').prepend("<div class='timing-mark'><i class='icon-caret-left'></i>#{n}</div><br>")
+
+    initial_mark_array = []
+    $('.line').each(->
+      initial_mark_array.push parseInt($(this).attr('data-time'))
+    )
+
+    for t in $('.timing-mark')
+      for l in initial_mark_array
+        console.log parseInt($(t).html()) 
+        console.log l
+        unless parseInt($(t).html()) == l
+          $(t).hide()
+
     $('.playback-left-label.inner-label').html(":00")
     $('.playback-right-label.inner-label').html("#{shortFormatTime(video_duration)}")
 
@@ -628,6 +643,7 @@ $ ->
         playbackControls(video_duration)
         window.video_loaded = true
         console.log "PLAYBACK CONTROLS LOADED! VIDEO DURATION = #{video_duration}"
+        console.log "#{video_duration}"
        )
 
 # YOUTUBE PLAYER COMES IN HERE
@@ -986,3 +1002,6 @@ $ ->
 # AUTOSAVE EVERY 10 SECONDS 
 
   autosave = setInterval(save, 30000)
+
+  $('#lyrics-box').sortable()
+

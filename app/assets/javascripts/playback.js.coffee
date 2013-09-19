@@ -4,6 +4,19 @@ $ ->
   window.show_comments = false
   window.show_controls = true
 
+  $('.tab').click ->
+    $('.tab').removeClass('active')
+    $(this).addClass('active')
+    if $(this).attr('id') == 'grammar'
+      $('.line').addClass('quiet')
+      $('#note').removeClass('quiet')
+    else if $(this).attr('id') == 'translation'
+      $('.line').removeClass('quiet')
+      $('#note').addClass('quiet')
+    else if $(this).attr('id') == 'transcription'
+      $('.line').removeClass('quiet')
+      $('#note').addClass('quiet')
+
   action_name = $('#data').attr('data-action-name')
 
   $('#volume').livequery ->

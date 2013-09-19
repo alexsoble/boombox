@@ -1,3 +1,11 @@
+#timing-ruler { 
+  width: 40px; 
+  position: absolute;
+  right: 10px;
+  top: 0px; }
+
+.timing-mark { color: blue; float: right; } 
+
 #lyrics-box.short { max-height: 458px; }
 
 #title-box { position: relative; 
