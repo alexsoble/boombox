@@ -55,6 +55,10 @@ class PagesController < ApplicationController
     end
   end
 
+  def chile
+    redirect_to :controller => 'interpretations', :action => 'show', :id => '155'
+  end
+
   def translate
   end
 

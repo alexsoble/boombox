@@ -4,6 +4,7 @@ Boombox::Application.routes.draw do
 
   get '/welcome' => 'pages#welcome'
   get '/home' => 'pages#home'
+  get '/chile' => 'pages#chile'
 
   get '/join' => 'users#new'
   get '/steptwo' => 'users#steptwo'

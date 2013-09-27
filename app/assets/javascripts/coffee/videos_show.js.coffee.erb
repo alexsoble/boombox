@@ -39,7 +39,7 @@ $ ->
   shortFormatTime = (time) ->
     time = Math.floor(time)
     if time <= 9 then formatted_time = ":0" + time
-    if 9 < time <= 59 then formatted_time = ":" + time
+    if 9 < time <= 59 then formatted_time = ":" + timetime
     if 60 <= time < 540
       if time%60 <= 9 then formatted_time = Math.floor((time)/60) + ":0" + (time)%60
       if 9 < time%60 <= 59 then formatted_time = Math.floor((time)/60) + ":" + (time)%60
