@@ -1,10 +1,32 @@
+#right-side-box {
+  width: 640px;
+  margin-top: 13px; 
+}
+
 #lyrics-box { 
+  border: 2px solid black; 
+  border-bottom-left-radius: 10px;
+  border-bottom-right-radius: 10px;
+  border-top-right-radius: 10px;
   max-height: 530px;
   width: 640px;
-  margin-top: 53px; 
   float: left; 
   overflow-y: scroll; 
-  margin: 8px; }
+  position: relative; 
+  padding: 30px;
+}
+
+.tab { 
+  border-top: 2px solid black;
+  border-left: 2px solid black;
+  float: left; 
+  padding: 8px; 
+  color: white; 
+  font-weight: 700;
+  background-color: #442354; }
+
+.tab.end { border-right: 2px solid black; }
+.tab.active { background-color: #0f82f5; }
 
 #lyrics-box.skinny { width: 320px;
   max-height: 530px; }

@@ -1,4 +1,4 @@
-#new-translation-button { width: 600px; }
+ 0px; }
 
 .span { height: 80px; }
 
@@ -96,4 +96,4 @@ li.ui-autocomplete.ui-menu { color: black; }
 
 #progress-bar { width: 250px; 
   position: relative;
-  left: -12px; }
+  left: 130px; top: 25px; }

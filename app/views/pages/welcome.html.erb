@@ -8,23 +8,21 @@
     <% end %>
     <br>
   <% else %>
-    <h1 style='text-align: center;'><strong>Heyu = Language Learning + Music</strong></h1>
+    <h2 style='text-align: center; font-size: 44px;'><strong>Music + Video + Language Learning</strong></h2>
     <br>
-    <h2 style='text-align: center;'><i>create translations &bull; link with lessons &bull; explain, discuss, and compare</i></h2>
   <% end %>
   <br>
   <br>
 </div>
 <div class="index-button" id="new-translation-button">
-  <div class="button-text-wrapper">
-    <p class="index-button-text">Search YouTube here to translate a new video:</p>
-  </div>
-  <div class="button-text-wrapper" style="float: left;"> 
-    <div class="controls" style="position: absolute;">
-      <input type="text" class="short-text-box new-video-input" id="ask-youtube"><%= image_tag "youtube-logo.png", :size => '71x71', :style => 'position: relative; left: -12px; top: -5px;' %>
-      <input type="hidden" id="youtube_id">
-      <div id="progress-bar"></div>
-    </div>
+  <br>
+  <p class="index-button-text">
+    Turn any song or video into a <br> language-learning opportunity. <br><br> Start by searching YouTube:
+  </p>
+  <div class="controls" style="position: absolute;">
+    <input type="text" id="ask-youtube" class="short-text-box new-video-input" style="position: relative; left: 130px; top: 20px;"><%= image_tag "youtube-logo.png", :size => '71x71', :style => 'position: relative; left: 130px; top: 15px;' %>
+    <input type="hidden" id="youtube_id">
+    <div id="progress-bar"></div>
   </div>
 </div>
 <div id="results-box"></div>

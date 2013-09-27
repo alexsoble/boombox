@@ -10,17 +10,6 @@
       <div id="timer-box"></div>
       <div id="settings"></div>
       <div id='notes-box'>
-        <% if @note.present? %>
-          <p id='note'>
-            <% if action_name == 'edit' %>
-              <strong>Your note: &nbsp;</strong>
-            <% end %>
-            <% if action_name == 'show' %>
-              <strong>Note: &nbsp;</strong>
-            <% end %>
-            <span id='note-text'><%= @note %></span>
-          </p>
-        <% end %>
         <% if action_name == 'show' %>
           <p id='translator-name'><i>Translation by <%= link_to "#{@translator.username}", user_url(@translator) %> from <%= @lang1 %> into <%= @lang2 %>.</i></p>
         <% end %>
@@ -85,73 +74,101 @@
 
   <div class="span5 offset2">
 
-  <% if @clip.blank? %>
-    <div id="lyrics-box">
-      <% @lines.each do |l| %>
-        <div class="line rounded" data-time=<%= l.time %> data-duration=<%= l.duration %> id=<%= l.id %>>
-          <% if l.lang1.present? %>
-            <div class="lyrics-container">
-              <p><%= l.lang1 %></p>
-            </div>
+  <% if @clip.blank? # SECTION BELOW IS FOR SHOW, EDIT, AND NEW INTERP MODES %>
+
+    <div id="right-side-box">
+      <% if action_name == 'edit' || action_name == 'new' || action_name == 'show' # TABS COME IN HERE %>
+        <% if @vocabulary_words.present? %> <div id="vocabulary" class="tab"> Vocabulary </div> <% end %>
+        <% if @note.present? %> <div id="grammar"  class="tab"> Grammar </div> <% end %>
+        <% if @culture_note.present? %><div id="culture" class="tab"> Culture </div> <% end %>
+        <div id="transcription" class="tab"> Transcription </div>
+        <div id="translation" class="tab active"> Translation </div>
+        <% if @comments.present? %> <div id="discussion" class="tab end"> Discussion </div> <% end %>
+      <% end %>
+
+      <div id="lyrics-box">
+
+      <% if @note.present? # GRAMMAR NOTE %>
+        <p id='note' class='quiet'>
+          <% if action_name == 'edit' %>
+            <strong>Your note: &nbsp;</strong>
           <% end %>
-          <% if l.lang2.present? %> 
-            <% if @lang1_and_lang2 == true %>
+          <% if action_name == 'show' %>
+            <strong>Note: &nbsp;</strong>
+          <% end %>
+          <span id='note-text'><%= @note %></span>
+        </p>
+      <% end %>
+
+        <% @lines.each do |l| %>
+          <div class="line rounded" data-time=<%= l.time %> data-duration=<%= l.duration %> id=<%= l.id %>>
+            <% if l.lang1.present? %>
               <div class="lyrics-container">
-            <% else %>
-              <div class="wide-lyrics-container">
+                <p><%= l.lang1 %></p>
+              </div>
             <% end %>
-              <p><%= l.lang2 %></p>
-            </div>
-          <% end %>
-          <% if @comments.present? %>
-            <% @comments.each do |comments| %>
-              <% if comments[l.id].present? %>
-                <% comments[l.id].each do |c| %>
-                <br>
-                  <div class="comment" data-comment-id=<%= c.id %>>
-                    <span class="comment-text"><%= User.find_by_id(c.user_id).username %>: <%= c.comment_text %>
-                      <% if current_user %>
-                        <% if c.user_id == current_user.id %>
-                          &nbsp; &nbsp; <a class='delete-comment'>[ X ] </a>
+            <% if l.lang2.present? %> 
+              <% if @lang1_and_lang2 == true %>
+                <div class="lyrics-container">
+              <% else %>
+                <div class="wide-lyrics-container">
+              <% end %>
+                <p><%= l.lang2 %></p>
+              </div>
+            <% end %>
+            <% if @comments.present? %>
+              <% @comments.each do |comments| %>
+                <% if comments[l.id].present? %>
+                  <% comments[l.id].each do |c| %>
+                  <br>
+                    <div class="comment" data-comment-id=<%= c.id %>>
+                      <span class="comment-text"><%= User.find_by_id(c.user_id).username %>: <%= c.comment_text %>
+                        <% if current_user %>
+                          <% if c.user_id == current_user.id %>
+                            &nbsp; &nbsp; <a class='delete-comment'>[ X ] </a>
+                          <% end %>
                         <% end %>
-                      <% end %>
-                    </span>
-                  </div>
+                      </span>
+                    </div>
+                  <% end %>
                 <% end %>
               <% end %>
             <% end %>
-          <% end %>
+          </div>
+        <% end %>
+        <% if action_name == 'edit' || action_name == 'new' # TIMING GAUGE COMES IN HERE%>
+          <div id='timing-ruler'></div>
+        <% end %>
+      </div>
+    <% else # THIS SECTION BELOW IS FOR VIDEO CLIP MODE %>
+      <div class="lyrics-container wide" id="lyrics-box">
+        <% @lines_within_clip.each do |l| %>
+          <div class="line rounded" data-time=<%= l.time %> data-duration=<%= l.duration %> <%= l.id %>>
+            <% if l.lang1.present? %>
+              <div class="lyrics-container">
+                <p><%= l.lang1 %></p>
+              </div>
+            <% end %>
+            <% if l.lang2.present? %> 
+              <div class="lyrics-container">
+                <p><%= l.lang2 %></p>
+              </div>
+            <% end %>
+          </div>
+        <% end %>
+      </div>
+      <% unless current_user %>
+        <div class="share-clip-container">
+          <p class="center"><i>Click <a href="/interpretations/<%= @interp.id %>">here</a> for the full translation.</i></p>
+        </div>
+      <% else %>
+        <div class="share-clip-container">
+          <h3 style="text-align: center;">Share this clip?</h3>
+          <div class="btn btn-primary btn-share rounded" id="tweet-it" style="text-align: center;"> <i class="icon-twitter icon-2x"></i> </div>
+          <div class="btn btn-primary btn-share rounded" id="email" style="text-align: center;"> <i class="icon-envelope icon-2x"></i> </div>
         </div>
       <% end %>
     </div>
-  <% else %>
-    <div class="lyrics-container wide" id="lyrics-box">
-      <% @lines_within_clip.each do |l| %>
-        <div class="line rounded" data-time=<%= l.time %> data-duration=<%= l.duration %> <%= l.id %>>
-          <% if l.lang1.present? %>
-            <div class="lyrics-container">
-              <p><%= l.lang1 %></p>
-            </div>
-          <% end %>
-          <% if l.lang2.present? %> 
-            <div class="lyrics-container">
-              <p><%= l.lang2 %></p>
-            </div>
-          <% end %>
-        </div>
-      <% end %>
-    </div>
-    <% unless current_user %>
-      <div class="share-clip-container">
-        <p class="center"><i>Click <a href="/interpretations/<%= @interp.id %>">here</a> for the full translation.</i></p>
-      </div>
-    <% else %>
-      <div class="share-clip-container">
-        <h3 style="text-align: center;">Share this clip?</h3>
-        <div class="btn btn-primary btn-share rounded" id="tweet-it" style="text-align: center;"> <i class="icon-twitter icon-2x"></i> </div>
-        <div class="btn btn-primary btn-share rounded" id="email" style="text-align: center;"> <i class="icon-envelope icon-2x"></i> </div>
-      </div>
-    <% end %>
   </div>
   <% end %>
 
