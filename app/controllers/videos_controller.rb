@@ -5,16 +5,10 @@ class VideosController < ApplicationController
   def create
 
     @youtube_id = params[:video][:youtube_id]
-    @lang1 = params[:video][:lang1]
     if Video.where(:youtube_id => @youtube_id).blank? 
       @video = Video.create(params[:video])
     else
-      @video2 = Video.where(:youtube_id => @youtube_id).first  # <= You'll want to make this smarter later on.
-      if @video2.lang1 != @lang1
-        @video = Video.create(params[:video])
-      else
-        @video = @video2
-      end
+      @video = Video.where(:youtube_id => @youtube_id).first
     end
 
     render :json => { :video => @video }
@@ -24,27 +18,16 @@ class VideosController < ApplicationController
   def show 
 
     @video = Video.find_by_id(params[:id])
-    @interpretations = Interpretation.where(:video_id => @video.id).order("created_at ASC")
-    
-    # LOGIC TO FIND THE INTERPRETATION WITH THE MOST LINES
 
-    if @interpretations.present?
-
-      arr = Array.new 
-
-      @interpretations.each do |i|
-        l = Line.where(:interpretation_id => i.id).order("created_at ASC")
-        how_many_lines = l.length
-        arr << { :id => i.id, :length => how_many_lines }
-      end 
-      
-      arr = arr.sort_by { |hash| hash[:length] }.reverse
-      @interpretation = Interpretation.where(:id => arr.first[:id]).first
-
-      redirect_to "/interpretations/#{@interpretation.id}"      
-
+    @vocabulary = Word.where(:video_id => @video.id).order("created_at DESC")
+    @vocabulary_contributors = []
+    @vocabulary.each do |v|
+      user = User.where(:id => v.user_id).first
+      if @vocabulary_contributors.index(user) == nil then @vocabulary_contributors << user end
     end
-    
+
+    @multiple_choice = Challenge.where(:video_id => @video.id).order("created_at DESC")
+
   end 
 
   def new

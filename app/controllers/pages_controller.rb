@@ -22,15 +22,6 @@ class PagesController < ApplicationController
       @interps_with_some_content << Interpretation.find(i[:id])
     end
 
-    @langs_with_some_content = []
-    interps_with_some_content.each do |i|
-      lang1 = Interpretation.find(i[:id]).video.lang1
-      if @langs_with_some_content.index(lang1).blank? 
-        @langs_with_some_content << lang1
-      end
-    @langs_with_some_content = @langs_with_some_content.sort
-    end
-
     @latest_translated_videos = Array.new
     Video.order('created_at DESC').each do |v|
       if v.number_of_interpretations > 0
@@ -72,6 +63,7 @@ class PagesController < ApplicationController
   end
   
   def experiment
+    render 'interpretations#edit'
   end
 
   def browsers

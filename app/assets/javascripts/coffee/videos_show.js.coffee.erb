@@ -1,29 +1,5 @@
 $ ->
 
-  youtube_id = $('#data').attr('data-youtube-id')
-  lang1 = $('#data').attr('data-lang-one')
-  lang2 = $('#data').attr('data-lang-two')
-  window.lang1 = lang1
-  window.lang2 = lang2
-  interp_id = $('#data').attr('data-interp-id')
-  window.interp_id = interp_id
-  action_name = $('#data').attr('data-action-name')
-  translation_type = $('#data').attr('data-translation-type')
-  published = $('#data').attr('data-published')
-  
-  translator_name = $('#data').attr('data-translator-name')
-  translator_image_url = $('#data').attr('data-translator-image-url') || null
-  current_user_username = $('#data').attr('data-current-user-username')
-  current_user_id = $('#data').attr('data-current-user-id')
-  window.current_user_id = current_user_id
-
-  console.log youtube_id + " " + lang1 + " " + lang2 + " " + interp_id + " " + action_name + " "+ translation_type + " " + translator_name
-
-  my_video = $('#data').attr('data-my-video')
-  if my_video == 'true' then my_video = true
-  if my_video == 'false' then my_video = false
-  window.my_video = my_video
-
   formatTime = (time) ->
     time = Math.floor(time)
     if time <= 9 then formatted_time = "00:0" + time
@@ -39,7 +15,7 @@ $ ->
   shortFormatTime = (time) ->
     time = Math.floor(time)
     if time <= 9 then formatted_time = ":0" + time
-    if 9 < time <= 59 then formatted_time = ":" + timetime
+    if 9 < time <= 59 then formatted_time = ":" + time
     if 60 <= time < 540
       if time%60 <= 9 then formatted_time = Math.floor((time)/60) + ":0" + (time)%60
       if 9 < time%60 <= 59 then formatted_time = Math.floor((time)/60) + ":" + (time)%60
@@ -48,189 +24,9 @@ $ ->
       if 9 < time%60 <= 59 then formatted_time = Math.floor((time)/60) + ":" + (time)%60
     formatted_time
 
-  window.loop_length = false
-  window.valuesChanging = false
-
-  window.quiz_making_mode = false
-  window.quiz_words = []
-
-  window.comment_button_added = false
-  window.comment_input_area_added = false
- 
-  window.tool_helptip_displayed = false
-  window.editing_line = 'off'
-  window.editing_line_timing = 'off'
-  window.editing_line_ask_heyu = 'off'
-  window.volume_slider_on = false
-
-  $('#timer-box').html('<div id="timer">
-    <h2 class="timer-text" id="big-timer"></h2>
-    </div>')
-  $('#lyrics').hide()
-  $('#timer').hide()
-  $('.comment').hide()
-
-  # ADJUSTING LINES FOR R-T-L VERSUS L-T-R
-  
-  if rtlArray.indexOf(window.lang2) > -1
-    $('.line').each(->
-      $(this).children().eq(1).addClass('right-to-left')
-    )
-  if rtlArray.indexOf(window.lang1) > -1
-    $('.line').each(->
-      $(this).children().eq(0).addClass('right-to-left')
-    )
-    
-  $('#email').click ->
-    window.location.href = "mailto:best.friend@gmail.com?Subject=#{lang1}%20video%20translation&body=Hey,%20check%20out%20this%20video:%20#{document.URL}.%20It's%20in%20#{lang1}%20with%20the%20#{lang2}%20side-by-side."
-
-  $('#tweet-it').click ->
-    window.open "https://twitter.com/share?text=Hey,%20check%20out%20this%20video%20(in%20#{lang1}%20with%20the%20#{lang2}%20side-by-side)%20-->&hashtags=Heyu#{lang1},Heyu", "width=400, height=400"
-
-  $('.line').livequery ->
-    this_line = $(this)
-    this_line.hover(
-      -> this_line.attr("style", "background-color: rgba(15, 130, 245, 0.3);" )
-      -> this_line.attr("style", "background-color: white;")
-      )
-    this_line.click ->
-      $('.line').removeClass('highlighted')
-      this_line.attr("style", "background-color: rgba(15, 130, 245, 0.3);")
-      player.seekTo(parseInt(this_line.attr('data-time')))
-      if window.comment_input_area_added == false
-        unless window.comment_button_added == parseInt(this_line.attr('id'))
-          $('.btn-add-comment').remove()
-          this_line.append("<div class='btn btn-small btn-primary rounded btn-add-comment'> comment?</div>")
-          window.comment_button_added = parseInt(this_line.attr('id'))
-
-  $('.btn-add-comment').livequery ->
-    $(this).click ->
-      $(this).replaceWith("<input type='text' id='new-comment' style='margin-left: 10px;'/> <a id='cancel-comment' rel='nofollow'><strong><u> [ X ]</strong></u></a>")
-      player.pauseVideo()
-      window.comment_button_added = false
-      window.comment_input_area_added = true
-
-  $('#cancel-comment').livequery ->
-    $(this).click ->
-      window.comment_button_added = false
-      window.comment_input_area_added = false
-      $(this).prev().remove()
-      $(this).remove()
-
-  $('#new-comment').livequery ->
-    comment = $(this)
-    line = comment.parent()
-
-    comment.keyup (e) ->
-      e.preventDefault
-      if e.which == 13
-        comment_text = comment.val()
-        comment.remove()
-        $('#cancel-comment').remove()
-        $.post('/new_comment', { 'comment' : { 'comment_text' : "#{comment_text}", 'line_id' : "#{parseInt(line.attr('id'))}", 'user_id' : "#{window.current_user_id}" } }, (data) ->
-          comment_id = data.data.id
-          console.log comment_id
-          line.append("
-            <div class='comment' data-comment-id=#{comment_id}>
-              <span class='comment-text'>#{current_user_username}: #{comment_text}
-              &nbsp; &nbsp; <a class='delete-comment'>[ X ] </a> </span>
-            </div>
-          ")
-          window.comment_input_area_added = false
-          player.playVideo()
-        )
-
-  $('.delete-comment').livequery ->
-    $(this).click ->
-      comment = $(this).parent().parent()
-      comment_id = parseInt(comment.attr('data-comment-id'))
-      $.post('/delete_comment', { 'id' : "#{comment_id}" }, (data) ->
-        console.log data
-        comment.remove()
-      )
-
-  sliderSetup = ->
-
-    $('#settings').append("
-      <div id='playback-buttons' style='float: right; margin-right: 20px; margin-top: 20px;'>
-        <div class='btn btn-info btn-small rounded tight-pack' id='backward'> <i class='icon-backward'></i> </div>
-        <div class='btn btn-info btn-small rounded tight-pack' id='play-pause'> <i class='icon-pause'></i> </div> 
-        <div class='btn btn-info btn-small rounded tight-pack' id='forward'> <i class='icon-forward'></i>  </div>
-        <div class='btn btn-info btn-small rounded tight-pack' id='volume' style='position: relative;'> <i class='icon-volume-up'></i>
-          <div id='volume-slider'> </div>
-       </div>
-      </div>
-      ")
-
-    $('#settings').append("
-      <div class='upper-left-btn'>
-        <div class='btn btn-info btn-small rounded tight-pack' id='just-lang-one'> #{lang1} </div>
-        <div class='btn btn-info btn-small rounded tight-pack' id='just-lang-two'> #{lang2} </div>
-        <div class='btn btn-info btn-small rounded tight-pack' id='lang-one-and-lang-two'> Both </div>
-      </div>
-      ")
-
-    $('#just-lang-one').livequery ->
-      $(this).click ->
-        $('.line').each(->
-          $(this).children().eq(1).slideUp().removeClass('wide-lyrics-container')
-          $(this).children().eq(0).slideDown().addClass('wide-lyrics-container')
-        )
-
-    $('#just-lang-two').livequery ->
-      $(this).click ->
-        $('.line').each(->
-          $(this).children().eq(1).slideDown().addClass('wide-lyrics-container')
-          $(this).children().eq(0).slideUp().removeClass('wide-lyrics-container')
-        )
-
-    $('#lang-one-and-lang-two').livequery ->
-      $(this).click ->
-        $('.line').each(->
-          $(this).children().eq(1).slideDown().removeClass('wide-lyrics-container')
-          $(this).children().eq(0).slideDown().removeClass('wide-lyrics-container')
-        )
-
-    $('#settings').append("
-      <div class='playback-left-label end-label'><div class='playback-left-label inner-label'></div></div>
-        <div id='playback-slider'></div>
-      <div class='playback-right-label end-label'><div class='playback-right-label inner-label'></div></div>
-      <div id='loop-status'></div>
-    ")
-
-    $('#edit').livequery ->
-      $(this).click ->
-        window.location.href = "/interpretations/#{window.interp_id}/edit/"
-    
-    if translator_image_url isnt null
-      $('#user-name').append("<img src=#{translator_image_url} class='profile-thumbnail'>")
-
-  sliderSetup()
-
-  playbackControls = (video_duration) ->
-
-    $('.playback-left-label.inner-label').html(":00")
-    $('.playback-right-label.inner-label').html("#{shortFormatTime(video_duration)}")
-
-  straightPlaybackBehavior = ->
-
-    if $('#playback-slider').hasClass('ui-rangeSlider')
-      $('#playback-slider').rangeSlider('destroy')
-
-    $('.ui-slider-handle').addClass('loop-handle-label')
-
-    $('#playback-slider').slider(
-      min: 0,
-      max: window.video_duration,
-      value: window.time,
-      step: 1
-      slide: (event, ui) ->
-        player.seekTo($('#playback-slider').slider("value"))
-    )
-
-# YOUTUBE PLAYER COMES IN HERE
-
-  window.rollover_pause = false
+  youtube_id = $('#data').attr('data-youtube-id')
+  window.video_id = parseInt($('#data').attr('data-video-id'))
+  $('#settings').attr('style','height:200px;')
 
   tag = document.createElement("script")
   tag.src = "https://www.youtube.com/iframe_api"
@@ -240,6 +36,30 @@ $ ->
   window.section = 0 
   window.time = 0
   window.got_volume = false
+  window.video_play_counter = 0
+
+  # WE GOTTA HAVE A PLAYBACK SLIDER
+
+  $('#settings').append("
+    <div class='playback-left-label end-label'><div class='playback-left-label inner-label'></div></div>
+      <div id='playback-slider'></div>
+    <div class='playback-right-label end-label'><div class='playback-right-label inner-label'></div></div>
+  ")
+
+  playbackControls = (video_duration) ->
+    $('.playback-left-label.inner-label').html(":00")
+    $('.playback-right-label.inner-label').html("#{shortFormatTime(video_duration)}")
+  
+    $('#playback-slider').slider(
+        min: 0,
+        max: video_duration,
+        value: window.time,
+        step: 1
+        stop: (event, ui) ->
+          player.seekTo($('#playback-slider').slider("value"))
+        stop: (event, ui) ->
+          player.seekTo($('#playback-slider').slider("value"))
+      )
 
   window.onYouTubeIframeAPIReady = ->
     player = new YT.Player("new-video-box", {
@@ -261,6 +81,7 @@ $ ->
   onPlayerReady = (event) ->
     video_duration = window.player.getDuration()
     window.video_duration = video_duration
+    window.half_duration = video_duration * .5
     playbackControls(video_duration)
     if window.loop_length == false
       straightPlaybackBehavior()
@@ -272,29 +93,24 @@ $ ->
 
   countVideoPlayTime = ->
 
+    # IF PLAYER IS PLAYING, UPDATE THE PLAY COUNTER
+    if player.getPlayerState() == 1
+      window.video_play_counter += .4
+      if window.video_play_counter > window.half_duration
+        $.post("/update_playcount/#{window.playcount_id}", (data) ->
+          new_playcount = data.play_count
+          console.log new_playcount
+          $('#video-play-counter').html(new_playcount)
+        )
+        window.video_play_counter = 0
+
+    # UI RESPONDS AS VIDEO PLAYS
     exact_time = player.getCurrentTime()
     window.time = Math.floor(exact_time)
-    this_line = $("[data-time=#{window.time}]")
-
-    if this_line.length != 0
-      unless this_line.hasClass('highlighted')
-        this_line.effect("highlight", { color: "#FFFF00" }, 4000)
-        this_line.addClass("highlighted")
-        if this_line.prev().prev().length != 0
-          $("#lyrics-box").scrollTo(this_line.prev().prev(), { duration : 250 } )
-        else
-          if this_line.prev().length != 0
-            $("#lyrics-box").scrollTo(this_line.prev(), { duration : 250 } )
-          else
-            $("#lyrics-box").scrollTo(this_line, { duration : 250 } )
-
-    current_loop_time = window.loop_length * window.section
-    current_loop_end = window.loop_length * (window.section + 1)
-
+    
     # PLAYBACK SLIDER MOVES HERE
-    if window.loop_length is false and window.valuesChanging is false
-      $('#playback-slider').slider("value", window.time)
-      $('#playback-slider').children().html(shortFormatTime(window.time))
+    $('#playback-slider').slider("value", window.time)
+    $('#playback-slider').children().html(shortFormatTime(window.time))
 
   counter = setInterval(countVideoPlayTime, 400)
   done = false
@@ -308,49 +124,149 @@ $ ->
   delayedShow = -> 
     window.player.playVideo()
   window.setTimeout(delayedShow, 1000)
-    
-  $("#forward").livequery ->
-    $(this).click -> 
-      console.log "forward"
-      if window.loop_length != false
-        window.section += 1
-        window.player.seekTo(window.loop_length * window.section, true)
-        $('#loop-slider').rangeSlider("values", window.loop_length * window.section, window.loop_length * (window.section + 1))
-        $('.ui-rangeSlider-leftLabel.loop-handle-label').children(':first').html("<div class='text-padding'>#{shortFormatTime(window.loop_length * window.section)}</div>")
-        $('.ui-rangeSlider-rightLabel.loop-handle-label').children(':first').html("<div class='text-padding'>#{shortFormatTime(window.loop_length * (window.section + 1))}</div>")
-      else
-        player.seekTo(window.time + 15)
 
-  $("#backward").livequery ->
-    $(this).click -> 
-      console.log "backward"
-      if window.loop_length != false
-        window.section -= 1
-        window.player.seekTo((window.section - 1) * window.loop_length, true)
-        $('#loop-slider').rangeSlider("values", window.loop_length * (window.section - 1), window.loop_length * window.section)
-        $('.ui-rangeSlider-leftLabel.loop-handle-label').html("<div class='text-padding'>#{shortFormatTime(window.loop_length * (window.section - 1))}</div>")
-        $('.ui-rangeSlider-rightLabel.loop-handle-label').html("<div class='text-padding'>#{shortFormatTime(window.loop_length * window.section)}</div>")
-      else
-        if window.time > 14
-          player.seekTo(window.time - 15)
-        else
-          player.seekTo(0)
+  # CHECK TO SEE IF A PLAYCOUNT OBJECT EXISTS FOR THIS USER/VIDEO PAIR; IF NOT, CREATE ONE
 
-  $('.vote-button').livequery ->
-    $(this).click ->
-      if window.user_id == null
-        $('.vote-button-status').html("<b><i>Please sign in to vote on videos.</i></b>")
+  if window.user_id isnt null
+    $.post("/find_playcount/#{window.user_id}/#{window.video_id}", (data) ->
+      if data.playcount_id is 'no-playcount'
+        $.post("/new_playcount/#{window.user_id}/#{window.video_id}", (data) ->
+          window.playcount_id = data.playcount_id
+        )
       else
-        if $(this).hasClass('btn-primary')
-          $('.vote-button').removeClass('btn-primary')
-        else
-          $('.vote-button').removeClass('btn-primary')
-          $(this).addClass('btn-primary')
-        $.post('/downvote', { 'interp' : { 'id' : "#{interp_id}", 'difficulty' : "#{$(this).attr('value')}" } })
-
-  # CONTROLS INITIALIZE AS HIDDEN
+        window.playcount_id = data.playcount_id
+    )
   
-  window.show_controls = false
-  $('#settings').hide()
-  $('#controls-toggle').html('Show controls')
-  $('#notes-box').addClass('controls-hidden')
+  availableTags = [ "English", "Dutch", "Afrikaans"
+    "Chinese (Mandarin)", "Cantonese", "Japanese", "Korean"
+    "Vietnamese", "Thai", "Burmese", "Filipino", "Tagalog", "Hmong", "Khmer", "Lao" 
+    "French", "Spanish", "Portuguese", "Italian", "Catalan", "Romanian", "Albanian"
+    "Russian", "Polish", "Czech"
+    "German", "Greek"
+    "Welsh"
+    "Norwegian", "Swedish", "Danish", "Finnish", "Icelandic"
+    "Hebrew", "Arabic", "Persian", "Pashto", "Turkish"
+    "Hindi", "Bengali", "Gujarati", "Punjabi", "Sindhi", "Urdu", "Marathi"
+    "Telugu", "Tamil", "Malayalam", "Sinhala"
+    "Latin"
+    "Swahili", "Yoruba", "Xhosa", "Somali", "Amharic"
+    "Javanese", "Malay", "Indonesian"
+    "Kazakh", "Tajik", "Tibetan", "Uyghur", "Uzbek" ]
+
+  availableTags.sort (a,b) ->
+    return if a >= b then 1 else -1
+
+  $('#add-new-note').click -> 
+    $('.note-category').removeClass('inactive')
+    $('.note-category').addClass('option')
+    $('#community-notes').html('')
+    $('#big-tab').toggle('width')
+    $('#all').slideUp()
+    $(this).attr('style','border-left: 2px solid black')
+
+  $('.option').livequery ->
+    $(this).click ->
+      if $(this).attr('id') == 'vocabulary'
+        $('#community-notes').html("        
+          <div id='vocab-list'>
+            <span id='user-name'></span>
+            <div id='vocab-list'></div>
+          </div>
+          <br><br>
+          <input type='text' id='word-input' style='width: 150px;'> 
+          = <input type='text' id='definition-input' style='width: 150px;'> 
+          <br><br>
+          <div id='submit-new-vocab' class='btn btn-primary btn-small rounded'> Submit </div>
+          <div id='done' class='btn btn-primary btn-small rounded'> Done </div>
+          <br><br>
+          <div id='notice-area'></div>
+        ")
+      if $(this).attr('id') == 'multiple-choice'
+        $('#community-notes').html("        
+          <li>Question: &nbsp; <input type='text' id='question-title' style='width: 250px;'> </li>
+          <br>
+          <li> &nbsp; <input type='text' class='mc-option' style='width: 200px;' placeholder='Option'> </li>
+          <div class='new-multiple-choice-option'>
+              <li> 
+              &nbsp; <input type='text' class='new-multiple-choice-option' style='width: 200px;' placeholder='Click to add option' disabled=''> 
+            </li>
+          </div>
+          <div id='submit-new-multiple-choice' class='btn btn-primary btn-small rounded'> Submit </div>
+          <div id='done' class='btn btn-primary btn-small rounded'> Done </div>
+          <br>
+          <br>
+          <div id='notice-area'></div>
+        ")
+
+  $('.new-multiple-choice-option').livequery ->
+    $(this).click ->
+      $(this).before("<li> &nbsp; <input type='text' class='mc-option' style='width: 200px;' placeholder='Option'> </li>")
+
+  $('#submit-new-vocab').livequery ->
+    $(this).click ->
+      if window.user == 'logged-out'
+        $('#notice-area').html("<p style='color: #0f82f5;'><i>Please log in to add a new vocabulary word.</i></p>")
+      else
+        word = $('#word-input').val()
+        definition = $('#definition-input').val()
+        if word isnt '' and definition isnt '' and (word isnt definition)
+          $('#user-name').html("<h3>Alex's vocabulary list</h3>")
+          $.post('/new_word', { 'word' : { 'video_id' : "#{window.video_id}", 'user_id' : "#{window.user_id}", 'text' : "#{word}" } }, (data) ->
+            word_id = data.data.id
+            $('#vocab-list').append("
+              <li>#{word} = #{definition} &nbsp; <div id=#{word_id} class='btn btn-primary btn-petite rounded'> Add time </div>
+              </li>
+            ")
+            $.post('/new_definition', { 'definition' : { 'word_id' : "#{word_id}", 'user_id' : "#{window.user_id}", 'text' : "#{definition}" } }, (data) ->
+              definition_id = data.data.id
+            )
+          )
+          $('#word-input').val('')
+          $('#definition-input').val('')
+
+  $('#submit-new-multiple-choice').livequery ->
+    $(this).click ->
+      if window.user == 'logged-out'
+        $('#notice-area').html("<p style='color: #0f82f5;'><i>Please log in to add a new vocabulary word.</i></p>")
+      else
+        challenge = $('#question-title').val()
+        options = $('.mc-option')
+        $.post('/new_challenge', { 'challenge' : { 'video_id' : "#{window.video_id}", 'user_id' : "#{window.user_id}", 'question_text' : "#{challenge}" } }, (data) ->
+          challenge_id = data.data.id
+          console.log "challenge = #{data.data.question_text}"
+          options.each(->
+            $.post('/new_option', { 'option' : { 'challenge_id' : "#{challenge_id}", 'answer_text' : "#{$(this).val()}" } }, (data) ->
+              console.log "option = #{data.data.answer_text}"
+            )
+          )
+        )
+
+  $('#add-tag').click ->
+    if window.user == 'logged-out'
+       $('#vocab-area').html("<p style='color: #0f82f5;'>Please log in to add a new vocab word.</p>")
+    else
+      $('#user-input')
+
+  $('#new-tag').livequery -> 
+    $('#new-tag').autocomplete(
+      source: (request, response) ->
+        matches = $.map(availableTags, (tag) ->
+          tag  if tag.toUpperCase().indexOf(request.term.toUpperCase()) is 0)
+        response matches
+      minLength: 2
+    )
+
+  $('#submit-new-tag').livequery ->
+    $(this).click ->
+      console.log "Trigger"
+      new_tag = $('#new-tag').val()
+      console.log new_tag
+      $('#tags-list').append(", #{new_tag}")
+
+  $('#done').livequery ->
+    $(this).click -> 
+      $('#user-input').html('')
+      $('#community-notes').slideDown()
+
+  $('#star').click ->
+    $(this).replaceWith("<i class='icon icon-star icon-2x' id='star-full' style='position: absolute; top: 10px; right: 10px; color: #0f82f5;'> </i>")

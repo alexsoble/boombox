@@ -19,6 +19,16 @@ Boombox::Application.routes.draw do
   resources :users
   resources :sessions
 
+  post '/new_word' => 'words#create'
+  post '/add_time_to_word' => 'words#update_time'
+  post '/new_definition' => 'definitions#create'
+  post '/new_challenge' => 'challenges#create'
+  post '/new_option' => 'options#create'
+
+  post '/find_playcount/:user_id/:video_id' => 'playcounts#find'
+  post '/new_playcount/:user_id/:video_id' => 'playcounts#create'
+  post '/update_playcount/:id' => 'playcounts#update'
+
   get '/print_pdf/:id' => 'interpretations#print_pdf'
   get '/print_txt/:id' => 'interpretations#print_txt'
   get '/print_google/:stage/:id' => 'interpretations#print_google'
@@ -52,10 +62,5 @@ Boombox::Application.routes.draw do
   get '/dmca' => 'pages#dmca'
   get '/thanks' => 'pages#thankyou'
   get '/contact' => 'pages#contact'
-  
-  resources :quizzes
-  post '/save_quiz_words' => 'quizzes#save_words'
-  post '/new_quiz' => 'quizzes#create'
-  get '/interpretations/:id/discuss' => 'interpretations#show'
 
 end

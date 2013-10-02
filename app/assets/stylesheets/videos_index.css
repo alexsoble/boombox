@@ -97,3 +97,21 @@ li.ui-autocomplete.ui-menu { color: black; }
 #progress-bar { width: 250px; 
   position: relative;
   left: -12px; }
+
+#social-content-area {
+  left: 700px; 
+  position: absolute;
+  width: 420px;
+  top: 84px; }
+
+#community-notes {
+  border: 2px solid black;
+  border-bottom-right-radius: 10px; 
+  border-bottom-left-radius: 10px; 
+  height: 405px;
+  margin-top: 38px; 
+  padding: 20px; 
+  position: relative;
+  bottom: 10px; }
+
+.video-page-btn { margin-top: 10px; margin-left: 10px; margin-right: 0px !important; }

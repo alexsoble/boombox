@@ -11,7 +11,15 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130823202612) do
+ActiveRecord::Schema.define(:version => 20131002220239) do
+
+  create_table "challenges", :force => true do |t|
+    t.integer  "user_id"
+    t.string   "question_text"
+    t.datetime "created_at",    :null => false
+    t.datetime "updated_at",    :null => false
+    t.integer  "video_id"
+  end
 
   create_table "clips", :force => true do |t|
     t.integer  "start"
@@ -27,6 +35,14 @@ ActiveRecord::Schema.define(:version => 20130823202612) do
     t.string   "comment_text"
     t.datetime "created_at",   :null => false
     t.datetime "updated_at",   :null => false
+  end
+
+  create_table "definitions", :force => true do |t|
+    t.string   "text"
+    t.integer  "user_id"
+    t.integer  "word_id"
+    t.datetime "created_at", :null => false
+    t.datetime "updated_at", :null => false
   end
 
   create_table "interpretations", :force => true do |t|
@@ -58,6 +74,21 @@ ActiveRecord::Schema.define(:version => 20130823202612) do
     t.datetime "created_at",                       :null => false
     t.datetime "updated_at",                       :null => false
     t.integer  "duration",          :default => 4
+  end
+
+  create_table "options", :force => true do |t|
+    t.integer  "challenge_id"
+    t.string   "answer_text"
+    t.datetime "created_at",   :null => false
+    t.datetime "updated_at",   :null => false
+  end
+
+  create_table "playcounts", :force => true do |t|
+    t.integer  "video_id"
+    t.integer  "user_id"
+    t.float    "play_count"
+    t.datetime "created_at", :null => false
+    t.datetime "updated_at", :null => false
   end
 
   create_table "quizzes", :force => true do |t|
@@ -108,8 +139,16 @@ ActiveRecord::Schema.define(:version => 20130823202612) do
     t.string   "title"
     t.datetime "created_at", :null => false
     t.datetime "updated_at", :null => false
-    t.string   "lang1"
     t.string   "youtube_id"
+  end
+
+  create_table "vocabwords", :force => true do |t|
+    t.integer  "interpretation_id"
+    t.integer  "user_id"
+    t.string   "word_text"
+    t.string   "definition"
+    t.datetime "created_at",        :null => false
+    t.datetime "updated_at",        :null => false
   end
 
   create_table "votes", :force => true do |t|
@@ -121,10 +160,12 @@ ActiveRecord::Schema.define(:version => 20130823202612) do
   end
 
   create_table "words", :force => true do |t|
-    t.integer  "quiz_id"
     t.string   "text"
     t.datetime "created_at", :null => false
     t.datetime "updated_at", :null => false
+    t.integer  "video_id"
+    t.integer  "user_id"
+    t.integer  "time"
   end
 
 end

@@ -1,0 +1,82 @@
+
+<div id="outer-video-box" class="video-container" style="margin-left: 200px;">
+  <div id="title-box"><h3 style="margin-top: 20px;"><%= @video.title %></h3></div>
+  <div id="new-video-box"></div>
+  <div id="timer-box"></div>
+  <div id="settings">
+    <p style="margin-top: 15px; margin-left: 15px; font-size: 16px;">
+      You've watched <span id="video-play-counter">0</span> times.
+    </p>
+    <i class="icon icon-star-empty icon-2x" id="star" style="position: absolute; top: 10px; right: 10px;"> </i>
+    <br>
+    <p style="margin-top: 45px; margin-left: 15px; font-size: 18px;">
+      <!-- Tags: <span id="tags-list" style="color: #9b59bb;">French, Advanced, MIKA</span> -->
+            No tags yet!
+    </p>
+    <p style="margin-top: 30px; margin-left: 15px; font-size: 16px;">
+      <a id="add-tag" style="color: #0f82f5"><u>Add a tag</u></a> that describes this video.
+    </p>
+  </div>
+</div>
+
+<div id="social-content-area" class="content-area"> 
+    <div id="big-tab" class="tab"> <h3 style="color: white;"> &nbsp; Notes & quizzes &nbsp;</h3> </div>
+    <div id="add-new-note" class="tab"> Add your own &rarr; </div>
+    <br><br><br>
+    <div class="small-tab" style="text-align:justify;"> &nbsp; &nbsp; 
+      <span id="all" class="inactive note-category">All</span> &nbsp; 
+      <span id="vocabulary" class="note-category <% if @vocabulary.blank? %>inactive<% else %>active<% end %>">
+        Vocabulary
+      </span> &nbsp;
+      <span id="multiple-choice" class="note-category <% if @multiple_choice.blank? %>inactive<% else %>active<% end %>">
+        Multiple-Choice
+      </span> &nbsp; 
+      <span class="inactive note-category">Discussion</span> &nbsp; 
+      <span class="inactive note-category">Lyrics</span> &nbsp; 
+      <span class="inactive note-category">Translation<span>
+    </div>
+
+    <div id="community-notes">
+      <% if @vocabulary.blank? && @multiple_choice.blank? %>
+        <h3 style="text-align: center;"> None yet.</h3>
+        <br><br>
+      <% end %>
+      <div class="note-area vocabulary-note-area">
+        <% if @vocabulary.present? %>
+          <% @vocabulary_contributors.each do |c| %>
+            <% c_words = Word.where(:user_id => c.id, :video_id => @video.id) %>
+              <% if current_user %>
+                <% if current_user.id == c.id %>
+                  <p style="font-size: 16px;">Your vocabulary words (<a href="/end">edit</a>): </p>
+                <% else %>
+                <p style="font-size: 16px;"> <span style="color: #0f82f5;"> <%= c.username %>'s </span> vocabulary words: </p>
+                <% end %>
+              <% else %>
+                <p style="font-size: 16px;"> <span style="color: #0f82f5;"> <%= c.username %>'s </span> vocabulary words: </p>
+            <% end %>
+            <% c_words.each do |w| %>
+              <li><%= w.text %> = <%= Definition.where(:word_id => w.id).first.text %></li>
+            <% end %>
+          <% end %>
+        <% end %>
+      </div>
+      <div class="note-area multiple-choice-area">
+        <% if @multiple_choice.present? %>
+          <% @multiple_choice.each do |c| %>
+            <p> <%= c.question_text %> </p>
+            <% options = Option.where(:challenge_id => c.id).all %>
+            <% options.each do |o| %>
+              <p> <input type='checkbox'> <%= o.answer_text %> </p>
+            <% end %>
+          <% end %>
+        <% end %>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="data" class="quiet"
+ data-youtube-id=<%= @video.youtube_id %>
+ data-title=<%= @video.title %>
+ data-video-id=<%= @video.id %>
+</div>

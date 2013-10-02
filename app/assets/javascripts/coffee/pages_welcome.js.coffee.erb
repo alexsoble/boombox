@@ -2,8 +2,8 @@ $ ->
 
   $('.frontpage-thumb-box').livequery ->
     $(this).click ->
-      interp_id = parseInt($(this).attr('data-interp-id'))
-      window.location.href = "/interpretations/#{interp_id}/"
+      video_id = parseInt($(this).attr('data-video-id'))
+      window.location.href = "/videos/#{video_id}/"
 
   $('.language-selector').click ->
     lang = $(this).attr('id')
@@ -36,11 +36,7 @@ $ ->
   $('#ask-youtube').autocomplete(
     source: (request, response) ->
       $.ajax(
-        url: 
-          if window.n < 5
-            "https://gdata.youtube.com/feeds/api/videos?q=#{request.term}&max-results=9&v=2"
-          else
-            "https://gdata.youtube.com/feeds/api/videos?q=#{request.term}&max-results=#{window.n}&v=2"
+        url:  "https://gdata.youtube.com/feeds/api/videos?q=#{request.term}&max-results=9&v=2"
         dataType: "xml",
         complete: (r) ->
           parser = new DOMParser
@@ -75,129 +71,13 @@ $ ->
         )
       )
 
-  userDefinesLangOneAndLangTwo = (this_video_result) ->
-    window.youtube_id = this_video_result.attr('data-youtube-id')
-    window.title = this_video_result.children(':first').html()
-    $('#new-translation-button').attr('style','height: 140px; background-color: #9b59bb; width: 720px;')
-    $('#new-translation-button').html("
-      <div class='button-text-wrapper' style='width: 200px;'>
-        <p class='index-button-text'>#{window.title}</p>
-      </div>
-      <div id='lang1-button'>
-        <div class='translation-option'>
-          <label class='index-page-label'>This video\'s original language is...</label>
-          <div class='ui-widget'>
-            <input id='lang1-input-translate' class='lang1-input short-text-box'/>
-          </div>
-        </div>
-      </div>
-      <div id='lang2-button'>
-        <div class='translation-option'>
-          <label class='index-page-label'>I want to translate this video into...</label>
-          <div class='ui-widget'>
-            <input id='lang2-input-translate' class='lang2-input short-text-box'/>
-          </div>
-        </div>
-      </div>
-      ")
-    $('#lang1-input-translate').focus()
-
   $('.result-thumb-box').livequery ->
     $(this).click ->
-      userDefinesLangOneAndLangTwo($(this))
-
-  if $('#data').attr('data-edit-video-languages') == 'true'
-    if $('#data').attr('data-youtube-id').length > 0
-      window.youtube_id = $('#data').attr('data-youtube-id')
-      window.title = $('#data').attr('data-title')
-      $('#results-box').html("
-        <div class='video-thumb-box result-thumb-box' data-youtube-id=#{window.youtube_id}>
-          <div class='quiet'>#{window.title}</div>
-          <strong class='center blue'>#{window.title.slice(0,30)}</strong>
-          <br>
-          <div class='image-box'>
-            <img alt='video_#{window.title}' src='http://img.youtube.com/vi/#{window.youtube_id}/1.jpg' />
-          </div>
-          <br>
-        </div>").show()
-      this_video = $('.result-thumb-box')
-      userDefinesLangOneAndLangTwo(this_video)
-
-  availableTags = [ "English", "Dutch", "Afrikaans"
-    "Chinese (Mandarin)", "Cantonese", "Japanese", "Korean"
-    "Vietnamese", "Thai", "Burmese", "Filipino", "Tagalog", "Hmong", "Khmer", "Lao" 
-    "French", "Spanish", "Portuguese", "Italian", "Catalan", "Romanian", "Albanian"
-    "Russian", "Polish", "Czech"
-    "German", "Greek"
-    "Welsh"
-    "Norwegian", "Swedish", "Danish", "Finnish", "Icelandic"
-    "Hebrew", "Arabic", "Persian", "Pashto", "Turkish"
-    "Hindi", "Bengali", "Gujarati", "Punjabi", "Sindhi", "Urdu", "Marathi"
-    "Telugu", "Tamil", "Malayalam", "Sinhala"
-    "Latin"
-    "Swahili", "Yoruba", "Xhosa", "Somali", "Amharic"
-    "Javanese", "Malay", "Indonesian"
-    "Kazakh", "Tajik", "Tibetan", "Uyghur", "Uzbek" ]
-
-  availableTags.sort (a,b) ->
-    return if a >= b then 1 else -1
-
-  $('.lang1-input').livequery ->
-    $('.lang1-input').autocomplete(
-      source: (request, response) ->
-        matches = $.map(availableTags, (tag) ->
-          tag  if tag.toUpperCase().indexOf(request.term.toUpperCase()) is 0)
-        response matches
-      messages: {
-        noResults: '',
-        results: '' }
-      minLength: 0
-      select: (event, ui) ->
-        langOneInput(event, ui) {}
-    )
-
-  $('.lang2-input').livequery -> 
-    $('.lang2-input').autocomplete(
-      source: (request, response) ->
-        matches = $.map(availableTags, (tag) ->
-          tag  if tag.toUpperCase().indexOf(request.term.toUpperCase()) is 0)
-        response matches
-      messages: {
-        noResults: '',
-        results: '' }
-      minLength: 0 
-      select: (event, ui) ->
-        langTwoInput(event, ui) {}
-    )
-
-  langOneInput = (event, ui) ->
-    input = ui.item.value
-    $('.lang1-input').val(input)
-    if availableTags.indexOf(input) > -1
-
-    # ADD NEW VIDEO TO DATABASE HERE
-      window.lang1 = input
-      $.post('/new_video', { 'video' : { 'youtube_id' : "#{window.youtube_id}", 'title' : "#{window.title}", 'lang1' : "#{window.lang1}" } }, (data) ->
+      window.youtube_id = $(this).attr('data-youtube-id')
+      window.title = $(this).children(':first').html()
+      $.post('/new_video', { 'video' : { 'youtube_id' : "#{window.youtube_id}", 'title' : "#{window.title}" } }, (data) ->
         console.log data
-        window.video_id = data.video.id
-        $('#lang2-input-translate').focus()
-        if window.langtwo_entered == true
-          $.post('/new_interp', { 'interpretation' : { 'video_id' : "#{window.video_id}" , 'lang2' : "#{window.lang2}", 'user_id' : "#{window.user_id}" } }, (data) ->
-            window.interp = data.data.id
-            window.location = "/videos/new?interp=#{window.interp}"  )
+        video_id = data.video.id
+        window.location.href = "/videos/#{video_id}"
       )
-
-  langTwoInput = (event, ui) ->
-    input = ui.item.value
-    $('.lang2-input').val(input)
-    if availableTags.indexOf(input) > -1 
-      window.lang2 = input
-
-      if window.video_id isnt false
-        if window.lang1 isnt window.lang2
-          $.post('/new_interp', { 'interpretation' : { 'video_id' : "#{window.video_id}" , 'lang2' : "#{window.lang2}", 'user_id' : "#{window.user_id}" } }, (data) ->
-            window.interp = data.data.id
-            window.location = "/videos/new?interp=#{window.interp}" )
-      else
-        window.langtwo_entered = true
-        $('#lang1-input-translate').focus()
+      

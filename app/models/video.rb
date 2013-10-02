@@ -1,5 +1,5 @@
 class Video < ActiveRecord::Base
-  attr_accessible :title, :youtube_id, :lang1
+  attr_accessible :title, :youtube_id
   has_many :interpretations
   has_many :lines, :through => :interpretations
 
@@ -11,6 +11,6 @@ class Video < ActiveRecord::Base
     Interpretation.where(:video_id => self.id).length
   end
 
-  validates_presence_of :title, :youtube_id, :lang1
+  validates_presence_of :title, :youtube_id
 
 end

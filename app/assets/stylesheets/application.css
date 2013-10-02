@@ -41,6 +41,7 @@ html { overflow-y: scroll; }
 .center { text-align: center; }
 
 p { color: black; }
+li { color: black; }
 h3 { font-size: 18px !important; line-height: 22px !important }
 
 .left { float: left; }

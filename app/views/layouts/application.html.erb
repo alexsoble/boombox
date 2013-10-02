@@ -6,12 +6,10 @@
   <%= favicon_link_tag 'favicon.ico' %>
   <%= javascript_include_tag "application" %>
   <%= javascript_include_tag "bootstrap.min.css" %>
-  <% if controller_name == "interpretations" && action_name == "show" %>
-    <%= javascript_include_tag "coffee/videos_#{action_name}" %>
-   <% elsif controller_name == "interpretations" && action_name == "edit" %>
-    <%= javascript_include_tag "coffee/videos_new" %>
-  <% else %>
+  <% unless controller_name == "interpretations" && action_name == "edit" %>
     <%= javascript_include_tag "coffee/#{controller_name}_#{action_name}" %>
+  <% else %>
+    <%= javascript_include_tag "coffee/videos_new" %>
   <% end %>
   <%= csrf_meta_tags %>
   <% if action_name == 'show' && (controller_name == 'interpretations' || controller_name == 'clips') %>

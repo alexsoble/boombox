@@ -38,9 +38,7 @@
 
       <%  @featured_videos.each do |i| %>
         <% v = i.video %>
-          <div class="video-thumb-box frontpage-thumb-box featured-video-box <%= v.lang1 %>" title="<%= v.title %> // <%= v.lang1 %> // translation into <%= i.lang2 %>" data-interp-id=<%= i.id %>>
-            <div class="btn btn-info btn-small btn-tiny rounded" style="text-align: center; margin-bottom: 10px; width: 100px !important; position: absolute; left: 15px;"> <%= v.lang1 %> &rarr; <%= i.lang2 %> </div>
-            <br><br>
+          <div class="video-thumb-box frontpage-thumb-box" title="<%= v.title %> // translation into <%= i.lang2 %>" data-video-id=<%= v.id %>>
             <strong class="center" style="color: #2793E6;"><%= "#{v.title.slice(0,25)}" %></strong>
             <br>
             <div class="image-box">
@@ -63,9 +61,6 @@
       <div class="btn-group">
         <div class="btn btn-info rounded dropdown-toggle" data-toggle="dropdown"> (select language) </div>
         <ul class="dropdown-menu">
-          <% @langs_with_some_content.each do |l| %>
-            <li><a class="language-selector" id="<%= l %>"><%= l %></a></li>
-          <% end %>
           <li><a class="language-selector" id="featured">Featured</a></li>
           <li><a class="language-selector" id="all">All</a></li>
         </ul>
@@ -78,7 +73,7 @@
 
     <%  @interps_with_some_content.each do |i| %>
       <% v = i.video %>
-      <div class="video-thumb-box frontpage-thumb-box <%= v.lang1 %>" title="<%= v.title %>" data-interp-id=<%= i.id %>>
+      <div class="video-thumb-box frontpage-thumb-box" title="<%= v.title %>" data-video-id=<%= v.id %>>
         <strong class="center" style="color: #2793E6;"><%= "#{v.title.slice(0,25)}" %></strong>
         <br>
         <div class="image-box">
