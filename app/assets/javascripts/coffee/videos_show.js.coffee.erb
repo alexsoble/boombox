@@ -214,7 +214,7 @@ $ ->
           $.post('/new_word', { 'word' : { 'video_id' : "#{window.video_id}", 'user_id' : "#{window.user_id}", 'text' : "#{word}" } }, (data) ->
             word_id = data.data.id
             $('#vocab-list').append("
-              <li>#{word} = #{definition} &nbsp; <div id=#{word_id} class='btn btn-primary btn-petite rounded'> Add time </div>
+              <li>#{word} = #{definition} &nbsp; <div id=#{word_id} class='add-time btn btn-primary btn-petite rounded'> Add time </div>
               </li>
             ")
             $.post('/new_definition', { 'definition' : { 'word_id' : "#{word_id}", 'user_id' : "#{window.user_id}", 'text' : "#{definition}" } }, (data) ->
@@ -223,6 +223,20 @@ $ ->
           )
           $('#word-input').val('')
           $('#definition-input').val('')
+
+  $('.add-time').livequery ->
+    $(this).click ->
+      window.word_id = parseInt($(this).attr('id'))
+      $('.ui-slider-handle').addClass('vocab-time-selector')
+
+  $('.vocab-time-selector').livequery ->
+    $(this).dblclick ->
+      $.post("/add_time_to_word", { 'word_id' : "#{window.word_id}", 'time' : "#{window.time}" }, (data) ->
+        updated_time = data.data.time
+        console.log updated_time
+        $("##{window.word_id}").html(formatTime(updated_time))
+        $('.ui-slider-handle').removeClass('vocab-time-selector')
+      )
 
   $('#submit-new-multiple-choice').livequery ->
     $(this).click ->

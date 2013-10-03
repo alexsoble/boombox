@@ -6,7 +6,10 @@ class WordsController < ApplicationController
   end
 
   def update_time
-
+    @word = Word.find_by_id(params[:word_id])
+    @word.time = params[:time]
+    @word.save
+    render :json => { :data => @word }
   end
 
 end
