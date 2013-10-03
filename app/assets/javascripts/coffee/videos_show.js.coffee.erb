@@ -169,7 +169,7 @@ $ ->
     $('#community-notes').html('')
     $('#big-tab').toggle('width')
     $('#all').slideUp()
-    $(this).attr('style','border-left: 2px solid black')
+    $(this).attr('style','right: -1px;')
 
   $('.option').livequery ->
     $(this).click ->
@@ -201,9 +201,19 @@ $ ->
           <div id='notice-area'></div>
         ")
 
-  $('.new-multiple-choice-option').livequery ->
-    $(this).click ->
-      $(this).before("<li> &nbsp; <input type='text' class='mc-option' style='width: 200px;' placeholder='Option'> </li>")
+  postNewWord = (word, definition) ->
+    $.post('/new_word', { 'word' : { 'video_id' : "#{window.video_id}", 'user_id' : "#{window.user_id}", 'text' : "#{word}" } }, (data) ->
+      word_id = data.data.id
+      $('#vocab-list').append("
+        <li>#{word} = #{definition} &nbsp; <div id=#{word_id} class='add-time btn btn-primary btn-petite rounded'> Add time </div>
+        </li>
+      ")
+      $.post('/new_definition', { 'definition' : { 'word_id' : "#{word_id}", 'user_id' : "#{window.user_id}", 'text' : "#{definition}" } }, (data) ->
+        definition_id = data.data.id
+      )
+    )
+    $('#word-input').val('')
+    $('#definition-input').val('')
 
   $('#submit-new-vocab').livequery ->
     $(this).click ->
@@ -213,18 +223,22 @@ $ ->
         word = $('#word-input').val()
         definition = $('#definition-input').val()
         if word isnt '' and definition isnt '' and (word isnt definition)
-          $.post('/new_word', { 'word' : { 'video_id' : "#{window.video_id}", 'user_id' : "#{window.user_id}", 'text' : "#{word}" } }, (data) ->
-            word_id = data.data.id
-            $('#vocab-list').append("
-              <li>#{word} = #{definition} &nbsp; <div id=#{word_id} class='add-time btn btn-primary btn-petite rounded'> Add time </div>
-              </li>
-            ")
-            $.post('/new_definition', { 'definition' : { 'word_id' : "#{word_id}", 'user_id' : "#{window.user_id}", 'text' : "#{definition}" } }, (data) ->
-              definition_id = data.data.id
-            )
+          $.post("/find_interp/#{window.user_id}/#{window.video_id}", (data) ->
+            if data.interp_id is 'no-interp'
+              $.post("/new_interp/#{window.user_id}/#{window.video_id}", (data) ->
+                window.interp_id = data.interp_id
+                console.log "window.interp_id = #{window.interp_id}"
+                postNewWord(word, definition)
+              )
+            else
+              window.interp_id = data.interp_id
+              console.log "window.interp_id = #{window.interp_id}"
+              postNewWord(word, definition)
           )
-          $('#word-input').val('')
-          $('#definition-input').val('')
+
+  $('.new-multiple-choice-option').livequery ->
+    $(this).click ->
+      $(this).before("<li> &nbsp; <input type='text' class='mc-option' style='width: 200px;' placeholder='Option'> </li>")
 
   $('.add-time').livequery ->
     $(this).click ->

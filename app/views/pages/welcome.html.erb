@@ -38,7 +38,7 @@
 
       <%  @featured_videos.each do |i| %>
         <% v = i.video %>
-          <div class="video-thumb-box frontpage-thumb-box" title="<%= v.title %> // translation into <%= i.lang2 %>" data-video-id=<%= v.id %>>
+          <div class="video-thumb-box frontpage-thumb-box" data-video-id=<%= v.id %>>
             <strong class="center" style="color: #2793E6;"><%= "#{v.title.slice(0,25)}" %></strong>
             <br>
             <div class="image-box">

@@ -35,8 +35,10 @@ class VideosController < ApplicationController
       if @translation_contributors.index(user) == nil then @translation_contributors << user end
     end
 
-    @lines = Line.where(:interpretation_id => @translation.first.id).order("time ASC")
-
+    if @translation.present?
+      @lines = Line.where(:interpretation_id => @translation.first.id).order("time ASC")
+    end
+    
   end 
 
   def new

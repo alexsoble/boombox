@@ -1,6 +1,6 @@
 
 <div id="outer-video-box" class="video-container" style="margin-left: 200px;">
-  <div id="title-box"><h3 style="margin-top: 20px;"><%= @video.title %></h3></div>
+  <div id="title-box"><h3 style="margin-top: 20px; color:white;"><%= @video.title %></h3></div>
   <div id="new-video-box"></div>
   <div id="timer-box"></div>
   <div id="settings">
@@ -20,8 +20,12 @@
 </div>
 
 <div id="social-content-area" class="content-area"> 
-    <div id="big-tab" class="tab"> <h3 style="color: white;"> &nbsp; Notes & quizzes &nbsp;</h3> </div>
-    <div id="add-new-note" class="tab"> Add your own &rarr; </div>
+    <% if controller_name == 'videos' %>
+      <div id="big-tab" class="tab"> <h3 style="color: white;"> &nbsp; Notes & quizzes &nbsp;</h3> </div>
+      <div id="add-new-note" class="tab"> Add your own </div>
+    <% elsif controller_name == 'interpretations' %>
+      <div id="big-tab" class="tab" style="border-bottom: none !important;"> <h3 style="color: white;"> &nbsp; <%= @user.username %>'s notes & quizzes &nbsp;</h3> </div>
+    <% end %>
     <br><br><br>
     <div class="small-tab" style="text-align:justify;"> &nbsp; &nbsp; 
       <% unless @vocabulary.blank? && @multiple_choice.blank? && @translation.blank? %>

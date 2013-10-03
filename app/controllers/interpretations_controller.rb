@@ -88,7 +88,6 @@ class InterpretationsController < ApplicationController
     @interp = Interpretation.find_by_id(params[:id])
     @video = @interp.video
     @user = User.find_by_id(@interp.user_id)
-    @translation = @interp
     @lines = Line.where(:interpretation_id => @interp.id).order("time ASC")
 
     render "videos/show"
@@ -134,14 +133,18 @@ class InterpretationsController < ApplicationController
   end
 
   def create 
-    @interp = Interpretation.create(params[:interpretation])
+    @interp = Interpretation.create(user_id: params[:user_id], video_id: params[:video_id])
     render :json => { :data => @interp }
   end
 
-  def index
-    @interps = Interpretation.order('created_at DESC').limit(100)
-    @language_filter = params[:lang]
-  end
+  def find
+    @interp = Interpretation.where(:user_id => params[:user_id], :video_id => params[:video_id]).first
+    if @interp.present?
+      render :json => { :interp_id => @interp.id }
+    else
+      render :json => { :interp_id => 'no-interp' } 
+    end
+  end 
 
   def edit
 

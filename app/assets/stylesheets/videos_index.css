@@ -8,7 +8,9 @@
   margin-right: 40px;
   margin-top: 20px;
   float: left; 
-  border: solid 1px #888888; 
+  background-color: #f3f3f6; 
+  border: solid 1px white; 
+  border-radius: 10px;
   box-shadow: 10px 10px 5px #888888;
   padding-top: 15px;
   padding-left: 15px;
@@ -101,19 +103,20 @@ li.ui-autocomplete.ui-menu { color: black; }
 #social-content-area {
   left: 700px; 
   position: absolute;
-  width: 420px;
+  width: 418px;
   top: 84px; }
 
 #community-notes {
   overflow-y: scroll;
-  border: 2px solid black;
+  border: 1px solid white;
   border-bottom-right-radius: 10px; 
   border-bottom-left-radius: 10px; 
+  background-color: #f3f3f6;
   height: 425px;
   margin-top: 38px; 
   padding: 20px; 
   position: relative;
-  bottom: 10px; }
+  bottom: 12px; }
 
 .video-page-btn { margin-top: 10px; margin-left: 10px; margin-right: 0px !important; }
 

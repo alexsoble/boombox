@@ -2,13 +2,14 @@
 
 #title-box { position: relative; 
   top: 42px;
-  width: 390px; 
+  width: 386px; 
   height: 80px; 
   padding-left: 15px;
   padding-right: 15px;
   text-align: center;
-  background-color: white;
-  border: 2px solid black;
+  background-color: #9b59bb;
+  color: white !important;
+  border: 2px solid #9b59bb;
   border-top-left-radius: 10px;
   border-top-right-radius: 10px;
   z-index: 1; }
@@ -27,7 +28,7 @@
   overflow: visible; }
 
 #outer-video-box { overflow: visible !important; position: relative; }
-#new-video-box { border: 2px solid black; }
+#new-video-box { }
 
 .language-option { color: black; }
 
@@ -137,9 +138,10 @@
 #settings { position: relative; 
   top: -15px; 
   height: 135px; 
-  width: 420px;
+  width: 416px;
   background-color: white;
-  border: 2px solid black;
+  border: 2px solid #f3f3f6;
+  background-color: #f3f3f6;
   border-bottom-left-radius: 10px;
   border-bottom-right-radius: 10px; }
 
@@ -267,24 +269,30 @@ select { width: 150px; }
   text-align: center; }
 
 .tab { 
-  border-top: 2px solid black;
   float: left; 
   padding: 8px;
-  color: white; 
-  border-right: 2px solid black; }
+  color: white;
+  border-right: 1px solid white; }
 #add-new-note {
   position: relative;
-  top: 20px; 
-  background-color: #0f82f5;
-  cursor: pointer; }
-#big-tab { border-left: 2px solid black; 
+  top: 24px; 
+  right: -2px;
+  border-top-right-radius: 10px;
   border-top-left-radius: 10px;
+  cursor: pointer; 
+  background-color: #9b59bb; }
+#big-tab { 
+  position: relative;
+  top: 5px; 
+  border-top-left-radius: 10px;
+  border-top-right-radius: 10px;
+  border-left: 1px solid white; 
   background-color: #9b59bb; }
 
 .small-tab { float: left; 
-  border-top: 2px solid black;
-  border-left: 2px solid black;
-  border-right: 2px solid black;
+  border-left: 1px solid white;
+  border-right: 1px solid white;
+  border-top-right-radius: 10px;
   padding-top: 4px; 
   padding-bottom: 4px; 
   background-color: #9b59bb; 
