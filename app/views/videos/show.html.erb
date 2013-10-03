@@ -24,35 +24,43 @@
     <div id="add-new-note" class="tab"> Add your own &rarr; </div>
     <br><br><br>
     <div class="small-tab" style="text-align:justify;"> &nbsp; &nbsp; 
-      <span id="all" class="inactive note-category">All</span> &nbsp; 
-      <span id="vocabulary" class="note-category <% if @vocabulary.blank? %>inactive<% else %>active<% end %>">
+      <% unless @vocabulary.blank? && @multiple_choice.blank? && @translation.blank? %>
+        <span id="all" class="active note-category">All</span> &nbsp;
+      <% else %>
+        <span id="all" class="inactive note-category">All</span> &nbsp;
+      <% end %>
+      <span id="vocabulary" class="note-category <% if @vocabulary.present? %>active<% else %>inactive<% end %>">
         Vocabulary
       </span> &nbsp;
-      <span id="multiple-choice" class="note-category <% if @multiple_choice.blank? %>inactive<% else %>active<% end %>">
+      <span id="multiple-choice" class="note-category <% if @multiple_choice.present? %>active<% else %>inactive<% end %>">
         Multiple-Choice
       </span> &nbsp; 
       <span class="inactive note-category">Discussion</span> &nbsp; 
-      <span class="inactive note-category">Lyrics</span> &nbsp; 
-      <span class="inactive note-category">Translation<span>
+      <span id="translation" class="note-category <% if @translation.present? %>active<% else %>inactive<% end %>">
+        Translation
+      </span> &nbsp;
+      <span id="links" class="note-category <% if @texts.present? %>active<% else %>inactive<% end %>">
+        Links
+      </span> &nbsp;
     </div>
 
     <div id="community-notes">
-      <% if @vocabulary.blank? && @multiple_choice.blank? %>
+      <% if @vocabulary.blank? && @multiple_choice.blank? && @translation.blank? %>
         <h3 style="text-align: center;"> None yet.</h3>
         <br><br>
       <% end %>
-      <div class="note-area vocabulary-note-area">
+      <div class="note-area vocabulary-area">
         <% if @vocabulary.present? %>
           <% @vocabulary_contributors.each do |c| %>
             <% c_words = Word.where(:user_id => c.id, :video_id => @video.id) %>
-              <% if current_user %>
-                <% if current_user.id == c.id %>
-                  <p style="font-size: 16px;">Your vocabulary words (<a href="/end">edit</a>): </p>
-                <% else %>
-                <p style="font-size: 16px;"> <span style="color: #0f82f5;"> <%= c.username %>'s </span> vocabulary words: </p>
-                <% end %>
+              <% unless current_user %>
+                <p style="font-size: 16px;"> <%= link_to "#{c.username}", user_url(c) %> added vocabulary words: </p>
               <% else %>
-                <p style="font-size: 16px;"> <span style="color: #0f82f5;"> <%= c.username %>'s </span> vocabulary words: </p>
+                <% if current_user.id == c.id %>
+                  <p style="font-size: 16px;">You added vocabulary words (<a href="/end">edit</a>): </p>
+                <% else %>
+                  <p style="font-size: 16px;"> <%= link_to "#{c.username}", user_url(c) %> added vocabulary words: </p>
+                <% end %>
             <% end %>
             <% c_words.each do |w| %>
               <li><%= w.text %> = <%= Definition.where(:word_id => w.id).first.text %></li>
@@ -68,6 +76,16 @@
             <% options.each do |o| %>
               <p> <input type='checkbox'> <%= o.answer_text %> </p>
             <% end %>
+          <% end %>
+        <% end %>
+      </div>
+      <div class="note-area translation-area">
+        <% if @translation.present? %>
+          <% @translation_contributors.each do |c| %>
+            <p style="font-size: 16px;">
+              <%= link_to "#{c.username}", user_url(c) %> added a translation:
+            </p>
+            <%= render "translation", :lines => @lines %>
           <% end %>
         <% end %>
       </div>

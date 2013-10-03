@@ -107,7 +107,14 @@ $ ->
     # UI RESPONDS AS VIDEO PLAYS
     exact_time = player.getCurrentTime()
     window.time = Math.floor(exact_time)
-    
+    this_line = $("[data-time=#{window.time}]")
+
+    if this_line.length != 0
+      unless this_line.hasClass('highlighted')
+        this_line.children().effect("highlight", { color: "#FFFF00" }, 4000)
+        this_line.addClass("highlighted")
+        $("#community-notes").scrollTo(this_line.children(':first'), { duration : 250 } )
+
     # PLAYBACK SLIDER MOVES HERE
     $('#playback-slider').slider("value", window.time)
     $('#playback-slider').children().html(shortFormatTime(window.time))
@@ -168,11 +175,8 @@ $ ->
     $(this).click ->
       if $(this).attr('id') == 'vocabulary'
         $('#community-notes').html("        
-          <div id='vocab-list'>
-            <span id='user-name'></span>
-            <div id='vocab-list'></div>
-          </div>
-          <br><br>
+          <span id='user-name'><h3>My vocabulary list:</h3></span>
+          <div id='vocab-list'></div>
           <input type='text' id='word-input' style='width: 150px;'> 
           = <input type='text' id='definition-input' style='width: 150px;'> 
           <br><br>
@@ -182,19 +186,18 @@ $ ->
           <div id='notice-area'></div>
         ")
       if $(this).attr('id') == 'multiple-choice'
-        $('#community-notes').html("        
-          <li>Question: &nbsp; <input type='text' id='question-title' style='width: 250px;'> </li>
-          <br>
+        $('#community-notes').html("
+          <span id='user-name'><h3>My multiple-choice question:</h3></span>
+          <input type='text' id='question-title' placeholder='Question title' style='width: 300px;'>
+          <br><br>
           <li> &nbsp; <input type='text' class='mc-option' style='width: 200px;' placeholder='Option'> </li>
           <div class='new-multiple-choice-option'>
               <li> 
               &nbsp; <input type='text' class='new-multiple-choice-option' style='width: 200px;' placeholder='Click to add option' disabled=''> 
             </li>
-          </div>
+          </div><br>
           <div id='submit-new-multiple-choice' class='btn btn-primary btn-small rounded'> Submit </div>
-          <div id='done' class='btn btn-primary btn-small rounded'> Done </div>
-          <br>
-          <br>
+          <br><br>
           <div id='notice-area'></div>
         ")
 
@@ -210,7 +213,6 @@ $ ->
         word = $('#word-input').val()
         definition = $('#definition-input').val()
         if word isnt '' and definition isnt '' and (word isnt definition)
-          $('#user-name').html("<h3>Alex's vocabulary list</h3>")
           $.post('/new_word', { 'word' : { 'video_id' : "#{window.video_id}", 'user_id' : "#{window.user_id}", 'text' : "#{word}" } }, (data) ->
             word_id = data.data.id
             $('#vocab-list').append("
@@ -284,3 +286,19 @@ $ ->
 
   $('#star').click ->
     $(this).replaceWith("<i class='icon icon-star icon-2x' id='star-full' style='position: absolute; top: 10px; right: 10px; color: #0f82f5;'> </i>")
+
+  $('#toggle-show-lines').click ->
+    $('.short-line').each(->
+      $(this).children().eq(0).removeClass('quiet')
+      $(this).children().eq(1).removeClass('quiet')
+    )
+
+  $('.note-category').click ->
+    if $(this).hasClass('active')
+      $(this).effect("highlight", { color: 'yellow' }, 3000)
+      unless $(this).attr('id') == 'all'
+        $('.note-area').hide()
+        category = $(this).attr('id')
+        $(".#{category}-area").show()
+      else 
+        $('.note-area').show()

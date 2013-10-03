@@ -1,0 +1,9 @@
+              <% if current_user %>
+                <% if current_user.id == @c.id %>
+                  <p style="font-size: 16px;">Your vocabulary words (<a href="/end">edit</a>): </p>
+                <% else %>
+                <p style="font-size: 16px;"> <span style="color: #0f82f5;"> <%= @c.username %>'s </span> vocabulary words: </p>
+                <% end %>
+              <% else %>
+                <p style="font-size: 16px;"> <span style="color: #0f82f5;"> <%= @c.username %>'s </span> vocabulary words: </p>
+            <% end %>

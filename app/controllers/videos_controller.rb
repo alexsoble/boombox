@@ -28,6 +28,15 @@ class VideosController < ApplicationController
 
     @multiple_choice = Challenge.where(:video_id => @video.id).order("created_at DESC")
 
+    @translation = Interpretation.where(:video_id => @video.id).limit(5)
+    @translation_contributors = []
+    @translation.each do |t|
+      user = User.where(:id => t.user_id).first
+      if @translation_contributors.index(user) == nil then @translation_contributors << user end
+    end
+
+    @lines = Line.where(:interpretation_id => @translation.first.id).order("time ASC")
+
   end 
 
   def new

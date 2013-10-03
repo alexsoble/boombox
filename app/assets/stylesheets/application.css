@@ -12,13 +12,13 @@
  *= require_tree .
  */
 
-#lyrics-box::-webkit-scrollbar {
-    width: 7px;
-    background-color: #9b59bb; }
+#community-notes::-webkit-scrollbar {
+    width: 4px;
+    background-color: rgba(0,0,0,0); }
 
-#lyrics-box::-webkit-scrollbar-thumb {
+#community-notes::-webkit-scrollbar-thumb {
     border-radius: 4px;
-    background-color: black;
+    background-color: #9b59bb;
     -webkit-box-shadow: 0 0 1px rgba(255,255,255,.5); }
 
 .clip#lyrics-box::-webkit-scrollbar { background-color: rgba(0,0,0,0); }

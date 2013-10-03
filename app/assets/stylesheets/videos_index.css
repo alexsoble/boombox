@@ -105,13 +105,16 @@ li.ui-autocomplete.ui-menu { color: black; }
   top: 84px; }
 
 #community-notes {
+  overflow-y: scroll;
   border: 2px solid black;
   border-bottom-right-radius: 10px; 
   border-bottom-left-radius: 10px; 
-  height: 405px;
+  height: 425px;
   margin-top: 38px; 
   padding: 20px; 
   position: relative;
   bottom: 10px; }
 
 .video-page-btn { margin-top: 10px; margin-left: 10px; margin-right: 0px !important; }
+
+.note-area { margin-bottom: 30px; }

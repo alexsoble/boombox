@@ -86,45 +86,50 @@ class InterpretationsController < ApplicationController
 
   def show
     @interp = Interpretation.find_by_id(params[:id])
-    @translator = User.find_by_id(@interp.user_id)
     @video = @interp.video
+    @user = User.find_by_id(@interp.user_id)
+    @translation = @interp
     @lines = Line.where(:interpretation_id => @interp.id).order("time ASC")
-    @first_line = @lines.where("lang2 <> ''").first
-    @next_line = @lines.where("lang2 <> ''").offset(1).first
-    @note = @interp.note
 
-    @keywords = []
-    Keyword.where(:interpretation_id => @interp.id).each do |k|
-      @keywords << k.word_text
-    end
+    render "videos/show"
 
-    @comments = []
-    @lines.each do |l|
-      if Comment.where(:line_id => l.id).present?
-        @comments << { l.id => Comment.where(:line_id => l.id).limit(10) }
-      end
-    end
-    logger.debug "comments: #{@comments}"
+    # @translator = User.find_by_id(@interp.user_id)
+    # @first_line = @lines.where("lang2 <> ''").first
+    # @next_line = @lines.where("lang2 <> ''").offset(1).first
+    # @note = @interp.note
 
-    @lang1_and_lang2 = false
-    @lines.each do |l|
-      if l.lang1.present? && l.lang1 != "undefined"
-        @lang1_and_lang2 = true
-      end
-    end
+    # @keywords = []
+    # Keyword.where(:interpretation_id => @interp.id).each do |k|
+    #   @keywords << k.word_text
+    # end
 
-    @url = request.url
-    @lang2 = @interp.lang2
-    @lang1 = @video.lang1
-    @published = @interp.published
+    # @comments = []
+    # @lines.each do |l|
+    #   if Comment.where(:line_id => l.id).present?
+    #     @comments << { l.id => Comment.where(:line_id => l.id).limit(10) }
+    #   end
+    # end
+    # logger.debug "comments: #{@comments}"
 
-    if @interp.published == true then @published = true else @published = false end
+    # @lang1_and_lang2 = false
+    # @lines.each do |l|
+    #   if l.lang1.present? && l.lang1 != "undefined"
+    #     @lang1_and_lang2 = true
+    #   end
+    # end
 
-    if @interp.user_id == 0
-      @user = 'anon' 
-    else
-      @user = User.find_by_id(@interp.user_id)
-    end
+    # @url = request.url
+    # @lang2 = @interp.lang2
+    # @lang1 = @video.lang1
+    # @published = @interp.published
+
+    # if @interp.published == true then @published = true else @published = false end
+
+    # if @interp.user_id == 0
+    #   @user = 'anon' 
+    # else
+    #   @user = User.find_by_id(@interp.user_id)
+    # end
 
   end
 
