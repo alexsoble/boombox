@@ -1,4 +1,5 @@
-<div class="wide-centerbox center">
+<div class="row">
+  <div class="offset3 span12">
   <br>
   <% if current_user %>
     <% if current_user.firstname %>
@@ -10,9 +11,10 @@
   <% else %>
     <h1 style='text-align: center;'><strong>Love learning languages?</strong></h1>
     <br>
-    <h2 style='text-align: center;'><i>YouTube is your new best friend.</i></h2>
+    <h2 style='text-align: center; font-size: 30px;'>With Heyu, YouTube is your new best friend.</h2>
   <% end %>
   <br><br>
+  </div>
 </div>
 <div class="row">
   <div class="offset3">
@@ -20,50 +22,41 @@
       <strong class="center" style="color: #2793E6;"><%= "#{@featured_video_1.title.slice(0,25)}" %></strong>
       <br><div class="image-box"><%= image_tag "http://img.youtube.com/vi/#{@featured_video_1.youtube_id}/1.jpg" %></div>
     </div>
-  <span style="font-size: 30px; position: relative; top: 60px; color: black;">&larr;&nbsp;Create translations.</span>
+  <span style="font-size: 25px; position: relative; top: 60px; color: black; font-style: italic;">&larr;&nbsp;Create translations.</span>
   </div>
 </div>
-<div class="row" style="position: relative; bottom: 120px;">
-  <div class="offset7">
-    <span style="font-size: 30px; position: relative; top: 100px; color: black;">Build vocabulary lists.&nbsp;&rarr;</span>
+<div class="row" style="position: relative; bottom: 140px;">
+  <div class="offset8">
+    <span style="font-size: 25px; position: relative; top: 100px; color: black; font-style: italic">Build vocabulary lists.&nbsp;&rarr;</span>
   </div>
   <div class="offset12">
-    <div class="video-thumb-box frontpage-thumb-box" data-video-id=<%= @featured_video_2.id %>>
+    <div class="video-thumb-box frontpage-thumb-box" data-video-id=<%= @featured_video_2.id %> style="position: relative; right: 23px;">
       <strong class="center" style="color: #2793E6;"><%= "#{@featured_video_2.title.slice(0,25)}" %></strong>
       <br><div class="image-box"><%= image_tag "http://img.youtube.com/vi/#{@featured_video_2.youtube_id}/1.jpg" %></div>
     </div>
   </div>
 </div>
-<div class="row" style="position: relative; bottom: 180px;">
-  <div class="offset4">
+<div class="row" style="position: relative; bottom: 220px;">
+  <div class="offset3">
     <div class="video-thumb-box frontpage-thumb-box" data-video-id=<%= @featured_video_3.id %>>
       <strong class="center" style="color: #2793E6;"><%= "#{@featured_video_3.title.slice(0,25)}" %></strong>
       <br><div class="image-box"><%= image_tag "http://img.youtube.com/vi/#{@featured_video_3.youtube_id}/1.jpg" %></div>
     </div>
-  <span style="font-size: 30px; position: relative; top: 60px; color: black;">&larr;&nbsp;Works with any langauge.</span>
+  <span style="font-size: 25px; position: relative; top: 60px; color: black; font-style: italic;">&larr;&nbsp;Works with any langauge.</span>
   </div>
 </div>
-
-
-
-
-
-<div class="index-button" id="new-translation-button">
-  <div class="button-text-wrapper">
-    <p class="index-button-text">Search YouTube here to translate a new video:</p>
-  </div>
-  <div class="button-text-wrapper" style="float: left;"> 
-    <div class="controls" style="position: absolute;">
+<div class="index-button" id="new-translation-button" style="position: relative; bottom: 200px; height: 200px;">
+    <p class="index-button-text" style="padding: 30px; line-height: 30px;">Search YouTube here and start turning your favorite video into a study tool:</p>
+  <div style="text-align: center;"> 
+    <div class="controls" style="position: absolute; left: 160px;">
       <input type="text" class="short-text-box new-video-input" id="ask-youtube"><%= image_tag "youtube-logo.png", :size => '71x71', :style => 'position: relative; left: -12px; top: -5px;' %>
       <input type="hidden" id="youtube_id">
       <div id="progress-bar"></div>
     </div>
   </div>
 </div>
-<div id="results-box"></div>
-<br>
-<br>
-<div class="row">
+<div id="results-box" style="position: relative; bottom: 200px;"></div>
+<div class="row" style="position: relative; bottom: 100px;">
   <div class="offset1">
     <span>
       <h2> Show me videos in... &nbsp;
@@ -90,7 +83,4 @@
   </div>
 </div>
 </div>
-<br>
-<br>
-<br>
 <div id="data" class="quiet" data-edit-video-languages="<%= @interp.present? %>" <% if @interp.present? %>data-youtube-id='<%= @youtube_id %>' data-title='<%= @title %>'<% end %>>

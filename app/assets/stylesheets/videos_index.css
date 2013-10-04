@@ -83,12 +83,12 @@ label.index-page-label { float: left; margin-top: 10px; margin-right: 10px; }
 .lang2-input { float: right; margin-top: 10px; margin-right: 10px; }
 
 .index-button-text { color: white; 
-  font-size: 18px; 
-  text-align: center; }
+  font-size: 22px; 
+  text-align: center; 
+  padding: 20px; }
+
 .smaller { font-size: 15px !important ; }
 .tiny { font-size: 13px; }
-
-.short-text-box { width: 165px; position: relative; left: -12px; top: 1px; }
 
 .ui-autocomplete { max-height: 200px; overflow-y: auto; overflow-x: hidden; }
 
