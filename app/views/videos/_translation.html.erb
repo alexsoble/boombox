@@ -1,7 +1,7 @@
           <% @lines.each do |l| %>
-            <div class="short-line rounded" data-time=<%= l.time %> style="min-height: 80px; margin-bottom: 40px;">
-              <div style="width: 170px; min-height: 80px; float: left;"><p><%= l.lang1 %></p></div>
-              <div style="width: 170px; min-height: 80px; float: right;"><p><%= l.lang2 %></p></div>
+            <div class="short-line rounded" data-time=<%= l.time %> style="float: left; width: 360px;">
+              <div style="width: 140px; margin: 8px; float: left;"><p><%= l.lang1 %></p></div>
+              <div style="width: 140px; margin: 8px; float: right;"><p><%= l.lang2 %></p></div>
             </div>
           <% end %>
           <!-- <% @lines.offset(3).each do |l| %>
