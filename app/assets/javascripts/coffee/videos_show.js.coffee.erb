@@ -118,7 +118,7 @@ $ ->
       unless this_line.hasClass('highlighted')
         this_line.children().effect("highlight", { color: "#FFFF00" }, 4000)
         this_line.addClass("highlighted")
-        $("#community-notes").scrollTo(this_line.children(':first'), { duration : 250 } )
+        $("#community-notes").scrollTo(this_line.prev().children(':first'), { duration : 250 } )
 
     # PLAYBACK SLIDER MOVES HERE
     $('#playback-slider').slider("value", window.time)
