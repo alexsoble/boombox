@@ -1,5 +1,8 @@
 $ ->
 
+  $('.row').hide()
+  $('.row').toggle('width')
+
   $('.frontpage-thumb-box').livequery ->
     $(this).click ->
       video_id = parseInt($(this).attr('data-video-id'))

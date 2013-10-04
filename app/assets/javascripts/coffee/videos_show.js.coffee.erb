@@ -94,7 +94,8 @@ $ ->
   countVideoPlayTime = ->
 
     # IF PLAYER IS PLAYING, UPDATE THE PLAY COUNTER
-    if player.getPlayerState() == 1
+    state = player.getPlayerState()
+    if state == 1
       window.video_play_counter += .4
       if window.video_play_counter > window.half_duration
         $.post("/update_playcount/#{window.playcount_id}", (data) ->
@@ -103,6 +104,10 @@ $ ->
           $('#video-play-counter').html(new_playcount)
         )
         window.video_play_counter = 0
+    if state == 0
+      $('#watch-again').addClass('video-finished')
+      $('#watch-again').html('<br><br><br><br><h3>Watch again?</h3>')
+      $('iframe').remove()
 
     # UI RESPONDS AS VIDEO PLAYS
     exact_time = player.getCurrentTime()
@@ -173,9 +178,10 @@ $ ->
 
   $('.option').livequery ->
     $(this).click ->
-      if $(this).attr('id') == 'vocabulary'
+      category = $(this).attr('id')
+      if category == 'vocabulary'
         $('#community-notes').html("        
-          <span id='user-name'><h3>My vocabulary list:</h3></span>
+          <span id='user-name'><h3>Add new vocabulary:</h3></span>
           <div id='vocab-list'></div>
           <input type='text' id='word-input' style='width: 150px;'> 
           = <input type='text' id='definition-input' style='width: 150px;'> 
@@ -185,9 +191,9 @@ $ ->
           <br><br>
           <div id='notice-area'></div>
         ")
-      if $(this).attr('id') == 'multiple-choice'
+      if category == 'multiple-choice'
         $('#community-notes').html("
-          <span id='user-name'><h3>My multiple-choice question:</h3></span>
+          <span id='user-name'><h3>Add multiple-choice question:</h3></span>
           <input type='text' id='question-title' placeholder='Question title' style='width: 300px;'>
           <br><br>
           <li> &nbsp; <input type='text' class='mc-option' style='width: 200px;' placeholder='Option'> </li>
@@ -199,6 +205,18 @@ $ ->
           <div id='submit-new-multiple-choice' class='btn btn-primary btn-small rounded'> Submit </div>
           <br><br>
           <div id='notice-area'></div>
+        ")
+      if category == 'discussion'
+        $('#community-notes').html("
+          <h3>Add new discussion question:</h3>
+          <input type='text'>
+        ")
+      if category == 'translation'
+        $('#community-notes')
+      if category == 'link'
+        $('#community-notes').html("
+          <h3>Add a link:</h3>
+          <input type='text'>
         ")
 
   postNewWord = (word, definition) ->

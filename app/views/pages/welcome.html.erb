@@ -8,13 +8,46 @@
     <% end %>
     <br>
   <% else %>
-    <h1 style='text-align: center;'><strong>Heyu = Language Learning + Music</strong></h1>
+    <h1 style='text-align: center;'><strong>Love learning languages?</strong></h1>
     <br>
-    <h2 style='text-align: center;'><i>create translations &bull; link with lessons &bull; explain, discuss, and compare</i></h2>
+    <h2 style='text-align: center;'><i>YouTube is your new best friend.</i></h2>
   <% end %>
-  <br>
-  <br>
+  <br><br>
 </div>
+<div class="row">
+  <div class="offset3">
+    <div class="video-thumb-box frontpage-thumb-box" data-video-id=<%= @featured_video_1.id %>>
+      <strong class="center" style="color: #2793E6;"><%= "#{@featured_video_1.title.slice(0,25)}" %></strong>
+      <br><div class="image-box"><%= image_tag "http://img.youtube.com/vi/#{@featured_video_1.youtube_id}/1.jpg" %></div>
+    </div>
+  <span style="font-size: 30px; position: relative; top: 60px; color: black;">&larr;&nbsp;Create translations.</span>
+  </div>
+</div>
+<div class="row" style="position: relative; bottom: 120px;">
+  <div class="offset7">
+    <span style="font-size: 30px; position: relative; top: 100px; color: black;">Build vocabulary lists.&nbsp;&rarr;</span>
+  </div>
+  <div class="offset12">
+    <div class="video-thumb-box frontpage-thumb-box" data-video-id=<%= @featured_video_2.id %>>
+      <strong class="center" style="color: #2793E6;"><%= "#{@featured_video_2.title.slice(0,25)}" %></strong>
+      <br><div class="image-box"><%= image_tag "http://img.youtube.com/vi/#{@featured_video_2.youtube_id}/1.jpg" %></div>
+    </div>
+  </div>
+</div>
+<div class="row" style="position: relative; bottom: 180px;">
+  <div class="offset4">
+    <div class="video-thumb-box frontpage-thumb-box" data-video-id=<%= @featured_video_3.id %>>
+      <strong class="center" style="color: #2793E6;"><%= "#{@featured_video_3.title.slice(0,25)}" %></strong>
+      <br><div class="image-box"><%= image_tag "http://img.youtube.com/vi/#{@featured_video_3.youtube_id}/1.jpg" %></div>
+    </div>
+  <span style="font-size: 30px; position: relative; top: 60px; color: black;">&larr;&nbsp;Works with any langauge.</span>
+  </div>
+</div>
+
+
+
+
+
 <div class="index-button" id="new-translation-button">
   <div class="button-text-wrapper">
     <p class="index-button-text">Search YouTube here to translate a new video:</p>
@@ -30,34 +63,10 @@
 <div id="results-box"></div>
 <br>
 <br>
-<div class="row" id="featured-videos">
-  <div class="offset1">
-    <h2> Featured videos: </h2>
-
-      <hr id="hr">
-
-      <%  @featured_videos.each do |i| %>
-        <% v = i.video %>
-          <div class="video-thumb-box frontpage-thumb-box" data-video-id=<%= v.id %>>
-            <strong class="center" style="color: #2793E6;"><%= "#{v.title.slice(0,25)}" %></strong>
-            <br>
-            <div class="image-box">
-              <%= image_tag "http://img.youtube.com/vi/#{v.youtube_id}/1.jpg" %>
-            </div>
-          </div>
-      <% end %>
-
-  </div>
-</div>
-
 <div class="row">
-
   <div class="offset1">
-
     <span>
-
       <h2> Show me videos in... &nbsp;
-
       <div class="btn-group">
         <div class="btn btn-info rounded dropdown-toggle" data-toggle="dropdown"> (select language) </div>
         <ul class="dropdown-menu">
@@ -65,12 +74,9 @@
           <li><a class="language-selector" id="all">All</a></li>
         </ul>
       </div>
-
     </h2>
-
     </span>
     <hr id="hr">
-
     <%  @interps_with_some_content.each do |i| %>
       <% v = i.video %>
       <div class="video-thumb-box frontpage-thumb-box" title="<%= v.title %>" data-video-id=<%= v.id %>>
@@ -81,11 +87,8 @@
         </div>
       </div>
     <% end %>
-
   </div>
-
 </div>
-
 </div>
 <br>
 <br>

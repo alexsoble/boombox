@@ -74,3 +74,8 @@
   width: 10px;
   border-top: 2px solid white }
 
+#watch-again.video-finished {
+  height: 315px;
+  width: 420px;
+  text-align: center;
+  background-color: #f3f3f6; }

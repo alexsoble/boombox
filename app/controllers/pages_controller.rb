@@ -2,13 +2,9 @@ class PagesController < ApplicationController
 
   def welcome
 
-    @featured_videos = [
-      Interpretation.find(27),
-      Interpretation.find(28),
-      Interpretation.find(43),
-      Interpretation.find(131),
-      Interpretation.find(142)
-    ]
+    @featured_video_1 = Video.find(25)
+    @featured_video_2 = Video.find(85)
+    @featured_video_3 = Video.find(24)
 
     interps_with_some_content = []
     Interpretation.all.each do |i|

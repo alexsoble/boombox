@@ -1,13 +1,13 @@
-          <% @lines.limit(3).each do |l| %>
-            <div class="short-line rounded" data-time=<%= l.time %> style="height: 60px;">
-              <div style="width: 170px; height: 60px; float: left;"><p><%= l.lang1 %></p></div>
-              <div style="width: 170px; height: 60px; float: right;"><p><%= l.lang2 %></p></div>
+          <% @lines.each do |l| %>
+            <div class="short-line rounded" data-time=<%= l.time %> style="min-height: 80px; margin-bottom: 40px;">
+              <div style="width: 170px; min-height: 80px; float: left;"><p><%= l.lang1 %></p></div>
+              <div style="width: 170px; min-height: 80px; float: right;"><p><%= l.lang2 %></p></div>
             </div>
           <% end %>
-          <% @lines.offset(3).each do |l| %>
+          <!-- <% @lines.offset(3).each do |l| %>
             <div class="short-line rounded quiet" data-time=<%= l.time %> style="height: 60px;">
               <div style="width: 170px; float: left;"><p><%= l.lang1 %></p></div>
               <div style="width: 170px; float: right;"><p><%= l.lang2 %></p></div>
             </div>
           <% end %>
-          <p id="toggle-show-lines" style="float: right;">(<i><u style="color: #007FFF;">See all lines.</u></i>)<p>
+          <p id="toggle-show-lines" style="float: right;">(<i><u style="color: #007FFF;">See all lines.</u></i>)<p> -->

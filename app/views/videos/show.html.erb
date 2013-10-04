@@ -1,6 +1,7 @@
 
 <div id="outer-video-box" class="video-container" style="margin-left: 200px;">
   <div id="title-box"><h3 style="margin-top: 20px; color:white;"><%= @video.title %></h3></div>
+  <div id="watch-again"></div>
   <div id="new-video-box"></div>
   <div id="timer-box"></div>
   <div id="settings">
@@ -39,11 +40,11 @@
       <span id="multiple-choice" class="note-category <% if @multiple_choice.present? %>active<% else %>inactive<% end %>">
         Multiple-Choice
       </span> &nbsp; 
-      <span class="inactive note-category">Discussion</span> &nbsp; 
+      <span id="discussion" class="inactive note-category">Discussion</span> &nbsp; 
       <span id="translation" class="note-category <% if @translation.present? %>active<% else %>inactive<% end %>">
         Translation
       </span> &nbsp;
-      <span id="links" class="note-category <% if @texts.present? %>active<% else %>inactive<% end %>">
+      <span id="link" class="note-category <% if @texts.present? %>active<% else %>inactive<% end %>">
         Links
       </span> &nbsp;
     </div>
@@ -73,7 +74,7 @@
         <% end %>
       </div>
       <div class="note-area multiple-choice-area">
-        <% if @multiple_choice.present? %>
+        <% if @multiple_choice.present? %>    @translation = @interp
           <% @multiple_choice.each do |c| %>
             <p> <%= c.question_text %> </p>
             <% options = Option.where(:challenge_id => c.id).all %>
@@ -89,7 +90,7 @@
             <p style="font-size: 16px;">
               <%= link_to "#{c.username}", user_url(c) %> added a translation:
             </p>
-            <%= render "translation", :lines => @lines %>
+            <%= render "videos/translation", :lines => @lines %>
           <% end %>
         <% end %>
       </div>

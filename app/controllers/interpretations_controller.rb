@@ -88,6 +88,8 @@ class InterpretationsController < ApplicationController
     @interp = Interpretation.find_by_id(params[:id])
     @video = @interp.video
     @user = User.find_by_id(@interp.user_id)
+    @translation = @interp
+    @translation_contributors = [@user]
     @lines = Line.where(:interpretation_id => @interp.id).order("time ASC")
 
     render "videos/show"
