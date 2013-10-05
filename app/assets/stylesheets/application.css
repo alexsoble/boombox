@@ -43,6 +43,8 @@ html { overflow-y: scroll; }
 p { color: black; }
 li { color: black; }
 h3 { font-size: 18px !important; line-height: 22px !important }
+div { color: black; }
+span { color: black; }
 
 .left { float: left; }
 .right { float: right; }
@@ -67,4 +69,14 @@ h3 { font-size: 18px !important; line-height: 22px !important }
    width: 100%;
    background-color: white; }
 
-.link-style { cursor: pointer; color: #007FFF; text-decoration: underline; }
+.link-style { 
+  cursor: pointer;
+  color: #007FFF; }
+
+.blue-link { 
+  cursor: pointer;
+  color: #007FFF; }
+
+.purple-link { 
+  cursor: pointer;
+  color: #9b59bb; }

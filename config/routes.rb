@@ -15,9 +15,12 @@ Boombox::Application.routes.draw do
   
   resources :videos
   resources :interpretations
+  resources :tags
   resources :clips
   resources :users
   resources :sessions
+
+  post '/new_tag' => 'tags#create'
 
   post '/new_word' => 'words#create'
   post '/add_time_to_word' => 'words#update_time'

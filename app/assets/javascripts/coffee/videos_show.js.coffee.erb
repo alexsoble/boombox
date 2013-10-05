@@ -176,7 +176,10 @@ $ ->
     "Latin"
     "Swahili", "Yoruba", "Xhosa", "Somali", "Amharic"
     "Javanese", "Malay", "Indonesian"
-    "Kazakh", "Tajik", "Tibetan", "Uyghur", "Uzbek" ]
+    "Kazakh", "Tajik", "Tibetan", "Uyghur", "Uzbek"
+    "Advanced", "Intermediate", "Beginner"
+    "Fast lyrics", "Slow lyrics"
+    "Slang" ]
 
   availableTags.sort (a,b) ->
     return if a >= b then 1 else -1
@@ -303,10 +306,45 @@ $ ->
         )
 
   $('#add-tag').click ->
-    if window.user == 'logged-out'
-       $('#vocab-area').html("<p style='color: #0f82f5;'>Please log in to add a new vocab word.</p>")
-    else
-      $('#user-input')
+    $('#tag-area').hide()
+    $('#add-tag-action-prompt').hide()
+    $('#new-tag-area').html("
+      <div style='float: left; width: 180px;'>
+        <span>New tag:<span>
+        <br>
+        <input id='new-tag' type='text' style='width: 160px; height: 18px; margin-top: 4px;'>
+        <br>
+        <div id='submit-new-tag' class='btn btn-primary btn-small rounded'> Submit </div>
+        <div id='back-from-tagging' class='btn btn-primary btn-small rounded'> Back </div>
+      </div>
+      <div id='tag-types' style='float: right; width: 180px;'>
+        <div style='width: 180px; float: left;'>
+          <span>Tag describes:</span>
+        </div>
+        <div style='width: 85px; float: left;'>
+          <span class='tiny'><input type='checkbox' id='language' class='tag-type'>&nbsp; Language</span>
+          <span class='tiny'><input type='checkbox' id='style' class='tag-type'>&nbsp; Style</span>
+        </div>
+        <div style='width: 85px; float: right;'>
+          <span class='tiny'><input type='checkbox' id='difficulty' class='tag-type'>&nbsp; Difficulty</span>
+          <span class='tiny'><input type='checkbox' id='artist' class='tag-type'>&nbsp; Artist</span>
+        </div>
+        <br>
+      </div>
+    ")
+
+  $('#back-from-tagging').livequery ->
+    $(this).click ->
+      $('#tag-area').show()
+      $('#add-tag-action-prompt').show()
+      $('#new-tag-area').html("")
+
+  $('.tag-type').livequery ->
+    $(this).click ->
+      $('.tag-type').each(->
+        $(this).prop("checked", false)
+      )
+      $(this).prop("checked", true)
 
   $('#new-tag').livequery -> 
     $('#new-tag').autocomplete(
@@ -314,15 +352,36 @@ $ ->
         matches = $.map(availableTags, (tag) ->
           tag  if tag.toUpperCase().indexOf(request.term.toUpperCase()) is 0)
         response matches
-      minLength: 2
+      minLength: 0
     )
 
   $('#submit-new-tag').livequery ->
     $(this).click ->
-      console.log "Trigger"
-      new_tag = $('#new-tag').val()
-      console.log new_tag
-      $('#tags-list').append(", #{new_tag}")
+      if window.user_id == null
+        $('#new-tag').val('Please log in first.')
+      else
+        new_tag = $('#new-tag').val()
+        unless new_tag == '' or new_tag == 'Oops, enter a tag first.'
+          $("input:checkbox").each(->
+            if $(this).is(":checked") then window.tag_type = $(this).attr('id')
+          )
+          $.post('/new_tag', { 'name' : "#{new_tag}", 'user_id' : "#{window.user_id}", 'video_id' : "#{window.video_id}", 'tag_type' : "#{window.tag_type}" }, (data) ->
+            if $('#tag-area').hasClass('no-tags')
+              $('#tag-area').html("Tags: <span id='tags-list'> 
+                #{data.tag.name}
+                ")
+              $('#tag-area').removeClass('no-tags').addClass('has-tags')
+            else
+              $('#tags-list').append("
+                , #{data.tag.name}
+              ")
+            $('#new-tag-area').html("")
+            $('#tag-area').show()
+            $('#add-tag-action-prompt').show()
+          )
+        else
+          $('#new-tag').val('Oops, enter a tag first.')
+          
 
   $('#done').livequery ->
     $(this).click -> 

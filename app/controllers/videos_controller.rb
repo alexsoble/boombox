@@ -19,6 +19,15 @@ class VideosController < ApplicationController
 
     @video = Video.find_by_id(params[:id])
 
+    @tags = Tag.where(:video_id => @video.id)
+    @last_tag = @tags[@tags.length - 1]
+
+    if @tags.length < 2
+      @all_but_last_tag = []
+    else
+      @all_but_last_tag = @tags[0..(@tags.length - 1)]
+    end
+
     @vocabulary = Word.where(:video_id => @video.id).order("created_at DESC")
     @vocabulary_contributors = []
     @vocabulary.each do |v|
@@ -39,8 +48,12 @@ class VideosController < ApplicationController
       @lines = Line.where(:interpretation_id => @translation.first.id).order("time ASC")
     end
 
-    @current_user_play_count = Playcount.where(:user_id => current_user.id, :video_id => @video.id).first.play_count
-    
+    if current_user
+      if Playcount.where(:user_id => current_user.id, :video_id => @video.id).present?
+        @current_user_play_count = Playcount.where(:user_id => current_user.id, :video_id => @video.id).first.play_count
+      end
+    end
+      
   end 
 
   def new

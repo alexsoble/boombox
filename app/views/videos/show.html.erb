@@ -14,13 +14,27 @@
       <% end %>
     </p>
     <br>
-    <p style="margin-top: 45px; margin-left: 15px; font-size: 18px;">
-      <!-- Tags: <span id="tags-list" style="color: #9b59bb;">French, Advanced, MIKA</span> -->
-            No tags yet!
-    </p>
-    <p style="margin-top: 30px; margin-left: 15px; font-size: 16px;">
-      <a id="add-tag" style="color: #0f82f5"><u>Add a tag</u></a> that describes this video.
-    </p>
+    <div style="margin-top: 45px; margin-left: 15px; margin-right: 15px; font-size: 18px;">
+      <div id='new-tag-area'></div>
+      <div id='tag-area' class="<% if @tags.present? %>has-tags<% else %>no-tags<% end %>">
+        <% if @tags.present? %>
+          Tags: 
+          <span id="tags-list" style="color: #9b59bb;">
+            <% @all_but_last_tag.each do |t| %>
+              <%= link_to "#{t.name}", tag_url(t) %>,
+            <% end %>
+            <%= link_to "#{@last_tag.name}", tag_url(@last_tag) %>
+          </span>
+        <% else %>
+          No tags yet!
+        <br><br>
+        <% end %>
+      </div>
+      <div id='add-tag-action-prompt'>
+        <br>
+        <span id="add-tag" class="link-style">Add a tag</span> that describes this video.
+      </div>
+    </div>
   </div>
 </div>
 
