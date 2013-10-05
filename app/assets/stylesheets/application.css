@@ -66,3 +66,5 @@ h3 { font-size: 18px !important; line-height: 22px !important }
    height: 30px;
    width: 100%;
    background-color: white; }
+
+.link-style { cursor: pointer; color: #007FFF; text-decoration: underline; }

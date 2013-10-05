@@ -16,7 +16,7 @@ class PlaycountsController < ApplicationController
 
   def update
     @playcount = Playcount.find_by_id(params[:id])
-    @playcount.play_count += 0.5
+    @playcount.play_count += 1
     @playcount.save
     render :json => { :play_count => @playcount.play_count }
   end

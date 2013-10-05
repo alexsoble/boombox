@@ -38,6 +38,8 @@ class VideosController < ApplicationController
     if @translation.present?
       @lines = Line.where(:interpretation_id => @translation.first.id).order("time ASC")
     end
+
+    @current_user_play_count = Playcount.where(:user_id => current_user.id, :video_id => @video.id).first.play_count
     
   end 
 

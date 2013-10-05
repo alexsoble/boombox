@@ -24,6 +24,13 @@ $ ->
       if 9 < time%60 <= 59 then formatted_time = Math.floor((time)/60) + ":" + (time)%60
     formatted_time
 
+  timeToWords = (time) ->
+    time = Math.floor(time)
+    if time < 60 then formatted_time = "less than a minute"
+    if 60 <= time < 180 then formatted_time = "a few minutes" 
+    if 180 <= time then formatted_time = "#{time/60} minutes" 
+    formatted_time
+
   youtube_id = $('#data').attr('data-youtube-id')
   window.video_id = parseInt($('#data').attr('data-video-id'))
   $('#settings').attr('style','height:200px;')
@@ -97,18 +104,18 @@ $ ->
     state = player.getPlayerState()
     if state == 1
       window.video_play_counter += .4
-      if window.video_play_counter > window.half_duration
+    if state == 0
+      $('#watch-again').addClass('video-finished')
+      $('#watch-again').html('<br><br><br><br><br><h3 class="link-style">Watch again?</class></h3>')
+      $('iframe').remove()
+      if window.video_play_counter + 10 > window.video_duration
         $.post("/update_playcount/#{window.playcount_id}", (data) ->
           new_playcount = data.play_count
-          console.log new_playcount
           $('#video-play-counter').html(new_playcount)
         )
         window.video_play_counter = 0
-    if state == 0
-      $('#watch-again').addClass('video-finished')
-      $('#watch-again').html('<br><br><br><br><h3>Watch again?</h3>')
-      $('iframe').remove()
-
+      $('#watch-again').after('<div id="new-video-box"></div>')
+    
     # UI RESPONDS AS VIDEO PLAYS
     exact_time = player.getCurrentTime()
     window.time = Math.floor(exact_time)
@@ -136,6 +143,12 @@ $ ->
   delayedShow = -> 
     window.player.playVideo()
   window.setTimeout(delayedShow, 1000)
+
+  $('#watch-again').livequery ->
+    $(this).click ->
+      onYouTubeIframeAPIReady()
+      $('#watch-again').removeClass('video-finished')
+      $('#watch-again').html('')
 
   # CHECK TO SEE IF A PLAYCOUNT OBJECT EXISTS FOR THIS USER/VIDEO PAIR; IF NOT, CREATE ONE
 

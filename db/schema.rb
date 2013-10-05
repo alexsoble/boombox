@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20131003205047) do
+ActiveRecord::Schema.define(:version => 20131005173304) do
 
   create_table "challenges", :force => true do |t|
     t.integer  "user_id"
@@ -82,7 +82,7 @@ ActiveRecord::Schema.define(:version => 20131003205047) do
   create_table "playcounts", :force => true do |t|
     t.integer  "video_id"
     t.integer  "user_id"
-    t.float    "play_count"
+    t.integer  "play_count"
     t.datetime "created_at", :null => false
     t.datetime "updated_at", :null => false
   end

@@ -5,10 +5,14 @@
   <div id="new-video-box"></div>
   <div id="timer-box"></div>
   <div id="settings">
-    <p style="margin-top: 15px; margin-left: 15px; font-size: 16px;">
-      You've watched <span id="video-play-counter">0</span> times.
+    <p style="margin-top: 15px; margin-left: 15px; font-size: 15px;">
+      <% if current_user %>
+        You've watched <span id="video-play-counter"><%= @current_user_play_count %></span> times.
+        <i class="icon icon-star-empty icon-2x" id="star" style="position: absolute; top: 10px; right: 10px;"> </i>
+      <% else %>
+        <%= link_to "Sign in", "/sign_in" %> to track your progress & favorite videos.
+      <% end %>
     </p>
-    <i class="icon icon-star-empty icon-2x" id="star" style="position: absolute; top: 10px; right: 10px;"> </i>
     <br>
     <p style="margin-top: 45px; margin-left: 15px; font-size: 18px;">
       <!-- Tags: <span id="tags-list" style="color: #9b59bb;">French, Advanced, MIKA</span> -->
