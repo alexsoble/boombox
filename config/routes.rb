@@ -16,6 +16,7 @@ Boombox::Application.routes.draw do
   resources :videos
   resources :interpretations
   resources :tags
+  resources :definitions
   resources :clips
   resources :users
   resources :sessions

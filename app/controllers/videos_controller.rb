@@ -49,9 +49,15 @@ class VideosController < ApplicationController
     end
 
     if current_user
+
       if Playcount.where(:user_id => current_user.id, :video_id => @video.id).present?
         @current_user_play_count = Playcount.where(:user_id => current_user.id, :video_id => @video.id).first.play_count
       end
+
+      if Interpretation.where(:user_id => current_user.id, :video_id => @video.id).present?
+        @current_user_interp = Interpretation.where(:user_id => current_user.id, :video_id => @video.id).first
+      end
+      
     end
       
   end 

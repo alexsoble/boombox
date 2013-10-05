@@ -27,4 +27,22 @@ class TagsController < ApplicationController
     render :json => { :tag => @tag }
   end
 
+  def show
+
+    @tag = Tag.find_by_id(params[:id])
+    @tag_creator = User.find_by_id(@tag.user_id)
+    @tag_video = Video.find_by_id(@tag.video_id)
+
+  end
+
+  def destroy
+
+    @tag = Tag.find_by_id(params[:id])
+    @tag_video = Video.find_by_id(@tag.video_id)
+    @tag.destroy
+    @tag.save
+    redirect_to video_url(@tag_video)
+    
+  end
+
 end

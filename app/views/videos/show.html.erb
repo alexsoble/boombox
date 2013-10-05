@@ -80,7 +80,7 @@
                 <p style="font-size: 16px;"> <%= link_to "#{c.username}", user_url(c) %> added vocabulary words: </p>
               <% else %>
                 <% if current_user.id == c.id %>
-                  <p style="font-size: 16px;">You added vocabulary words (<a href="/end">edit</a>): </p>
+                  <p style="font-size: 16px;">You added vocabulary words (<%= link_to "edit", interpretation_url(@current_user_interp) %>): </p>
                 <% else %>
                   <p style="font-size: 16px;"> <%= link_to "#{c.username}", user_url(c) %> added vocabulary words: </p>
                 <% end %>
