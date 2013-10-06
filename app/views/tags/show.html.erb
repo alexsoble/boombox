@@ -1,22 +1,31 @@
 <div class="word-box">
-  Tag: <%= @tag.name %>
-  <br>
-  Video: <%= @tag_video.title %>
-  <br>
-
+  <div class="word-box-title">Video tag</div>
+  <h2><%= @tag.name %></h2>
   <% if current_user %>
     <% if current_user.id == @tag_creator.id %>
-      Tag creator: you
+      Tagged by: you
+      <br>
+      (<%= link_to "delete tag?", tag_url(@tag), :confirm => 'Are you sure?', :method => :delete %>)
     <% else %>
-      Tag creator: <%= @tag_creator.username %>
+      Tagged by: <%= @tag_creator.username %>
     <% end %>
   <% else %>
-      Tag creator: <%= @tag_creator.username %>
+      Tagged by: <%= @tag_creator.username %>
   <% end %>
+  <br>
+  <br>
+  <div style="font-size: 18px;">
+    <span id="video-upvotes-status">0</span>
+    <i id="upvote" class="icon icon-thumbs-up vote"></i>
+    &nbsp;
+    <span id="video-downvotes-status">0</span>
+    <i id="downvote" class="icon icon-thumbs-down vote"></i>
+    <br><br>
+    <div id="new-video-box"></div>
+  </div>
+  <br>
+</div>
 
-  <% if current_user %>
-    <% if current_user.id == @tag_creator.id %>
-      <%= link_to "delete", tag_url(@tag), :confirm => 'Are you sure?', :method => :delete %>
-    <% end %>
-  <% end %>
+<div id="data" class="quiet"
+ data-youtube-id=<%= @tag_video.youtube_id %>
 </div>

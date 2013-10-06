@@ -1,0 +1,23 @@
+<div class="word-box">
+  <div class="word-box-title">Definition</div>
+  Tag: <%= @definition.name %>
+  <br>
+  Video: <%= @tag_video.title %>
+  <br>
+
+  <% if current_user %>
+    <% if current_user.id == @tag_creator.id %>
+      Tag creator: you
+    <% else %>
+      Tag creator: <%= @tag_creator.username %>
+    <% end %>
+  <% else %>
+      Tag creator: <%= @tag_creator.username %>
+  <% end %>
+
+  <% if current_user %>
+    <% if current_user.id == @tag_creator.id %>
+      <%= link_to "delete", tag_url(@tag), :confirm => 'Are you sure?', :method => :delete %>
+    <% end %>
+  <% end %>
+</div>

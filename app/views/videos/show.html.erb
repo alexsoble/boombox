@@ -18,12 +18,12 @@
       <div id='new-tag-area'></div>
       <div id='tag-area' class="<% if @tags.present? %>has-tags<% else %>no-tags<% end %>">
         <% if @tags.present? %>
-          Tags: 
-          <span id="tags-list" style="color: #9b59bb;">
+          <span id="tags-list">
             <% @all_but_last_tag.each do |t| %>
-              <%= link_to "#{t.name}", tag_url(t) %>,
+              <%= link_to "#{t.name}", tag_url(t) %><% if t.category != '' %><span class="tiny"> (<%= t.category %>)</span><% end %>,
             <% end %>
-            <%= link_to "#{@last_tag.name}", tag_url(@last_tag) %>
+            <%= link_to "#{@last_tag.name}", tag_url(@last_tag) %> 
+            <% if @last_tag.category != '' %><span class="tiny">(<%= @last_tag.category %>)</span><% end %>
           </span>
         <% else %>
           No tags yet!
