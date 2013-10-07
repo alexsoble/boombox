@@ -33,7 +33,6 @@ $ ->
 
   youtube_id = $('#data').attr('data-youtube-id')
   window.video_id = parseInt($('#data').attr('data-video-id'))
-  $('#settings').attr('style','height:200px;')
 
   tag = document.createElement("script")
   tag.src = "https://www.youtube.com/iframe_api"
@@ -319,7 +318,7 @@ $ ->
       </div>
       <div id='tag-types' style='float: right; width: 180px;'>
         <div style='width: 180px; float: left;'>
-          <span>Tag description: <span style='font-size: 12px;'>(optional)</span></span>
+          <span>Tag description:</span>
         </div>
         <div style='width: 85px; float: left;'>
           <span class='tiny'><input type='checkbox' id='language' class='tag-type'>&nbsp; Language</span>

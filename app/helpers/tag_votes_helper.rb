@@ -1,0 +1,2 @@
+module TagVotesHelper
+end

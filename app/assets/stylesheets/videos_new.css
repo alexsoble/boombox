@@ -137,7 +137,7 @@
 
 #settings { position: relative; 
   top: -15px; 
-  height: 135px; 
+  min-height: 200px; 
   width: 416px;
   background-color: white;
   border: 2px solid #f3f3f6;
@@ -306,3 +306,8 @@ select { width: 150px; }
 
 .new-multiple-choice-option { cursor: auto !important; }
 .vocab-time-selector { background-color: #FF7518 !important; }
+
+.tag-category { float: left; width: 170px; margin-left: 10px; }
+
+
+

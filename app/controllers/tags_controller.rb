@@ -33,6 +33,22 @@ class TagsController < ApplicationController
     @tag_creator = User.find_by_id(@tag.user_id)
     @tag_video = Video.find_by_id(@tag.video_id)
 
+    if current_user
+      @user_vote = TagVote.where(:user_id => current_user.id, :tag_id => @tag.id).first
+      if @user_vote.present?
+        @user_vote_value = @user_vote.value
+        @user_vote_id = @user_vote.id
+      else
+        @user_vote_value = 'no-vote'
+      end
+    else
+      @user_vote_value = 'no-vote'
+    end
+
+    @votes = TagVote.where(:tag_id => @tag.id)
+    @upvote_total = @votes.where(:value => 1).length
+    @downvote_total = @votes.where(:value => -1).length
+
   end
 
   def destroy

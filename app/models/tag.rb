@@ -17,4 +17,6 @@ class Tag < ActiveRecord::Base
 
   end
 
+  has_many :tag_votes
+
 end

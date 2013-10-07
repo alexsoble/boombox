@@ -33,6 +33,9 @@ Boombox::Application.routes.draw do
   post '/new_playcount/:user_id/:video_id' => 'playcounts#create'
   post '/update_playcount/:id' => 'playcounts#update'
 
+  post '/new_tag_vote/' => 'tag_votes#create'
+  post '/update_tag_vote/' => 'tag_votes#update'
+
   post '/find_interp/:user_id/:video_id' => 'interpretations#find'
   post '/new_interp/:user_id/:video_id' => 'interpretations#create'
 
