@@ -44,6 +44,7 @@ class TagsController < ApplicationController
     else
       @user_vote_value = 'no-vote'
     end
+    logger.debug("USER VOTE VALUE #{@user_vote_value}")
 
     @votes = TagVote.where(:tag_id => @tag.id)
     @upvote_total = @votes.where(:value => 1).length
