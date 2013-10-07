@@ -8,7 +8,7 @@ class PlaycountsController < ApplicationController
   def find
     @playcount = Playcount.where(:user_id => params[:user_id], :video_id => params[:video_id]).first
     if @playcount.present?
-      render :json => { :playcount_id => @playcount.id }
+      render :json => { :playcount_id => @playcount.id, :playcount_value => @playcount.play_count }
     else
       render :json => { :playcount_id => 'no-playcount' } 
     end

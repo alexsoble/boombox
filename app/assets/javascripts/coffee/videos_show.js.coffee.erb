@@ -153,9 +153,11 @@ $ ->
 
   if window.user_id isnt null
     $.post("/find_playcount/#{window.user_id}/#{window.video_id}", (data) ->
-      if data.playcount_id is 'no-playcount'
+      if data.playcount is 'no-playcount'
         $.post("/new_playcount/#{window.user_id}/#{window.video_id}", (data) ->
           window.playcount_id = data.playcount_id
+          window.playcount_value = data.playcount_value
+          $('#video-play-counter').html(window.playcount_value)
         )
       else
         window.playcount_id = data.playcount_id
