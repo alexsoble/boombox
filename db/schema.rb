@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20131008130314) do
+ActiveRecord::Schema.define(:version => 20131008141210) do
 
   create_table "challenges", :force => true do |t|
     t.integer  "user_id"
@@ -68,6 +68,12 @@ ActiveRecord::Schema.define(:version => 20131008130314) do
     t.datetime "updated_at",        :null => false
   end
 
+  create_table "languages", :force => true do |t|
+    t.string   "name"
+    t.datetime "created_at", :null => false
+    t.datetime "updated_at", :null => false
+  end
+
   create_table "lines", :force => true do |t|
     t.string   "lang1"
     t.string   "lang2"
@@ -78,6 +84,16 @@ ActiveRecord::Schema.define(:version => 20131008130314) do
     t.datetime "created_at",                       :null => false
     t.datetime "updated_at",                       :null => false
     t.integer  "duration",          :default => 4
+  end
+
+  create_table "links", :force => true do |t|
+    t.string   "url"
+    t.text     "excerpt"
+    t.integer  "language_id"
+    t.integer  "user_id"
+    t.integer  "video_id"
+    t.datetime "created_at",  :null => false
+    t.datetime "updated_at",  :null => false
   end
 
   create_table "options", :force => true do |t|

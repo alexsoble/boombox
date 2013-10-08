@@ -180,10 +180,7 @@ $ ->
     "Latin"
     "Swahili", "Yoruba", "Xhosa", "Somali", "Amharic"
     "Javanese", "Malay", "Indonesian"
-    "Kazakh", "Tajik", "Tibetan", "Uyghur", "Uzbek"
-    "Advanced", "Intermediate", "Beginner"
-    "Fast lyrics", "Slow lyrics"
-    "Slang" ]
+    "Kazakh", "Tajik", "Tibetan", "Uyghur", "Uzbek" ]
 
   availableTags.sort (a,b) ->
     return if a >= b then 1 else -1
@@ -208,8 +205,6 @@ $ ->
           <br><br>
           <div id='submit-new-vocab' class='btn btn-primary btn-small rounded'> Submit </div>
           <div id='done' class='btn btn-primary btn-small rounded'> Done </div>
-          <br><br>
-          <div id='notice-area'></div>
         ")
       if category == 'multiple-choice'
         $('#community-notes').html("
@@ -223,8 +218,6 @@ $ ->
             </li>
           </div><br>
           <div id='submit-new-multiple-choice' class='btn btn-primary btn-small rounded'> Submit </div>
-          <br><br>
-          <div id='notice-area'></div>
         ")
       if category == 'discussion'
         $('#community-notes').html("
@@ -235,9 +228,21 @@ $ ->
         $('#community-notes')
       if category == 'link'
         $('#community-notes').html("
-          <h3>Add a link:</h3>
-          <input type='text'>
+          <h3>Add a link that complements this video:</h3>
+          <input type='text' id='link-input'>
+          <h3>Text excerpt:</h3>
+          <textarea id='excerpt'></textarea>
+          <h3>Language:</h3>
+          <select id='language-select'></select>
+          <br>
+          <div id='submit-new-link' class='btn btn-primary btn-small rounded'> Submit </div>
         ")
+        availableTags.forEach((language) ->
+          $('#language-select').append("<option>#{language}</option>")
+        )
+      $('#community-notes').append("
+        <br><br>
+        <div id='notice-area'></div>")
 
   postNewWord = (word, definition) ->
     $.post('/new_word', { 'word' : { 'video_id' : "#{window.video_id}", 'user_id' : "#{window.user_id}", 'text' : "#{word}" } }, (data) ->
@@ -296,6 +301,23 @@ $ ->
     $(this).click ->
       if window.user == 'logged-out'
         $('#notice-area').html("<p style='color: #0f82f5;'><i>Please log in to add a new vocabulary word.</i></p>")
+      else
+        challenge = $('#question-title').val()
+        options = $('.mc-option')
+        $.post('/new_challenge', { 'challenge' : { 'video_id' : "#{window.video_id}", 'user_id' : "#{window.user_id}", 'question_text' : "#{challenge}" } }, (data) ->
+          challenge_id = data.data.id
+          console.log "challenge = #{data.data.question_text}"
+          options.each(->
+            $.post('/new_option', { 'option' : { 'challenge_id' : "#{challenge_id}", 'answer_text' : "#{$(this).val()}" } }, (data) ->
+              console.log "option = #{data.data.answer_text}"
+            )
+          )
+        )
+
+  $('#submit-new-link').livequery ->
+    $(this).click -> 
+      if window.user == 'logged-out'
+        $('#notice-area').html("<p style='color: #0f82f5;'><i>Please log in to add a new link.</i></p>")
       else
         challenge = $('#question-title').val()
         options = $('.mc-option')

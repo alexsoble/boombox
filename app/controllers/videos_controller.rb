@@ -51,6 +51,11 @@ class VideosController < ApplicationController
     end
 
     @multiple_choice = Challenge.where(:video_id => @video.id).order("created_at DESC")
+    @challenge_contributors = []
+    @multiple_choice.each do |c|
+      user = User.where(:id => c.user_id).first
+      if @challenge_contributors.index(user) == nil then @challenge_contributors << user end
+    end
 
     @translation = Interpretation.where(:video_id => @video.id).limit(5)
     @translation_contributors = []

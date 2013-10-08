@@ -1,19 +1,11 @@
 #encoding: utf-8
 
-Interpretation.where(:user_id => 0).destroy_all
-
-School.destroy_all
-School.create([{:name => 'University of Chicago' }, 
-  {:name => 'Northwestern University' }, 
-  {:name => 'City Charter High School, Pittsburgh' },
-  {:name => 'East Brooklyn Community HIgh School' }])
-
 Language.create([
   {:name => "English" },
   {:name => "Dutch"},
   {:name => "Afrikaans"},
-  {:name => "Chinese"},
-  {:name => "Cantonese"}
+  {:name => "Chinese (Mandarin)"},
+  {:name => "Cantonese"},
   {:name => "Japanese"},
   {:name => "Korean"},
   {:name => "Vietnamese"},
