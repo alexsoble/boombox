@@ -12,6 +12,7 @@
     <%= javascript_include_tag "coffee/videos_show" %>
   <% end %>
   <%= csrf_meta_tags %>
+  <script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script>
   <% if action_name == 'show' && controller_name == 'clips' %>
     <meta name="twitter:card" content="summary">
     <meta name="twitter:site" content="@heyuvideo">

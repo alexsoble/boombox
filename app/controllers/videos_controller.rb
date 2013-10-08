@@ -63,21 +63,38 @@ class VideosController < ApplicationController
       user = User.where(:id => t.user_id).first
       if @translation_contributors.index(user) == nil then @translation_contributors << user end
     end
-
     if @translation.present?
       @lines = Line.where(:interpretation_id => @translation.first.id).order("time ASC")
     end
 
-    if current_user
+    @discussion_questions = DiscussionQuestion.where(:video_id => @video.id).order("created_at DESC")
+    @question_contributors = []
+    @discussion_questions.each do |t|
+      user = User.where(:id => t.user_id).first
+      if @question_contributors.index(user) == nil then @question_contributors << user end
+    end
 
+    @tweets = Tweet.where(:video_id => @video.id).order("created_at DESC")
+    @tweet_contributors = []
+    @tweets.each do |t|
+      user = User.where(:id => t.user_id).first
+      if @tweet_contributors.index(user) == nil then @tweet_contributors << user end
+    end
+
+    @links = Link.where(:video_id => @video.id).order("created_at DESC")
+    @link_contributors = []
+    @links.each do |l|
+      user = User.where(:id => l.user_id).first
+      if @link_contributors.index(user) == nil then @link_contributors << user end
+    end
+
+    if current_user
       if Playcount.where(:user_id => current_user.id, :video_id => @video.id).present?
         @current_user_play_count = Playcount.where(:user_id => current_user.id, :video_id => @video.id).first.play_count
       end
-
       if Interpretation.where(:user_id => current_user.id, :video_id => @video.id).present?
         @current_user_interp = Interpretation.where(:user_id => current_user.id, :video_id => @video.id).first
       end
-      
     end
       
   end 

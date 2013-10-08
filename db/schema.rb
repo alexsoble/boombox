@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20131008141210) do
+ActiveRecord::Schema.define(:version => 20131008190521) do
 
   create_table "challenges", :force => true do |t|
     t.integer  "user_id"
@@ -51,6 +51,14 @@ ActiveRecord::Schema.define(:version => 20131008141210) do
     t.integer  "word_id"
     t.datetime "created_at", :null => false
     t.datetime "updated_at", :null => false
+  end
+
+  create_table "discussion_questions", :force => true do |t|
+    t.integer  "video_id"
+    t.integer  "user_id"
+    t.string   "question_text"
+    t.datetime "created_at",    :null => false
+    t.datetime "updated_at",    :null => false
   end
 
   create_table "interpretations", :force => true do |t|
@@ -158,6 +166,15 @@ ActiveRecord::Schema.define(:version => 20131008141210) do
     t.boolean  "type_style"
     t.datetime "created_at",      :null => false
     t.datetime "updated_at",      :null => false
+  end
+
+  create_table "tweets", :force => true do |t|
+    t.integer  "video_id"
+    t.integer  "user_id"
+    t.string   "twitter_id"
+    t.datetime "created_at", :null => false
+    t.datetime "updated_at", :null => false
+    t.string   "tweeter"
   end
 
   create_table "users", :force => true do |t|

@@ -46,8 +46,11 @@ $ ->
   window.time = 0
   window.got_volume = false
   window.video_play_counter = 0
+  window.adding_content = false
 
   # WE GOTTA HAVE A PLAYBACK SLIDER
+
+  $('#community-notes').height($('#settings').height() + 225)
 
   $('#settings').append("
     <div class='playback-left-label end-label'><div class='playback-left-label inner-label'></div></div>
@@ -142,7 +145,7 @@ $ ->
       window.time = Math.round(exact_time)
       window.section = window.time / window.loop_length
 
-  delayedShow = -> 
+  delayedShow = ->
     window.player.playVideo()
   window.setTimeout(delayedShow, 1000)
 
@@ -185,64 +188,97 @@ $ ->
   availableTags.sort (a,b) ->
     return if a >= b then 1 else -1
 
-  $('#add-new-note').click -> 
-    $('.note-category').removeClass('inactive')
-    $('.note-category').addClass('option')
-    $('#community-notes').html('')
+  $('#add-new-note').click ->
+    if window.adding_content == false
+      $('.note-category').removeClass('inactive')
+      $('.note-category').addClass('option')
+      $('#big-tab').toggle('width')
+      $('#notes-container').hide()
+      $('#all').slideUp()
+      $(this).attr('style','right: -1px;')
+      window.adding_content = true
+
+  backFromEditing = ->
+    $('#notes-container').show()
+    $('.note-area').show()
+    $('#editing').html('')
+    $('.note-category').removeClass('option')
     $('#big-tab').toggle('width')
-    $('#all').slideUp()
-    $(this).attr('style','right: -1px;')
+    $('#all').slideDown()
+    $('#add-new-note').removeAttr('style')
+    window.adding_content = false
+
+  $('#back-from-editing').livequery ->
+    $(this).click ->
+      backFromEditing()
 
   $('.option').livequery ->
     $(this).click ->
-      category = $(this).attr('id')
-      if category == 'vocabulary'
-        $('#community-notes').html("        
-          <span id='user-name'><h3>Add new vocabulary:</h3></span>
-          <div id='vocab-list'></div>
-          <input type='text' id='word-input' style='width: 150px;'> 
-          = <input type='text' id='definition-input' style='width: 150px;'> 
+      if $(this).hasClass('option')
+        category = $(this).attr('id')
+        if category == 'vocabulary'
+          $('#editing').html("        
+            <span id='user-name'><h3>Add new vocabulary:</h3></span>
+            <div id='vocab-list'></div>
+            <input type='text' id='word-input' style='width: 150px;'> 
+            = <input type='text' id='definition-input' style='width: 150px;'> 
+            <br><br>
+            <div id='submit-new-vocab' class='btn btn-primary btn-small rounded'> Submit </div>
+            <div id='back-from-editing' class='btn btn-primary btn-small rounded'> Back </div>
+          ")
+        if category == 'multiple-choice'
+          $('#editing').html("
+            <span id='user-name'><h3>Add multiple-choice question:</h3></span>
+            <input type='text' id='question-title' placeholder='Question title' style='width: 300px;'>
+            <br><br>
+            <li> &nbsp; <input type='text' class='mc-option' style='width: 200px;' placeholder='Option'> </li>
+            <div class='new-multiple-choice-option'>
+                <li> 
+                &nbsp; <input type='text' class='new-multiple-choice-option' style='width: 200px;' placeholder='Click to add option' disabled=''> 
+              </li>
+            </div><br>
+            <div id='submit-new-multiple-choice' class='btn btn-primary btn-small rounded'> Submit </div>
+            <div id='back-from-editing' class='btn btn-primary btn-small rounded'> Back </div>
+          ")
+        if category == 'discussion'
+          $('#editing').html("
+            <h3>Add new discussion question:</h3>
+            <input type='text' id='discussion-question-text'>
+            <br>
+            <div id='submit-new-discussion-question' class='btn btn-primary btn-small rounded'> Submit </div>
+            <div id='back-from-editing' class='btn btn-primary btn-small rounded'> Back </div>
+          ")
+        if category == 'translations'
+          $('#editing')
+        if category == 'links'
+          $('#editing').html("
+            <h3>Add a relevant link:</h3>
+            <input type='text' id='url'>
+            <h3>Text excerpt:</h3>
+            <textarea id='excerpt'></textarea>
+            <h3>Language:</h3>
+            <select id='language-select'></select>
+            <br>
+            <div id='submit-new-link' class='btn btn-primary btn-small rounded'> Submit </div>
+            <div id='back-from-editing' class='btn btn-primary btn-small rounded'> Back </div>
+          ")
+          availableTags.forEach((language) ->
+            $('#language-select').append("<option>#{language}</option>")
+          )
+        if category == 'tweets'
+          $('#editing').html("
+            <h3>Add a relevant tweet:</h3>
+            <input type='text' id='url'>
+            <br>
+            <span class='tiny'><i>(Copy and paste the URL.)</i></span>
+            <br><br>
+            <div id='submit-new-tweet' class='btn btn-primary btn-small rounded'> Submit </div>
+            <div id='back-from-editing' class='btn btn-primary btn-small rounded'> Back </div>
+          ")
+
+        $('#editing').append("
           <br><br>
-          <div id='submit-new-vocab' class='btn btn-primary btn-small rounded'> Submit </div>
-          <div id='done' class='btn btn-primary btn-small rounded'> Done </div>
-        ")
-      if category == 'multiple-choice'
-        $('#community-notes').html("
-          <span id='user-name'><h3>Add multiple-choice question:</h3></span>
-          <input type='text' id='question-title' placeholder='Question title' style='width: 300px;'>
-          <br><br>
-          <li> &nbsp; <input type='text' class='mc-option' style='width: 200px;' placeholder='Option'> </li>
-          <div class='new-multiple-choice-option'>
-              <li> 
-              &nbsp; <input type='text' class='new-multiple-choice-option' style='width: 200px;' placeholder='Click to add option' disabled=''> 
-            </li>
-          </div><br>
-          <div id='submit-new-multiple-choice' class='btn btn-primary btn-small rounded'> Submit </div>
-        ")
-      if category == 'discussion'
-        $('#community-notes').html("
-          <h3>Add new discussion question:</h3>
-          <input type='text'>
-        ")
-      if category == 'translation'
-        $('#community-notes')
-      if category == 'link'
-        $('#community-notes').html("
-          <h3>Add a link that complements this video:</h3>
-          <input type='text' id='link-input'>
-          <h3>Text excerpt:</h3>
-          <textarea id='excerpt'></textarea>
-          <h3>Language:</h3>
-          <select id='language-select'></select>
-          <br>
-          <div id='submit-new-link' class='btn btn-primary btn-small rounded'> Submit </div>
-        ")
-        availableTags.forEach((language) ->
-          $('#language-select').append("<option>#{language}</option>")
-        )
-      $('#community-notes').append("
-        <br><br>
-        <div id='notice-area'></div>")
+          <div id='notice-area'></div>")
 
   postNewWord = (word, definition) ->
     $.post('/new_word', { 'word' : { 'video_id' : "#{window.video_id}", 'user_id' : "#{window.user_id}", 'text' : "#{word}" } }, (data) ->
@@ -297,6 +333,42 @@ $ ->
         $('.ui-slider-handle').removeClass('vocab-time-selector')
       )
 
+  $('#submit-new-link').livequery ->
+    $(this).click -> 
+      if window.user == 'logged-out'
+        $('#notice-area').html("<p style='color: #0f82f5;'><i>Please log in to add a new vocabulary word.</i></p>")
+      else
+        url = $('#url').val()
+        excerpt = $('#excerpt').val()
+        lang = $('#language-select').val()
+        $.post('/new_link', { 'link' : { 'url' : "#{url}", 'excerpt' : "#{excerpt}", 'user_id' : "#{window.user_id}", 'video_id' : "#{window.video_id}" }, 'lang' : "#{lang}" }, (data) -> 
+          console.log data
+        )
+
+  $('#submit-new-tweet').livequery ->
+    $(this).click -> 
+      if window.user == 'logged-out'
+        $('#notice-area').html("<p style='color: #0f82f5;'><i>Please log in to add a new vocabulary word.</i></p>")
+      else
+        tweet_url = $('#url').val().split('/')
+        tweeter = tweet_url[3]
+        twitter_id = tweet_url[5]
+        $.post('/new_tweet', { 'tweet' : { 'tweeter' : "#{tweeter}", 'twitter_id' : "#{twitter_id}", 'user_id' : "#{window.user_id}", 'video_id' : "#{window.video_id}" } }, (data) -> 
+          console.log data
+          backFromEditing()
+        )
+
+  $('#submit-new-discussion-question').livequery -> 
+    $(this).click ->
+      if window.user == 'logged-out'
+        $('#notice-area').html("<p style='color: #0f82f5;'><i>Please log in to add a new discussion question.</i></p>")
+      else
+        question_text = $('#discussion-question-text').val()
+        $.post('/new_discussion_question', { 'discussion_question' : { 'question_text' : "#{question_text}", 'user_id' : "#{window.user_id}", 'video_id' : "#{window.video_id}" } }, (data) -> 
+          console.log data
+          backFromEditing()
+        )
+
   $('#submit-new-multiple-choice').livequery ->
     $(this).click ->
       if window.user == 'logged-out'
@@ -311,23 +383,8 @@ $ ->
             $.post('/new_option', { 'option' : { 'challenge_id' : "#{challenge_id}", 'answer_text' : "#{$(this).val()}" } }, (data) ->
               console.log "option = #{data.data.answer_text}"
             )
-          )
-        )
-
-  $('#submit-new-link').livequery ->
-    $(this).click -> 
-      if window.user == 'logged-out'
-        $('#notice-area').html("<p style='color: #0f82f5;'><i>Please log in to add a new link.</i></p>")
-      else
-        challenge = $('#question-title').val()
-        options = $('.mc-option')
-        $.post('/new_challenge', { 'challenge' : { 'video_id' : "#{window.video_id}", 'user_id' : "#{window.user_id}", 'question_text' : "#{challenge}" } }, (data) ->
-          challenge_id = data.data.id
-          console.log "challenge = #{data.data.question_text}"
-          options.each(->
-            $.post('/new_option', { 'option' : { 'challenge_id' : "#{challenge_id}", 'answer_text' : "#{$(this).val()}" } }, (data) ->
-              console.log "option = #{data.data.answer_text}"
-            )
+          $('#editing').html('')
+          $('#notes-container').show()
           )
         )
 
