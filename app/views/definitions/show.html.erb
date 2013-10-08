@@ -7,4 +7,53 @@
       =
       <br>
       <%= @definition.text %>
+    </div>
+    <br>
+    <br>
+    <% if current_user %>
+      <% if current_user.id == @definition_creator.id %>
+        Created by: you
+        <br>
+        (<%= link_to "delete tag?", definition_url(@definition), :confirm => 'Are you sure?', :method => :delete %>)
+      <% else %>
+        Created by: <%= @definition_creator.username %>
+      <% end %>
+    <% else %>
+        Created by: <%= @definition_creator.username %>
+    <% end %>
+    <br>
+    <br>
+    <div style="font-size: 18px;">
+      <span id="upvote-area" class="<% if @upvote_total > @downvote_total%>blue<% end %>">
+        <span id="video-upvotes-status" class="<% if @upvote_total > @downvote_total%>blue<% end %>"><%= @upvote_total %></span>
+        <i id="upvote" class="icon icon-thumbs-up vote"></i>
+      </span>
+      &nbsp;
+      <span id="downvote-area" class="<% if @upvote_total < @downvote_total%>red<% end %>">
+        <span id="video-downvotes-status" class="<% if @upvote_total < @downvote_total%>red<% end %>"><%= @downvote_total %></span>
+        <i id="downvote" class="icon icon-thumbs-down vote"></i>
+      </span>
+      <br><br>
+      <p style='color: #0f82f5; font-style: italic; font-size: 14px;' id="notice">
+        <% if @user_vote.present? %>
+          Your vote: 
+          <% if @user_vote_value == 1 %>
+            <i class='icon icon-thumbs-up'></i>
+          <% elsif @user_vote_value == -1 %>
+            <i class='icon icon-thumbs-down'></i>
+          <% end %>
+        <% end %>
+      </p>
+      <div id="new-video-box"></div>
+    </div>
+  </div>
+</div>
+
+<div id="data" class="quiet"
+ data-youtube-id=<%= @definition_video.youtube_id %>
+ data-user-vote-value="<%= @user_vote_value %>"
+ data-user-vote-id="<%= @user_vote_id %>"
+ data-definition-creator-id="<%= @definition_creator.id %>"
+ data-definition-id="<%= @definition.id %>"
+>
 </div>

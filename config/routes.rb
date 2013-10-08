@@ -36,6 +36,9 @@ Boombox::Application.routes.draw do
   post '/new_tag_vote/' => 'tag_votes#create'
   post '/update_tag_vote/' => 'tag_votes#update'
 
+  post '/new_definition_vote/' => 'definition_votes#create'
+  post '/update_definition_vote/' => 'definition_votes#update'
+
   post '/find_interp/:user_id/:video_id' => 'interpretations#find'
   post '/new_interp/:user_id/:video_id' => 'interpretations#create'
 

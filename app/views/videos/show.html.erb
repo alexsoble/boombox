@@ -106,23 +106,17 @@
           <% @vocabulary_contributors.each do |c| %>
             <% c_words = Word.where(:user_id => c.id, :video_id => @video.id) %>
               <% unless current_user %>
-                <p style="font-size: 16px;"> <%= link_to "#{c.username}", user_url(c) %> added vocabulary words: </p>
+                <p style="font-size: 16px;"> <%= link_to "#{c.username}", user_url(c) %> added vocabulary definitions: </p>
               <% else %>
                 <% if current_user.id == c.id %>
-                  <p style="font-size: 16px;">You added vocabulary words: </p>
+                  <p style="font-size: 16px;">You added vocabulary definitions: </p>
                 <% else %>
-                  <p style="font-size: 16px;"> <%= link_to "#{c.username}", user_url(c) %> added vocabulary words: </p>
+                  <p style="font-size: 16px;"> <%= link_to "#{c.username}", user_url(c) %> added vocabulary definitions: </p>
                 <% end %>
             <% end %>
             <% c_words.each do |w| %>
               <% d = Definition.where(:word_id => w.id).first %>
-              <li><%= w.text %> = <%= d.text %>
-                <% if current_user %>
-                  <% if current_user.id == c.id %>
-                    &nbsp; (<%= link_to "edit", definition_url(d) %>)
-                  <% end %>
-                <% end %>
-            </li>
+              <li><%= link_to "#{w.text + " = " + d.text}", definition_url(d) %></li>
             <% end %>
           <% end %>
         <% end %>

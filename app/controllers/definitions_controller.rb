@@ -12,6 +12,23 @@ class DefinitionsController < ApplicationController
     @definition_creator = User.find_by_id(@word.user_id)
     @definition_video = Video.find_by_id(@word.video_id)
 
+    if current_user
+      @user_vote = DefinitionVote.where(:user_id => current_user.id, :definition_id => @definition.id).first
+      if @user_vote.present?
+        @user_vote_value = @user_vote.value
+        @user_vote_id = @user_vote.id
+      else
+        @user_vote_value = 'no-vote'
+      end
+    else
+      @user_vote_value = 'no-vote'
+    end
+    logger.debug("USER VOTE VALUE #{@user_vote_value}")
+
+    @votes = DefinitionVote.where(:definition_id => @definition.id)
+    @upvote_total = @votes.where(:value => 1).length
+    @downvote_total = @votes.where(:value => -1).length
+
   end
 
   def destroy

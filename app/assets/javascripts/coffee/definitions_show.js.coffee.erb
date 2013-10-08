@@ -1,0 +1,85 @@
+$ ->
+
+  window.definition_id = $('#data').attr('data-definition-id')
+  window.user_vote_value = $('#data').attr('data-user-vote-value')
+  window.user_vote_id = $('#data').attr('data-user-vote-id')
+  window.definition_creator_id = parseInt($('#data').attr('data-definition-creator-id'))
+
+  if window.user_vote_value == '1'
+    window.user_vote_value = 1
+
+  if window.user_vote_value == '-1'
+    window.user_vote_value = -1
+
+  adjustColors = -> 
+    upvotes = parseInt($('#video-upvotes-status').text())
+    downvotes = parseInt($('#video-downvotes-status').text())
+    if upvotes == downvotes
+      $('#upvote-area').removeClass('blue')
+      $('#video-upvotes-status').removeClass('blue')
+      $('#downvote-area').removeClass('red')
+      $('#video-downvotes-status').removeClass('red')
+    else if upvotes > downvotes
+      $('#upvote-area').addClass('blue')
+      $('#video-upvotes-status').addClass('blue')
+      $('#downvote-area').removeClass('red')
+      $('#video-downvotes-status').removeClass('red')
+    else if upvotes < downvotes
+      $('#upvote-area').removeClass('blue')
+      $('#video-upvotes-status').removeClass('blue')
+      $('#downvote-area').addClass('red')
+      $('#video-downvotes-status').addClass('red')      
+
+  $('.vote').click ->
+    if window.user_id isnt null
+      if window.user_id == window.definition_creator_id
+        $('#notice').html("Sorry, you can't vote on your own definition.")
+      else if window.user_vote_value == 'no-vote'
+        console.log $(this).attr('id')
+        if $(this).attr('id') == 'upvote'
+          $.post('/new_definition_vote', { 'definition_vote' : { 'definition_id' : "#{window.definition_id}", 'user_id' : "#{window.user_id}", 'value' : 1 } }, (data) -> 
+            console.log "data.definition_vote.value = #{data.definition_vote.value}"
+            window.user_vote_value = data.definition_vote.value
+            window.user_vote_id = data.definition_vote.id
+            new_upvotes = parseInt($('#video-upvotes-status').text()) + 1
+            $('#video-upvotes-status').text(new_upvotes)
+            $('#notice').html("Your vote: <i class='icon icon-thumbs-up'></i>")
+            adjustColors()
+          )
+        if $(this).attr('id') == 'downvote'
+          $.post('/new_definition_vote', { 'definition_vote' : { 'definition_id' : "#{window.definition_id}", 'user_id' : "#{window.user_id}", 'value' : -1 } }, (data) ->
+            console.log "data.definition_vote.value = #{data.definition_vote.value}"
+            window.user_vote_value = data.definition_vote.value
+            window.user_vote_id = data.definition_vote.id
+            new_downvotes = parseInt($('#video-downvotes-status').text()) + 1
+            $('#video-downvotes-status').text(new_downvotes)
+            $('#notice').html("Your vote: <i class='icon icon-thumbs-down'></i>")
+            adjustColors()
+          )
+      else
+        if window.user_vote_value == 1 and $(this).attr('id') == 'downvote'
+          $.post('/update_definition_vote', { 'vote_id' : "#{window.user_vote_id}", 'user_id' : "#{window.user_id}", 'value' : -1 }, (data) -> 
+            unless data.definition_vote == 'update-failed'
+              console.log "data.definition_vote.value = #{data.definition_vote.value}"
+              window.user_vote_value = data.definition_vote.value
+              new_downvotes = parseInt($('#video-downvotes-status').text()) + 1
+              new_upvotes = parseInt($('#video-upvotes-status').text()) - 1
+              $('#video-downvotes-status').text(new_downvotes)
+              $('#video-upvotes-status').text(new_upvotes)
+              $('#notice').html("Your vote: <i class='icon icon-thumbs-down'></i>")
+              adjustColors()
+          )
+        if window.user_vote_value == -1 and $(this).attr('id') == 'upvote'
+          $.post('/update_definition_vote', { 'vote_id' : "#{window.user_vote_id}", 'user_id' : "#{window.user_id}", 'value' : 1 }, (data) -> 
+            unless data.definition_vote == 'update-failed'
+              console.log "data.definition_vote.value = #{data.definition_vote.value}"
+              window.user_vote_value = data.definition_vote.value
+              new_upvotes = parseInt($('#video-upvotes-status').text()) + 1
+              new_downvotes = parseInt($('#video-downvotes-status').text()) - 1
+              $('#video-downvotes-status').text(new_downvotes)
+              $('#video-upvotes-status').text(new_upvotes)
+              $('#notice').html("Your vote: <i class='icon icon-thumbs-up'></i>")
+              adjustColors()
+          )
+    else
+      $('#notice').html("Please sign in to vote on this definition.")
