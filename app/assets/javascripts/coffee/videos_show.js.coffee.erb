@@ -31,6 +31,9 @@ $ ->
     if 180 <= time then formatted_time = "#{time/60} minutes" 
     formatted_time
 
+  capitalizeString = (string) ->
+    string.charAt(0).toUpperCase() + string.slice(1)
+
   youtube_id = $('#data').attr('data-youtube-id')
   window.video_id = parseInt($('#data').attr('data-video-id'))
 
@@ -364,24 +367,30 @@ $ ->
         $('#new-tag').val('Please log in first.')
       else
         new_tag = $('#new-tag').val()
-        unless new_tag == '' or new_tag == 'Oops, enter a tag first.'
+        unless new_tag == '' or new_tag == 'Oops, enter a tag first.' or new_tag == 'Oops, select a tag description.'
           $("input:checkbox").each(->
             if $(this).is(":checked") then window.tag_type = $(this).attr('id')
           )
-          $.post('/new_tag', { 'name' : "#{new_tag}", 'user_id' : "#{window.user_id}", 'video_id' : "#{window.video_id}", 'tag_type' : "#{window.tag_type}" }, (data) ->
-            if $('#tag-area').hasClass('no-tags')
-              $('#tag-area').html("Tags: <span id='tags-list'> 
-                #{data.tag.name}
+          unless window.tag_type == undefined
+            $.post('/new_tag', { 'name' : "#{new_tag}", 'user_id' : "#{window.user_id}", 'video_id' : "#{window.video_id}", 'tag_type' : "#{window.tag_type}" }, (data) ->
+              tag_category = $("##{window.tag_type + '-tags'}")
+              console.log tag_category
+              tag_url = "/tags/#{data.tag.id}"
+              console.log tag_url
+              if tag_category.text() == ''
+                tag_category.html("
+                  <span class='tiny'>#{capitalizeString(window.tag_type)}:</span> &nbsp;
+                    <a href=" + tag_url + ">#{data.tag.name}</a>
                 ")
-              $('#tag-area').removeClass('no-tags').addClass('has-tags')
-            else
-              $('#tags-list').append("
-                , #{data.tag.name}
-              ")
-            $('#new-tag-area').html("")
-            $('#tag-area').show()
-            $('#add-tag-action-prompt').show()
-          )
+              else
+                tag_category.html($.trim(tag_category.html()))
+                tag_category.append("<span>, <a href=" + tag_url + ">#{data.tag.name}</a></span>")
+              $('#new-tag-area').html("")
+              $('#tag-area').show()
+              $('#add-tag-action-prompt').show()
+            )
+          else
+            $('#new-tag').val('Select tag description?')
         else
           $('#new-tag').val('Oops, enter a tag first.')
           
