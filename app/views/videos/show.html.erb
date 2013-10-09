@@ -17,7 +17,6 @@
     <div style="margin-top: 45px; margin-left: 15px; margin-right: 15px; font-size: 14px;">
       <div id='new-tag-area'></div>
       <div id='tag-area'>
-        <% if @tags.present? %>
           <div id="tags-list" style="float: left; margin-bottom: 20px;">
             <span id='language-tags' class='tag-category'>
               <% if @lang_tags.present? %>
@@ -52,11 +51,11 @@
               <% end %>
             </span>
           </div>
-        <% else %>
-        <span style="margin-left: 10px;">
-          No tags yet!
-        </span>
-        <br><br>
+        <% if @tags.blank? %>
+          <span id='no-tags-yet' style="margin-left: 10px;">
+            No tags yet!
+          </span>
+          <br><br>
         <% end %>
       </div>
       <div id='add-tag-action-prompt' style="margin-left: 10px;">

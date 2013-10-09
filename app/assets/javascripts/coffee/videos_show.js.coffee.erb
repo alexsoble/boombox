@@ -487,11 +487,12 @@ $ ->
               console.log tag_category
               tag_url = "/tags/#{data.tag.id}"
               console.log tag_url
-              if tag_category.text() == ''
+              if $.trim(tag_category.text()) == ''
                 tag_category.html("
                   <span class='tiny'>#{capitalizeString(window.tag_type)}:</span> &nbsp;
                     <a href=" + tag_url + ">#{data.tag.name}</a>
                 ")
+                $('#no-tags-yet').remove()
               else
                 tag_category.html($.trim(tag_category.html()))
                 tag_category.append("<span>, <a href=" + tag_url + ">#{data.tag.name}</a></span>")
