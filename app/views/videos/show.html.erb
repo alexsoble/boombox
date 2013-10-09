@@ -121,10 +121,12 @@
                     <p style="font-size: 16px;"> <%= link_to "#{c.username}", user_url(c) %> added vocabulary definitions: </p>
                   <% end %>
                 <% end %>
-              <% c_words.each do |w| %>
-                <% d = Definition.where(:word_id => w.id).first %>
-                <li><%= link_to "#{w.text + " = " + d.text}", definition_url(d) %></li>
-              <% end %>
+              <% if current_user %><% if current_user.id == c.id %><div id='current-user-definitions'><% end %><% end %>
+                <% c_words.each do |w| %>
+                  <% d = Definition.where(:word_id => w.id).first %>
+                  <li><%= link_to "#{w.text + " = " + d.text}", definition_url(d) %></li>
+                <% end %>
+              <% if current_user %><% if current_user.id == c.id %></div><% end %><% end %>
             <% end %>
           </div>
         <% end %>
@@ -141,15 +143,17 @@
                     <p style="font-size: 16px;"> <%= link_to "#{c.username}", user_url(c) %> added a question: </p>
                   <% end %>
                 <% end %>
-              <% @challenges.each do |challenge| %>
-                <p> <%= challenge.question_text %> </p>
-                <% options = Option.where(:challenge_id => challenge.id).all %>
-                <% options.each do |o| %>
-                  <p style="margin-left: 20px;"> <input type='checkbox'> <%= o.answer_text %> </p>
-                <% end %>
-              <div id='submit-answer-<%= c.id %>' class='btn btn-primary btn-small rounded' style="margin-left: 20px;"> Add your answer </div>
-              <br><br>
+              <% if current_user %><% if current_user.id == c.id %><div id='current-user-challenges'><% end %><% end %>
+                <% @challenges.each do |challenge| %>
+                  <p> <%= challenge.question_text %> </p>
+                  <% options = Option.where(:challenge_id => challenge.id).all %>
+                  <% options.each do |o| %>
+                    <p style="margin-left: 20px;"> <input type='checkbox' id="option-<%= o.id %>" class="option-challenge-<%= challenge.id %>"> <%= o.answer_text %> </p>
+                  <% end %>
+                <div id='submit-challenge-<%= challenge.id %>' class='submit-challenge-answer btn btn-primary btn-small rounded' style="margin-left: 20px;"> Add your answer </div>
+                <br><br>
               <% end %>
+              <% if current_user %><% if current_user.id == c.id %></div><% end %><% end %>
             <% end %>
           </div>
         <% end %>
@@ -166,11 +170,13 @@
                     <p style="font-size: 16px;"> <%= link_to "#{c.username}", user_url(c) %> added a question: </p>
                   <% end %>
                 <% end %>
-              <% @questions.each do |question| %>
-                <p> <%= question.question_text %> </p>
+              <% if current_user %><% if current_user.id == c.id %><div id='current-user-discussion-questions'><% end %><% end %>
+                <% @questions.each do |question| %>
+                  <p> <%= question.question_text %> </p>
+                <% end %>
+              <% if current_user %><% if current_user.id == c.id %></div><% end %><% end %>
               <div id='submit-answer-<%= c.id %>' class='btn btn-primary btn-small rounded' style="margin-left: 20px;"> Add your answer </div>
               <br><br>
-              <% end %>
             <% end %>
           </div>
         <% end %>
@@ -192,16 +198,18 @@
                   <p style="font-size: 16px;"> <%= link_to "#{c.username}", user_url(c) %> added a link: </p>
                 <% else %>
                   <% if current_user.id == c.id %>
-                    <p style="font-size: 16px;"> You added a link: </p>
+                    <p style="font-size: 16px;">You added a link: </p>
                   <% else %>
-                    <p style="font-size: 16px;"> <%= link_to "#{c.username}", user_url(c) %> added a link: </p>
+                    <p style="font-size: 16px;"><%= link_to "#{c.username}", user_url(c) %> added a link: </p>
                   <% end %>
                 <% end %>
-                <% @links.each do |link| %>
-                  <%= image_tag "http://g.etfv.co/#{link.url}", :size => '25x25' %>
-                  <strong><%= link_to "#{link.url.split('/')[2]}", link.url %></strong>
-                  <p><%= link.excerpt %></p>
-                <% end %>
+                <% if current_user %><% if current_user.id == c.id %><div id='current-user-links'><% end %><% end %>
+                  <% @links.each do |link| %>
+                    <%= image_tag "http://g.etfv.co/#{link.url}", :size => '25x25' %>
+                    <strong><%= link_to "#{link.url.split('/')[2]}", link.url %></strong>
+                    <p><%= link.excerpt %></p>
+                  <% end %>
+                <% if current_user %><% if current_user.id == c.id %></div><% end %><% end %>
               <% end %>
             </div>
           <% end %>
@@ -218,9 +226,11 @@
                     <p style="font-size: 16px;"> <%= link_to "#{c.username}", user_url(c) %> added a Tweet: </p>
                   <% end %>
                 <% end %>
-                <% @tweets.each do |tweet| %>
-                  <blockquote class="twitter-tweet"><a href="https://twitter.com/<%= tweet.tweeter %>/statuses/<%= tweet.twitter_id %>"></a></blockquote>
-                <% end %>
+                <% if current_user %><% if current_user.id == c.id %><div id='current-user-tweets'><% end %><% end %>
+                  <% @tweets.each do |tweet| %>
+                    <blockquote class="twitter-tweet"><a href="https://twitter.com/<%= tweet.tweeter %>/statuses/<%= tweet.twitter_id %>"></a></blockquote>
+                  <% end %>
+                <% if current_user %><% if current_user.id == c.id %></div><% end %><% end %>
               <% end %>
             </div>
           <% end %>

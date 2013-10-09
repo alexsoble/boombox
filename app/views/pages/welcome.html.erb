@@ -3,60 +3,55 @@
   <br>
   <% if current_user %>
     <% if current_user.firstname %>
-      <h1>Welcome <%= current_user.firstname %></h1>
+      <h1 style='text-align: center;'>Welcome <%= current_user.firstname %></h1>
     <% else %>
-      <h1>Welcome, <%= current_user.username %>!</h1>
+      <h1 style='text-align: center;'>Welcome, <%= current_user.username %>!</h1>
     <% end %>
     <br>
   <% else %>
     <h1 style='text-align: center;'><strong>Love learning languages?</strong></h1>
     <br>
     <h2 style='text-align: center; font-size: 30px;'>With Heyu, YouTube is your new best friend.</h2>
+    <br>
   <% end %>
   <br><br>
   </div>
 </div>
 <div class="row">
-  <div class="offset3">
-    <div class="video-thumb-box frontpage-thumb-box" data-video-id=<%= @featured_video_1.id %>>
+  <div class="offset4">
+    <div class="video-thumb-box frontpage-thumb-box featured-video-box" data-video-id=<%= @featured_video_1.id %>>
+      <strong>SPANISH</strong>
+      <br><br>
       <strong class="center" style="color: #2793E6;"><%= "#{@featured_video_1.title.slice(0,25)}" %></strong>
       <br><div class="image-box"><%= image_tag "http://img.youtube.com/vi/#{@featured_video_1.youtube_id}/1.jpg" %></div>
     </div>
-  <span style="font-size: 25px; position: relative; top: 60px; color: black; font-style: italic;">&larr;&nbsp;Create translations.</span>
-  </div>
-</div>
-<div class="row" style="position: relative; bottom: 140px;">
-  <div class="offset8">
-    <span style="font-size: 25px; position: relative; top: 100px; color: black; font-style: italic">Build vocabulary lists.&nbsp;&rarr;</span>
-  </div>
-  <div class="offset12">
-    <div class="video-thumb-box frontpage-thumb-box" data-video-id=<%= @featured_video_2.id %> style="position: relative; right: 23px;">
+    <div class="video-thumb-box frontpage-thumb-box featured-video-box" data-video-id=<%= @featured_video_2.id %>>
+      <strong>FRENCH</strong>
+      <br><br>
       <strong class="center" style="color: #2793E6;"><%= "#{@featured_video_2.title.slice(0,25)}" %></strong>
       <br><div class="image-box"><%= image_tag "http://img.youtube.com/vi/#{@featured_video_2.youtube_id}/1.jpg" %></div>
     </div>
-  </div>
-</div>
-<div class="row" style="position: relative; bottom: 220px;">
-  <div class="offset3">
-    <div class="video-thumb-box frontpage-thumb-box" data-video-id=<%= @featured_video_3.id %>>
+    <div class="video-thumb-box frontpage-thumb-box featured-video-box" data-video-id=<%= @featured_video_3.id %>>
+      <strong>ITALIAN</strong>
+      <br><br>
       <strong class="center" style="color: #2793E6;"><%= "#{@featured_video_3.title.slice(0,25)}" %></strong>
       <br><div class="image-box"><%= image_tag "http://img.youtube.com/vi/#{@featured_video_3.youtube_id}/1.jpg" %></div>
     </div>
-  <span style="font-size: 25px; position: relative; top: 60px; color: black; font-style: italic;">&larr;&nbsp;Works with any langauge.</span>
-  </div>
-</div>
-<div class="index-button" id="new-translation-button" style="position: relative; bottom: 200px; height: 200px;">
-    <p class="index-button-text" style="padding: 30px; line-height: 30px;">Search YouTube here and start turning your favorite video into a study tool:</p>
-  <div style="text-align: center;"> 
-    <div class="controls" style="position: absolute; left: 160px;">
-      <input type="text" class="short-text-box new-video-input" id="ask-youtube"><%= image_tag "youtube-logo.png", :size => '71x71', :style => 'position: relative; left: -12px; top: -5px;' %>
-      <input type="hidden" id="youtube_id">
-      <div id="progress-bar"></div>
+    <div class="video-thumb-box frontpage-thumb-box featured-video-box" data-video-id=<%= @featured_video_4.id %>>
+      <strong>HINDI</strong>
+      <br><br>
+      <strong class="center" style="color: #2793E6;"><%= "#{@featured_video_4.title.slice(0,25)}" %></strong>
+      <br><div class="image-box"><%= image_tag "http://img.youtube.com/vi/#{@featured_video_4.youtube_id}/1.jpg" %></div>
+    </div>
+    <div class="video-thumb-box featured-video-box circle">
+      <div class="circle-box-text">
+        ...and many more.
+      </div>
     </div>
   </div>
 </div>
-<div id="results-box" style="position: relative; bottom: 200px;"></div>
-<div class="row" style="position: relative; bottom: 100px;">
+<br><br>
+<div class="row">
   <div class="offset1">
     <span>
       <h2> Show me videos in... &nbsp;

@@ -1,4 +1,21 @@
-#new-translation-button { width: 600px; }
+#new-video-background { 
+  width: 600px; 
+  height: 200px;
+  margin-right: auto;
+  margin-left: auto;
+  background-color: #9B59BB;
+  position: relative;
+  border-radius: 10px; }
+
+#new-video-text { color: white; 
+  font-size: 22px; 
+  line-height: 30px;
+  text-align: center; 
+  padding: 20px; }
+
+#progress-bar { width: 600px; 
+  position: relative; 
+  top: 10px; }
 
 .span { height: 80px; }
 
@@ -23,10 +40,22 @@
   margin-right: 40px;
   margin-left: 0px;
   margin-top: 0px;
-  margin-bottom: 40px; }
+  margin-bottom: 40px; 
+  text-align: center; }
 
 .video-thumb-box.featured-video-box {
   height: 180px; }
+
+.featured-video-box.circle {
+  height: 80px;
+  width: 80px;
+  border-radius: 60px; 
+  text-align: center;
+  font-weight: bold;
+  margin-top: 40px;
+}
+
+.circle-box-text { margin-top: 15px; }
 
 #results-box {
   margin-right: auto;
@@ -52,14 +81,6 @@
 
 .thumb-box-width { width: 140px; }
 
-.index-button {  width: 600px;
-  min-height: 100px;
-  margin-right: auto;
-  margin-left: auto;
-  background-color: #9B59BB;
-  position: relative;
-  border-radius: 10px; }
-
 .button-text-wrapper { 
   padding-left: 30px; 
   padding-top: 30px; 
@@ -82,11 +103,6 @@ label.index-page-label { float: left; margin-top: 10px; margin-right: 10px; }
 .lang1-input { float: right; margin-top: 10px; margin-right: 10px; }
 .lang2-input { float: right; margin-top: 10px; margin-right: 10px; }
 
-.index-button-text { color: white; 
-  font-size: 22px; 
-  text-align: center; 
-  padding: 20px; }
-
 .smaller { font-size: 15px !important ; }
 .tiny { font-size: 13px; }
 
@@ -95,10 +111,6 @@ label.index-page-label { float: left; margin-top: 10px; margin-right: 10px; }
 ul.ui-autocomplete.ui-menu { background-color: white; list-style-type: none; } 
 
 li.ui-autocomplete.ui-menu { color: black; } 
-
-#progress-bar { width: 250px; 
-  position: relative;
-  left: -12px; }
 
 #social-content-area {
   left: 700px; 

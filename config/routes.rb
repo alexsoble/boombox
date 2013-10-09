@@ -12,7 +12,8 @@ Boombox::Application.routes.draw do
   get '/sign_in' => 'sessions#new'
   get '/sign_out' => 'sessions#destroy'
   get '/auth/:provider/callback' => 'sessions#create_with_omniauth'
-  
+  get '/new' => 'pages#new' 
+
   resources :videos
   resources :interpretations
   resources :tags
@@ -36,6 +37,7 @@ Boombox::Application.routes.draw do
   post '/new_link/' => 'links#create'
   post '/new_tweet/' => 'tweets#create'
   post '/new_discussion_question' => 'discussion_questions#create'
+  post '/new_option_vote' => 'option_votes#create'
   
   post '/new_tag_vote/' => 'tag_votes#create'
   post '/update_tag_vote/' => 'tag_votes#update'

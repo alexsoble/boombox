@@ -4,7 +4,8 @@ class PagesController < ApplicationController
 
     @featured_video_1 = Video.find(25)
     @featured_video_2 = Video.find(85)
-    @featured_video_3 = Video.find(24)
+    @featured_video_3 = Video.find(132)
+    @featured_video_4 = Video.find(24)
 
     interps_with_some_content = []
     Interpretation.all.each do |i|
@@ -46,7 +47,7 @@ class PagesController < ApplicationController
     redirect_to :controller => 'interpretations', :action => 'show', :id => '155'
   end
 
-  def translate
+  def new
   end
 
   def philosophy 
