@@ -134,7 +134,7 @@
         <% if @challenge_contributors.present? %>
           <div class="note-area multiple-choice-area">
             <% @challenge_contributors.each do |c| %>
-              <% @challenges = Challenge.where(:user_id => c.id).all %>
+              <% @challenges = Challenge.where(:user_id => c.id, :video_id => @video.id).all %>
                 <% unless current_user %>
                   <p style="font-size: 16px;"> <%= link_to "#{c.username}", user_url(c) %> added a question: </p>
                 <% else %>

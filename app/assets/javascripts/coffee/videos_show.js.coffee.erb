@@ -408,6 +408,15 @@ $ ->
         question_text = $('#discussion-question-text').val()
         $.post('/new_discussion_question', { 'discussion_question' : { 'question_text' : "#{question_text}", 'user_id' : "#{window.user_id}", 'video_id' : "#{window.video_id}" } }, (data) -> 
           console.log data
+          discussion_question = data.data.question_text
+          if $('#current-user-discussion-questions').length > 0
+            $('#current-user-discussion-questions').prepend(discussion_question)
+          else
+            $('#notes-container').prepend("
+              <p style='font-size: 16px;'>You added a question: </p>
+              #{discussion_question}
+              <br>
+            ")
           $('#none-yet')
           backFromEditing()
         )
@@ -422,9 +431,21 @@ $ ->
         $.post('/new_challenge', { 'challenge' : { 'video_id' : "#{window.video_id}", 'user_id' : "#{window.user_id}", 'question_text' : "#{challenge}" } }, (data) ->
           challenge_id = data.data.id
           console.log "challenge = #{data.data.question_text}"
+          new_challenge = "<p id='user-added-challenge'>#{data.data.question_text}</p>"
+          if $('#current-user-challenges').length > 0
+            $('#current-user-challenges').prepend(new_challenge)
+          else
+            $('#notes-container').prepend("
+              <p style='font-size: 16px;'>You added a multiple-choice question: </p>
+              #{new_challenge}
+              <br>
+            ")
           options.each(->
             $.post('/new_option', { 'option' : { 'challenge_id' : "#{challenge_id}", 'answer_text' : "#{$(this).val()}" } }, (data) ->
               console.log "option = #{data.data.answer_text}"
+              $('#user-added-challenge').append("
+                  <p style='margin-left: 20px;'> <input type='checkbox' id='option-#{data.data.id}' class='option-challenge-#{challenge_id}'> #{data.data.answer_text} </p>
+                ")
             )
           $('#editing').html('')
           $('#notes-container').show()
