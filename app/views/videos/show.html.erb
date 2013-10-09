@@ -103,9 +103,11 @@
     <div id="community-notes">
       <div id="editing"></div>
       <div id="notes-container">
-        <% if @vocabulary.blank? && @multiple_choice.blank? && @translation.blank? %>
-          <h3 style="text-align: center;"> None yet.</h3>
-          <br><br>
+        <% if @vocabulary.blank? && @multiple_choice.blank? && @translation.blank? && @tweets.blank? && @discussion_questions.blank? && @links.blank? %>
+          <div id='none-yet'>
+            <h3 style="text-align: center;"> None yet.</h3>
+            <br><br>
+          </div>
         <% end %>
         <% if @vocabulary.present? %>
           <div class="note-area vocabulary-area">

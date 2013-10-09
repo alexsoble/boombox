@@ -289,7 +289,7 @@ $ ->
       ")
       $.post('/new_definition', { 'definition' : { 'word_id' : "#{word_id}", 'user_id' : "#{window.user_id}", 'text' : "#{definition}" } }, (data) ->
         definition_id = data.data.id
-        if $('#current-user-tweets').length > 0
+        if $('#current-user-definitions').length > 0
           $('#current-user-definitions').prepend("<li><a href=#{'/definitions/' + definition_id}>#{word} = #{definition}</a>")
         else
           $('#note-container').prepend("<li><a href=#{'/definitions/' + definition_id}>#{word} = #{definition}</a>")
@@ -306,6 +306,7 @@ $ ->
         word = $('#word-input').val()
         definition = $('#definition-input').val()
         if word isnt '' and definition isnt '' and (word isnt definition)
+          $('#none-yet').remove()
           $.post("/find_interp/#{window.user_id}/#{window.video_id}", (data) ->
             if data.interp_id is 'no-interp'
               $.post("/new_interp/#{window.user_id}/#{window.video_id}", (data) ->
@@ -362,6 +363,15 @@ $ ->
         lang = $('#language-select').val()
         $.post('/new_link', { 'link' : { 'url' : "#{url}", 'excerpt' : "#{excerpt}", 'user_id' : "#{window.user_id}", 'video_id' : "#{window.video_id}" }, 'lang' : "#{lang}" }, (data) -> 
           console.log data
+          link_html = "<img height='25' src='http://g.etfv.co/#{data.data.url}' width='25' />" + "<strong><a href='#{data.data.url}'>#{data.data.url.split('/')[2]}</a></strong>" + "<p>#{data.data.excerpt}</p>"
+          if $('#current-user-links').length > 0
+            $('#current-user-links').prepend(link_html)
+          else
+            $('#notes-container').prepend("
+              <p style='font-size: 16px;'>You added a new link: </p>
+              #{link_html}")
+          $('#none-yet').remove()
+          backFromEditing()
         )
 
   $('#submit-new-tweet').livequery ->
@@ -386,6 +396,7 @@ $ ->
           else
             $('#notes-container').prepend("<blockquote class='twitter-tweet'><a href=#{url}></a></blockquote>
               <script async src='//platform.twitter.com/widgets.js' charset='utf-8'></script>")
+          $('#none-yet').remove()
           backFromEditing()
         )
 
@@ -397,6 +408,7 @@ $ ->
         question_text = $('#discussion-question-text').val()
         $.post('/new_discussion_question', { 'discussion_question' : { 'question_text' : "#{question_text}", 'user_id' : "#{window.user_id}", 'video_id' : "#{window.video_id}" } }, (data) -> 
           console.log data
+          $('#none-yet')
           backFromEditing()
         )
 
