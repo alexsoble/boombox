@@ -1,0 +1,14 @@
+$ ->
+
+  window.adding_new_students = false
+
+  $('#new-student').click ->
+    if window.adding_new_students == false
+      $('#new-student-area').html("
+        <span style='font-size: 16px;'>Search for the student on Heyu: &nbsp; <input type='text' id='new-class-name'></span>
+        <br><br>
+        <div id='create-new-class' class='btn btn-primary btn-small rounded'> Invite student to class </div>
+        <div id='back' class='btn btn-primary btn-small rounded'> Back </div>
+      ")
+      window.adding_new_students = true
+      $(this).hide()

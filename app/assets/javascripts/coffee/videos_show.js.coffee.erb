@@ -108,14 +108,14 @@ $ ->
     # IF PLAYER IS PLAYING, UPDATE THE PLAY COUNTER
     state = player.getPlayerState()
     if state == 1
-      window.video_play_counter += .4
+      window.video_play_counter += 1
     if state == 0
       $('#watch-again').addClass('video-finished')
       $('#watch-again').html('<br><br><br><br><br><h3 class="link-style">Watch again?</class></h3>')
       $('iframe').remove()
       if window.video_play_counter + 10 > window.video_duration
         $.post("/update_playcount/#{window.playcount_id}", (data) ->
-          new_playcount = data.play_count
+          new_playcount = data.data.play_count
           $('#video-play-counter').html(new_playcount)
         )
         window.video_play_counter = 0
@@ -155,19 +155,30 @@ $ ->
       $('#watch-again').removeClass('video-finished')
       $('#watch-again').html('')
 
-  # CHECK TO SEE IF A PLAYCOUNT OBJECT EXISTS FOR THIS USER/VIDEO PAIR; IF NOT, CREATE ONE
+  # CHECK TO SEE IF A PLAYCOUNT EXISTS FOR THIS USER/VIDEO PAIR; IF NOT, CREATE ONE
+  # CHECK TO SEE IF AN INTERPRETATION EXISTS FOR THIS USER/VIDEO PAIR; IF NOT, CREATE ONE
 
   if window.user_id isnt null
     $.post("/find_playcount/#{window.user_id}/#{window.video_id}", (data) ->
-      if data.playcount is 'no-playcount'
+      if data.data is 'no-playcount'
         $.post("/new_playcount/#{window.user_id}/#{window.video_id}", (data) ->
-          window.playcount_id = data.playcount_id
-          window.playcount_value = data.playcount_value
+          window.playcount_id = data.data.id
+          window.playcount_value = data.data.play_count
           $('#video-play-counter').html(window.playcount_value)
         )
       else
-        window.playcount_id = data.playcount_id
+        window.playcount_id = data.data.id
     )
+    $.post("/find_interp/#{window.user_id}/#{window.video_id}", (data) ->
+      if data.data is 'no-interp'
+        window.interp_id = 'none-yet'
+      else
+        window.interp_id = data.data.id
+    )
+
+  getInterpID = ->
+    $.post("/new_interp/#{window.user_id}/#{window.video_id}", (data) ->
+      window.interp_id = data.data.id)
   
   availableTags = [ "English", "Dutch", "Afrikaans"
     "Chinese (Mandarin)", "Cantonese", "Japanese", "Korean"
@@ -188,7 +199,13 @@ $ ->
   availableTags.sort (a,b) ->
     return if a >= b then 1 else -1
 
-  $('#add-new-note').click ->
+  $('.tab').click -> 
+    this_tab = $(this)
+    if this_tab.hasClass('small')
+      $('.big').removeClass('big').addClass('small')
+      this_tab.addClass('big').removeClass('small')
+
+  $('#new-content').click ->
     if window.adding_content == false
       $('.note-category').removeClass('inactive')
       $('.note-category').addClass('option')
@@ -248,8 +265,14 @@ $ ->
             <div id='submit-new-discussion-question' class='btn btn-primary btn-small rounded'> Submit </div>
             <div id='back-from-editing' class='btn btn-primary btn-small rounded'> Back </div>
           ")
-        if category == 'translations'
-          $('#editing')
+        if category == 'lyrics'
+          $('#editing').html("
+            <span id='all-at-once' class='blue-link'>Add lyrics all at once?</span>
+            <br><br>
+            or
+            <br><br>
+            <span id='line-by-line' class='blue-link'>Add lyrics all at once?</span>
+          ")
         if category == 'links'
           $('#editing').html("
             <h3>Add a relevant link:</h3>
@@ -281,7 +304,7 @@ $ ->
           <div id='notice-area'></div>")
 
   postNewWord = (word, definition) ->
-    $.post('/new_word', { 'word' : { 'video_id' : "#{window.video_id}", 'user_id' : "#{window.user_id}", 'text' : "#{word}" } }, (data) ->
+    $.post('/new_word', { 'word' : { 'interpretation_id' : "#{window.interp_id}", 'video_id' : "#{window.video_id}", 'user_id' : "#{window.user_id}", 'text' : "#{word}" } }, (data) ->
       word_id = data.data.id
       $('#vocab-list').append("
         <li>#{word} = #{definition} &nbsp; <div id=#{word_id} class='add-time btn btn-primary btn-petite rounded'> Add time </div>
@@ -307,18 +330,13 @@ $ ->
         definition = $('#definition-input').val()
         if word isnt '' and definition isnt '' and (word isnt definition)
           $('#none-yet').remove()
-          $.post("/find_interp/#{window.user_id}/#{window.video_id}", (data) ->
-            if data.interp_id is 'no-interp'
-              $.post("/new_interp/#{window.user_id}/#{window.video_id}", (data) ->
-                window.interp_id = data.interp_id
-                console.log "window.interp_id = #{window.interp_id}"
-                postNewWord(word, definition)
-              )
-            else
-              window.interp_id = data.interp_id
-              console.log "window.interp_id = #{window.interp_id}"
+          if window.interp_id == 'none-yet'
+            $.post("/new_interp/#{window.user_id}/#{window.video_id}", (data) ->
+              window.interp_id = data.data.id
               postNewWord(word, definition)
-          )
+            )
+          else
+            postNewWord(word, definition)
 
   $('.submit-challenge-answer').livequery ->
     $(this).click ->
@@ -353,6 +371,20 @@ $ ->
         $('.ui-slider-handle').removeClass('vocab-time-selector')
       )
 
+  postNewLink = (url, excerpt, lang) -> 
+    $.post('/new_link', { 'link' : { 'interpretation_id' : "#{window.interp_id}", 'url' : "#{url}", 'excerpt' : "#{excerpt}", 'user_id' : "#{window.user_id}", 'video_id' : "#{window.video_id}" }, 'lang' : "#{lang}" }, (data) -> 
+      console.log data
+      link_html = "<img height='25' src='http://g.etfv.co/#{data.data.url}' width='25' />" + "<strong><a href='#{data.data.url}'>#{data.data.url.split('/')[2]}</a></strong>" + "<p>#{data.data.excerpt}</p>"
+      if $('#current-user-links').length > 0
+        $('#current-user-links').prepend(link_html)
+      else
+        $('#notes-container').prepend("
+          <p style='font-size: 16px;'>You added a new link: </p>
+          #{link_html}")
+      $('#none-yet').remove()
+      backFromEditing()
+    )
+
   $('#submit-new-link').livequery ->
     $(this).click -> 
       if window.user == 'logged-out'
@@ -361,18 +393,29 @@ $ ->
         url = $('#url').val()
         excerpt = $('#excerpt').val()
         lang = $('#language-select').val()
-        $.post('/new_link', { 'link' : { 'url' : "#{url}", 'excerpt' : "#{excerpt}", 'user_id' : "#{window.user_id}", 'video_id' : "#{window.video_id}" }, 'lang' : "#{lang}" }, (data) -> 
-          console.log data
-          link_html = "<img height='25' src='http://g.etfv.co/#{data.data.url}' width='25' />" + "<strong><a href='#{data.data.url}'>#{data.data.url.split('/')[2]}</a></strong>" + "<p>#{data.data.excerpt}</p>"
-          if $('#current-user-links').length > 0
-            $('#current-user-links').prepend(link_html)
-          else
-            $('#notes-container').prepend("
-              <p style='font-size: 16px;'>You added a new link: </p>
-              #{link_html}")
-          $('#none-yet').remove()
-          backFromEditing()
-        )
+        if window.interp_id == 'none-yet'
+          $.post("/new_interp/#{window.user_id}/#{window.video_id}", (data) ->
+            window.interp_id = data.data.id
+            postNewLink(url, excerpt, lang)
+          )
+        else
+          postNewLink(url, excerpt, lang) 
+
+  postNewTweet = (twitter_id, tweeter) ->
+    $.post('/new_tweet', { 'tweet' : { 'interpretation_id' : "#{window.interp_id}", 'tweeter' : "#{tweeter}", 'twitter_id' : "#{twitter_id}", 'user_id' : "#{window.user_id}", 'video_id' : "#{window.video_id}" } }, (data) -> 
+      tweeter = data.data.tweeter
+      twitter_id = data.data.twitter_id
+      url = 'https://twitter.com/' + tweeter + '/' + 'statuses' + '/' + twitter_id
+      console.log url
+      if $('#current-user-tweets').length > 0
+        $('#current-user-tweets').prepend("<blockquote class='twitter-tweet'><a href=#{url}></a></blockquote>
+          <script async src='//platform.twitter.com/widgets.js' charset='utf-8'></script>")
+      else
+        $('#notes-container').prepend("<blockquote class='twitter-tweet'><a href=#{url}></a></blockquote>
+          <script async src='//platform.twitter.com/widgets.js' charset='utf-8'></script>")
+      $('#none-yet').remove()
+      backFromEditing()
+    )
 
   $('#submit-new-tweet').livequery ->
     $(this).click -> 
@@ -382,23 +425,29 @@ $ ->
         tweet_url = $('#url').val().split('/')
         tweeter = tweet_url[3]
         twitter_id = tweet_url[5]
-        $.post('/new_tweet', { 'tweet' : { 'tweeter' : "#{tweeter}", 'twitter_id' : "#{twitter_id}", 'user_id' : "#{window.user_id}", 'video_id' : "#{window.video_id}" } }, (data) -> 
-          console.log data
-          tweeter = data.data.tweeter
-          twitter_id = data.data.twitter_id
-          console.log tweeter
-          console.log twitter_id
-          url = 'https://twitter.com/' + tweeter + '/' + 'statuses' + '/' + twitter_id
-          console.log url
-          if $('#current-user-tweets').length > 0
-            $('#current-user-tweets').prepend("<blockquote class='twitter-tweet'><a href=#{url}></a></blockquote>
-              <script async src='//platform.twitter.com/widgets.js' charset='utf-8'></script>")
-          else
-            $('#notes-container').prepend("<blockquote class='twitter-tweet'><a href=#{url}></a></blockquote>
-              <script async src='//platform.twitter.com/widgets.js' charset='utf-8'></script>")
-          $('#none-yet').remove()
-          backFromEditing()
-        )
+        if window.interp_id == 'none-yet'
+          $.post("/new_interp/#{window.user_id}/#{window.video_id}", (data) ->
+            window.interp_id = data.data.id
+            postNewTweet(twitter_id, tweeter)
+          )
+        else
+          postNewTweet(twitter_id, tweeter)
+
+  postNewDiscussionQuestion = (question_text) ->
+    $.post('/new_discussion_question', { 'discussion_question' : { 'interpretation_id' : "#{window.interp_id}", 'question_text' : "#{question_text}", 'user_id' : "#{window.user_id}", 'video_id' : "#{window.video_id}" } }, (data) -> 
+      console.log data
+      discussion_question = data.data.question_text
+      if $('#current-user-discussion-questions').length > 0
+        $('#current-user-discussion-questions').prepend(discussion_question)
+      else
+        $('#notes-container').prepend("
+          <p style='font-size: 16px;'>You added a question: </p>
+          #{discussion_question}
+          <br>
+        ")
+      $('#none-yet').remove()
+      backFromEditing()
+    )
 
   $('#submit-new-discussion-question').livequery -> 
     $(this).click ->
@@ -406,20 +455,38 @@ $ ->
         $('#notice-area').html("<p style='color: #0f82f5;'><i>Please log in to add a new discussion question.</i></p>")
       else
         question_text = $('#discussion-question-text').val()
-        $.post('/new_discussion_question', { 'discussion_question' : { 'question_text' : "#{question_text}", 'user_id' : "#{window.user_id}", 'video_id' : "#{window.video_id}" } }, (data) -> 
-          console.log data
-          discussion_question = data.data.question_text
-          if $('#current-user-discussion-questions').length > 0
-            $('#current-user-discussion-questions').prepend(discussion_question)
-          else
-            $('#notes-container').prepend("
-              <p style='font-size: 16px;'>You added a question: </p>
-              #{discussion_question}
-              <br>
+        if window.interp_id == 'none-yet'
+          $.post("/new_interp/#{window.user_id}/#{window.video_id}", (data) ->
+            window.interp_id = data.data.id
+            postNewDiscussionQuestion(question_text)
+          )
+        else
+          postNewDiscussionQuestion(question_text)
+
+  postNewChallengeQuestion = (challenge, options) ->
+    $.post('/new_challenge', { 'challenge' : { 'interpretation_id' : "#{window.interp_id}", 'video_id' : "#{window.video_id}", 'user_id' : "#{window.user_id}", 'question_text' : "#{challenge}" } }, (data) ->
+      challenge_id = data.data.id
+      console.log "challenge = #{data.data.question_text}"
+      new_challenge = "<p id='user-added-challenge'>#{data.data.question_text}</p>"
+      if $('#current-user-challenges').length > 0
+        $('#current-user-challenges').prepend(new_challenge)
+      else
+        $('#notes-container').prepend("
+          <p style='font-size: 16px;'>You added a multiple-choice question: </p>
+          #{new_challenge}
+          <br>
+        ")
+      options.each(->
+        $.post('/new_option', { 'option' : { 'challenge_id' : "#{challenge_id}", 'answer_text' : "#{$(this).val()}" } }, (data) ->
+          console.log "option = #{data.data.answer_text}"
+          $('#user-added-challenge').append("
+              <p style='margin-left: 20px;'> <input type='checkbox' id='option-#{data.data.id}' class='option-challenge-#{challenge_id}'> #{data.data.answer_text} </p>
             ")
-          $('#none-yet')
-          backFromEditing()
         )
+      $('#editing').html('')
+      $('#notes-container').show()
+      )
+    )
 
   $('#submit-new-multiple-choice').livequery ->
     $(this).click ->
@@ -428,29 +495,13 @@ $ ->
       else
         challenge = $('#question-title').val()
         options = $('.mc-option')
-        $.post('/new_challenge', { 'challenge' : { 'video_id' : "#{window.video_id}", 'user_id' : "#{window.user_id}", 'question_text' : "#{challenge}" } }, (data) ->
-          challenge_id = data.data.id
-          console.log "challenge = #{data.data.question_text}"
-          new_challenge = "<p id='user-added-challenge'>#{data.data.question_text}</p>"
-          if $('#current-user-challenges').length > 0
-            $('#current-user-challenges').prepend(new_challenge)
-          else
-            $('#notes-container').prepend("
-              <p style='font-size: 16px;'>You added a multiple-choice question: </p>
-              #{new_challenge}
-              <br>
-            ")
-          options.each(->
-            $.post('/new_option', { 'option' : { 'challenge_id' : "#{challenge_id}", 'answer_text' : "#{$(this).val()}" } }, (data) ->
-              console.log "option = #{data.data.answer_text}"
-              $('#user-added-challenge').append("
-                  <p style='margin-left: 20px;'> <input type='checkbox' id='option-#{data.data.id}' class='option-challenge-#{challenge_id}'> #{data.data.answer_text} </p>
-                ")
-            )
-          $('#editing').html('')
-          $('#notes-container').show()
+        if window.interp_id == 'none-yet'
+          $.post("/new_interp/#{window.user_id}/#{window.video_id}", (data) ->
+            window.interp_id = data.data.id
+            postNewChallengeQuestion(challenge, options)
           )
-        )
+        else
+          postNewChallengeQuestion(challenge, options)
 
   $('#add-tag').click ->
     $('#tag-area').hide()
@@ -545,7 +596,7 @@ $ ->
       $('#community-notes').slideDown()
 
   $('#star').click ->
-    $(this).replaceWith("<i class='icon icon-star icon-2x' id='star-full' style='position: absolute; top: 10px; right: 10px; color: #0f82f5;'> </i>")
+    $(this).replaceWith("<i class='icon icon-star icon-2x' id='star-full' style='position: absolute; top: 11px; right: 112px; color: #0f82f5;'> </i>")
 
   $('#toggle-show-lines').click ->
     $('.short-line').each(->

@@ -11,14 +11,22 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20131009015717) do
+ActiveRecord::Schema.define(:version => 20131012153606) do
 
   create_table "challenges", :force => true do |t|
     t.integer  "user_id"
     t.string   "question_text"
-    t.datetime "created_at",    :null => false
-    t.datetime "updated_at",    :null => false
+    t.datetime "created_at",        :null => false
+    t.datetime "updated_at",        :null => false
     t.integer  "video_id"
+    t.integer  "interpretation_id"
+  end
+
+  create_table "classrooms", :force => true do |t|
+    t.string   "name"
+    t.integer  "user_id"
+    t.datetime "created_at", :null => false
+    t.datetime "updated_at", :null => false
   end
 
   create_table "clips", :force => true do |t|
@@ -57,8 +65,9 @@ ActiveRecord::Schema.define(:version => 20131009015717) do
     t.integer  "video_id"
     t.integer  "user_id"
     t.string   "question_text"
-    t.datetime "created_at",    :null => false
-    t.datetime "updated_at",    :null => false
+    t.datetime "created_at",        :null => false
+    t.datetime "updated_at",        :null => false
+    t.integer  "interpretation_id"
   end
 
   create_table "interpretations", :force => true do |t|
@@ -100,8 +109,9 @@ ActiveRecord::Schema.define(:version => 20131009015717) do
     t.integer  "language_id"
     t.integer  "user_id"
     t.integer  "video_id"
-    t.datetime "created_at",  :null => false
-    t.datetime "updated_at",  :null => false
+    t.datetime "created_at",        :null => false
+    t.datetime "updated_at",        :null => false
+    t.integer  "interpretation_id"
   end
 
   create_table "option_votes", :force => true do |t|
@@ -179,9 +189,10 @@ ActiveRecord::Schema.define(:version => 20131009015717) do
     t.integer  "video_id"
     t.integer  "user_id"
     t.string   "twitter_id"
-    t.datetime "created_at", :null => false
-    t.datetime "updated_at", :null => false
+    t.datetime "created_at",        :null => false
+    t.datetime "updated_at",        :null => false
     t.string   "tweeter"
+    t.integer  "interpretation_id"
   end
 
   create_table "users", :force => true do |t|
@@ -197,6 +208,8 @@ ActiveRecord::Schema.define(:version => 20131009015717) do
     t.string   "firstname"
     t.string   "lastname"
     t.integer  "school_id"
+    t.boolean  "teacher"
+    t.integer  "classroom_id"
   end
 
   create_table "videos", :force => true do |t|
@@ -225,11 +238,12 @@ ActiveRecord::Schema.define(:version => 20131009015717) do
 
   create_table "words", :force => true do |t|
     t.string   "text"
-    t.datetime "created_at", :null => false
-    t.datetime "updated_at", :null => false
+    t.datetime "created_at",        :null => false
+    t.datetime "updated_at",        :null => false
     t.integer  "video_id"
     t.integer  "user_id"
     t.integer  "time"
+    t.integer  "interpretation_id"
   end
 
 end

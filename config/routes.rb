@@ -13,6 +13,7 @@ Boombox::Application.routes.draw do
   get '/sign_out' => 'sessions#destroy'
   get '/auth/:provider/callback' => 'sessions#create_with_omniauth'
   get '/new' => 'pages#new' 
+  get '/teachers' => 'pages#teachers'
 
   resources :videos
   resources :interpretations
@@ -21,6 +22,10 @@ Boombox::Application.routes.draw do
   resources :clips
   resources :users
   resources :sessions
+  resources :classrooms
+
+  post '/new_classroom' => 'classrooms#create'
+  get '/teachers/:id' => 'users#teacher_dashboard'
 
   post '/new_tag' => 'tags#create'
 
@@ -34,6 +39,9 @@ Boombox::Application.routes.draw do
   post '/new_playcount/:user_id/:video_id' => 'playcounts#create'
   post '/update_playcount/:id' => 'playcounts#update'
 
+  post '/find_interp/:user_id/:video_id' => 'interpretations#find'
+  post '/new_interp/:user_id/:video_id' => 'interpretations#create'
+
   post '/new_link/' => 'links#create'
   post '/new_tweet/' => 'tweets#create'
   post '/new_discussion_question' => 'discussion_questions#create'
@@ -44,9 +52,6 @@ Boombox::Application.routes.draw do
 
   post '/new_definition_vote/' => 'definition_votes#create'
   post '/update_definition_vote/' => 'definition_votes#update'
-
-  post '/find_interp/:user_id/:video_id' => 'interpretations#find'
-  post '/new_interp/:user_id/:video_id' => 'interpretations#create'
 
   get '/print_pdf/:id' => 'interpretations#print_pdf'
   get '/print_txt/:id' => 'interpretations#print_txt'

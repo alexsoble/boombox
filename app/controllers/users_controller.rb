@@ -14,6 +14,11 @@ class UsersController < ApplicationController
 
   end
 
+  def teacher_dashboard
+    @user = User.find_by_id(params[:id])
+    @classes = Classroom.where(:user_id => @user.id)
+  end
+
   def new
 
     @user = User.new

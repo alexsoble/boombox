@@ -1,0 +1,32 @@
+$ -> 
+
+  window.adding_new_classroom = false
+
+  $('#new-class').click -> 
+    if window.adding_new_classroom == false
+      $('#new-class-area').html("
+        <span style='font-size: 16px;'>Class name: &nbsp; <input type='text' id='new-class-name'></span>
+        <br><br>
+        <div id='create-new-class' class='btn btn-primary btn-small rounded'> Create class </div>
+        <div id='back' class='btn btn-primary btn-small rounded'> Back </div>
+      ")
+      window.adding_new_classroom = true
+      $(this).hide()
+
+  $('#back').livequery ->
+    $(this).click -> 
+      $('#new-class').show()
+      window.adding_new_classroom = false
+      $('#new-class-area').html('')
+
+  $('#create-new-class').livequery ->
+    $(this).click -> 
+      name = $('#new-class-name').val()
+      $.post('/new_classroom', { 'classroom' : { 'name' : "#{name}", 'user_id' : "#{window.user_id}" } }, (data) ->
+        classroom = data.data
+        classroom_url = "<span style='font-size: 16px;'><a href='" + "/classrooms/#{classroom.id}'>#{classroom.name}</a></span><br>"
+        $('#classroom-list').append("
+          #{classroom_url}
+        ")
+        $('#no-classrooms').remove()
+      )

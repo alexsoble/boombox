@@ -60,7 +60,9 @@ class PagesController < ApplicationController
   end
   
   def experiment
-    render 'interpretations#edit'
+  end
+
+  def teachers
   end
 
   def browsers

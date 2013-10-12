@@ -14,8 +14,10 @@ class User < ActiveRecord::Base
   end
 
   attr_accessible :email, :firstname, :lastname, :username, :password, :password_confirmation, :bio, :image_url
-  has_many :comments
   belongs_to :school
+  has_one :classroom
+  belongs_to :classroom
+  has_many :comments
   
   validates_uniqueness_of :email
   validates_format_of :email, :with => /\A([^@\s]+)@((?:[-a-z0-9]+\.)+[a-z]{2,})\z/i

@@ -125,9 +125,9 @@
 
 #volume-slider { background-color: #9b59bb;
   position: absolute;
-  bottom: -10px;
-  height: 40px;
-  right: -15px; }
+  bottom: 0px;
+  height: 30px;
+  right: 40px; }
 
 #volume-slider.edit { bottom: 125px; right: 5px; }
 
@@ -270,24 +270,28 @@ select { width: 150px; }
 
 .tab { 
   float: left; 
-  padding: 8px;
+  position: relative;
+  left: 1px;
+  padding: 12px;
   color: white;
-  border-right: 1px solid white; }
-#add-new-note {
-  position: relative;
-  top: 24px; 
-  right: -2px;
+  border-right: 1px solid white;
+  background-color: #9b59bb; 
   border-top-right-radius: 10px;
-  border-top-left-radius: 10px;
-  cursor: pointer; 
-  background-color: #9b59bb; }
-#big-tab { 
-  position: relative;
-  top: 5px; 
-  border-top-left-radius: 10px;
-  border-top-right-radius: 10px;
-  border-left: 1px solid white; 
-  background-color: #9b59bb; }
+  border-top-left-radius: 10px; 
+  max-width: 124px;
+  text-align: center;
+  cursor: pointer; }
+.big.tab { 
+  font-size: 22px;
+  height: 42px; }
+.small.tab {
+  top: 10px; 
+  font-size: 16px;
+  height: 42px; }
+.solo.tab {
+  max-width: 300px;
+  padding: 20px;
+  height: 22px; }
 
 .small-tab { float: left; 
   border-left: 1px solid white;
@@ -297,7 +301,7 @@ select { width: 150px; }
   padding-bottom: 4px; 
   background-color: #9b59bb; 
   position: relative;
-  bottom: 2px; 
+  bottom: 5px; 
   width: 458px; 
   font-size: 13px; }
 .inactive { color: #bdbdbd; }

@@ -1,0 +1,30 @@
+<% if current_user %>
+  <% if current_user.firstname %>
+    <h2 style='text-align: center;'>Welcome <%= current_user.firstname %></h1>
+  <% else %>
+    <h2 style='text-align: center;'>Welcome, <%= current_user.username %>!</h1>
+  <% end %>
+<% end %>
+<br><br>
+<div class='centerbox' style='text-align: center;'>
+  <% if @classes.present? %>
+    <span style='font-size: 16px;'><strong>My classes:</strong></span>
+    <br><br>
+  <% end %>
+  <div id='classroom-list'>
+    <% if @classes.present? %>
+      <% @classes.each do |classroom| %>
+        <span style='font-size: 16px;'><%= link_to "#{classroom.name}", classroom_url(classroom) %></span>
+        <br>
+      <% end %>   
+    <% else %>
+      <br><br>
+      <p class='center' id='no-classrooms'>Looks like you don't have any classes registered yet.</p>
+    <% end %>
+  </div>
+  <br><br>
+  <div class='center'>
+    <div id='new-class-area'></div>
+    <span id='new-class' class='blue-link' href='/classrooms/new'>Add a new class.</span>
+  </div>
+</div>

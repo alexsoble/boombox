@@ -1,0 +1,25 @@
+<div class='centerbox' style='text-align: center;'>
+<h2><%= @classroom.name %></h2>
+<h2>Taught by: <%= @teacher.username %></h2>
+<br><br>
+  <% if @students.present? %>
+    <span style='font-size: 16px;'><strong>My students:</strong></span>
+    <br><br>
+  <% end %>
+  <div id='students-list'>
+    <% if @students.present? %>
+      <% @students.each do |student| %>
+        <span style='font-size: 16px;'><%= student.firstname %><%= student.lastname %></span>
+        <br>
+      <% end %>   
+    <% else %>
+      <br><br>
+      <p class='center' id='no-classrooms'>Looks like you don't have any students added to this class yet yet.</p>
+    <% end %>
+  </div>
+  <br><br>
+  <div class='center'>
+    <div id='new-student-area'></div>
+    <span id='new-student' class='blue-link'>Add a new student.</span>
+  </div>
+</div>
