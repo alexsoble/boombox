@@ -2,6 +2,7 @@ class Video < ActiveRecord::Base
   attr_accessible :title, :youtube_id
   has_many :interpretations
   has_many :lines, :through => :interpretations
+  has_many :stars
 
   def to_param
     "#{title[0..30]}".parameterize

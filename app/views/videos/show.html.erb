@@ -7,7 +7,11 @@
     <div style="margin-top: 15px; margin-left: 22px;">
       <% if current_user %>
         <p style="font-size: 15px">You've watched <span id="video-play-counter"><%= @current_user_play_count %></span> times.</p>
-        <i class="icon icon-star-empty icon-2x star" id="star-empty"> </i>
+        <% if @star.present? %>
+          <i class='icon icon-star icon-2x star' id='star-full' data-star-id='<%= @star.id %>'> </i>
+        <% else %>
+          <i class="icon icon-star-empty icon-2x star" id="star-empty"> </i>
+        <% end %>
       <% else %>
         <%= link_to "Sign in", "/sign_in" %> to track your progress!
       <% end %>
@@ -185,8 +189,8 @@
                     <% else %>
                       <div id='submit-challenge-<%= challenge.id %>' class='submit-challenge-answer btn btn-primary btn-small rounded' style="margin-left: 20px;"> Add your answer </div>
                     <% end %>
-                      <div id='submit-challenge-<%= challenge.id %>' class='submit-challenge-answer btn btn-primary btn-small rounded' style="margin-left: 20px;"> Add your answer </div>
                   <% else %>
+                    <div id='submit-challenge-<%= challenge.id %>' class='submit-challenge-answer btn btn-primary btn-small rounded' style="margin-left: 20px;"> Add your answer </div>
                   <% end %>
                 <br><br>
               <% end %>
@@ -218,15 +222,22 @@
                       <% if current_user.id == c.id %>
                         <div id='answers-status-<%= question.id %>'>0 responses so far.</div>
                       <% else %>
-                        <div id='submit-answer-<%= c.id %>' class='btn btn-primary btn-small rounded' style="margin-left: 20px;"> Add your answer </div>
+                        <div id='add-answer-<%= question.id %>' class='add-discussion-answer btn btn-primary btn-small rounded' style="margin-left: 20px;"> Add your answer </div>
                       <% end %>
                     <% else %>
-                      <div id='submit-answer-<%= c.id %>' class='btn btn-primary btn-small rounded' style="margin-left: 20px;"> Add your answer </div>
+                      <div id='add-answer-<%= question.id %>' class='add-discussion-answer btn btn-primary btn-small rounded' style="margin-left: 20px;"> Add your answer </div>
                     <% end %>
                     <br><br>
                   <% end %>
                 <br><br>
               </div>
+            <% end %>
+          </div>
+        <% end %>
+        <% if @lines.present? %>
+          <div class="note-area lyrics-area">
+            <% @lines.each do |l| %>
+              <p><%= l.lang1 %></p>
             <% end %>
           </div>
         <% end %>

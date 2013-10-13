@@ -18,6 +18,7 @@ class VideosController < ApplicationController
   def show 
 
     @video = Video.find_by_id(params[:id])
+    @star = Star.where(:video_id => @video.id, :user_id => current_user.id).first
 
     @tags = Tag.where(:video_id => @video.id)
 

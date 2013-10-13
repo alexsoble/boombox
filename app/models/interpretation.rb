@@ -11,6 +11,7 @@ class Interpretation < ActiveRecord::Base
   has_many :tweets
   has_many :clips
   has_many :quizzes
+  has_many :stars
 
   def video
     return Video.find_by_id(self.video_id)

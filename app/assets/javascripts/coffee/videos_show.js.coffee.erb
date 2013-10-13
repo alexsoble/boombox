@@ -48,6 +48,9 @@ $ ->
   window.video_play_counter = 0
   window.adding_content = false
 
+  if $('.star').attr('id') == 'star-full'
+    window.star_id = parseInt($('#star-full').attr('data-star-id'))
+
   # WE GOTTA HAVE A PLAYBACK SLIDER
 
   $('#settings').append("
@@ -273,7 +276,9 @@ $ ->
           $('#editing').html("
             <h3>Add lyrics:</h3>
             <textarea id='lyrics-textbox' style='width: 400px; height: 160px;'></textarea>
-            <p><i>Copy and paste from your files.</i></p>
+            <li><i>Transcribe line-by-line or copy the lyrics from your files.</i></li>
+            <li><i>If you want, after hitting 'submit' you can time the lines to the video.</i></li>
+            <br>
             <div id='submit-new-lyrics' class='btn btn-primary btn-small rounded'> Submit </div>
             <div id='back-to-lyrics-options' class='btn btn-primary btn-small rounded'> Done </div>
           ")
@@ -383,6 +388,12 @@ $ ->
       if line isnt '' 
         $.post('/new_line', { 'line' : { 'interpretation_id' : "#{window.interp_id}", 'lang1' : "#{line}" } }, (data) -> 
           console.log data
+          if $('#current-user-lines').length > 0
+            $('#current-user-lines').children(':first').prepend("<p>#{data.data.lang1}</p>")
+          else
+            $('#notes-container').prepend("<p>#{data.data.lang1}</p>")
+            $('#none-yet').remove()
+            backFromEditing()
         )
 
   $('#submit-new-lyrics').livequery ->
@@ -461,6 +472,15 @@ $ ->
           )
         else
           postNewTweet(twitter_id, tweeter)
+
+  $('.add-discussion-answer').click -> 
+    id = parseInt($(this).attr('id').substr(11))
+    if window.user == 'logged-out'
+        $(this).after("<p style='color: #0f82f5;'><i>Please log in to add your response.</i></p>")
+      else
+        $(this).replaceWith("
+          <input type='text'><div class='submit-discussion-answer btn btn-primary btn-small rounded' style='margin-left: 20px;'>Add your answer</div>
+        ")
 
   postNewDiscussionQuestion = (question_text) ->
     $.post('/new_discussion_question', { 'discussion_question' : { 'interpretation_id' : "#{window.interp_id}", 'question_text' : "#{question_text}", 'user_id' : "#{window.user_id}", 'video_id' : "#{window.video_id}" } }, (data) -> 
@@ -624,8 +644,18 @@ $ ->
       $('#user-input').html('')
       $('#community-notes').slideDown()
 
-  $('#star-empty').click ->
-    $(this).replaceWith("<i class='icon icon-star icon-2x star' id='star-full'> </i>")
+  $('#star-empty').livequery ->
+    $(this).click ->
+      $.post('/add_star', { 'star' : { 'user_id' : "#{window.user_id}", 'video_id' : "#{window.video_id}" } }, (data) ->
+        window.star_id = data.data.id
+        $('#star-empty').replaceWith("<i class='icon icon-star icon-2x star' id='star-full'> </i>")
+      )
+
+  $('#star-full').livequery ->
+    $(this).click ->
+      $.post('/remove_star', { 'star_id' : "#{window.star_id}" }, (data) ->
+        $('#star-full').replaceWith("<i class='icon icon-star-empty icon-2x star' id='star-empty'> </i>")
+      )
 
   $('#toggle-show-lines').click ->
     $('.short-line').each(->

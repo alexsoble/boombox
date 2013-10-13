@@ -29,6 +29,9 @@ Boombox::Application.routes.draw do
 
   post '/new_tag' => 'tags#create'
 
+  post '/add_star' => 'stars#create'
+  post 'remove_star' => 'stars#destroy'
+
   post '/new_word' => 'words#create'
   post '/add_time_to_word' => 'words#update_time'
   post '/new_definition' => 'definitions#create'

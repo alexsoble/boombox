@@ -17,6 +17,7 @@ class User < ActiveRecord::Base
   belongs_to :school
   has_one :classroom
   belongs_to :classroom
+  has_many :stars
   has_many :comments
   
   validates_uniqueness_of :email
