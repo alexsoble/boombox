@@ -19,13 +19,15 @@ $ ->
           slide: (event, ui) ->
             player.setVolume(ui.value)
         )
+        $('.star').attr('style','right: 117px;')
         if action_name == 'edit'
           $('#volume-slider').addClass('edit')
         window.volume_slider_on = true
       else
         $('#volume-slider').slider('destroy')
         window.volume_slider_on = false
-      
+        $('.star').removeAttr('style')
+
   $('#play-pause').livequery ->
     $(this).click ->
       state = window.player.getPlayerState()

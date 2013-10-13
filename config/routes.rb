@@ -46,6 +46,7 @@ Boombox::Application.routes.draw do
   post '/new_tweet/' => 'tweets#create'
   post '/new_discussion_question' => 'discussion_questions#create'
   post '/new_option_vote' => 'option_votes#create'
+  post '/new_line' => 'lines#create'
   
   post '/new_tag_vote/' => 'tag_votes#create'
   post '/update_tag_vote/' => 'tag_votes#update'
@@ -73,6 +74,7 @@ Boombox::Application.routes.draw do
   post '/upvote' => 'votes#up'
   post '/downvote' => 'votes#down'
   
+  post '/student_list' => 'users#list'
   post '/update_user' => 'users#update'
     
   get '/philosophy' => 'pages#philosophy'

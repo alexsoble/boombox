@@ -1,4 +1,3 @@
-
 <div id="outer-video-box" class="video-container" style="margin-left: 200px;">
   <div id="title-box"><h3 style="margin-top: 20px; color:white;"><%= @video.title %></h3></div>
   <div id="watch-again"></div>
@@ -8,7 +7,7 @@
     <div style="margin-top: 15px; margin-left: 22px;">
       <% if current_user %>
         <p style="font-size: 15px">You've watched <span id="video-play-counter"><%= @current_user_play_count %></span> times.</p>
-        <i class="icon icon-star-empty icon-2x" id="star" style="position: absolute; top: 11px; right: 112px; color: #9b59bb;"> </i>
+        <i class="icon icon-star-empty icon-2x star" id="star-empty"> </i>
       <% else %>
         <%= link_to "Sign in", "/sign_in" %> to track your progress!
       <% end %>
@@ -104,7 +103,7 @@
       <span id="discussion-question" class="note-category <% if @discussion_questions.present? %>active<% else %>inactive<% end %>">
         Discussion
       </span> &nbsp; 
-      <span id="lyrics" class="note-category <% if @translation.present? %>active<% else %>inactive<% end %>">
+      <span id="lyrics" class="note-category <% if @lyrics.present? %>active<% else %>inactive<% end %>">
         Lyrics
       </span> &nbsp;
       <span id="links" class="note-category <% if @links.present? %>active<% else %>inactive<% end %>">
@@ -129,20 +128,22 @@
             <% @vocabulary_contributors.each do |c| %>
               <% c_words = Word.where(:user_id => c.id, :video_id => @video.id) %>
                 <% unless current_user %>
-                  <p style="font-size: 16px;"> <%= link_to "#{c.username}", user_url(c) %> added vocabulary definitions: </p>
+                  <div class='other-user-content'> 
+                    <p style="font-size: 16px;"> <%= link_to "#{c.username}", user_url(c) %> added vocabulary definitions: </p>
                 <% else %>
                   <% if current_user.id == c.id %>
-                    <p style="font-size: 16px;">You added vocabulary definitions: </p>
+                    <div id='current-user-definitions' class='current-user-content'>
+                      <p style="font-size: 16px;">You added vocabulary definitions: </p>
                   <% else %>
-                    <p style="font-size: 16px;"> <%= link_to "#{c.username}", user_url(c) %> added vocabulary definitions: </p>
+                    <div class='other-user-content'> 
+                     <p style="font-size: 16px;"> <%= link_to "#{c.username}", user_url(c) %> added vocabulary definitions: </p>
                   <% end %>
                 <% end %>
-              <% if current_user %><% if current_user.id == c.id %><div id='current-user-definitions'><% end %><% end %>
                 <% c_words.each do |w| %>
                   <% d = Definition.where(:word_id => w.id).first %>
                   <li><%= link_to "#{w.text + " = " + d.text}", definition_url(d) %></li>
                 <% end %>
-              <% if current_user %><% if current_user.id == c.id %></div><% end %><% end %>
+              </div>
             <% end %>
           </div>
         <% end %>
@@ -151,15 +152,17 @@
             <% @challenge_contributors.each do |c| %>
               <% @challenges = Challenge.where(:user_id => c.id, :video_id => @video.id).all %>
                 <% unless current_user %>
-                  <p style="font-size: 16px;"> <%= link_to "#{c.username}", user_url(c) %> added a question: </p>
+                  <div class='other-user-content'>
+                    <p style="font-size: 16px;"> <%= link_to "#{c.username}", user_url(c) %> added a question: </p>
                 <% else %>
                   <% if current_user.id == c.id %>
-                    <p style="font-size: 16px;">You added a question: </p>
+                    <div id='current-user-challenges' class='current-user-content'>
+                      <p style="font-size: 16px;">You added a question: </p>
                   <% else %>
-                    <p style="font-size: 16px;"> <%= link_to "#{c.username}", user_url(c) %> added a question: </p>
+                    <div class='other-user-content'>
+                      <p style="font-size: 16px;"> <%= link_to "#{c.username}", user_url(c) %> added a question: </p>
                   <% end %>
                 <% end %>
-              <% if current_user %><% if current_user.id == c.id %><div id='current-user-challenges'><% end %><% end %>
                 <% @challenges.each do |challenge| %>
                   <p> <%= challenge.question_text %> </p>
                   <% options = Option.where(:challenge_id => challenge.id).all %>
@@ -169,7 +172,7 @@
                 <div id='submit-challenge-<%= challenge.id %>' class='submit-challenge-answer btn btn-primary btn-small rounded' style="margin-left: 20px;"> Add your answer </div>
                 <br><br>
               <% end %>
-              <% if current_user %><% if current_user.id == c.id %></div><% end %><% end %>
+              </div>
             <% end %>
           </div>
         <% end %>
@@ -178,31 +181,22 @@
             <% @question_contributors.each do |c| %>
               <% @questions = DiscussionQuestion.where(:user_id => c.id, :video_id => @video.id).all %>
                 <% unless current_user %>
-                  <p style="font-size: 16px;"> <%= link_to "#{c.username}", user_url(c) %> added a question: </p>
+                  <div class='other-user-content'>
+                    <p style="font-size: 16px;"> <%= link_to "#{c.username}", user_url(c) %> added a question: </p>
                 <% else %>
                   <% if current_user.id == c.id %>
-                    <p style="font-size: 16px;">You added a question: </p>
+                    <div id='current-user-discussion-questions' class='current-user-content'>
+                      <p style="font-size: 16px;">You added a question: </p>
                   <% else %>
-                    <p style="font-size: 16px;"> <%= link_to "#{c.username}", user_url(c) %> added a question: </p>
+                    <div class='other-user-content'>
+                      <p style="font-size: 16px;"> <%= link_to "#{c.username}", user_url(c) %> added a question: </p>
                   <% end %>
                 <% end %>
-              <% if current_user %><% if current_user.id == c.id %><div id='current-user-discussion-questions'><% end %><% end %>
                 <% @questions.each do |question| %>
                   <p> <%= question.question_text %> </p>
                 <% end %>
-              <% if current_user %><% if current_user.id == c.id %></div><% end %><% end %>
               <div id='submit-answer-<%= c.id %>' class='btn btn-primary btn-small rounded' style="margin-left: 20px;"> Add your answer </div>
-              <br><br>
-            <% end %>
-          </div>
-        <% end %>
-        <% if @translation.present? %>
-          <div class="note-area translation-area">
-            <% @translation_contributors.each do |c| %>
-              <p style="font-size: 16px;">
-                <%= link_to "#{c.username}", user_url(c) %> added a translation:
-              </p>
-              <%= render "videos/translation", :lines => @lines %>
+              </div>
             <% end %>
           </div>
         <% end %>
@@ -211,21 +205,23 @@
             <% @link_contributors.each do |c| %>
               <% @links = Link.where(:user_id => c.id, :video_id => @video.id).all %>
                 <% unless current_user %>
-                  <p style="font-size: 16px;"> <%= link_to "#{c.username}", user_url(c) %> added a link: </p>
+                  <div class='other-user-content'>
+                    <p style="font-size: 16px;"> <%= link_to "#{c.username}", user_url(c) %> added a link: </p>
                 <% else %>
                   <% if current_user.id == c.id %>
-                    <p style="font-size: 16px;">You added a link: </p>
+                    <div id='current-user-links' class='current-user-content'>
+                      <p style="font-size: 16px;">You added a link: </p>
                   <% else %>
-                    <p style="font-size: 16px;"><%= link_to "#{c.username}", user_url(c) %> added a link: </p>
+                    <div class='other-user-content'>
+                      <p style="font-size: 16px;"><%= link_to "#{c.username}", user_url(c) %> added a link: </p>
                   <% end %>
                 <% end %>
-                <% if current_user %><% if current_user.id == c.id %><div id='current-user-links'><% end %><% end %>
                   <% @links.each do |link| %>
                     <%= image_tag "http://g.etfv.co/#{link.url}", :size => '25x25' %>
                     <strong><%= link_to "#{link.url.split('/')[2]}", link.url %></strong>
                     <p><%= link.excerpt %></p>
                   <% end %>
-                <% if current_user %><% if current_user.id == c.id %></div><% end %><% end %>
+                </div>
               <% end %>
             </div>
           <% end %>
@@ -234,19 +230,21 @@
             <% @tweet_contributors.each do |c| %>
               <% @tweets = Tweet.where(:user_id => c.id, :video_id => @video.id).all %>
                 <% unless current_user %>
-                  <p style="font-size: 16px;"> <%= link_to "#{c.username}", user_url(c) %> added a Tweet: </p>
+                  <div class='other-user-content'>
+                    <p style="font-size: 16px;"> <%= link_to "#{c.username}", user_url(c) %> added a Tweet: </p>
                 <% else %>
                   <% if current_user.id == c.id %>
-                    <p style="font-size: 16px;"> You added a Tweet: </p>
+                    <div id='current-user-tweets' class='current-user-content'>
+                      <p style="font-size: 16px;"> You added a Tweet: </p>
                   <% else %>
-                    <p style="font-size: 16px;"> <%= link_to "#{c.username}", user_url(c) %> added a Tweet: </p>
+                    <div class='other-user-content'>
+                      <p style="font-size: 16px;"> <%= link_to "#{c.username}", user_url(c) %> added a Tweet: </p>
                   <% end %>
                 <% end %>
-                <% if current_user %><% if current_user.id == c.id %><div id='current-user-tweets'><% end %><% end %>
                   <% @tweets.each do |tweet| %>
                     <blockquote class="twitter-tweet"><a href="https://twitter.com/<%= tweet.tweeter %>/statuses/<%= tweet.twitter_id %>"></a></blockquote>
                   <% end %>
-                <% if current_user %><% if current_user.id == c.id %></div><% end %><% end %>
+                </div>
               <% end %>
             </div>
           <% end %>

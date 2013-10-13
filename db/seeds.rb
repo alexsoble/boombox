@@ -9,7 +9,7 @@ Language.create([
   {:name => "Japanese"},
   {:name => "Korean"},
   {:name => "Vietnamese"},
-  {:name => "Thai"},
+  {:name => "Thai"}, 
   {:name => "Burmese"},
   {:name => "Tagalog"},
   {:name => "Hmong"},

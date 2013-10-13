@@ -168,6 +168,8 @@ $ ->
         )
       else
         window.playcount_id = data.data.id
+        window.playcount_value = data.data.play_count
+        $('#video-play-counter').html(window.playcount_value)
     )
     $.post("/find_interp/#{window.user_id}/#{window.video_id}", (data) ->
       if data.data is 'no-interp'
@@ -207,11 +209,8 @@ $ ->
 
   $('#new-content').click ->
     if window.adding_content == false
-      $('.note-category').removeClass('inactive')
       $('.note-category').addClass('option')
-      $('#big-tab').toggle('width')
       $('#notes-container').hide()
-      $('#all').slideUp()
       $(this).attr('style','right: -1px;')
       window.adding_content = true
 
@@ -220,11 +219,17 @@ $ ->
     $('.note-area').show()
     $('#editing').html('')
     $('.note-category').removeClass('option')
-    $('#big-tab').toggle('width')
-    $('#all').slideDown()
     $('#add-new-note').removeAttr('style')
     window.adding_content = false
 
+  $('#all-content').click ->
+    backFromEditing()
+    $('.other-user-content').show()
+
+  $('#just-your-content').livequery ->
+    $(this).click -> 
+      $('.other-user-content').hide()
+    
   $('#back-from-editing').livequery ->
     $(this).click ->
       backFromEditing()
@@ -267,11 +272,13 @@ $ ->
           ")
         if category == 'lyrics'
           $('#editing').html("
-            <span id='all-at-once' class='blue-link'>Add lyrics all at once?</span>
-            <br><br>
-            or
-            <br><br>
-            <span id='line-by-line' class='blue-link'>Add lyrics all at once?</span>
+            <div id='lyrics-editing-options'>
+              <span id='all-at-once' class='blue-link'>Add lyrics all at once?</span>
+              <br><br>
+              or
+              <br><br>
+              <span id='line-by-line' class='blue-link'>Transcribe lyrics line by line?</span>
+            </div>
           ")
         if category == 'links'
           $('#editing').html("
@@ -334,13 +341,14 @@ $ ->
             $.post("/new_interp/#{window.user_id}/#{window.video_id}", (data) ->
               window.interp_id = data.data.id
               postNewWord(word, definition)
+              my_content_tab = "<div id='just-your-content' class='small tab'>Just yours<br><a href='/interpretations/#{data.data.id}' style='color:white;font-size:10px;position:relative;bottom:6px;'>(own page)</a></div>"
+              $('#all-content').after(my_content_tab)
             )
           else
             postNewWord(word, definition)
 
   $('.submit-challenge-answer').livequery ->
     $(this).click ->
-      console.log 'trigger!'
       challenge_id = parseInt($(this).attr('id').substring(17))
       console.log challenge_id
       $(".option-challenge-#{challenge_id}").each(->
@@ -371,6 +379,46 @@ $ ->
         $('.ui-slider-handle').removeClass('vocab-time-selector')
       )
 
+  $('#all-at-once').livequery ->
+    $(this).click ->
+      $(this).parent().before("
+        <div id='lyrics-entering-area'>
+          <textarea id='lyrics-textbox' style='width: 400px; height: 160px;'></textarea>
+          <p><i>Copy and paste from your files.</i></p>
+          <div id='submit-new-lyrics' class='btn btn-primary btn-small rounded'> Submit </div>
+          <div id='back-to-lyrics-options' class='btn btn-primary btn-small rounded'> Back </div>
+        </div>
+      ")
+      $('#lyrics-editing-options').hide()
+
+  $('#back-to-lyrics-options').livequery ->
+    $(this).click -> 
+      $('#lyrics-editing-options').show()
+      $('#lyrics-entering-area').remove()
+
+  postNewLines = (lyrics) ->
+    lines = lyrics.split('\n')
+    for line in lines
+      if line isnt '' 
+        $.post('/new_line', { 'line' : { 'interpretation_id' : "#{window.interp_id}", 'lang1' : "#{line}" } }, (data) -> 
+          console.log data
+        )
+
+  $('#submit-new-lyrics').livequery ->
+    $(this).click ->
+      if window.user == 'logged-out'
+        $('#notice-area').html("<p style='color: #0f82f5;'><i>Please log in to add new lyrics.</i></p>")
+      else
+        lyrics = $('#lyrics-textbox').val()
+        if window.interp_id == 'none-yet'
+          $.post("/new_interp/#{window.user_id}/#{window.video_id}", (data) ->
+            window.interp_id = data.data.id
+            $('#all-content').after("<div id='just-your-content' class='small tab'>Just yours<br><a href='/interpretations/#{data.data.id}' style='color:white;font-size:10px;position:relative;bottom:6px;'>(own page)</a></div>")
+            postNewLines(lyrics)
+          )
+        else
+          postNewLines(lyrics)
+
   postNewLink = (url, excerpt, lang) -> 
     $.post('/new_link', { 'link' : { 'interpretation_id' : "#{window.interp_id}", 'url' : "#{url}", 'excerpt' : "#{excerpt}", 'user_id' : "#{window.user_id}", 'video_id' : "#{window.video_id}" }, 'lang' : "#{lang}" }, (data) -> 
       console.log data
@@ -388,7 +436,7 @@ $ ->
   $('#submit-new-link').livequery ->
     $(this).click -> 
       if window.user == 'logged-out'
-        $('#notice-area').html("<p style='color: #0f82f5;'><i>Please log in to add a new vocabulary word.</i></p>")
+        $('#notice-area').html("<p style='color: #0f82f5;'><i>Please log in to add a new link.</i></p>")
       else
         url = $('#url').val()
         excerpt = $('#excerpt').val()
@@ -420,7 +468,7 @@ $ ->
   $('#submit-new-tweet').livequery ->
     $(this).click -> 
       if window.user == 'logged-out'
-        $('#notice-area').html("<p style='color: #0f82f5;'><i>Please log in to add a new vocabulary word.</i></p>")
+        $('#notice-area').html("<p style='color: #0f82f5;'><i>Please log in to add a new tweet.</i></p>")
       else
         tweet_url = $('#url').val().split('/')
         tweeter = tweet_url[3]
@@ -491,7 +539,7 @@ $ ->
   $('#submit-new-multiple-choice').livequery ->
     $(this).click ->
       if window.user == 'logged-out'
-        $('#notice-area').html("<p style='color: #0f82f5;'><i>Please log in to add a new vocabulary word.</i></p>")
+        $('#notice-area').html("<p style='color: #0f82f5;'><i>Please log in to add a new multiple-choice challenge.</i></p>")
       else
         challenge = $('#question-title').val()
         options = $('.mc-option')
@@ -595,8 +643,8 @@ $ ->
       $('#user-input').html('')
       $('#community-notes').slideDown()
 
-  $('#star').click ->
-    $(this).replaceWith("<i class='icon icon-star icon-2x' id='star-full' style='position: absolute; top: 11px; right: 112px; color: #0f82f5;'> </i>")
+  $('#star-empty').click ->
+    $(this).replaceWith("<i class='icon icon-star icon-2x star' id='star-full'> </i>")
 
   $('#toggle-show-lines').click ->
     $('.short-line').each(->

@@ -86,6 +86,7 @@ class InterpretationsController < ApplicationController
 
   def show
     @interp = Interpretation.find_by_id(params[:id])
+    @interpretations = [@interp]
     @video = @interp.video
     @user = User.find_by_id(@interp.user_id)
     @translation = @interp

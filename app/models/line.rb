@@ -1,5 +1,5 @@
 class Line < ActiveRecord::Base
-  attr_accessible :downvotes, :interpretation_id, :lang1, :lang2, :time, :upvotes, :duration, :published
+  attr_accessible :interpretation_id, :lang1, :lang2, :time, :duration
   belongs_to :interpretation
   has_many :comments
   has_many :translations

@@ -1,6 +1,27 @@
 class UsersController < ApplicationController
   respond_to :json, :html
 
+  def list
+    term = params[:term]
+    term_length = term.length
+
+    @users = []
+    User.all.each do |u|
+      if u.username[0..(term_length - 1)].upcase == term.upcase
+        @users << u
+      elsif u.firstname.present?
+        if u.firstname[0..(term_length - 1)].upcase == term.upcase
+          @users << u
+        end
+      elsif u.lastname.present?
+        if u.lastname[0..(term_length - 1)].upcase == term.upcase
+          @users << u
+        end
+      end
+    end
+    render json: { :data => @users }
+  end
+
   def show
 
     @user = User.find_by_id(params[:id])

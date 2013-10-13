@@ -3,8 +3,8 @@ class Video < ActiveRecord::Base
   has_many :interpretations
   has_many :lines, :through => :interpretations
 
-  def number_of_requests
-    Request.where(:video_id => self.id).length
+  def to_param
+    "#{title[0..30]}".parameterize
   end
 
   def number_of_interpretations

@@ -43,6 +43,8 @@ class VideosController < ApplicationController
       @all_but_last_tag = @tags[0..(@tags.length - 1)]
     end
 
+    @interpretations = Interpretation.where(:video_id => @video.id)
+
     @vocabulary = Word.where(:video_id => @video.id).order("created_at DESC")
     @vocabulary_contributors = []
     @vocabulary.each do |v|

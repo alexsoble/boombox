@@ -5,5 +5,4 @@ class DiscussionQuestionsController < ApplicationController
     render :json => { :data => @discussion_question }
   end
 
-
 end
