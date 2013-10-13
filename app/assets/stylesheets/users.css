@@ -3,10 +3,21 @@
 // You can use Sass (SCSS) here: http://sass-lang.com/ */
 
 .draft-container { width: 1200px; 
-  min-height: 800px; 
   margin-top: 40px; 
-  float: left }
+  float: left; }
 
 .about-me-container { width: 900px; 
   margin-top: 40px; 
-  float: left }
+  float: left; }
+
+#school-info-box {
+  background-color: #f3f3f6; 
+  width: 300px; 
+  padding: 20px; 
+  border: 1px solid white; 
+  border-radius: 10px; 
+  float: right; 
+  text-align: center;
+  position: relative;
+  right: 86px;
+  top: 16px; }

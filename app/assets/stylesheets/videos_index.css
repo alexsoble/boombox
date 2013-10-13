@@ -71,13 +71,10 @@
   margin-left: 20px; 
   margin-right: 20px; }
 
+.image-box { width: 120px; height: 90px; }
 .video-thumb-box .image-box { position: absolute; bottom: 15px; }
-.video-thumb-box.user-thumb-box .image-box { position: absolute; bottom: 0px; }
 
 .tiny-text { font-size: 12px; margin: 4px; }
-
-.video-thumb-box.user-thumb-box {
-  margin-right: 40px; }
 
 .thumb-box-width { width: 140px; }
 
@@ -113,9 +110,9 @@ ul.ui-autocomplete.ui-menu { background-color: white; list-style-type: none; }
 li.ui-autocomplete.ui-menu { color: black; } 
 
 #social-content-area {
-  left: 700px; 
+  left: 640px; 
   position: absolute;
-  width: 460px;
+  width: 510px;
   top: 84px; }
 
 #community-notes {
@@ -124,12 +121,11 @@ li.ui-autocomplete.ui-menu { color: black; }
   border-bottom-right-radius: 10px; 
   border-bottom-left-radius: 10px; 
   background-color: #f3f3f6;
-  height: 425px;
   margin-top: 38px; 
-  padding: 20px; 
+  height: 415px;
+  padding: 30px; 
   position: relative;
   bottom: 12px; }
 
 .video-page-btn { margin-top: 10px; margin-left: 10px; margin-right: 0px !important; }
 
-.note-area { margin-bottom: 30px; }

@@ -1,36 +1,87 @@
 <div class="row">
-  <div class="offset1">
-    <h2><%= "#{@firstname}" + " " + "#{@lastname}" %></h2>
-    <p><%= @bio %></p>
-
-    <div class="draft-container">
-      <% if current_user && @user.id == current_user.id %>
-        <h3><strong>My translations</strong></h3>
+  <div class="offset1" style="width: 1200px;">
+    <div style="float: left;">
+      <% if @firstname.present? && @lastname.present? %>
+        <h2><%= "#{@firstname}" + " " + "#{@lastname}" %></h2>
       <% else %>
-        <h2><i><%= @user.username %>'s translations:</i></h2>
-      <% end %>
-      <% if @interpretation.present? %>
-        <% @interpretation.all.each do |i| %>
-          <% if i.video.present? %>
-             <% v = i.video %>
-              <div class="video-thumb-box user-thumb-box">
-                <strong class="center"><%= link_to "#{v.title.slice(0,25)}", interpretation_url(i) %></strong>
-                <br>
-                <div class="image-box">
-                  <img src="http://img.youtube.com/vi/<%= v.youtube_id %>/1.jpg">
-                  <% if current_user && @user.id == current_user.id %>
-                    <div class="tiny-text" > <%= link_to "Edit", edit_interpretation_url(i) %> // <%= link_to "Delete", interpretation_url(i), :method => :delete %> </div>
-                  <% else %>
-                      <div class="tiny-text" > <%= v.lang1 %> </div>
-                  <% end %>
-                </div>
-              </div>
-            <% end %>
+        <h2><%= @username %></h2>
+        <% if current_user %>
+          <% if current_user.id == @user.id %>
+            <h3 id='input-firstname-area'>Add your first name: &nbsp; <input id='firstname' type='text'> &nbsp; 
+              <div class="btn btn-primary rounded" id="update-firstname">Submit</div> </h3>
+            <h3 id='input-lastname-area'>Add your last name: &nbsp; <input id='lastname' type='text'> &nbsp; 
+              <div class="btn btn-primary rounded" id="update-lastname">Submit</div> </h3>
           <% end %>
-        <% else %>
-          <h3>None yet!</h3>
         <% end %>
-      </div>
-
-  </div>
+      <% end %>
+      <% if @bio.present? %> 
+        <p><%= @bio %> (<span id='edit-bio' class='blue-link'>edit</span>)</p>
+      <% else %>
+        <% if current_user %>
+          <% if current_user.id == @user.id %>
+            <div id='input-bio-area'>
+              <h3>"About me..." Share a few sentences about yourself!</h3>
+              <textarea style="height: 60px; width: 390px;" id="bio"></textarea> &nbsp; 
+              <div class="btn btn-primary rounded" id="update-bio">Submit</div>
+              <br><br>
+            </div>
+          <% end %>
+        <% end %>
+      <% end %>
+    </div>
+    <% if current_user %>
+      <% if current_user.id == @user.id %>
+        <div id="school-info-box">
+          <% if @user_school.present? %>
+            <h3><%= @user_school.name %></h3>
+          <% end %>
+          <% if @user_role.present? %>
+            <h3><% if @user_role == true then 'teacher' else 'student' end %></h3>
+          <% end %>
+          <% if @user_school.blank? && @user_role.blank? %>
+            <p>Teach or study at an educational institution?</p>
+            <br>
+              <div class="field">
+                <label for="role">I'm a</label>
+                <select name="role">
+                  <option></option>
+                  <option>teacher</option>
+                  <option>student</option>
+                </select>
+              </div>
+              <div class="field">
+                <label for="school">at</label>
+                <select name="school">
+                  <option></option>
+                  <%= @schools.each do |s| %>
+                    <option><%= s.name %></option>
+                  <% end %>
+                </select>
+              </div>
+            <br>
+            <div class="btn btn-primary rounded" id="update-school">Submit</div>
+            <br><br>
+            <p>Don't see your school? <a href="mailto:asoble@gmail.com?Subject=Add%20my%20school&body=Hi,%20my%20name%20is%20_____%20and%20I%20(teach%20/%20study)%20at%20______.">Contact us</a>.</p>
+          <% end %>
+        </div>
+      <% end %>
+    <% end %>
+    <div class="draft-container">
+      <% if @starred_videos.present? %>
+      <% end %>
+      <% if current_user && @user.id == current_user.id %>
+        <h3><strong>My learning materials:</strong></h3>
+      <% else %>
+         <h3><strong><%= @user.username %>'s learning materials:</h3><strong>
+      <% end %>
+      <% if @vocabulary.present? %>
+        Added vocabulary words:
+        <% @vocabulary_interps.each do |this_interpretation| %>
+          <% if this_interpretation.present? %>
+            <%= render "thumb_box", :this_interpretation => this_interpretation %>
+          <% end %>
+        <% end %>
+      <% end %>
+    </div>
+  <br>
 </div>

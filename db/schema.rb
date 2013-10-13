@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20131012202950) do
+ActiveRecord::Schema.define(:version => 20131013023719) do
 
   create_table "challenges", :force => true do |t|
     t.integer  "user_id"
@@ -190,6 +190,14 @@ ActiveRecord::Schema.define(:version => 20131012202950) do
     t.boolean  "type_style"
     t.datetime "created_at",      :null => false
     t.datetime "updated_at",      :null => false
+  end
+
+  create_table "translations", :force => true do |t|
+    t.integer  "line_id"
+    t.integer  "user_id"
+    t.string   "text"
+    t.datetime "created_at", :null => false
+    t.datetime "updated_at", :null => false
   end
 
   create_table "tweets", :force => true do |t|

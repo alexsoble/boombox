@@ -50,8 +50,6 @@ $ ->
 
   # WE GOTTA HAVE A PLAYBACK SLIDER
 
-  $('#community-notes').height($('#settings').height() + 225)
-
   $('#settings').append("
     <div class='playback-left-label end-label'><div class='playback-left-label inner-label'></div></div>
       <div id='playback-slider'></div>
@@ -228,6 +226,7 @@ $ ->
 
   $('#just-your-content').livequery ->
     $(this).click -> 
+      backFromEditing()
       $('.other-user-content').hide()
     
   $('#back-from-editing').livequery ->
@@ -240,13 +239,13 @@ $ ->
         category = $(this).attr('id')
         if category == 'vocabulary'
           $('#editing').html("        
-            <span id='user-name'><h3>Add new vocabulary:</h3></span>
             <div id='vocab-list'></div>
+            <span id='user-name'><h3>Add new vocabulary:</h3></span>
             <input type='text' id='word-input' style='width: 150px;'> 
             = <input type='text' id='definition-input' style='width: 150px;'> 
             <br><br>
-            <div id='submit-new-vocab' class='btn btn-primary btn-small rounded'> Submit </div>
-            <div id='back-from-editing' class='btn btn-primary btn-small rounded'> Back </div>
+            <div id='submit-new-vocab' class='btn btn-primary btn-small rounded'> Submit Vocab Word </div>
+            <div id='back-from-editing' class='btn btn-primary btn-small rounded'> Done </div>
           ")
         if category == 'multiple-choice'
           $('#editing').html("
@@ -260,7 +259,7 @@ $ ->
               </li>
             </div><br>
             <div id='submit-new-multiple-choice' class='btn btn-primary btn-small rounded'> Submit </div>
-            <div id='back-from-editing' class='btn btn-primary btn-small rounded'> Back </div>
+            <div id='back-from-editing' class='btn btn-primary btn-small rounded'> Done </div>
           ")
         if category == 'discussion-question'
           $('#editing').html("
@@ -268,17 +267,15 @@ $ ->
             <input type='text' id='discussion-question-text'>
             <br>
             <div id='submit-new-discussion-question' class='btn btn-primary btn-small rounded'> Submit </div>
-            <div id='back-from-editing' class='btn btn-primary btn-small rounded'> Back </div>
+            <div id='back-from-editing' class='btn btn-primary btn-small rounded'> Done </div>
           ")
         if category == 'lyrics'
           $('#editing').html("
-            <div id='lyrics-editing-options'>
-              <span id='all-at-once' class='blue-link'>Add lyrics all at once?</span>
-              <br><br>
-              or
-              <br><br>
-              <span id='line-by-line' class='blue-link'>Transcribe lyrics line by line?</span>
-            </div>
+            <h3>Add lyrics:</h3>
+            <textarea id='lyrics-textbox' style='width: 400px; height: 160px;'></textarea>
+            <p><i>Copy and paste from your files.</i></p>
+            <div id='submit-new-lyrics' class='btn btn-primary btn-small rounded'> Submit </div>
+            <div id='back-to-lyrics-options' class='btn btn-primary btn-small rounded'> Done </div>
           ")
         if category == 'links'
           $('#editing').html("
@@ -290,7 +287,7 @@ $ ->
             <select id='language-select'></select>
             <br>
             <div id='submit-new-link' class='btn btn-primary btn-small rounded'> Submit </div>
-            <div id='back-from-editing' class='btn btn-primary btn-small rounded'> Back </div>
+            <div id='back-from-editing' class='btn btn-primary btn-small rounded'> Done </div>
           ")
           availableTags.forEach((language) ->
             $('#language-select').append("<option>#{language}</option>")
@@ -303,7 +300,7 @@ $ ->
             <span class='tiny'><i>(Copy and paste the URL.)</i></span>
             <br><br>
             <div id='submit-new-tweet' class='btn btn-primary btn-small rounded'> Submit </div>
-            <div id='back-from-editing' class='btn btn-primary btn-small rounded'> Back </div>
+            <div id='back-from-editing' class='btn btn-primary btn-small rounded'> Done </div>
           ")
 
         $('#editing').append("
@@ -314,13 +311,14 @@ $ ->
     $.post('/new_word', { 'word' : { 'interpretation_id' : "#{window.interp_id}", 'video_id' : "#{window.video_id}", 'user_id' : "#{window.user_id}", 'text' : "#{word}" } }, (data) ->
       word_id = data.data.id
       $('#vocab-list').append("
-        <li>#{word} = #{definition} &nbsp; <div id=#{word_id} class='add-time btn btn-primary btn-petite rounded'> Add time </div>
+        <li>#{word} = #{definition} <!-- &nbsp; <div id=#{word_id} class='add-time btn btn-primary btn-petite rounded'> Add time </div> -->
         </li>
+        <br><br>
       ")
       $.post('/new_definition', { 'definition' : { 'word_id' : "#{word_id}", 'user_id' : "#{window.user_id}", 'text' : "#{definition}" } }, (data) ->
         definition_id = data.data.id
         if $('#current-user-definitions').length > 0
-          $('#current-user-definitions').prepend("<li><a href=#{'/definitions/' + definition_id}>#{word} = #{definition}</a>")
+          $('#current-user-definitions').children(':first').after("<li><a href=#{'/definitions/' + definition_id}>#{word} = #{definition}</a>")
         else
           $('#note-container').prepend("<li><a href=#{'/definitions/' + definition_id}>#{word} = #{definition}</a>")
       )
@@ -379,23 +377,6 @@ $ ->
         $('.ui-slider-handle').removeClass('vocab-time-selector')
       )
 
-  $('#all-at-once').livequery ->
-    $(this).click ->
-      $(this).parent().before("
-        <div id='lyrics-entering-area'>
-          <textarea id='lyrics-textbox' style='width: 400px; height: 160px;'></textarea>
-          <p><i>Copy and paste from your files.</i></p>
-          <div id='submit-new-lyrics' class='btn btn-primary btn-small rounded'> Submit </div>
-          <div id='back-to-lyrics-options' class='btn btn-primary btn-small rounded'> Back </div>
-        </div>
-      ")
-      $('#lyrics-editing-options').hide()
-
-  $('#back-to-lyrics-options').livequery ->
-    $(this).click -> 
-      $('#lyrics-editing-options').show()
-      $('#lyrics-entering-area').remove()
-
   postNewLines = (lyrics) ->
     lines = lyrics.split('\n')
     for line in lines
@@ -424,7 +405,7 @@ $ ->
       console.log data
       link_html = "<img height='25' src='http://g.etfv.co/#{data.data.url}' width='25' />" + "<strong><a href='#{data.data.url}'>#{data.data.url.split('/')[2]}</a></strong>" + "<p>#{data.data.excerpt}</p>"
       if $('#current-user-links').length > 0
-        $('#current-user-links').prepend(link_html)
+        $('#current-user-links').children(':first').after(link_html)
       else
         $('#notes-container').prepend("
           <p style='font-size: 16px;'>You added a new link: </p>
@@ -456,7 +437,7 @@ $ ->
       url = 'https://twitter.com/' + tweeter + '/' + 'statuses' + '/' + twitter_id
       console.log url
       if $('#current-user-tweets').length > 0
-        $('#current-user-tweets').prepend("<blockquote class='twitter-tweet'><a href=#{url}></a></blockquote>
+        $('#current-user-tweets').children(':first').after("<blockquote class='twitter-tweet'><a href=#{url}></a></blockquote>
           <script async src='//platform.twitter.com/widgets.js' charset='utf-8'></script>")
       else
         $('#notes-container').prepend("<blockquote class='twitter-tweet'><a href=#{url}></a></blockquote>
@@ -486,12 +467,12 @@ $ ->
       console.log data
       discussion_question = data.data.question_text
       if $('#current-user-discussion-questions').length > 0
-        $('#current-user-discussion-questions').prepend(discussion_question)
+        $('#current-user-discussion-questions').children(':first').after(discussion_question)
       else
         $('#notes-container').prepend("
           <p style='font-size: 16px;'>You added a question: </p>
           #{discussion_question}
-          <br>
+          <br><br>
         ")
       $('#none-yet').remove()
       backFromEditing()
@@ -517,7 +498,7 @@ $ ->
       console.log "challenge = #{data.data.question_text}"
       new_challenge = "<p id='user-added-challenge'>#{data.data.question_text}</p>"
       if $('#current-user-challenges').length > 0
-        $('#current-user-challenges').prepend(new_challenge)
+        $('#current-user-challenges').children(':first').after(new_challenge)
       else
         $('#notes-container').prepend("
           <p style='font-size: 16px;'>You added a multiple-choice question: </p>

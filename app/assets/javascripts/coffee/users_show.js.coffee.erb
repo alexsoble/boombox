@@ -1,0 +1,29 @@
+$ ->
+  
+  $('#update-firstname').click ->
+    firstname = $('#firstname').val()
+    $.post('/update_user', { 'user_id' : "#{window.user_id}", 'firstname' : "#{firstname}" }, (data) ->
+      console.log data
+      $('#input-firstname-area').remove()
+    )
+
+  $('#update-lastname').click ->
+    lastname = $('#lastname').val()
+    $.post('/update_user', { 'user_id' : "#{window.user_id}", 'lastname' : "#{lastname}" }, (data) ->
+      console.log data
+      $('#input-lastname-area').remove()
+    )
+
+  $('#update-bio').click ->
+    bio = $('#bio').val()
+    $.post('/update_user', { 'user_id' : "#{window.user_id}", 'bio' : "#{bio}" }, (data) ->
+      console.log data
+      $('#input-bio-area').replaceWith("<p>#{data.data.bio}</p>")
+    )
+
+  $('#update-school').click ->
+    school = $('[name="school"]').val()
+    role = $('[name="role"]').val()
+    $.post('/update_user', { 'user_id' : "#{window.user_id}", 'school' : "#{school}", 'role' : "#{role}" }, (data) ->
+      console.log data
+    )

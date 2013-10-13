@@ -13,7 +13,7 @@ class Interpretation < ActiveRecord::Base
   has_many :quizzes
 
   def video
-    Video.find_by_id(self.video_id)
+    return Video.find_by_id(self.video_id)
   end
 
 end

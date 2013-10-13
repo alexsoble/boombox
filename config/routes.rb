@@ -7,8 +7,6 @@ Boombox::Application.routes.draw do
   get '/chile' => 'pages#chile'
 
   get '/join' => 'users#new'
-  get '/steptwo' => 'users#steptwo'
-  get '/stepthree' => 'users#stepthree'
   get '/sign_in' => 'sessions#new'
   get '/sign_out' => 'sessions#destroy'
   get '/auth/:provider/callback' => 'sessions#create_with_omniauth'
@@ -24,6 +22,8 @@ Boombox::Application.routes.draw do
   resources :sessions
   resources :classrooms
 
+  post '/update_user' => 'users#update'
+  post '/student_list' => 'users#list'
   post '/new_classroom' => 'classrooms#create'
   get '/teachers/:id' => 'users#teacher_dashboard'
 
@@ -73,10 +73,7 @@ Boombox::Application.routes.draw do
   post '/new_clip' => 'clips#create'
   post '/upvote' => 'votes#up'
   post '/downvote' => 'votes#down'
-  
-  post '/student_list' => 'users#list'
-  post '/update_user' => 'users#update'
-    
+      
   get '/philosophy' => 'pages#philosophy'
   get '/about' => 'pages#philosophy'
   get '/survey' => 'pages#survey'

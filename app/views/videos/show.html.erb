@@ -1,4 +1,4 @@
-<div id="outer-video-box" class="video-container" style="margin-left: 200px;">
+<div id="outer-video-box" class="video-container" style="margin-left: 120px;">
   <div id="title-box"><h3 style="margin-top: 20px; color:white;"><%= @video.title %></h3></div>
   <div id="watch-again"></div>
   <div id="new-video-box"></div>
@@ -85,7 +85,12 @@
       <% end %>
       <div id="new-content" class="small tab">Add new</div>
     <% elsif controller_name == 'interpretations' %>
-      <div class="big tab solo"><%= @user.username %>'s learning materials</div>
+      <div class="big tab solo" id="all-content"><%= @user.username %>'s learning materials</div>
+      <% if current_user %>
+        <% if current_user.id == @user.id%>
+          <div id="new-content" class="small tab">Add new</div>
+        <% end %>
+      <% end %>
     <% end %>
     <br><br><br>
     <div class="small-tab" style="text-align:justify;"> &nbsp; &nbsp; 
@@ -103,8 +108,11 @@
       <span id="discussion-question" class="note-category <% if @discussion_questions.present? %>active<% else %>inactive<% end %>">
         Discussion
       </span> &nbsp; 
-      <span id="lyrics" class="note-category <% if @lyrics.present? %>active<% else %>inactive<% end %>">
+      <span id="lyrics" class="note-category <% if @lines.present? %>active<% else %>inactive<% end %>">
         Lyrics
+      </span> &nbsp;
+      <span id="translation" class="note-category <% if @translation.present? %>active<% else %>inactive<% end %>">
+        Translation
       </span> &nbsp;
       <span id="links" class="note-category <% if @links.present? %>active<% else %>inactive<% end %>">
         Links
@@ -117,7 +125,7 @@
     <div id="community-notes">
       <div id="editing"></div>
       <div id="notes-container">
-        <% if @vocabulary.blank? && @multiple_choice.blank? && @translation.blank? && @tweets.blank? && @discussion_questions.blank? && @links.blank? %>
+        <% if @vocabulary.blank? && @multiple_choice.blank? && @lines.blank? && @translations.blank? && @tweets.blank? && @discussion_questions.blank? && @links.blank? %>
           <div id='none-yet'>
             <h3 style="text-align: center;"> None yet.</h3>
             <br><br>
@@ -126,7 +134,7 @@
         <% if @vocabulary.present? %>
           <div class="note-area vocabulary-area">
             <% @vocabulary_contributors.each do |c| %>
-              <% c_words = Word.where(:user_id => c.id, :video_id => @video.id) %>
+              <% c_words = Word.where(:user_id => c.id, :video_id => @video.id).order("created_at DESC") %>
                 <% unless current_user %>
                   <div class='other-user-content'> 
                     <p style="font-size: 16px;"> <%= link_to "#{c.username}", user_url(c) %> added vocabulary definitions: </p>
@@ -143,6 +151,7 @@
                   <% d = Definition.where(:word_id => w.id).first %>
                   <li><%= link_to "#{w.text + " = " + d.text}", definition_url(d) %></li>
                 <% end %>
+                <br><br>
               </div>
             <% end %>
           </div>
@@ -151,16 +160,18 @@
           <div class="note-area multiple-choice-area">
             <% @challenge_contributors.each do |c| %>
               <% @challenges = Challenge.where(:user_id => c.id, :video_id => @video.id).all %>
+                <% if @challenges.length == 1 then init = "a multiple-choice question" end %>
+                <% if @challenges.length > 1 then init = "multiple-choice questions" end %>
                 <% unless current_user %>
                   <div class='other-user-content'>
-                    <p style="font-size: 16px;"> <%= link_to "#{c.username}", user_url(c) %> added a question: </p>
+                    <p style="font-size: 16px;"> <%= link_to "#{c.username}", user_url(c) %> added <%= "#{init}" %>: </p>
                 <% else %>
                   <% if current_user.id == c.id %>
                     <div id='current-user-challenges' class='current-user-content'>
-                      <p style="font-size: 16px;">You added a question: </p>
+                      <p style="font-size: 16px;">You added <%= "#{init}" %>: </p>
                   <% else %>
                     <div class='other-user-content'>
-                      <p style="font-size: 16px;"> <%= link_to "#{c.username}", user_url(c) %> added a question: </p>
+                      <p style="font-size: 16px;"> <%= link_to "#{c.username}", user_url(c) %> added <%= "#{init}" %>: </p>
                   <% end %>
                 <% end %>
                 <% @challenges.each do |challenge| %>
@@ -169,7 +180,14 @@
                   <% options.each do |o| %>
                     <p style="margin-left: 20px;"> <input type='checkbox' id="option-<%= o.id %>" class="option-challenge-<%= challenge.id %>"> <%= o.answer_text %> </p>
                   <% end %>
-                <div id='submit-challenge-<%= challenge.id %>' class='submit-challenge-answer btn btn-primary btn-small rounded' style="margin-left: 20px;"> Add your answer </div>
+                  <% if current_user %>
+                    <% if current_user.id == c.id %>
+                    <% else %>
+                      <div id='submit-challenge-<%= challenge.id %>' class='submit-challenge-answer btn btn-primary btn-small rounded' style="margin-left: 20px;"> Add your answer </div>
+                    <% end %>
+                      <div id='submit-challenge-<%= challenge.id %>' class='submit-challenge-answer btn btn-primary btn-small rounded' style="margin-left: 20px;"> Add your answer </div>
+                  <% else %>
+                  <% end %>
                 <br><br>
               <% end %>
               </div>
@@ -180,22 +198,34 @@
           <div class="note-area discussion-question-area">
             <% @question_contributors.each do |c| %>
               <% @questions = DiscussionQuestion.where(:user_id => c.id, :video_id => @video.id).all %>
+                <% if @questions.length == 1 then init = "a discussion question" end %>
+                <% if @questions.length > 1 then init = "discussion questions" end %>
                 <% unless current_user %>
                   <div class='other-user-content'>
-                    <p style="font-size: 16px;"> <%= link_to "#{c.username}", user_url(c) %> added a question: </p>
+                    <p style="font-size: 16px;"> <%= link_to "#{c.username}", user_url(c) %> added <%= "#{init}" %>: </p>
                 <% else %>
                   <% if current_user.id == c.id %>
                     <div id='current-user-discussion-questions' class='current-user-content'>
-                      <p style="font-size: 16px;">You added a question: </p>
+                      <p style="font-size: 16px;">You added <%= "#{init}" %>: </p>
                   <% else %>
                     <div class='other-user-content'>
-                      <p style="font-size: 16px;"> <%= link_to "#{c.username}", user_url(c) %> added a question: </p>
+                      <p style="font-size: 16px;"> <%= link_to "#{c.username}", user_url(c) %> added <%= "#{init}" %>: </p>
                   <% end %>
                 <% end %>
-                <% @questions.each do |question| %>
-                  <p> <%= question.question_text %> </p>
-                <% end %>
-              <div id='submit-answer-<%= c.id %>' class='btn btn-primary btn-small rounded' style="margin-left: 20px;"> Add your answer </div>
+                  <% @questions.each do |question| %>
+                    <p> <%= question.question_text %> </p>
+                    <% if current_user %>
+                      <% if current_user.id == c.id %>
+                        <div id='answers-status-<%= question.id %>'>0 responses so far.</div>
+                      <% else %>
+                        <div id='submit-answer-<%= c.id %>' class='btn btn-primary btn-small rounded' style="margin-left: 20px;"> Add your answer </div>
+                      <% end %>
+                    <% else %>
+                      <div id='submit-answer-<%= c.id %>' class='btn btn-primary btn-small rounded' style="margin-left: 20px;"> Add your answer </div>
+                    <% end %>
+                    <br><br>
+                  <% end %>
+                <br><br>
               </div>
             <% end %>
           </div>
@@ -222,6 +252,7 @@
                     <p><%= link.excerpt %></p>
                   <% end %>
                 </div>
+                <br><br>
               <% end %>
             </div>
           <% end %>
@@ -244,6 +275,7 @@
                   <% @tweets.each do |tweet| %>
                     <blockquote class="twitter-tweet"><a href="https://twitter.com/<%= tweet.tweeter %>/statuses/<%= tweet.twitter_id %>"></a></blockquote>
                   <% end %>
+                  <br><br>
                 </div>
               <% end %>
             </div>

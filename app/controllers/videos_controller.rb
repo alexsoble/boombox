@@ -45,6 +45,18 @@ class VideosController < ApplicationController
 
     @interpretations = Interpretation.where(:video_id => @video.id)
 
+    @lines = []
+    @interpretations.each do |i|
+      if Line.where(:interpretation_id => i.id).present?
+        Line.where(:interpretation_id => i.id).each do |l|
+          @lines << l
+          if Translation.where(:line_id => l.id).present?
+            @translation = true
+          end
+        end
+      end
+    end
+
     @vocabulary = Word.where(:video_id => @video.id).order("created_at DESC")
     @vocabulary_contributors = []
     @vocabulary.each do |v|
@@ -57,16 +69,6 @@ class VideosController < ApplicationController
     @multiple_choice.each do |c|
       user = User.where(:id => c.user_id).first
       if @challenge_contributors.index(user) == nil then @challenge_contributors << user end
-    end
-
-    @translation = Interpretation.where(:video_id => @video.id).limit(5)
-    @translation_contributors = []
-    @translation.each do |t|
-      user = User.where(:id => t.user_id).first
-      if @translation_contributors.index(user) == nil then @translation_contributors << user end
-    end
-    if @translation.present?
-      @lines = Line.where(:interpretation_id => @translation.first.id).order("time ASC")
     end
 
     @discussion_questions = DiscussionQuestion.where(:video_id => @video.id).order("created_at DESC")
