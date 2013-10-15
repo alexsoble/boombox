@@ -2,7 +2,7 @@
 // They will automatically be included in application.css.
 // You can use Sass (SCSS) here: http://sass-lang.com/ */
 
-.draft-container { width: 1200px; 
+.draft-container { width: 1300px; 
   margin-top: 40px; 
   float: left; }
 
@@ -21,3 +21,18 @@
   position: relative;
   right: 86px;
   top: 16px; }
+
+.user-content-box {
+  width: 370px; 
+  height: 270px; 
+  background-color: #f3f3f6; 
+  border: 1px solid white; 
+  border-radius: 10px; 
+  margin-right: 20px; 
+  margin-bottom: 20px; 
+  padding: 15px; 
+  float: left; }
+
+.user-content-preview {
+  margin-top: 20px; 
+}

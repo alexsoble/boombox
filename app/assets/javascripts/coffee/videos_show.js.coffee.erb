@@ -70,8 +70,6 @@ $ ->
         step: 1
         stop: (event, ui) ->
           player.seekTo($('#playback-slider').slider("value"))
-        stop: (event, ui) ->
-          player.seekTo($('#playback-slider').slider("value"))
       )
 
   window.onYouTubeIframeAPIReady = ->
@@ -129,7 +127,7 @@ $ ->
 
     if this_line.length != 0
       unless this_line.hasClass('highlighted')
-        this_line.children().effect("highlight", { color: "#FFFF00" }, 4000)
+        this_line.effect("highlight", { color: "#FFFF00" }, 4000)
         this_line.addClass("highlighted")
         $("#community-notes").scrollTo(this_line.prev().children(':first'), { duration : 250 } )
 
@@ -272,16 +270,45 @@ $ ->
             <div id='submit-new-discussion-question' class='btn btn-primary btn-small rounded'> Submit </div>
             <div id='back-from-editing' class='btn btn-primary btn-small rounded'> Done </div>
           ")
-        if category == 'lyrics'
+        if category == 'transcript'
           $('#editing').html("
-            <h3>Add lyrics:</h3>
+            <h3>Add lyrics or transcript:</h3>
             <textarea id='lyrics-textbox' style='width: 400px; height: 160px;'></textarea>
             <li><i>Transcribe line-by-line or copy the lyrics from your files.</i></li>
             <li><i>If you want, after hitting 'submit' you can time the lines to the video.</i></li>
             <br>
             <div id='submit-new-lyrics' class='btn btn-primary btn-small rounded'> Submit </div>
-            <div id='back-to-lyrics-options' class='btn btn-primary btn-small rounded'> Done </div>
+            <div id='back-from-editing' class='btn btn-primary btn-small rounded'> Done </div>
           ")
+        if category == 'translation'
+          if $('.lang1').length == 0
+            $('#editing').html("
+              <h3>Sorry...</h3>
+              <br>
+              <p>There needs to be a transcript of this video before you can create a translation.</p>
+              <p>Why not add one? :)</p>
+              <br><br>
+              <div id='back-from-editing' class='btn btn-primary btn-small rounded'> Back </div>
+            ")
+          else
+            transcript_preview1 = $.trim($('.lang1').eq(0).text())
+            transcript_preview2 = $.trim($('.lang1').eq(1).text())
+            transcript_preview3 = $.trim($('.lang1').eq(2).text())
+            $('#editing').html("
+              <h3>Your transcription/lyrics:</h3>
+              <p>#{transcript_preview1}</p>
+              <p>#{transcript_preview2}</p>
+              <p>#{transcript_preview3}</p>
+              <br>
+              <h3>Translate into:</h3>
+              <select id='language-select'></select>
+              <br><br>
+              <div id='create-new-translation' class='btn btn-primary btn-small rounded'> Go </div>
+              <div id='back-from-editing' class='btn btn-primary btn-small rounded'> Back </div>
+          ")
+          availableTags.forEach((language) ->
+            $('#language-select').append("<option>#{language}</option>")
+          )
         if category == 'links'
           $('#editing').html("
             <h3>Add a relevant link:</h3>
@@ -334,7 +361,7 @@ $ ->
   $('#submit-new-vocab').livequery ->
     $(this).click ->
       if window.user == 'logged-out'
-        $('#notice-area').html("<p style='color: #0f82f5;'><i>Please log in to add a new vocabulary word.</i></p>")
+        $('#notice-area').html("<p style='color: #0f82f5;'><i>Please sign in to add a new vocabulary word.</i></p>")
       else
         word = $('#word-input').val()
         definition = $('#definition-input').val()
@@ -368,10 +395,10 @@ $ ->
     $(this).click ->
       $(this).before("<li> &nbsp; <input type='text' class='mc-option' style='width: 200px;' placeholder='Option'> </li>")
 
-  $('.add-time').livequery ->
+  $('.add-time-to-word').livequery ->
     $(this).click ->
       window.word_id = parseInt($(this).attr('id'))
-      $('.ui-slider-handle').addClass('vocab-time-selector')
+      $('.ui-slider-handle').addClass('time-selector')
 
   $('.vocab-time-selector').livequery ->
     $(this).dblclick ->
@@ -382,16 +409,79 @@ $ ->
         $('.ui-slider-handle').removeClass('vocab-time-selector')
       )
 
+  $('.line-timing').livequery ->
+    $(this).click ->  
+      window.player.seekTo($(this).attr('data-line-time'))
+
+  $('.add-times-to-lines').livequery ->
+    $(this).click ->
+      $('.add-time-to-line').each(->
+        $(this).removeClass('quiet')
+      )
+
+  $('.add-time-to-line').livequery ->
+    $(this).click ->
+      window.line_being_timed_id = parseInt($(this).attr('data-line-id'))
+      $('.ui-slider-handle').addClass('time-selector')
+      $('.add-time-to-line').addClass('quiet')
+      $(this).after("
+        <p id='instructions' class='tiny notice'>
+          Double click the orange handle at the point where the line begins.
+          <br>
+        </p>")
+
+  $('.time-selector').livequery ->
+    $(this).dblclick ->
+      time = window.time
+      $.post('/add_time_to_line', { 'line' : { 'id' : "#{window.line_being_timed_id}", 'time' : "#{time}" } }, (data) ->
+        console.log data
+        $("[data-line-id=#{data.data.id}]").html(formatTime(data.data.time))
+        $('.time-selector').removeClass('time-selector')
+        $('.add-time-to-line').removeClass('quiet')
+        $('#instructions').remove()
+        window.line_being_timed_id = 0
+      )
+
+  $('#create-new-translation').livequery ->
+    $(this).click ->
+      $.post('/find_language', { 'language' : "#{$('select option:selected').val()}" }, (data) ->
+        console.log data
+        window.language_id = data.data.id
+        translation_html = '<i>Click on a line to add your translation.</i><br><br>'
+        for line in $('.lang1')
+          translation_html += "<p class='translate-line' data-line-id=#{$(line).attr('data-line-id')}>#{$.trim($(line).text())}</p><div class='translate-line-input-area' data-line-id=#{$(line).attr('data-line-id')}></div>"
+        $('#editing').html(translation_html)
+       )
+
+  $('.translate-line').livequery ->
+    $(this).click ->
+      id = $(this).attr('data-line-id')
+      window.line_being_translated = id
+      $(".translate-line-input-area[data-line-id=#{id}]").html("<input type='text' data-line-id=#{id}> &nbsp; <div class='submit-translation btn btn-primary btn-small rounded' data-line-id=#{id}>Submit</div>")
+
+  $('.submit-translation').livequery ->
+    $(this).click ->
+      id = $(this).attr('data-line-id')
+      text = $("input[data-line-id=#{id}]").val()
+      $.post('/new_translation', { 'translation' : { 'line_id' : "#{id}", 'text' : "#{text}", 'language_id' : "#{window.language_id}", 'user_id' : "#{window.user_id}" } }, (data) ->
+        $(".translate-line-input-area[data-line-id=#{data.data.line_id}]").html("#{data.data.text}")
+      )
+
   postNewLines = (lyrics) ->
+    you_added = "<h3>You added a transcript (<span class='add-times-to-lines blue-link'>add times</span>):"
+    if $('#current-user-lines').length > 0 then $('#current-user-lines').append(you_added)
+    else $('#notes-container').append(you_added)
     lines = lyrics.split('\n')
     for line in lines
       if line isnt '' 
-        $.post('/new_line', { 'line' : { 'interpretation_id' : "#{window.interp_id}", 'lang1' : "#{line}" } }, (data) -> 
-          console.log data
+        $.post('/new_line', { 'line' : { 'interpretation_id' : "#{window.interp_id}", 'lang1' : "#{line}" } }, (data) ->
+          l = data.data
+          line_html = "<p style='padding: 2px;'><span class='lang1' data-line-id=#{l.id}>#{l.lang1}</span> "
+          line_html += "<span class='add-time-to-line blue-link quiet tiny' data-line-id=#{l.id}>(Add time)</span></p>"
           if $('#current-user-lines').length > 0
-            $('#current-user-lines').children(':first').prepend("<p>#{data.data.lang1}</p>")
+            $('#current-user-lines').children(':first').append(line_html)
           else
-            $('#notes-container').prepend("<p>#{data.data.lang1}</p>")
+            $('#notes-container').append(line_html)
             $('#none-yet').remove()
             backFromEditing()
         )
@@ -399,7 +489,7 @@ $ ->
   $('#submit-new-lyrics').livequery ->
     $(this).click ->
       if window.user == 'logged-out'
-        $('#notice-area').html("<p style='color: #0f82f5;'><i>Please log in to add new lyrics.</i></p>")
+        $('#notice-area').html("<p style='color: #0f82f5;'><i>Please sign in to add new lyrics.</i></p>")
       else
         lyrics = $('#lyrics-textbox').val()
         if window.interp_id == 'none-yet'
@@ -428,7 +518,7 @@ $ ->
   $('#submit-new-link').livequery ->
     $(this).click -> 
       if window.user == 'logged-out'
-        $('#notice-area').html("<p style='color: #0f82f5;'><i>Please log in to add a new link.</i></p>")
+        $('#notice-area').html("<p style='color: #0f82f5;'><i>Please sign in to add a new link.</i></p>")
       else
         url = $('#url').val()
         excerpt = $('#excerpt').val()
@@ -460,7 +550,7 @@ $ ->
   $('#submit-new-tweet').livequery ->
     $(this).click -> 
       if window.user == 'logged-out'
-        $('#notice-area').html("<p style='color: #0f82f5;'><i>Please log in to add a new tweet.</i></p>")
+        $('#notice-area').html("<p style='color: #0f82f5;'><i>Please sign in to add a new tweet.</i></p>")
       else
         tweet_url = $('#url').val().split('/')
         tweeter = tweet_url[3]
@@ -476,7 +566,7 @@ $ ->
   $('.add-discussion-answer').click -> 
     id = parseInt($(this).attr('id').substr(11))
     if window.user == 'logged-out'
-        $(this).after("<p style='color: #0f82f5;'><i>Please log in to add your response.</i></p>")
+        $(this).after("<p style='color: #0f82f5;'><i>Please sign in to add your response.</i></p>")
       else
         $(this).replaceWith("
           <input type='text'><div class='submit-discussion-answer btn btn-primary btn-small rounded' style='margin-left: 20px;'>Add your answer</div>
@@ -501,7 +591,7 @@ $ ->
   $('#submit-new-discussion-question').livequery -> 
     $(this).click ->
       if window.user == 'logged-out'
-        $('#notice-area').html("<p style='color: #0f82f5;'><i>Please log in to add a new discussion question.</i></p>")
+        $('#notice-area').html("<p style='color: #0f82f5;'><i>Please sign in to add a new discussion question.</i></p>")
       else
         question_text = $('#discussion-question-text').val()
         if window.interp_id == 'none-yet'
@@ -540,7 +630,7 @@ $ ->
   $('#submit-new-multiple-choice').livequery ->
     $(this).click ->
       if window.user == 'logged-out'
-        $('#notice-area').html("<p style='color: #0f82f5;'><i>Please log in to add a new multiple-choice challenge.</i></p>")
+        $('#notice-area').html("<p style='color: #0f82f5;'><i>Please sign in to add a new multiple-choice challenge.</i></p>")
       else
         challenge = $('#question-title').val()
         options = $('.mc-option')
@@ -607,7 +697,7 @@ $ ->
   $('#submit-new-tag').livequery ->
     $(this).click ->
       if window.user_id == null
-        $('#new-tag').val('Please log in first.')
+        $('#new-tag').val('Please sign in first.')
       else
         new_tag = $('#new-tag').val()
         unless new_tag == '' or new_tag == 'Oops, enter a tag first.' or new_tag == 'Oops, select a tag description.'

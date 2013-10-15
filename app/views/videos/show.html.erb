@@ -87,12 +87,12 @@
           </div>
         <% end %>
       <% end %>
-      <div id="new-content" class="small tab">Add new</div>
+      <div id="new-content" class="small tab">Add!</div>
     <% elsif controller_name == 'interpretations' %>
       <div class="big tab solo" id="all-content"><%= @user.username %>'s learning materials</div>
       <% if current_user %>
         <% if current_user.id == @user.id%>
-          <div id="new-content" class="small tab">Add new</div>
+          <div id="new-content" class="small tab">Add!</div>
         <% end %>
       <% end %>
     <% end %>
@@ -104,7 +104,7 @@
         <span id="all" class="inactive note-category">All</span> &nbsp;
       <% end %>
       <span id="vocabulary" class="note-category <% if @vocabulary.present? %>active<% else %>inactive<% end %>">
-        Vocabulary
+        Vocab
       </span> &nbsp;
       <span id="multiple-choice" class="note-category <% if @multiple_choice.present? %>active<% else %>inactive<% end %>">
         Multiple-Choice
@@ -112,8 +112,8 @@
       <span id="discussion-question" class="note-category <% if @discussion_questions.present? %>active<% else %>inactive<% end %>">
         Discussion
       </span> &nbsp; 
-      <span id="lyrics" class="note-category <% if @lines.present? %>active<% else %>inactive<% end %>">
-        Lyrics
+      <span id="transcript" class="note-category <% if @lines.present? %>active<% else %>inactive<% end %>">
+        Transcript
       </span> &nbsp;
       <span id="translation" class="note-category <% if @translation.present? %>active<% else %>inactive<% end %>">
         Translation
@@ -234,10 +234,62 @@
             <% end %>
           </div>
         <% end %>
+        <% if @interps_with_translations.present? %>
+          <div class="note-area translation-area">
+            <% @interps_with_translations.each do |i| %>
+              <% c = i.user %>
+              <% @lines = i.lines.order("time ASC").reject { |r| r.lang2.blank? && Translation.where(:line_id => r.id).blank? } %>
+              <% unless current_user %>
+                <div class='other-user-content'>
+                  <p style="font-size: 16px;"> <%= link_to "#{c.username}", user_url(c) %> added a translation: </p>
+              <% else %>
+                <% if current_user.id == c.id %>
+                  <div id='current-user-challenges' class='current-user-content'>
+                    <p style="font-size: 16px;">You added a translation: </p>
+                <% else %>
+                  <div class='other-user-content'>
+                    <p style="font-size: 16px;"> <%= link_to "#{c.username}", user_url(c) %> added a translation: </p>
+                <% end %>
+              <% end %>
+              <%= render "videos/translation", :translated_lines => @lines %>
+              <br><br>
+              </div>
+            <% end %>
+          </div>
+        <% end %>
         <% if @lines.present? %>
-          <div class="note-area lyrics-area">
-            <% @lines.each do |l| %>
-              <p><%= l.lang1 %></p>
+          <div class="note-area transcript-area">
+            <% @interps_with_lines.each do |i| %>
+              <% c = i.user %>
+              <% @lines = i.lines.order("created_at ASC").order("time ASC") %>
+              <% unless current_user %>
+                <div class='other-user-content'>
+                  <p style="font-size: 16px;"> <%= link_to "#{c.username}", user_url(c) %> added a transcript: </p>
+              <% else %>
+                <% if current_user.id == c.id %>
+                  <div id='current-user-lines' class='current-user-content'>
+                    <p style="font-size: 16px;">You added a transcript (<span class="add-times-to-lines blue-link">add times</span>): </p>
+                <% else %>
+                  <div class='other-user-content'>
+                    <p style="font-size: 16px;"> <%= link_to "#{c.username}", user_url(c) %> added a transcript: </p>
+                <% end %>
+              <% end %>
+                <% @lines.each do |l| %>
+                  <p data-time=<%= l.time %> style="padding: 2px;">
+                    <span class="lang1" data-line-id=<%= l.id %>>
+                      <%= l.lang1 %>
+                    </span>
+                    <% if l.time.present? %>
+                      <span class="line-timing tiny blue-link" data-line-id=<%= l.id %> data-time=<%= l.time %>>
+                        <%= l.formatted_time %>
+                      </span>
+                    <% else %>
+                      <span class='add-time-to-line blue-link quiet tiny' data-line-id=<%= l.id %>> (Add time) </span>
+                    <% end %>
+                  </p>
+                <% end %>
+                <br><br>
+              </div>
             <% end %>
           </div>
         <% end %>

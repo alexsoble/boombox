@@ -3,5 +3,5 @@ class Word < ActiveRecord::Base
   belongs_to :video
   belongs_to :interpretation
   belongs_to :user
-  has_many :definitions
+  has_one :definition
 end

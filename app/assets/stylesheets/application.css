@@ -46,6 +46,9 @@ h3 { font-size: 18px !important; line-height: 22px !important }
 div { color: black; }
 span { color: black; }
 
+.notice { color: #0f82f5;
+  font-style: italic; }
+   
 .left { float: left; }
 .right { float: right; }
 

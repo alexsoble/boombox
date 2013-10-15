@@ -14,12 +14,16 @@ $ ->
       $('#input-lastname-area').remove()
     )
 
-  $('#update-bio').click ->
-    bio = $('#bio').val()
-    $.post('/update_user', { 'user_id' : "#{window.user_id}", 'bio' : "#{bio}" }, (data) ->
-      console.log data
-      $('#input-bio-area').replaceWith("<p>#{data.data.bio}</p>")
-    )
+  $('#update-bio').livequery ->
+    $(this).click ->
+      bio = $('#bio').val()
+      $.post('/update_user', { 'user_id' : "#{window.user_id}", 'bio' : "#{bio}" }, (data) ->
+        console.log data
+        $('#input-bio-area').replaceWith("
+          <span id='user-bio'>#{data.data.bio}</span>
+        ")
+        $('#edit-bio-area').show()
+      )
 
   $('#update-school').click ->
     school = $('[name="school"]').val()
@@ -27,3 +31,14 @@ $ ->
     $.post('/update_user', { 'user_id' : "#{window.user_id}", 'school' : "#{school}", 'role' : "#{role}" }, (data) ->
       console.log data
     )
+
+  $('#edit-bio').livequery ->
+    $(this).click -> 
+      current_bio = $('#user-bio').html()
+      $('#user-bio').replaceWith("
+        <div id='input-bio-area'>
+          <input type='text' id='bio' placeholder='#{current_bio}'>
+          <div class='btn btn-primary rounded' id='update-bio'>Submit</div>
+        </div>")
+      $('#edit-bio-area').hide()
+

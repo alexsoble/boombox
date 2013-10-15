@@ -1,5 +1,11 @@
 class User < ActiveRecord::Base
   has_secure_password
+  has_many :interpretations
+  belongs_to :school
+  has_one :classroom
+  belongs_to :classroom
+  has_many :stars
+  has_many :comments
 
   def self.from_omniauth(auth)
     where(auth.slice("provider", "uid")).first || create_from_omniauth(auth)
@@ -14,11 +20,6 @@ class User < ActiveRecord::Base
   end
 
   attr_accessible :email, :firstname, :lastname, :username, :password, :password_confirmation, :bio, :image_url
-  belongs_to :school
-  has_one :classroom
-  belongs_to :classroom
-  has_many :stars
-  has_many :comments
   
   validates_uniqueness_of :email
   validates_format_of :email, :with => /\A([^@\s]+)@((?:[-a-z0-9]+\.)+[a-z]{2,})\z/i

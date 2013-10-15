@@ -92,6 +92,17 @@ class InterpretationsController < ApplicationController
     @translation = @interp
     @translation_contributors = [@user]
     @lines = Line.where(:interpretation_id => @interp.id).order("time ASC")
+    @interps_with_lines = [@interp]
+
+    if @lines.present? 
+      @lines.each do |l|
+        if Translation.where(:line_id => l.id).present? || l.lang2.present?
+          @interps_with_translations = [@interp]
+          @translation = true
+        end
+      end
+    end
+
     @tags = Tag.where(:video_id => @video.id)
 
     if @tags.present?
@@ -109,20 +120,35 @@ class InterpretationsController < ApplicationController
     end 
 
     @vocabulary = Word.where(:video_id => @video.id, :user_id => @user.id).order("created_at DESC")
-    @vocabulary_contributors = [@user]
+
+    if @vocabulary.present?
+      @vocabulary_contributors = [@user]
+    end
 
     @multiple_choice = Challenge.where(:video_id => @video.id, :user_id => @user.id).order("created_at DESC")
-    @challenge_contributors = [@user]
+
+    if @multiple_choice.present?
+      @challenge_contributors = [@user]
+    end 
 
     @discussion_questions = DiscussionQuestion.where(:video_id => @video.id, :user_id => @user.id).order("created_at DESC")
-    @question_contributors = [@user]
+
+    if @discussion_questions.present?
+      @question_contributors = [@user]
+    end
 
     @tweets = Tweet.where(:video_id => @video.id, :user_id => @user.id).order("created_at DESC")
-    @tweet_contributors = [@user]
+
+    if @tweets.present?
+      @tweet_contributors = [@user]
+    end
 
     @links = Link.where(:video_id => @video.id, :user_id => @user.id).order("created_at DESC")
-    @link_contributors = [@user]
-
+    
+    if @links.present?
+      @link_contributors = [@user]
+    end
+    
     render "videos/show"
 
     # @translator = User.find_by_id(@interp.user_id)
@@ -207,26 +233,9 @@ class InterpretationsController < ApplicationController
     
   end
 
-  def update_note
+  def lyrics
     @interp = Interpretation.find_by_id(params[:id])
-    @note = params[:note]
-    @interp.note = @note
-    @interp.save
-    render :json => { :data => @interp.note }
-  end
-
-  def publish 
-    @interp = Interpretation.find_by_id(params[:id])
-    @interp.published = true
-    @interp.save
-    render :json => { :data => @interp }
-  end
-
-  def unpublish 
-    @interp = Interpretation.find_by_id(params[:id])
-    @interp.published = false
-    @interp.save
-    render :json => { :data => @interp }
+    @lines = Line.where(:interpretation_id => @interp.id).all
   end
 
   def destroy

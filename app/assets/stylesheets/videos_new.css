@@ -309,7 +309,7 @@ select { width: 150px; }
 .option { color: white; cursor: pointer; }
 
 .new-multiple-choice-option { cursor: auto !important; }
-.vocab-time-selector { background-color: #FF7518 !important; }
+.time-selector { background-color: #FF7518 !important; }
 
 .tag-category { float: left; width: 170px; margin-left: 10px; }
 

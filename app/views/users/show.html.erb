@@ -15,7 +15,7 @@
         <% end %>
       <% end %>
       <% if @bio.present? %> 
-        <p><%= @bio %> (<span id='edit-bio' class='blue-link'>edit</span>)</p>
+        <span id='user-bio'><%= @bio %></span> <span id='edit-bio-area'>(<span id='edit-bio' class='blue-link'>edit</span>)</span>
       <% else %>
         <% if current_user %>
           <% if current_user.id == @user.id %>
@@ -60,8 +60,6 @@
               </div>
             <br>
             <div class="btn btn-primary rounded" id="update-school">Submit</div>
-            <br><br>
-            <p>Don't see your school? <a href="mailto:asoble@gmail.com?Subject=Add%20my%20school&body=Hi,%20my%20name%20is%20_____%20and%20I%20(teach%20/%20study)%20at%20______.">Contact us</a>.</p>
           <% end %>
         </div>
       <% end %>
@@ -70,16 +68,78 @@
       <% if @starred_videos.present? %>
       <% end %>
       <% if current_user && @user.id == current_user.id %>
-        <h3><strong>My learning materials:</strong></h3>
+        <h2>My learning materials:</strong></h2>
       <% else %>
-         <h3><strong><%= @user.username %>'s learning materials:</h3><strong>
+        <h2><%= @user.username %>'s learning materials:</h2>
       <% end %>
-      <% if @vocabulary.present? %>
-        Added vocabulary words:
-        <% @vocabulary_interps.each do |this_interpretation| %>
-          <% if this_interpretation.present? %>
-            <%= render "thumb_box", :this_interpretation => this_interpretation %>
-          <% end %>
+      <br>
+      <% if @interpretations.present? %>
+        <% @interpretations.each do |i| %>
+          <div class="user-content-box">
+            <% counter = 0 %>
+            <% vocabulary = Word.where(:interpretation_id => i.id) %>
+            <% if vocabulary.present? then counter += 1 end %>
+            <% challenges = Challenge.where(:interpretation_id => i.id) %>
+            <% if challenges.present? then counter += 1 end %>
+            <% discussion_questions = DiscussionQuestion.where(:interpretation_id => i.id) %>
+            <% if discussion_questions.present? then counter += 1 end %>
+            <% links = Link.where(:interpretation_id => i.id) %>
+            <% if links.present? then counter += 1 end %>
+            <% lines = Line.where(:interpretation_id => i.id) %>
+            <% if lines.present? then counter += 1 end %>
+            <% tweets = Tweet.where(:interpretation_id => i.id) %>
+            <% if tweets.present? then counter += 1 end %>
+            <% video = i.video %>
+            <h3 style="text-align: center;"><%= video.title %></h3>
+            <div style="float: left;">
+              <%= render 'thumb_box', :this_interpretation => i %>
+            </div>
+            <div class="user-content-preview">
+              <% if vocabulary.present? %>
+                <% vocabulary.limit(3).each do |w| %>
+                  <% d = Definition.where(:word_id => w.id).first %>
+                  <li><%= link_to "#{w.text + " = " + d.text}", definition_url(d) %></li>
+                <% end %>
+              <% end %>
+              <% if challenges.present? && counter < 1 %>
+                <h3>Multiple-choice:</h3>
+                <% challenges.limit(1).each do |challenge| %>
+                  <p> <%= challenge.question_text %> </p>
+                  <% options = Option.where(:challenge_id => challenge.id).all %>
+                  <% options.each do |o| %>
+                    <p style="margin-left: 20px;"> <input type='checkbox' id="option-<%= o.id %>" class="option-challenge-<%= challenge.id %>"> <%= o.answer_text %> </p>
+                  <% end %>
+                <% end %>
+              <% end %>
+              <% if discussion_questions.present? && counter < 2 %>
+                <h3>Discussion questions:</h3>
+                <% discussion_questions.limit(3).each do |question| %>
+                  <p> <%= question.question_text %> </p>
+                <% end %>
+              <% end %>
+              <% if lines.present? && counter < 3 %>
+                <h3>Lyrics:</h3>
+                <% lines.limit(3).each do |l| %>
+                  <p><%= l.lang1 %></p>
+                <% end %>
+                <a href="/lyrics/<%= i.id %>">See all</a>
+              <% end %>
+              <% if links.present? && counter < 4 %>
+                <h3>Links:</h3>
+                <% links.limit(5).each do |link| %>
+                  <%= image_tag "http://g.etfv.co/#{link.url}", :size => '25x25' %>
+                  <strong><%= link_to "#{link.url.split('/')[2]}", link.url %></strong>
+                  <p><%= link.excerpt %></p>
+                <% end %>
+              <% end %>
+              <% if tweets.present?  && counter < 5 %>
+                <h3>Tweets:</h3>
+                <% tweets.limit(1).each do |tweet| %>
+                  <blockquote class="twitter-tweet"><a href="https://twitter.com/<%= tweet.tweeter %>/statuses/<%= tweet.twitter_id %>"></a></blockquote>
+                <% end %>
+              <% end %>
+            </div>
+          </div>
         <% end %>
       <% end %>
     </div>

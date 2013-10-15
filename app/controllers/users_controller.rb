@@ -32,40 +32,14 @@ class UsersController < ApplicationController
     @user_role = @user.teacher
     @schools = School.all
 
-    @vocabulary = Word.where(:user_id => @user.id).order("created_at DESC")
-    @vocabulary_interps = []
-    @vocabulary.each do |v|
-      interp = Interpretation.find_by_id(v.interpretation_id)
-      if @vocabulary_interps.index(interp) == nil then @vocabulary_interps << interp end
+    @interpretations = Interpretation.where(:user_id => @user.id).all
+
+    @stars = Star.where(:user_id => @user.id).all
+    @starred = []
+    @stars.each do |s|
+      video = Video.find_by_id(s.video_id)
+      if @starred.index(video) == nil then @starred << video end
     end
-
-    # @multiple_choice = Challenge.where(:user_id => @user.id).order("created_at DESC")
-    # @multiple_choice_videos = []
-    # @multiple_choice.each do |c|
-    #   video = Video.find_by_id(c.video_id)
-    #   if @multiple_choice_videos.index(video) == nil then @multiple_choice_videos << video end
-    # end
-
-    # @discussion_questions = DiscussionQuestion.where(:user_id => @user.id).order("created_at DESC")
-    # @discussion_question_videos = []
-    # @discussion_questions.each do |d|
-    #   video = Video.find_by_id(d.video_id)
-    #   if @discussion_question_videos.index(video) == nil then @discussion_question_videos << video end
-    # end
-
-    # @tweets = Tweet.where(:user_id => @user.id).order("created_at DESC")
-    # @tweet_videos = []
-    # @tweets.each do |t|
-    #   video = Video.find_by_id(t.video_id)
-    #   if @tweet_videos.index(video) == nil then @tweet_videos << video end
-    # end
-
-    # @links = Link.where(:user_id => @user.id).order("created_at DESC")
-    # @link_videos = []
-    # @links.each do |l|
-    #   video = Video.find_by_id(l.video_id)
-    #   if @link_videos.index(video) == nil then @link_videos << video end
-    # end
 
   end
 

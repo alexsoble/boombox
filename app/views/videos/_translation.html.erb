@@ -1,17 +1,14 @@
-          <% @lines.each do |l| %>
-            <div class="short-line rounded" data-time=<%= l.time %> style="float: left; width: 360px;">
-              <div style="width: 140px; margin: 8px; float: left;" class="rounded">
-                <p><%= l.lang1 %></p>
-              </div>
-              <div style="width: 140px; margin: 8px; float: right;" class="rounded">
+          <% translated_lines.each do |l| %>
+            <div class="short-line rounded" data-time=<%= l.time %> style="float: left; width: 420px;">
+              <p style="width: 180px; margin-bottom: 4px; margin-top: 4px; float: left;" class="rounded">
+                <%= l.lang1 %>
+              </p>
+              <p style="width: 180px; margin-bottom: 4px; margin-top: 4px; float: right;" class="rounded">
+              <% if l.lang2.present? %>
                 <p><%= l.lang2 %></p>
-              </div>
+              <% elsif Translation.where(:line_id => l.id).present? %>
+                <p><%= Translation.where(:line_id => l.id).first.text %></p>
+              <% end %>
+              </p>
             </div>
           <% end %>
-          <!-- <% @lines.offset(3).each do |l| %>
-            <div class="short-line rounded quiet" data-time=<%= l.time %> style="height: 60px;">
-              <div style="width: 170px; float: left;"><p><%= l.lang1 %></p></div>
-              <div style="width: 170px; float: right;"><p><%= l.lang2 %></p></div>
-            </div>
-          <% end %>
-          <p id="toggle-show-lines" style="float: right;">(<i><u style="color: #007FFF;">See all lines.</u></i>)<p> -->

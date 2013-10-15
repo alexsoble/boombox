@@ -51,7 +51,7 @@
       <% if current_user %>
         <ul class="nav pull-right signed-in-user" id="<%= current_user.id %>">
           <% if current_user.teacher == true %>
-            <li><%= link_to "My classes", "/teachers/#{current_user.id}" %></li>
+            <!-- <li><%= link_to "My classes", "/teachers/#{current_user.id}" %></li> --> 
           <% end %>
           <li><%= link_to "My profile", user_url(current_user) %></li>
           <li><a href="/survey">Survey</a></li>

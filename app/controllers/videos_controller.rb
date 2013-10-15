@@ -18,7 +18,12 @@ class VideosController < ApplicationController
   def show 
 
     @video = Video.find_by_id(params[:id])
-    @star = Star.where(:video_id => @video.id, :user_id => current_user.id).first
+
+    if current_user
+      if Star.where(:video_id => @video.id, :user_id => current_user.id).present?
+        @star = Star.where(:video_id => @video.id, :user_id => current_user.id).first
+      end
+    end
 
     @tags = Tag.where(:video_id => @video.id)
 
@@ -47,11 +52,18 @@ class VideosController < ApplicationController
     @interpretations = Interpretation.where(:video_id => @video.id)
 
     @lines = []
+    @interps_with_lines = []
+    @interps_with_translations = []
     @interpretations.each do |i|
       if Line.where(:interpretation_id => i.id).present?
+        if @interps_with_lines.index(i) == nil then @interps_with_lines << i end
         Line.where(:interpretation_id => i.id).each do |l|
           @lines << l
           if Translation.where(:line_id => l.id).present?
+            if @interps_with_translations.index(i) == nil then @interps_with_translations << i end
+            @translation = true
+          elsif l.lang2.present?
+            if @interps_with_translations.index(i) == nil then @interps_with_translations << i end
             @translation = true
           end
         end
