@@ -7,6 +7,12 @@ class PagesController < ApplicationController
     @featured_video_3 = Video.find(132)
     @featured_video_4 = Video.find(24)
 
+    all_language_tags = Tag.where(:type_lang => true)
+    @language_tags = []
+    all_language_tags.each do |t|
+      if @language_tags.index(t.name) == nil then @language_tags << t.name end
+    end
+
     interps_with_some_content = []
     Interpretation.all.each do |i|
       l = Line.where(:interpretation_id => i.id).length

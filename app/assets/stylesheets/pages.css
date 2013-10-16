@@ -2,5 +2,56 @@
 // They will automatically be included in application.css.
 // You can use Sass (SCSS) here: http://sass-lang.com */ 
 
-#philosophy li { font-size: 30px; color: black; }
-#philosophy li span { font-size: 14px; line-height: 13px; color: black; }
+#philosophy li { font-size: 24px; }
+
+#definition-box {
+  width: 740px; 
+  margin-left: auto; 
+  margin-right: auto; 
+  background-color: #f3f3f6; 
+  border: 1px solid white; 
+  border-radius: 10px; 
+  padding: 30px;
+  text-align: center; 
+  font-size: 20px; 
+  line-height: 30px; }
+
+#frontpage-box {
+  width: 820px; 
+  margin-left: auto; 
+  margin-right: auto; 
+  background-color: #f3f3f6; 
+  border: 1px solid white; 
+  border-radius: 10px; 
+  padding: 30px;
+  text-align: center; 
+  font-size: 20px; 
+  line-height: 30px; }
+
+#what-we-believe-title {
+  text-align: center; 
+  background-color: #9b59bb; 
+  color: white; 
+  font-size: 50px; 
+  padding: 30px;
+  border: 1px solid white;
+  border-top-left-radius: 10px;
+  border-top-right-radius: 10px;
+  width: 740px;
+  margin-left: auto;
+  margin-right: auto }
+
+#what-we-believe {
+  font-size: 24px; 
+  text-align: center; 
+  background-color: #f3f3f6; 
+  border: 1px solid white; 
+  border-radius: 10px; 
+  padding: 30px; 
+  width: 740px; 
+  margin-right: auto; 
+  margin-left: auto;
+  padding-top: 100px;
+  position: relative;
+  bottom: 50px; 
+  z-index: -1; }

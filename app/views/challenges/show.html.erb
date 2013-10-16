@@ -1,0 +1,21 @@
+<div class="word-box">
+  <div class="word-box-title">Multiple-Choice Question</div>
+    <br><br>
+    <div class="bigger-friendly">
+      <%= @challenge.question_text %>
+    </div>
+    <div class="big-friendly">
+      (question by <%= link_to "#{@challenger.username}", user_url(@challenger) %>)
+      <br><br><br>
+      <% if @options.present? %>
+        <% @options.each do |o| %>
+          <li><%= o.answer_text %>: <%= o.votes %></li>
+          <br>
+        <% end %>
+      <% else %>
+        <i>No responses yet.</i>
+      <% end %>
+      <br><br>
+    </div>
+  </div>
+</div>

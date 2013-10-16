@@ -17,7 +17,7 @@ class VideosController < ApplicationController
 
   def show 
 
-    @video = Video.find_by_id(params[:id])
+    @video = Video.find_by_slug!(params[:id])
 
     if current_user
       if Star.where(:video_id => @video.id, :user_id => current_user.id).present?

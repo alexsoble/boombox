@@ -17,13 +17,16 @@ Boombox::Application.routes.draw do
   resources :interpretations
   resources :tags
   resources :definitions
+  resources :challenges
   resources :clips
   resources :users
   resources :sessions
   resources :classrooms
+  resources :discussion_questions
 
   post '/update_user' => 'users#update'
   post '/student_list' => 'users#list'
+  post '/language_list' => 'languages#list'
   post '/new_classroom' => 'classrooms#create'
   get '/teachers/:id' => 'users#teacher_dashboard'
 
@@ -37,6 +40,7 @@ Boombox::Application.routes.draw do
   post '/new_definition' => 'definitions#create'
   post '/new_challenge' => 'challenges#create'
   post '/new_option' => 'options#create'
+  post '/new_discussion_response' => 'discussion_responses#create'
 
   post '/find_playcount/:user_id/:video_id' => 'playcounts#find'
   post '/new_playcount/:user_id/:video_id' => 'playcounts#create'
@@ -47,7 +51,7 @@ Boombox::Application.routes.draw do
   post '/new_interp/:user_id/:video_id' => 'interpretations#create'
 
   post '/new_line' => 'lines#create'
-  post '/add_time_to_line' => 'lines#update'
+  post '/update_line' => 'lines#update'
 
   post '/new_translation' => 'translations#create'
   post '/new_link/' => 'links#create'

@@ -2,7 +2,7 @@
 // They will automatically be included in application.css.
 // You can use Sass (SCSS) here: http://sass-lang.com/ */
 
-.draft-container { width: 1300px; 
+.draft-container { 
   margin-top: 40px; 
   float: left; }
 
@@ -10,29 +10,31 @@
   margin-top: 40px; 
   float: left; }
 
-#school-info-box {
+.info-box {
   background-color: #f3f3f6; 
-  width: 300px; 
   padding: 20px; 
   border: 1px solid white; 
   border-radius: 10px; 
-  float: right; 
   text-align: center;
-  position: relative;
-  right: 86px;
-  top: 16px; }
+  box-shadow: 10px 10px 5px #888888;
+}
+
+.image-box-right { 
+  float: right; 
+  margin: 10px;  }
 
 .user-content-box {
-  width: 370px; 
-  height: 270px; 
+  width: 320px; 
+  height: 210px; 
   background-color: #f3f3f6; 
   border: 1px solid white; 
   border-radius: 10px; 
-  margin-right: 20px; 
-  margin-bottom: 20px; 
+  margin-right: 40px; 
+  margin-bottom: 40px; 
   padding: 15px; 
-  float: left; }
+  float: left; 
+  box-shadow: 10px 10px 5px #888888;
+}
 
 .user-content-preview {
-  margin-top: 20px; 
-}
+  margin-top: 20px; }

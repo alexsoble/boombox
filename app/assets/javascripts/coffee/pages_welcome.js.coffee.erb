@@ -5,16 +5,15 @@ $ ->
 
   $('.frontpage-thumb-box').livequery ->
     $(this).click ->
-      video_id = parseInt($(this).attr('data-video-id'))
-      window.location.href = "/videos/#{video_id}/"
+      video_slug = $(this).attr('data-video-slug')
+      window.location.href = "/videos/#{video_slug}/"
 
   $('.language-selector').click ->
     lang = $(this).attr('id')
     unless lang == 'all' or lang == 'featured'
       $('.frontpage-thumb-box').hide()
+      $('.featured-video-box').show()
       $(".#{lang}").show()
-      $("#featured-videos").slideUp()
-      $('#results-box').slideUp()
     if lang == 'all'
       $('.video-thumb-box').show()
     if lang == 'featured'

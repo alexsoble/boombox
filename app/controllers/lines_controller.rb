@@ -7,8 +7,8 @@ class LinesController < ApplicationController
   end
 
   def update
+    
     @update = params[:line]
-
     @line = Line.find_by_id(params[:line][:id])
 
     if @update[:time].present?

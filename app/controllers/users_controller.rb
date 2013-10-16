@@ -32,13 +32,20 @@ class UsersController < ApplicationController
     @user_role = @user.teacher
     @schools = School.all
 
+    @user_interests = @user.interests
     @interpretations = Interpretation.where(:user_id => @user.id).all
 
     @stars = Star.where(:user_id => @user.id).all
-    @starred = []
+    @starred_videos = []
+    @starred_interps = []
     @stars.each do |s|
       video = Video.find_by_id(s.video_id)
-      if @starred.index(video) == nil then @starred << video end
+      interp = Interpretation.find_by_id(s.video_id)
+      if video.present?
+        if @starred_videos.index(video) == nil then @starred_videos << video end
+      elsif interp.present?
+        if @starred_interps.index(interp) == nil then @starred_interps << interp end
+      end
     end
 
   end

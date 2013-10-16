@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20131015174451) do
+ActiveRecord::Schema.define(:version => 20131016184643) do
 
   create_table "challenges", :force => true do |t|
     t.integer  "user_id"
@@ -68,6 +68,23 @@ ActiveRecord::Schema.define(:version => 20131015174451) do
     t.datetime "created_at",        :null => false
     t.datetime "updated_at",        :null => false
     t.integer  "interpretation_id"
+  end
+
+  create_table "discussion_responses", :force => true do |t|
+    t.integer  "discussion_question_id"
+    t.string   "response_text"
+    t.integer  "user_id"
+    t.datetime "created_at",             :null => false
+    t.datetime "updated_at",             :null => false
+  end
+
+  create_table "interests", :force => true do |t|
+    t.integer  "user_id"
+    t.integer  "language_id"
+    t.boolean  "teach"
+    t.string   "level"
+    t.datetime "created_at",  :null => false
+    t.datetime "updated_at",  :null => false
   end
 
   create_table "interpretations", :force => true do |t|
@@ -241,7 +258,10 @@ ActiveRecord::Schema.define(:version => 20131015174451) do
     t.datetime "created_at", :null => false
     t.datetime "updated_at", :null => false
     t.string   "youtube_id"
+    t.string   "slug"
   end
+
+  add_index "videos", ["slug"], :name => "index_videos_on_slug"
 
   create_table "vocabwords", :force => true do |t|
     t.integer  "interpretation_id"

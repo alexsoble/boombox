@@ -1,11 +1,14 @@
 class User < ActiveRecord::Base
   has_secure_password
   has_many :interpretations
+  has_many :discussion_questions
+  has_many :discussion_responses
+  has_many :stars
+  has_many :interests
+  has_many :comments
   belongs_to :school
   has_one :classroom
   belongs_to :classroom
-  has_many :stars
-  has_many :comments
 
   def self.from_omniauth(auth)
     where(auth.slice("provider", "uid")).first || create_from_omniauth(auth)

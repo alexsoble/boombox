@@ -11,7 +11,7 @@
   <% else %>
     <h1 style='text-align: center;'><strong>Love learning languages?</strong></h1>
     <br>
-    <h2 style='text-align: center; font-size: 30px;'>Then you know it's more fun to learn with <i class="icon icon-music"></i> than with <i class="icon icon-book"></i>.</h2>
+    <h2 style='text-align: center; font-size: 30px;'>You know it's more fun to learn with <i class="icon icon-music"></i> than with <i class="icon icon-book"></i>.</h2>
     <h2 style='text-align: center; font-size: 30px;'>Join Heyu to turn <i class="icon icon-youtube-sign"></i> into a language resource for the <i class="icon icon-globe"></i>.</h2>
     <h2 style='text-align: center; font-size: 30px;'>(<i><a href='/philosophy'>Read more.</a></i>)</h2>
     <br>
@@ -22,29 +22,29 @@
 </div>
 <div class="row">
   <div class="offset4">
-    <div class="video-thumb-box frontpage-thumb-box featured-video-box" data-video-id=<%= @featured_video_1.id %>>
+    <div class="video-thumb-box frontpage-thumb-box featured-video-box" data-video-slug=<%= @featured_video_1.slug %>>
       <strong>SPANISH</strong>
       <br><br>
       <strong class="center" style="color: #2793E6;"><%= "#{@featured_video_1.title.slice(0,25)}" %></strong>
-      <br><div class="image-box"><%= image_tag "http://img.youtube.com/vi/#{@featured_video_1.youtube_id}/1.jpg" %></div>
+      <br><div class="image-box"><%= image_tag "#{@featured_video_1.image}" %></div>
     </div>
-    <div class="video-thumb-box frontpage-thumb-box featured-video-box" data-video-id=<%= @featured_video_2.id %>>
+    <div class="video-thumb-box frontpage-thumb-box featured-video-box" data-video-slug=<%= @featured_video_2.slug %>>
       <strong>FRENCH</strong>
       <br><br>
       <strong class="center" style="color: #2793E6;"><%= "#{@featured_video_2.title.slice(0,25)}" %></strong>
-      <br><div class="image-box"><%= image_tag "http://img.youtube.com/vi/#{@featured_video_2.youtube_id}/1.jpg" %></div>
+      <br><div class="image-box"><%= image_tag "#{@featured_video_2.image}" %></div>
     </div>
-    <div class="video-thumb-box frontpage-thumb-box featured-video-box" data-video-id=<%= @featured_video_3.id %>>
+    <div class="video-thumb-box frontpage-thumb-box featured-video-box" data-video-slug=<%= @featured_video_3.slug %>>
       <strong>ITALIAN</strong>
       <br><br>
       <strong class="center" style="color: #2793E6;"><%= "#{@featured_video_3.title.slice(0,25)}" %></strong>
-      <br><div class="image-box"><%= image_tag "http://img.youtube.com/vi/#{@featured_video_3.youtube_id}/1.jpg" %></div>
+      <br><div class="image-box"><%= image_tag "#{@featured_video_3.image}" %></div>
     </div>
-    <div class="video-thumb-box frontpage-thumb-box featured-video-box" data-video-id=<%= @featured_video_4.id %>>
+    <div class="video-thumb-box frontpage-thumb-box featured-video-box" data-video-slug=<%= @featured_video_4.slug %>>
       <strong>HINDI</strong>
       <br><br>
       <strong class="center" style="color: #2793E6;"><%= "#{@featured_video_4.title.slice(0,25)}" %></strong>
-      <br><div class="image-box"><%= image_tag "http://img.youtube.com/vi/#{@featured_video_4.youtube_id}/1.jpg" %></div>
+      <br><div class="image-box"><%= image_tag "#{@featured_video_4.image}" %></div>
     </div>
     <br><br>
   </div>
@@ -57,8 +57,10 @@
       <div class="btn-group">
         <div class="btn btn-info rounded dropdown-toggle" data-toggle="dropdown"> (select language) </div>
         <ul class="dropdown-menu">
-          <li><a class="language-selector" id="featured">Featured</a></li>
           <li><a class="language-selector" id="all">All</a></li>
+          <% @language_tags.each do |t_name| %>
+            <li><a class="language-selector" id="<%= t_name %>"><%= t_name %></a></li>
+          <% end %>
         </ul>
       </div>
     </h2>
@@ -66,12 +68,10 @@
     <hr id="hr">
     <%  @interps_with_some_content.each do |i| %>
       <% v = i.video %>
-      <div class="video-thumb-box frontpage-thumb-box" title="<%= v.title %>" data-video-id=<%= v.id %>>
+      <div class="video-thumb-box frontpage-thumb-box <%= if v.langs.present? then v.langs[0] end %>" title="<%= v.title %>" data-video-slug=<%= v.slug %>>
         <strong class="center" style="color: #2793E6;"><%= "#{v.title.slice(0,25)}" %></strong>
         <br>
-        <div class="image-box">
-          <%= image_tag "http://img.youtube.com/vi/#{v.youtube_id}/1.jpg" %>
-        </div>
+        <div class="image-box"><%= image_tag "#{v.image}" %></div>
       </div>
     <% end %>
   </div>

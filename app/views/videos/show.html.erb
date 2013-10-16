@@ -78,7 +78,7 @@
 
 <div id="social-content-area" class="content-area"> 
     <% if controller_name == 'videos' %>
-      <div id="all-content" class="big tab">Everyone's <span style='font-size:14px;color:white;'>learning materials</span></div>
+      <div id="all-content" class="big tab">Everyone's <span style='font-size:14px;color:white;'> materials</span></div>
       <% if current_user %>
         <% @this_user_interp = Interpretation.where(:video_id => @video.id, :user_id => current_user.id).first %>
         <% if @this_user_interp.present? %>
@@ -97,33 +97,42 @@
       <% end %>
     <% end %>
     <br><br><br>
-    <div class="small-tab" style="text-align:justify;"> &nbsp; &nbsp; 
-      <% unless @vocabulary.blank? && @multiple_choice.blank? && @translation.blank? %>
-        <span id="all" class="active note-category">All</span> &nbsp;
-      <% else %>
-        <span id="all" class="inactive note-category">All</span> &nbsp;
-      <% end %>
-      <span id="vocabulary" class="note-category <% if @vocabulary.present? %>active<% else %>inactive<% end %>">
-        Vocab
-      </span> &nbsp;
-      <span id="multiple-choice" class="note-category <% if @multiple_choice.present? %>active<% else %>inactive<% end %>">
-        Multiple-Choice
-      </span> &nbsp; 
-      <span id="discussion-question" class="note-category <% if @discussion_questions.present? %>active<% else %>inactive<% end %>">
-        Discussion
-      </span> &nbsp; 
-      <span id="transcript" class="note-category <% if @lines.present? %>active<% else %>inactive<% end %>">
-        Transcript
-      </span> &nbsp;
-      <span id="translation" class="note-category <% if @translation.present? %>active<% else %>inactive<% end %>">
-        Translation
-      </span> &nbsp;
-      <span id="links" class="note-category <% if @links.present? %>active<% else %>inactive<% end %>">
-        Links
-      </span> &nbsp;
-      <span id="tweets" class="note-category <% if @tweets.present? %>active<% else %>inactive<% end %>">
-        Tweets
-      </span> &nbsp;
+    <div class="small-tab"> &nbsp; &nbsp; 
+      <i>Content:</i> &nbsp; &nbsp;
+      <div style="position: absolute; left: 110px; top: 4px;">
+        <span id="vocabulary" class="note-category <% if @vocabulary.present? %>active<% else %>inactive<% end %>">
+          Vocabulary
+        </span> &nbsp;
+        <span id="transcript" class="note-category <% if @lines.present? %>active<% else %>inactive<% end %>">
+          Transcript
+        </span> &nbsp;
+        <span id="translation" class="note-category <% if @translation.present? %>active<% else %>inactive<% end %>">
+          Translation
+        </span> &nbsp;
+      </div>
+      <br>
+       &nbsp; &nbsp; <i>Quizzes:</i> &nbsp; &nbsp;
+      <div style="position: absolute; left: 110px; top: 24px;">
+        <span id="multiple-choice" class="note-category <% if @multiple_choice.present? %>active<% else %>inactive<% end %>">
+          Multiple-Choice
+        </span> &nbsp; 
+        <span id="fill-in-the-blanks" class="note-category <% if @fill_in_the_blank.present? %>active<% else %>inactive<% end %>">
+          Fill-In-The-Blank
+        </span> &nbsp; 
+      </div>
+      <br>
+       &nbsp; &nbsp; <i>Enrichment:</i> &nbsp; &nbsp;
+      <div style="position: absolute; left: 110px; top: 44px;">
+        <span id="discussion-question" class="note-category <% if @discussion_questions.present? %>active<% else %>inactive<% end %>">
+          Discussion
+        </span> &nbsp; 
+        <span id="links" class="note-category <% if @links.present? %>active<% else %>inactive<% end %>">
+          Links
+        </span> &nbsp;
+        <span id="tweets" class="note-category <% if @tweets.present? %>active<% else %>inactive<% end %>">
+          Tweets
+        </span> &nbsp;
+      </div>
     </div>
 
     <div id="community-notes">
@@ -222,10 +231,12 @@
                       <% if current_user.id == c.id %>
                         <div id='answers-status-<%= question.id %>'>0 responses so far.</div>
                       <% else %>
-                        <div id='add-answer-<%= question.id %>' class='add-discussion-answer btn btn-primary btn-small rounded' style="margin-left: 20px;"> Add your answer </div>
+                        <div id='responses-<%= question.id %>'class='discussion-responses btn btn-primary btn-small rounded'> Responses </div>
+                        <div id='add-answer-<%= question.id %>' class='add-discussion-answer btn btn-primary btn-small rounded'> Add your answer </div>
+                        <div class='answer-area' id='answer-area-<%= question.id %>'></div> 
                       <% end %>
                     <% else %>
-                      <div id='add-answer-<%= question.id %>' class='add-discussion-answer btn btn-primary btn-small rounded' style="margin-left: 20px;"> Add your answer </div>
+                      <div id='responses-<%= question.id %>'class='discussion-responses btn btn-primary btn-small rounded'> Responses </div>
                     <% end %>
                     <br><br>
                   <% end %>
@@ -268,7 +279,7 @@
               <% else %>
                 <% if current_user.id == c.id %>
                   <div id='current-user-lines' class='current-user-content'>
-                    <p style="font-size: 16px;">You added a transcript (<span class="add-times-to-lines blue-link">add times</span>): </p>
+                    <p style="font-size: 16px;">You added a transcript:<br> <span style="font-size: 14px;">(<span class="edit-lines blue-link">edit lines</span> / <span class="add-times-to-lines blue-link">add times</span>)</span></p>
                 <% else %>
                   <div class='other-user-content'>
                     <p style="font-size: 16px;"> <%= link_to "#{c.username}", user_url(c) %> added a transcript: </p>
@@ -276,6 +287,11 @@
               <% end %>
                 <% @lines.each do |l| %>
                   <p data-time=<%= l.time %> style="padding: 2px;">
+                    <% if current_user %>
+                      <% if current_user.id == c.id %>
+                      <span class='edit-line blue-link quiet tiny' data-line-id=<%= l.id %>> (edit) </span>
+                      <% end %>
+                    <% end %>
                     <span class="lang1" data-line-id=<%= l.id %>>
                       <%= l.lang1 %>
                     </span>
@@ -283,8 +299,15 @@
                       <span class="line-timing tiny blue-link" data-line-id=<%= l.id %> data-time=<%= l.time %>>
                         <%= l.formatted_time %>
                       </span>
-                    <% else %>
-                      <span class='add-time-to-line blue-link quiet tiny' data-line-id=<%= l.id %>> (Add time) </span>
+                      <% if current_user %>
+                        <% if current_user.id == c.id %>
+                          <span class='add-time-to-line blue-link quiet tiny' data-line-id=<%= l.id %>> &larr; edit time </span>
+                        <% end %>
+                      <% end %>
+                    <% elsif current_user %>
+                      <% if current_user.id == c.id %>
+                        <span class='add-time-to-line blue-link quiet tiny' data-line-id=<%= l.id %>> (add time) </span>
+                      <% end %>
                     <% end %>
                   </p>
                 <% end %>

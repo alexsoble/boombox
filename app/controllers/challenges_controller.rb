@@ -5,4 +5,10 @@ class ChallengesController < ApplicationController
     render :json => { :data => @challenge }
   end
 
+  def show
+    @challenge = Challenge.find(params[:id])
+    @challenger = User.find_by_id(@challenge.user_id)
+    @options = Option.where(:challenge_id => @challenge.id)
+  end
+
 end

@@ -42,3 +42,27 @@ $ ->
         </div>")
       $('#edit-bio-area').hide()
 
+  $('.add-a-language').livequery ->
+    $(this).click ->
+      add_lang_html = "<br><br><span style='font-size:40px;'>I...</span> <span style='font-size:50px;'>{</span> <span id='study' class='option-teach-study blue-link' style='position:relative;bottom:30px;left:2px;font-size:20px;'>study</span><span id='teach' class='option-teach-study blue-link' style='position:relative;top:10px;right:48px;font-size:20px;'>teach</span><input type='text' style='height:40px;font-size:20px;position:relative;right:8px;' placeholder='Enter language here' id='new-language'><span style='font-size:40px;'>.</span><br><br><div class='btn btn-primary rounded' id='update-bio'>Submit</div>"
+      $('#add-language-area').html(add_lang_html)
+
+  $('#new-language').livequery ->
+    $(this).autocomplete(
+      source: (request, response) ->
+        $.ajax(
+          url: "/language_list?term=#{request.term}",
+          type: "POST", 
+          dataType: "json",
+          success: (data) ->
+            console.log data
+            response($.map(data.data, (item) ->
+              label: item.name,
+              value: item.name
+            ))
+        )
+      )
+
+  $('.option-teach-study').livequery ->
+    $(this).click -> 
+      $(this).append('&nbsp;&#x2713;')
