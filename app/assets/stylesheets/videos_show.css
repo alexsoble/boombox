@@ -10,8 +10,14 @@
   max-height: 530px; }
 
 .line-container { float: left; width: 420px; }
+
 .line-left-subcontainer { width: 180px; margin-bottom: 4px; margin-top: 4px; float: left; }
+
 .line-right-subcontainer { width: 180px; margin-bottom: 4px; margin-top: 4px; float: right; }
+
+.transcript-line { padding: 4px; }
+
+.line-timing { float: right; }
 
 .narrow-lyrics-container {
   width: 280px;

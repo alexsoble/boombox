@@ -310,7 +310,10 @@ select { width: 150px; }
 .option { color: white; cursor: pointer; }
 
 .new-multiple-choice-option { cursor: auto !important; }
-.time-selector { background-color: #FF7518 !important; }
+
+.time-selector-handle { background-color: #FF7518 !important; }
+
+.orange-icon { color: #FF7518; }
 
 .tag-category { float: left; width: 170px; margin-left: 10px; }
 

@@ -1,0 +1,2 @@
+class MissingWordsController < ApplicationController
+end

@@ -104,7 +104,7 @@
           Vocabulary
         </span> &nbsp;
         <span id="transcript" class="note-category <% if @lines.present? %>active<% else %>inactive<% end %>">
-          Transcript
+          Lyrics/Transcript
         </span> &nbsp;
         <span id="translation" class="note-category <% if @translation.present? %>active<% else %>inactive<% end %>">
           Translation
@@ -256,7 +256,7 @@
               <% else %>
                 <% if current_user.id == c.id %>
                   <div id='current-user-challenges' class='current-user-content'>
-                    <p style="font-size: 16px;">You added a translation: </p>
+                    <p style="font-size: 16px;">You added a translation (<span class="edit-translation blue-link">edit</span>): </p>
                 <% else %>
                   <div class='other-user-content'>
                     <p style="font-size: 16px;"> <%= link_to "#{c.username}", user_url(c) %> added a translation: </p>
@@ -279,37 +279,33 @@
               <% else %>
                 <% if current_user.id == c.id %>
                   <div id='current-user-lines' class='current-user-content'>
-                    <p style="font-size: 16px;">You added a transcript:<br> <span style="font-size: 14px;">(<span class="edit-lines blue-link">edit lines</span> / <span class="add-times-to-lines blue-link">add times</span>)</span></p>
+                    <p style="font-size: 16px;">You added a transcript:<br> <span style="font-size: 12px;">(<span class="edit-lines blue-link">edit lines</span> / <span class="add-times-to-lines blue-link">add times</span> / <span class="toggle-autoscroll blue-link">turn off autoscroll</span>)</span></p>
                 <% else %>
                   <div class='other-user-content'>
                     <p style="font-size: 16px;"> <%= link_to "#{c.username}", user_url(c) %> added a transcript: </p>
                 <% end %>
               <% end %>
                 <% @lines.each do |l| %>
-                  <p data-time=<%= l.time %> style="padding: 2px;">
+                  <div class="transcript-line rounded" data-time=<%= l.time %>>
                     <% if current_user %>
                       <% if current_user.id == c.id %>
-                      <span class='edit-line blue-link quiet tiny' data-line-id=<%= l.id %>> (edit) </span>
+                      <span class='edit-line blue-link quiet tiny' data-line-id=<%= l.id %>> <i class='icon icon-pencil'></i> </span>
                       <% end %>
                     <% end %>
                     <span class="lang1" data-line-id=<%= l.id %>>
                       <%= l.lang1 %>
                     </span>
-                    <% if l.time.present? %>
-                      <span class="line-timing tiny blue-link" data-line-id=<%= l.id %> data-time=<%= l.time %>>
-                        <%= l.formatted_time %>
-                      </span>
-                      <% if current_user %>
-                        <% if current_user.id == c.id %>
-                          <span class='add-time-to-line blue-link quiet tiny' data-line-id=<%= l.id %>> &larr; edit time </span>
-                        <% end %>
-                      <% end %>
-                    <% elsif current_user %>
+                    <% if current_user %>
                       <% if current_user.id == c.id %>
-                        <span class='add-time-to-line blue-link quiet tiny' data-line-id=<%= l.id %>> (add time) </span>
+                        <span class='add-time-to-line blue-link quiet tiny' data-line-id=<%= l.id %>> &nbsp; <i class='icon icon-time'></i> </span>
                       <% end %>
                     <% end %>
-                  </p>
+                    <% if l.time.present? %>
+                      <span class="line-timing tiny gray" data-line-id=<%= l.id %> data-time=<%= l.time %>>
+                        <%= l.formatted_time %>
+                      </span>
+                    <% end %>
+                  </div>
                 <% end %>
                 <br><br>
               </div>

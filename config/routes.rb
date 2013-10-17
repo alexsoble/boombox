@@ -35,6 +35,9 @@ Boombox::Application.routes.draw do
   post '/add_star' => 'stars#create'
   post 'remove_star' => 'stars#destroy'
 
+  post '/find_transcripts' => 'transcripts#find'
+  post '/new_transcript' => 'transcripts#create'
+
   post '/new_word' => 'words#create'
   post '/add_time_to_word' => 'words#update_time'
   post '/new_definition' => 'definitions#create'
@@ -52,6 +55,7 @@ Boombox::Application.routes.draw do
 
   post '/new_line' => 'lines#create'
   post '/update_line' => 'lines#update'
+  post '/find_lines' => 'lines#find'
 
   post '/new_translation' => 'translations#create'
   post '/new_link/' => 'links#create'

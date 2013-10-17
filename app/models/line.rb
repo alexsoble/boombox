@@ -1,8 +1,15 @@
 class Line < ActiveRecord::Base
-  attr_accessible :interpretation_id, :lang1, :lang2, :time, :duration
+  attr_accessible :interpretation_id, :lang1, :lang2, :time, :duration, :transcript_id, :video_id
+  belongs_to :transcript
   belongs_to :interpretation
+  belongs_to :video
   has_many :comments
   has_many :translations
+
+  def user_id
+    @interp = self.interpretation
+    @se
+  end
 
   def formatted_time
 

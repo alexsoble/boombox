@@ -1,0 +1,2 @@
+module MissingWordsHelper
+end

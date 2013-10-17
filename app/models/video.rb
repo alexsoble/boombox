@@ -16,10 +16,10 @@ class Video < ActiveRecord::Base
   end
 
   def langs
-    all_language_tags = Tag.where(:video_id => self.id, :type_lang => true)
-    language_tags = []
-    all_language_tags.each { |tag| if language_tags.index(tag.name) == nil then language_tags << tag.name end }
-    return language_tags
+    @all_language_tags = Tag.where(:video_id => self.id, :type_lang => true)
+    @language_tags = []
+    @all_language_tags.each { |tag| if @language_tags.index(tag.name) == nil then @language_tags << tag.name end }
+    return @language_tags
   end
 
   def image

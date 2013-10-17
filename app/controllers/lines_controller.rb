@@ -1,13 +1,18 @@
 class LinesController < ApplicationController
   respond_to :json
 
+  def find
+    @transcript = Transcript.find_by_id(params[:transcript_id])
+    @lines = Line.where(:transcript_id => @transcript.id).all
+    render json: { data: @lines }
+  end
+
   def create 
     @line = Line.create(params[:line])
     render :json => { :data => @line }
   end
 
   def update
-    
     @update = params[:line]
     @line = Line.find_by_id(params[:line][:id])
 
@@ -28,7 +33,6 @@ class LinesController < ApplicationController
       @line.save
     end
     render :json => { :data => @line }
-
   end
 
   def destroy

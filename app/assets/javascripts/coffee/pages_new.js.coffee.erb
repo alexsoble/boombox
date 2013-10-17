@@ -59,7 +59,7 @@ $ ->
       window.title = $(this).children(':first').html()
       $.post('/new_video', { 'video' : { 'youtube_id' : "#{window.youtube_id}", 'title' : "#{window.title}" } }, (data) ->
         console.log data
-        video_id = data.video.id
-        window.location.href = "/videos/#{video_id}"
+        video_slug = data.video.slug
+        window.location.href = "/videos/#{video_slug}"
       )
       

@@ -6,8 +6,8 @@
               <div class="line-right-subcontainer rounded">
               <% if l.lang2.present? %>
                 <p><%= l.lang2 %></p>
-              <% elsif Translation.where(:line_id => l.id).present? %>
-                <p><%= Translation.where(:line_id => l.id).first.text %></p>
+              <% elsif Translation.where(:line_id => l.id, :user_id => l.interpretation.user.id).present? %>
+                <p><%= Translation.where(:line_id => l.id, :user_id => l.interpretation.user.id).first.text %></p>
               <% end %>
               </div>
             </div>

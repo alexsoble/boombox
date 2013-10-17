@@ -64,6 +64,7 @@ span { color: black; }
 .red { color: red; }
 .blue { color: #007FFF; }
 .visible { overflow: visible !important;}
+.gray { color: #9999b3; }
 
 .hr { height: 1px;
   background: #9B59BB;

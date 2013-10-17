@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20131016184643) do
+ActiveRecord::Schema.define(:version => 20131016224907) do
 
   create_table "challenges", :force => true do |t|
     t.integer  "user_id"
@@ -78,6 +78,14 @@ ActiveRecord::Schema.define(:version => 20131016184643) do
     t.datetime "updated_at",             :null => false
   end
 
+  create_table "fill_exercises", :force => true do |t|
+    t.integer  "user_id"
+    t.integer  "transcript_id"
+    t.integer  "video_id"
+    t.datetime "created_at",    :null => false
+    t.datetime "updated_at",    :null => false
+  end
+
   create_table "interests", :force => true do |t|
     t.integer  "user_id"
     t.integer  "language_id"
@@ -116,6 +124,8 @@ ActiveRecord::Schema.define(:version => 20131016184643) do
     t.datetime "created_at",                       :null => false
     t.datetime "updated_at",                       :null => false
     t.integer  "duration",          :default => 4
+    t.integer  "transcript_id"
+    t.integer  "video_id"
   end
 
   create_table "links", :force => true do |t|
@@ -136,6 +146,13 @@ ActiveRecord::Schema.define(:version => 20131016184643) do
     t.text     "lyrics_text"
     t.datetime "created_at",        :null => false
     t.datetime "updated_at",        :null => false
+  end
+
+  create_table "missing_words", :force => true do |t|
+    t.integer  "fill_exercise_id"
+    t.string   "word_text"
+    t.datetime "created_at",       :null => false
+    t.datetime "updated_at",       :null => false
   end
 
   create_table "option_votes", :force => true do |t|
@@ -215,6 +232,14 @@ ActiveRecord::Schema.define(:version => 20131016184643) do
     t.boolean  "type_style"
     t.datetime "created_at",      :null => false
     t.datetime "updated_at",      :null => false
+  end
+
+  create_table "transcripts", :force => true do |t|
+    t.integer  "user_id"
+    t.integer  "video_id"
+    t.integer  "interpretation_id"
+    t.datetime "created_at",        :null => false
+    t.datetime "updated_at",        :null => false
   end
 
   create_table "translations", :force => true do |t|
