@@ -29,76 +29,19 @@ class InterpretationsController < ApplicationController
     controller.correct_user(@user_id)
   end
 
-  def save
-    
-    @interp = Interpretation.find_by_id(params[:interp_id])
-
-    @raw_original_lines = Line.where(:interpretation_id => @interp.id).to_a
-    @original_lines = []
-
-    @raw_original_lines.each do |l|
-      @original_lines << {"id" => l.id, "lang1" => l.lang1, "lang2" => l.lang2, "time" => l.time.to_i, "duration" => l.duration.to_i }
-    end
-    @original_lines = @original_lines.sort { |a, b| a["time"] <=> b["time"] }
-
-    @raw_new_lines = JSON.parse(params[:lines])
-    @new_lines = []
-
-    @raw_new_lines.each do |l|
-      @new_lines << {"id" => l["id"].to_i, "lang1" => l["lang1"], "lang2" => l["lang2"], "time" => l["time"].to_i, "duration" => l["duration"].to_i }
-    end 
-    @new_lines = @new_lines.sort { |a, b| a["time"] <=> b["time"] }
-
-    if @original_lines == @new_lines
-      
-      render :json => { :data => "no change" }
-
-    else 
-  
-      @shared_lines = @original_lines & @new_lines
-      @lines_to_delete = @original_lines - @shared_lines
-      @lines_to_add = @new_lines - @shared_lines
-      logger.debug "@lines_to_delete: #{@lines_to_delete}"
-      logger.debug "@lines_to_add: #{@lines_to_add}"
-
-      if @lines_to_delete.present?
-        @lines_to_delete.each do |l|
-          line = Line.find_by_id(l["id"])
-          line.destroy
-          line.save
-        end
-      end
-
-      @lines_to_add.each do |l|
-        logger.debug "adding line: #{l}"
-        l["interpretation_id"] = @interp.id
-        Line.create(l)
-      end
-
-      @saved_lines = Line.where(:interpretation_id => @interp.id)
-      logger.debug "@saved_lines: #{@saved_lines.all}"
-
-      render :json => { :data => @saved_lines }
-
-    end
-
-  end
-
   def show
     @interp = Interpretation.find_by_id(params[:id])
     @interpretations = [@interp]
     @video = @interp.video
     @user = User.find_by_id(@interp.user_id)
-    @translation = @interp
-    @translation_contributors = [@user]
-    @lines = Line.where(:interpretation_id => @interp.id).order("time ASC")
-    @interps_with_lines = [@interp]
 
-    if @lines.present? 
-      @lines.each do |l|
-        if Translation.where(:line_id => l.id).present? || l.lang2.present?
-          @interps_with_translations = [@interp]
-          @translation = true
+    @transcripts = @interp.transcripts
+    @translations = []
+    @transcripts.each do |t|
+      if t.translations.present?
+        @translation = true
+        t.translations.each do |tr|
+          @translations << tr
         end
       end
     end
@@ -150,44 +93,6 @@ class InterpretationsController < ApplicationController
     end
     
     render "videos/show"
-
-    # @translator = User.find_by_id(@interp.user_id)
-    # @first_line = @lines.where("lang2 <> ''").first
-    # @next_line = @lines.where("lang2 <> ''").offset(1).first
-    # @note = @interp.note
-
-    # @keywords = []
-    # Keyword.where(:interpretation_id => @interp.id).each do |k|
-    #   @keywords << k.word_text
-    # end
-
-    # @comments = []
-    # @lines.each do |l|
-    #   if Comment.where(:line_id => l.id).present?
-    #     @comments << { l.id => Comment.where(:line_id => l.id).limit(10) }
-    #   end
-    # end
-    # logger.debug "comments: #{@comments}"
-
-    # @lang1_and_lang2 = false
-    # @lines.each do |l|
-    #   if l.lang1.present? && l.lang1 != "undefined"
-    #     @lang1_and_lang2 = true
-    #   end
-    # end
-
-    # @url = request.url
-    # @lang2 = @interp.lang2
-    # @lang1 = @video.lang1
-    # @published = @interp.published
-
-    # if @interp.published == true then @published = true else @published = false end
-
-    # if @interp.user_id == 0
-    #   @user = 'anon' 
-    # else
-    #   @user = User.find_by_id(@interp.user_id)
-    # end
 
   end
 
@@ -322,9 +227,64 @@ class InterpretationsController < ApplicationController
     
   end 
 
-  def get_by_language
-    # send the most popoular 20 videos that match whatever lang is sent in via AJAX
-    # send the title and youtube_id along with so it can get displayed in the index page
-  end
+  # def get_by_language
+  #   # send the most popoular 20 videos that match whatever lang is sent in via AJAX
+  #   # send the title and youtube_id along with so it can get displayed in the index page
+  # end
+
+  # def save
+    
+  #   @interp = Interpretation.find_by_id(params[:interp_id])
+
+  #   @raw_original_lines = Line.where(:interpretation_id => @interp.id).to_a
+  #   @original_lines = []
+
+  #   @raw_original_lines.each do |l|
+  #     @original_lines << {"id" => l.id, "lang1" => l.lang1, "lang2" => l.lang2, "time" => l.time.to_i, "duration" => l.duration.to_i }
+  #   end
+  #   @original_lines = @original_lines.sort { |a, b| a["time"] <=> b["time"] }
+
+  #   @raw_new_lines = JSON.parse(params[:lines])
+  #   @new_lines = []
+
+  #   @raw_new_lines.each do |l|
+  #     @new_lines << {"id" => l["id"].to_i, "lang1" => l["lang1"], "lang2" => l["lang2"], "time" => l["time"].to_i, "duration" => l["duration"].to_i }
+  #   end 
+  #   @new_lines = @new_lines.sort { |a, b| a["time"] <=> b["time"] }
+
+  #   if @original_lines == @new_lines
+      
+  #     render :json => { :data => "no change" }
+
+  #   else 
+  
+  #     @shared_lines = @original_lines & @new_lines
+  #     @lines_to_delete = @original_lines - @shared_lines
+  #     @lines_to_add = @new_lines - @shared_lines
+  #     logger.debug "@lines_to_delete: #{@lines_to_delete}"
+  #     logger.debug "@lines_to_add: #{@lines_to_add}"
+
+  #     if @lines_to_delete.present?
+  #       @lines_to_delete.each do |l|
+  #         line = Line.find_by_id(l["id"])
+  #         line.destroy
+  #         line.save
+  #       end
+  #     end
+
+  #     @lines_to_add.each do |l|
+  #       logger.debug "adding line: #{l}"
+  #       l["interpretation_id"] = @interp.id
+  #       Line.create(l)
+  #     end
+
+  #     @saved_lines = Line.where(:interpretation_id => @interp.id)
+  #     logger.debug "@saved_lines: #{@saved_lines.all}"
+
+  #     render :json => { :data => @saved_lines }
+
+  #   end
+
+  # end
 
 end

@@ -3,6 +3,7 @@ class Interpretation < ActiveRecord::Base
   belongs_to :video
   belongs_to :user
   belongs_to :language
+  has_many :transcripts
   has_many :words
   has_many :challenges
   has_many :discussion_questions

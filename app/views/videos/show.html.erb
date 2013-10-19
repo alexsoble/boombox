@@ -103,10 +103,10 @@
         <span id="vocabulary" class="note-category <% if @vocabulary.present? %>active<% else %>inactive<% end %>">
           Vocabulary
         </span> &nbsp;
-        <span id="transcript" class="note-category <% if @lines.present? %>active<% else %>inactive<% end %>">
+        <span id="transcript" class="note-category <% if @transcripts.present? %>active<% else %>inactive<% end %>">
           Lyrics / Transcript
         </span> &nbsp;
-        <span id="translation" class="note-category <% if @translation.present? %>active<% else %>inactive<% end %>">
+        <span id="translation" class="note-category <% if @translations.present? %>active<% else %>inactive<% end %>">
           Translation
         </span> &nbsp;
       </div>
@@ -287,10 +287,10 @@
             <% end %>
           </div>
         <% end %>
-        <% if @lines.present? %>
+        <% if @transcripts.present? %>
           <div class="note-area transcript-area">
-            <% @interps_with_lines.each do |i| %>
-              <% c = i.user %>
+            <% @transcripts.each do |t| %>
+              <% c = t.user %>
               <% unless current_user %>
                 <div class='other-user-content'>
                   <p style="font-size: 16px;"> <%= link_to "#{c.username}", user_url(c) %> added a transcript: </p>
@@ -303,7 +303,7 @@
                     <p style="font-size: 16px;"> <%= link_to "#{c.username}", user_url(c) %> added a transcript: </p>
                 <% end %>
               <% end %>
-                  <% i.lines.order("time ASC").order("created_at ASC").each do |l| %>
+                  <% t.lines.order("time ASC").order("created_at ASC").each do |l| %>
                     <div class="transcript-line rounded" data-line-id=<%= l.id %> data-time=<%= l.time %>>
                       <% if current_user %>
                         <% if current_user.id == c.id %>

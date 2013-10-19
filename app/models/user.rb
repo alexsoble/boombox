@@ -1,6 +1,8 @@
 class User < ActiveRecord::Base
   has_secure_password
   has_many :interpretations
+  has_many :translations
+  has_many :transcripts
   has_many :discussion_questions
   has_many :discussion_responses
   has_many :stars

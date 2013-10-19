@@ -49,7 +49,6 @@ class VideosController < ApplicationController
       @all_but_last_tag = @tags[0..(@tags.length - 1)]
     end
 
-    @interps_with_lines = @video.interpretations
     @transcripts = @video.transcripts
 
     @translations = []
