@@ -3,7 +3,7 @@
   <div id="watch-again"></div>
   <div id="new-video-box"></div>
   <div id="timer-box"></div>
-  <div id="settings">
+  <div id="settings" style="height: 100px;">
     <div style="margin-top: 15px; margin-left: 22px;">
       <div class='btn btn-info btn-small btn-tiny rounded tight-pack' id='play-pause' style="position: absolute; top: 13px; right: 22px;"> 
         <i class='icon-pause'></i> 
@@ -14,52 +14,6 @@
       </div>
     </div>
     <br>
-    <div style="margin-top: 45px; margin-left: 15px; margin-right: 15px; font-size: 14px;">
-      <div id='new-tag-area'></div>
-      <div id='tag-area'>
-          <div id="tags-list" style="float: left; margin-bottom: 20px;">
-            <span id='language-tags' class='tag-category'>
-              <% if @lang_tags.present? %>
-                <span class="tiny">Language<% if @lang_tags.length > 1 %>s<% end %>:</span> &nbsp;
-                <% @lang_tags.each do |t| %>
-                  <%= link_to "#{t.name}", tag_url(t) %><% unless t == @last_lang_tag %>, <% end %>
-                <% end %>
-              <% end %>
-            </span>
-            <span id='artist-tags' class='tag-category'>
-              <% if @artist_tags.present? %>
-                <span class="tiny">Artist<% if @artist_tags.length > 1 %>s<% end %>:</span> &nbsp;
-                <% @artist_tags.each do |t| %>
-                  <%= link_to "#{t.name}", tag_url(t) %><% unless t == @last_artist_tag %>, <% end %>
-                <% end %>
-              <% end %>
-            </span>
-            <span id='difficulty-tags' class='tag-category right'>
-              <% if @difficulty_tags.present? %>
-                <span class="tiny">Difficulty:</span> &nbsp;
-                <% @difficulty_tags.each do |t| %>
-                  <%= link_to "#{t.name}", tag_url(t) %><% unless t == @last_difficulty_tag %>, <% end %>
-                <% end %>
-              <% end %>
-            </span>
-            <span id='style-tags' class='tag-category right'>
-              <% if @style_tags.present? %>
-                <span class="tiny">Style<% if @style_tags.length > 1 %>s<% end %>:</span> &nbsp;
-                <% @style_tags.each do |t| %>
-                  <%= link_to "#{t.name}", tag_url(t) %><% unless t == @last_style_tag %>, <% end %>
-                <% end %>
-              <% end %>
-            </span>
-          </div>
-        <% if @tags.blank? %>
-          <span id='no-tags-yet' style="margin-left: 10px;">
-            No tags yet!
-          </span>
-          <br><br>
-        <% end %>
-      </div>
-      <br>
-    </div>
   </div>
 </div>
 
@@ -86,7 +40,9 @@
                   <% line_html.gsub!(missing_word.word_text, "<input type='text' class='blank' data-missing-word='#{missing_word.word_text}' disabled>") %>
                 <% end %>
               <% end %>
-              <div class='exercise-line rounded' data-line-id=<%= l.id %>><%= raw line_html %></div>
+              <div class='transcript-line rounded' data-line-id=<%= l.id %> data-time=<%= l.time %>>
+                <%= raw line_html %>
+              </div>
             <% end %>
           </div>
         <% end %>

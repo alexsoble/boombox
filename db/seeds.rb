@@ -4,9 +4,22 @@ Interpretation.all.each do |i|
   if i.lines.present?
     @transcript = Transcript.create({user_id: i.user_id, video_id: i.video_id, interpretation_id: i.id})
     @transcript.save
+    @create_translation = false
     i.lines.each do |l|
       l.transcript_id = @transcript.id
+      if l.lang2.present?
+        @create_translation = true
+      end
       l.save
+    end
+    if @create_translation == true
+      @translation = Translation.create({user_id: i.user_id, video_id: i.video_id, transcript_id: @transcript.id})
+      @translation.save
+      i.lines.each do |l|
+        if l.lang2.present?
+          TranslatedLine.create({line_id: l.id, translation_id: @translation.id, lang2: l.lang2})
+        end
+      end
     end
   end
 end

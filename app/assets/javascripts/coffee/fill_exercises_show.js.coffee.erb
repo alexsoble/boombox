@@ -127,10 +127,7 @@ $ ->
     window.time = Math.floor(exact_time)
 
     if $("[data-time=#{window.time}]").length != 0
-      if $('.translation-area').length > 0
-        this_line = $(".line-container[data-time=#{window.time}]").eq(0)
-      else if $('.transcript-area').length > 0 
-        this_line = $(".transcript-line[data-time=#{window.time}]").eq(0)
+      this_line = $(".transcript-line[data-time=#{window.time}]").eq(0)
       unless this_line.hasClass('highlighted')
         this_line.effect("highlight", { color: "#FFFF00" }, 4000)
         this_line.addClass("highlighted")

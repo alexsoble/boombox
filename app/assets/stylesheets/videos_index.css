@@ -26,7 +26,7 @@
   margin-top: 20px;
   float: left; 
   background-color: #f3f3f6; 
-  border: solid 1px white; 
+  border: solid 1px #f3f3f6; 
   border-radius: 10px;
   box-shadow: 10px 10px 5px #888888;
   padding-top: 15px;
@@ -35,6 +35,11 @@
   padding-bottom: 15px; 
   cursor: pointer; 
   position: relative; }
+
+.video-thumb-box:hover {
+  background-color: #e4e4eb;
+  border: solid 1px #e4e4eb; 
+}
 
 .video-thumb-box.frontpage-thumb-box {
   margin-right: 40px;

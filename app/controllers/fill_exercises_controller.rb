@@ -16,7 +16,7 @@ class FillExercisesController < ApplicationController
   def show
     @fill_exercise = FillExercise.find_by_id(params[:id])
     @transcript = @fill_exercise.transcript
-    @lines = @transcript.lines
+    @lines = @transcript.lines.sort { |a, b| a.time <=> b.time }
     @missing_words = @fill_exercise.missing_words
     @user = @fill_exercise.user
     @video = @fill_exercise.video

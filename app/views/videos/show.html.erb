@@ -106,9 +106,9 @@
         <span id="transcript" class="note-category <% if @lines.present? %>active<% else %>inactive<% end %>">
           Lyrics / Transcript
         </span> &nbsp;
-        <!-- <span id="translation" class="note-category <% if @translation.present? %>active<% else %>inactive<% end %>">
+        <span id="translation" class="note-category <% if @translation.present? %>active<% else %>inactive<% end %>">
           Translation
-        </span> &nbsp; --> 
+        </span> &nbsp;
       </div>
       <br>
        &nbsp; &nbsp; <i>Quizzes:</i> &nbsp; &nbsp;
@@ -212,14 +212,14 @@
             <% @fill_exercises.each do |f| %>
               <% unless current_user %>
                 <div class='other-user-content'>
-                  <p class="big-friendly"> <%= link_to "#{f.user.username}", user_url(f.user) %> added a <span class='fill-exercise blue-link' data-fill-exercise=<%= f.id %>>fill-in-the-blanks exercise</span>. </p>
+                  <p class="big-friendly"> <%= link_to "#{f.user.username}", user_url(f.user) %> added a <%= link_to "fill-in-the-blanks exercise", fill_exercise_url(f) %>. </p>
               <% else %>
                 <% if current_user.id == f.user.id %>
                   <div id='current-user-discussion-questions' class='current-user-content'>
                     <p class="big-friendly">You added a <%= link_to "fill-in-the-blanks exercise", fill_exercise_url(f) %>.</p>
                 <% else %>
                   <div class='other-user-content'>
-                    <p class="big-friendly"> <%= link_to "#{f.user.username}", user_url(f.user) %> added a <span class='fill-exercise blue-link' data-fill-exercise=<%= fill_exercise.id %>>fill-in-the-blanks exercise</span>. </p>
+                    <p class="big-friendly"> <%= link_to "#{f.user.username}", user_url(f.user) %> added a <%= link_to "fill-in-the-blanks exercise", fill_exercise_url(f) %>. </p>
                 <% end %>
               <% end %>
               </div>
@@ -264,11 +264,11 @@
             <% end %>
           </div>
         <% end %>
-        <% if @interps_with_translations.present? %>
+        <% if @translations.present? %>
           <div class="note-area translation-area">
-            <% @interps_with_translations.each do |i| %>
-              <% c = i.user %>
-              <% @lines = i.lines.order("time ASC").reject { |r| r.lang2.blank? && Translation.where(:line_id => r.id).blank? } %>
+            <% @translations.each do |t| %>
+              <% c = t.user %>
+              <% @lines = t.translated_lines.sort { |a, b| a.line.time <=> b.line.time } %>
               <% unless current_user %>
                 <div class='other-user-content'>
                   <p style="font-size: 16px;"> <%= link_to "#{c.username}", user_url(c) %> added a translation: </p>
@@ -291,7 +291,6 @@
           <div class="note-area transcript-area">
             <% @interps_with_lines.each do |i| %>
               <% c = i.user %>
-              <% @lines = i.lines.order("created_at ASC").order("time ASC") %>
               <% unless current_user %>
                 <div class='other-user-content'>
                   <p style="font-size: 16px;"> <%= link_to "#{c.username}", user_url(c) %> added a transcript: </p>
@@ -304,25 +303,25 @@
                     <p style="font-size: 16px;"> <%= link_to "#{c.username}", user_url(c) %> added a transcript: </p>
                 <% end %>
               <% end %>
-                <% @lines.each do |l| %>
-                  <div class="transcript-line rounded" data-line-id=<%= l.id %> data-time=<%= l.time %>>
-                    <% if current_user %>
-                      <% if current_user.id == c.id %>
-                        <span class='edit-line blue-link quiet tiny' title='Edit line' data-line-id=<%= l.id %>> <i class='icon icon-pencil'></i> </span>
-                        <span class='comment-line blue-link quiet tiny' title='Add comment to line' data-line-id=<%= l.id %>> <i class='icon icon-comment'></i> </span>
-                        <span class='remove-line blue-link quiet tiny' title='Delete line' data-line-id=<%= l.id %>> <i class='icon icon-remove'></i> </span>
-                        <span class='add-time-to-line blue-link quiet tiny' title='Add time to line' data-line-id=<%= l.id %>> <i class='icon icon-time'></i> </span> 
+                  <% i.lines.order("time ASC").order("created_at ASC").each do |l| %>
+                    <div class="transcript-line rounded" data-line-id=<%= l.id %> data-time=<%= l.time %>>
+                      <% if current_user %>
+                        <% if current_user.id == c.id %>
+                          <span class='edit-line blue-link quiet tiny' title='Edit line' data-line-id=<%= l.id %>> <i class='icon icon-pencil'></i> </span>
+                          <span class='comment-line blue-link quiet tiny' title='Add comment to line' data-line-id=<%= l.id %>> <i class='icon icon-comment'></i> </span>
+                          <span class='remove-line blue-link quiet tiny' title='Delete line' data-line-id=<%= l.id %>> <i class='icon icon-remove'></i> </span>
+                          <span class='add-time-to-line blue-link quiet tiny' title='Add time to line' data-line-id=<%= l.id %>> <i class='icon icon-time'></i> </span> 
+                        <% end %>
                       <% end %>
-                    <% end %>
-                    <span class="lang1" data-line-id=<%= l.id %>><%= l.lang1 %></span>
-                    <span class="line-comment-area" data-line-id=<%= l.id %>></span>
-                    <span class="line-timing tiny gray" data-line-id=<%= l.id %> data-time=<%= if l.time.present? then l.time end %>>
-                      <% if l.time.present? %>
-                        <%= l.formatted_time %>
-                      <% end %>
-                    </span>
-                  </div>
-                <% end %>
+                        <span class="lang1" data-line-id=<%= l.id %>><%= l.lang1 %></span>
+                        <span class="line-comment-area" data-line-id=<%= l.id %>></span>
+                        <span class="line-timing tiny gray" data-line-id=<%= l.id %> data-time=<%= if l.time.present? then l.time end %>>
+                          <% if l.time.present? %>
+                            <%= l.formatted_time %>
+                          <% end %>
+                        </span>
+                    </div>
+                  <% end %>
                 <br><br>
               </div>
             <% end %>

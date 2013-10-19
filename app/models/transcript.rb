@@ -4,4 +4,5 @@ class Transcript < ActiveRecord::Base
   belongs_to :user
   belongs_to :video
   has_many :lines
+  has_many :translations
 end

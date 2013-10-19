@@ -51,7 +51,19 @@ class VideosController < ApplicationController
 
     @interps_with_lines = @video.interpretations
     @transcripts = @video.transcripts
+
+    @translations = []
+    @transcripts.each do |t|
+      if t.translations.present?
+        @translation = true
+        t.translations.each do |tr|
+          @translations << tr
+        end
+      end
+    end
+
     @lines = true
+    @translation = true
 
     @vocabulary = Word.where(:video_id => @video.id).order("created_at DESC")
     @vocabulary_contributors = []
