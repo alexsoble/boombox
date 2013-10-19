@@ -1,5 +1,7 @@
 #encoding: utf-8
 
+Transcript.destroy_all
+
 Interpretation.all.each do |i|
   if i.lines.present?
     @transcript = Transcript.create({user_id: i.user_id, video_id: i.video_id, interpretation_id: i.id})
