@@ -1,0 +1,11 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/Fixtures.html
+
+one:
+  line_id: 1
+  lang2: MyString
+  translation_id: 1
+
+two:
+  line_id: 1
+  lang2: MyString
+  translation_id: 1

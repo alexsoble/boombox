@@ -1,0 +1,103 @@
+<div id="outer-video-box" class="video-container" style="margin-left: 120px;">
+  <div id="title-box"><h3 style="margin-top: 20px; color:white;"><%= @video.title %></h3></div>
+  <div id="watch-again"></div>
+  <div id="new-video-box"></div>
+  <div id="timer-box"></div>
+  <div id="settings">
+    <div style="margin-top: 15px; margin-left: 22px;">
+      <div class='btn btn-info btn-small btn-tiny rounded tight-pack' id='play-pause' style="position: absolute; top: 13px; right: 22px;"> 
+        <i class='icon-pause'></i> 
+      </div>
+      <div class='btn btn-info btn-small btn-tiny rounded tight-pack' id='volume' style="position: absolute; top: 13px; right: 62px;">
+        <div id='volume-slider'> </div>
+        <i class='icon-volume-up'></i> 
+      </div>
+    </div>
+    <br>
+    <div style="margin-top: 45px; margin-left: 15px; margin-right: 15px; font-size: 14px;">
+      <div id='new-tag-area'></div>
+      <div id='tag-area'>
+          <div id="tags-list" style="float: left; margin-bottom: 20px;">
+            <span id='language-tags' class='tag-category'>
+              <% if @lang_tags.present? %>
+                <span class="tiny">Language<% if @lang_tags.length > 1 %>s<% end %>:</span> &nbsp;
+                <% @lang_tags.each do |t| %>
+                  <%= link_to "#{t.name}", tag_url(t) %><% unless t == @last_lang_tag %>, <% end %>
+                <% end %>
+              <% end %>
+            </span>
+            <span id='artist-tags' class='tag-category'>
+              <% if @artist_tags.present? %>
+                <span class="tiny">Artist<% if @artist_tags.length > 1 %>s<% end %>:</span> &nbsp;
+                <% @artist_tags.each do |t| %>
+                  <%= link_to "#{t.name}", tag_url(t) %><% unless t == @last_artist_tag %>, <% end %>
+                <% end %>
+              <% end %>
+            </span>
+            <span id='difficulty-tags' class='tag-category right'>
+              <% if @difficulty_tags.present? %>
+                <span class="tiny">Difficulty:</span> &nbsp;
+                <% @difficulty_tags.each do |t| %>
+                  <%= link_to "#{t.name}", tag_url(t) %><% unless t == @last_difficulty_tag %>, <% end %>
+                <% end %>
+              <% end %>
+            </span>
+            <span id='style-tags' class='tag-category right'>
+              <% if @style_tags.present? %>
+                <span class="tiny">Style<% if @style_tags.length > 1 %>s<% end %>:</span> &nbsp;
+                <% @style_tags.each do |t| %>
+                  <%= link_to "#{t.name}", tag_url(t) %><% unless t == @last_style_tag %>, <% end %>
+                <% end %>
+              <% end %>
+            </span>
+          </div>
+        <% if @tags.blank? %>
+          <span id='no-tags-yet' style="margin-left: 10px;">
+            No tags yet!
+          </span>
+          <br><br>
+        <% end %>
+      </div>
+      <br>
+    </div>
+  </div>
+</div>
+
+<div id="social-content-area" class="content-area">
+  <div class="big tab solo" id="all-content">
+    <%= @user.username %>'s fill-in-the-blanks quiz
+  </div>
+  <div class="small-tab">
+    <div id='quiz-status'>
+      <div id="exercise-instructions">Type in the missing words.</div> 
+      <div id="score"></div>
+    </div>
+  </div>
+    <div id="community-notes">
+      <div id="notes-container">
+        <% if @fill_exercise.present? %>
+          <div class="note-area fill-exercise-area">
+           <div id="exercise">
+            <% @lines.each do |l| %>
+              <% line_html = l.lang1 %>
+              <% these_missing_words = @missing_words.where(:line_id => l.id) %>
+              <% if these_missing_words.present? %>
+                <% these_missing_words.each do |missing_word| %>
+                  <% line_html.gsub!(missing_word.word_text, "<input type='text' class='blank' data-missing-word='#{missing_word.word_text}' disabled>") %>
+                <% end %>
+              <% end %>
+              <div class='exercise-line rounded' data-line-id=<%= l.id %>><%= raw line_html %></div>
+            <% end %>
+          </div>
+        <% end %>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="data" class="quiet"
+ data-youtube-id=<%= @video.youtube_id %>
+ data-title=<%= @video.title %>
+ data-video-id=<%= @video.id %>
+ data-max-score=<%= @missing_words.length %>
+</div>

@@ -23,6 +23,7 @@ Boombox::Application.routes.draw do
   resources :sessions
   resources :classrooms
   resources :discussion_questions
+  resources :fill_exercises
 
   post '/update_user' => 'users#update'
   post '/student_list' => 'users#list'
@@ -38,16 +39,23 @@ Boombox::Application.routes.draw do
   post '/find_transcripts' => 'transcripts#find'
   post '/new_transcript' => 'transcripts#create'
 
+  post '/new_fill_exercise' => 'fill_exercises#create'
+  post '/find_fill_exercise' => 'fill_exercises#find'
+  post '/new_completed_exercise' => 'completed_exercises#create'
+  
   post '/new_word' => 'words#create'
   post '/add_time_to_word' => 'words#update_time'
+
   post '/new_definition' => 'definitions#create'
   post '/new_challenge' => 'challenges#create'
+  post '/new_missing_word' => 'missing_words#create'
   post '/new_option' => 'options#create'
   post '/new_discussion_response' => 'discussion_responses#create'
 
   post '/find_playcount/:user_id/:video_id' => 'playcounts#find'
   post '/new_playcount/:user_id/:video_id' => 'playcounts#create'
   post '/update_playcount/:id' => 'playcounts#update'
+
   post '/find_language' => 'languages#find_id'
 
   post '/find_interp/:user_id/:video_id' => 'interpretations#find'
@@ -55,6 +63,7 @@ Boombox::Application.routes.draw do
 
   post '/new_line' => 'lines#create'
   post '/update_line' => 'lines#update'
+  post '/destroy_line' => 'lines#destroy'
   post '/find_lines' => 'lines#find'
 
   post '/new_translation' => 'translations#create'

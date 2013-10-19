@@ -85,6 +85,9 @@ span { color: black; }
   cursor: pointer;
   color: #007FFF; }
 
+.blue-link:hover {
+  text-decoration: underline; {
+
 .purple-link { 
   cursor: pointer;
   color: #9b59bb; }

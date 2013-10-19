@@ -18,7 +18,7 @@
       <div class='btn btn-info btn-small btn-tiny rounded tight-pack' id='play-pause' style="position: absolute; top: 13px; right: 22px;"> 
         <i class='icon-pause'></i> 
       </div>
-      <div class='btn btn-info btn-small btn-tiny rounded tight-pack' id='volume' style="position: absolute; top: 13px; right: 62px;"> 
+      <div class='btn btn-info btn-small btn-tiny rounded tight-pack' id='volume' style="position: absolute; top: 13px; right: 62px;">
         <div id='volume-slider'> </div>
         <i class='icon-volume-up'></i> 
       </div>
@@ -104,11 +104,11 @@
           Vocabulary
         </span> &nbsp;
         <span id="transcript" class="note-category <% if @lines.present? %>active<% else %>inactive<% end %>">
-          Lyrics/Transcript
+          Lyrics / Transcript
         </span> &nbsp;
-        <span id="translation" class="note-category <% if @translation.present? %>active<% else %>inactive<% end %>">
+        <!-- <span id="translation" class="note-category <% if @translation.present? %>active<% else %>inactive<% end %>">
           Translation
-        </span> &nbsp;
+        </span> &nbsp; --> 
       </div>
       <br>
        &nbsp; &nbsp; <i>Quizzes:</i> &nbsp; &nbsp;
@@ -116,7 +116,7 @@
         <span id="multiple-choice" class="note-category <% if @multiple_choice.present? %>active<% else %>inactive<% end %>">
           Multiple-Choice
         </span> &nbsp; 
-        <span id="fill-in-the-blanks" class="note-category <% if @fill_in_the_blank.present? %>active<% else %>inactive<% end %>">
+        <span id="fill-exercise" class="note-category <% if @fill_exercises.present? %>active<% else %>inactive<% end %>">
           Fill-In-The-Blank
         </span> &nbsp; 
       </div>
@@ -207,6 +207,25 @@
             <% end %>
           </div>
         <% end %>
+        <% if @fill_exercises.present? %>
+          <div class="note-area fill-exercise-area">
+            <% @fill_exercises.each do |f| %>
+              <% unless current_user %>
+                <div class='other-user-content'>
+                  <p class="big-friendly"> <%= link_to "#{f.user.username}", user_url(f.user) %> added a <span class='fill-exercise blue-link' data-fill-exercise=<%= f.id %>>fill-in-the-blanks exercise</span>. </p>
+              <% else %>
+                <% if current_user.id == f.user.id %>
+                  <div id='current-user-discussion-questions' class='current-user-content'>
+                    <p class="big-friendly">You added a <%= link_to "fill-in-the-blanks exercise", fill_exercise_url(f) %>.</p>
+                <% else %>
+                  <div class='other-user-content'>
+                    <p class="big-friendly"> <%= link_to "#{f.user.username}", user_url(f.user) %> added a <span class='fill-exercise blue-link' data-fill-exercise=<%= fill_exercise.id %>>fill-in-the-blanks exercise</span>. </p>
+                <% end %>
+              <% end %>
+              </div>
+            <% end %>
+          </div>
+        <% end %>
         <% if @discussion_questions.present? %>
           <div class="note-area discussion-question-area">
             <% @question_contributors.each do |c| %>
@@ -279,32 +298,29 @@
               <% else %>
                 <% if current_user.id == c.id %>
                   <div id='current-user-lines' class='current-user-content'>
-                    <p style="font-size: 16px;">You added a transcript:<br> <span style="font-size: 12px;">(<span class="edit-lines blue-link">edit lines</span> / <span class="add-times-to-lines blue-link">add times</span> / <span class="toggle-autoscroll blue-link">turn off autoscroll</span>)</span></p>
+                    <p class="big-friendly">You added a transcript:<br>(<span class="edit-lines blue-link">edit + add times</span> / <span class="toggle-autoscroll blue-link">autoscroll</span>)</p>
                 <% else %>
                   <div class='other-user-content'>
                     <p style="font-size: 16px;"> <%= link_to "#{c.username}", user_url(c) %> added a transcript: </p>
                 <% end %>
               <% end %>
                 <% @lines.each do |l| %>
-                  <div class="transcript-line rounded" data-time=<%= l.time %>>
+                  <div class="transcript-line rounded" data-line-id=<%= l.id %> data-time=<%= l.time %>>
                     <% if current_user %>
                       <% if current_user.id == c.id %>
-                      <span class='edit-line blue-link quiet tiny' data-line-id=<%= l.id %>> <i class='icon icon-pencil'></i> </span>
+                        <span class='edit-line blue-link quiet tiny' title='Edit line' data-line-id=<%= l.id %>> <i class='icon icon-pencil'></i> </span>
+                        <span class='comment-line blue-link quiet tiny' title='Add comment to line' data-line-id=<%= l.id %>> <i class='icon icon-comment'></i> </span>
+                        <span class='remove-line blue-link quiet tiny' title='Delete line' data-line-id=<%= l.id %>> <i class='icon icon-remove'></i> </span>
+                        <span class='add-time-to-line blue-link quiet tiny' title='Add time to line' data-line-id=<%= l.id %>> <i class='icon icon-time'></i> </span> 
                       <% end %>
                     <% end %>
-                    <span class="lang1" data-line-id=<%= l.id %>>
-                      <%= l.lang1 %>
-                    </span>
-                    <% if current_user %>
-                      <% if current_user.id == c.id %>
-                        <span class='add-time-to-line blue-link quiet tiny' data-line-id=<%= l.id %>> &nbsp; <i class='icon icon-time'></i> </span>
-                      <% end %>
-                    <% end %>
-                    <% if l.time.present? %>
-                      <span class="line-timing tiny gray" data-line-id=<%= l.id %> data-time=<%= l.time %>>
+                    <span class="lang1" data-line-id=<%= l.id %>><%= l.lang1 %></span>
+                    <span class="line-comment-area" data-line-id=<%= l.id %>></span>
+                    <span class="line-timing tiny gray" data-line-id=<%= l.id %> data-time=<%= if l.time.present? then l.time end %>>
+                      <% if l.time.present? %>
                         <%= l.formatted_time %>
-                      </span>
-                    <% end %>
+                      <% end %>
+                    </span>
                   </div>
                 <% end %>
                 <br><br>
@@ -366,6 +382,10 @@
       </div>
     </div>
   </div>
+</div>
+
+<div id="dialog-confirm" title="Confirmation">
+  <p><span class="ui-icon ui-icon-alert"></span>Sure you want to delete this line?</span></p>
 </div>
 
 <div id="data" class="quiet"

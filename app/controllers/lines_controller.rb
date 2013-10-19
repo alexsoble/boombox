@@ -3,7 +3,7 @@ class LinesController < ApplicationController
 
   def find
     @transcript = Transcript.find_by_id(params[:transcript_id])
-    @lines = Line.where(:transcript_id => @transcript.id).all
+    @lines = Line.where(:transcript_id => @transcript.id).order("created_at ASC").order("time ASC").all
     render json: { data: @lines }
   end
 
@@ -36,10 +36,9 @@ class LinesController < ApplicationController
   end
 
   def destroy
-    @line = Line.find_by_id(params[:line][:id])
+    @line = Line.find_by_id(params[:id])
     @line.destroy
-    @line.save
-    render :json => { :data => @line }
+    if @line.save then render json: { data: @line } else render json: { data: 'save_failed' } end
   end
 
 end

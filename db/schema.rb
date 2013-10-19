@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20131016224907) do
+ActiveRecord::Schema.define(:version => 20131018232352) do
 
   create_table "challenges", :force => true do |t|
     t.integer  "user_id"
@@ -43,6 +43,13 @@ ActiveRecord::Schema.define(:version => 20131016224907) do
     t.string   "comment_text"
     t.datetime "created_at",   :null => false
     t.datetime "updated_at",   :null => false
+  end
+
+  create_table "completed_exercises", :force => true do |t|
+    t.datetime "created_at",       :null => false
+    t.datetime "updated_at",       :null => false
+    t.integer  "user_id"
+    t.integer  "fill_exercise_id"
   end
 
   create_table "definition_votes", :force => true do |t|
@@ -84,6 +91,7 @@ ActiveRecord::Schema.define(:version => 20131016224907) do
     t.integer  "video_id"
     t.datetime "created_at",    :null => false
     t.datetime "updated_at",    :null => false
+    t.string   "name"
   end
 
   create_table "interests", :force => true do |t|
@@ -153,6 +161,7 @@ ActiveRecord::Schema.define(:version => 20131016224907) do
     t.string   "word_text"
     t.datetime "created_at",       :null => false
     t.datetime "updated_at",       :null => false
+    t.integer  "line_id"
   end
 
   create_table "option_votes", :force => true do |t|
@@ -242,13 +251,21 @@ ActiveRecord::Schema.define(:version => 20131016224907) do
     t.datetime "updated_at",        :null => false
   end
 
-  create_table "translations", :force => true do |t|
+  create_table "translated_lines", :force => true do |t|
     t.integer  "line_id"
+    t.string   "lang2"
+    t.integer  "translation_id"
+    t.datetime "created_at",     :null => false
+    t.datetime "updated_at",     :null => false
+  end
+
+  create_table "translations", :force => true do |t|
     t.integer  "user_id"
-    t.string   "text"
-    t.datetime "created_at",  :null => false
-    t.datetime "updated_at",  :null => false
+    t.datetime "created_at",    :null => false
+    t.datetime "updated_at",    :null => false
     t.integer  "language_id"
+    t.integer  "transcript_id"
+    t.integer  "video_id"
   end
 
   create_table "tweets", :force => true do |t|

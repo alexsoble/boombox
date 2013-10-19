@@ -1,14 +1,22 @@
 class Video < ActiveRecord::Base
   attr_accessible :title, :youtube_id, :slug
   has_many :interpretations
-  has_many :lines, :through => :interpretations
+  has_many :transcripts
+  has_many :translations
+  has_many :lines
   has_many :stars
+  has_many :fill_exercises
+  has_many :words
+  has_many :challenges
+  has_many :discussion_questions
+  has_many :links
+  has_many :tweets
+  before_validation :generate_slug
   validates :slug, uniqueness: true, presence: true
   validates_presence_of :title, :youtube_id
-  before_validation :generate_slug
 
   def generate_slug
-    self.slug ||= self.title[0..100].parameterize
+    self.slug ||= self.title[0..100].parameterize ||= self.youtube_id.parameterize
   end
 
   def to_param

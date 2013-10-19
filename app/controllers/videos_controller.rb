@@ -49,40 +49,18 @@ class VideosController < ApplicationController
       @all_but_last_tag = @tags[0..(@tags.length - 1)]
     end
 
-    @interpretations = Interpretation.where(:video_id => @video.id)
-
-    @lines = []
-    @interps_with_lines = []
-    @interps_with_translations = []
-    @interpretations.each do |i|
-      if Line.where(:interpretation_id => i.id).present?
-        if @interps_with_lines.index(i) == nil then @interps_with_lines << i end
-        Line.where(:interpretation_id => i.id).each do |l|
-          @lines << l
-          if Translation.where(:line_id => l.id).present?
-            if @interps_with_translations.index(i) == nil then @interps_with_translations << i end
-            @translation = true
-          elsif l.lang2.present?
-            if @interps_with_translations.index(i) == nil then @interps_with_translations << i end
-            @translation = true
-          end
-        end
-      end
-    end
+    @interpretations = @video.interpretations
+    @transcripts = @video.transcripts
 
     @vocabulary = Word.where(:video_id => @video.id).order("created_at DESC")
     @vocabulary_contributors = []
-    @vocabulary.each do |v|
-      user = User.where(:id => v.user_id).first
-      if @vocabulary_contributors.index(user) == nil then @vocabulary_contributors << user end
-    end
+    @vocabulary.each { |v| if v.user.present? then if @vocabulary_contributors.index(v.user) == nil then @vocabulary_contributors << v.user end end }
 
     @multiple_choice = Challenge.where(:video_id => @video.id).order("created_at DESC")
     @challenge_contributors = []
-    @multiple_choice.each do |c|
-      user = User.where(:id => c.user_id).first
-      if @challenge_contributors.index(user) == nil then @challenge_contributors << user end
-    end
+    @multiple_choice.each { |c| if c.user.present? then if @challenge_contributors.index(c.user) == nil then @challenge_contributors << c.user end end }
+
+    @fill_exercises = @video.fill_exercises
 
     @discussion_questions = DiscussionQuestion.where(:video_id => @video.id).order("created_at DESC")
     @question_contributors = []

@@ -19,6 +19,30 @@
 
 .line-timing { float: right; }
 
+/* * * Quiz Related * * */
+
+.exercise-line { font-size: 14px; padding: 2px; }
+
+.blank { width: 60px; font-size: 14px; height: 10px !important; position: relative; top: 2px; }
+
+.you-got-it { float: right; color: green; font-style: italic; }
+
+.current-line .blank { color: #0f82f5; }
+
+#quiz-status { 
+  font-size: 16px; 
+  margin: 10px;
+  background-color: white;
+  border: 1px solid white;
+  border-radius: 10px; 
+  color: green; 
+  padding: 12px;
+}
+
+#quiz-status div { color: green; }
+
+/* * * * * * */
+
 .narrow-lyrics-container {
   width: 280px;
   height: 60px;
