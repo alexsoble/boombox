@@ -12,21 +12,21 @@ class Video < ActiveRecord::Base
   has_many :links
   has_many :tweets
   before_validation :generate_slug
-  validates :slug, uniqueness: true, presence: true
-  validates_presence_of :title, :youtube_id
+  validates_uniqueness_of :slug, :youtube_id
+  validates_presence_of :slug, :youtube_id, :title
 
   def generate_slug
 
-    if self.slug.present?
-      self.slug
-    elsif self.title[0..100].parameterize.present?
-      if Video.where(:slug => self.title[0..100].parameterize).blank?
-        self.title[0..100].parameterize 
-      else 
-        self.youtube_id.parameterize
+    if self.slug.blank?
+      if self.title[0..100].parameterize.present?
+        if Video.where(:slug => self.title[0..100].parameterize).blank?
+          self.slug = self.title[0..100].parameterize 
+        else
+          self.slug = self.title[0..100].parameterize + '-' + self.youtube_id.parameterize
+        end
+      else
+        self.slug = self.youtube_id.parameterize
       end
-    else
-      self.youtube_id.parameterize
     end
 
   end
