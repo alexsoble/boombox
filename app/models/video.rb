@@ -16,7 +16,19 @@ class Video < ActiveRecord::Base
   validates_presence_of :title, :youtube_id
 
   def generate_slug
-    self.slug ||= self.title[0..100].parameterize ||= self.youtube_id.parameterize
+
+    if self.slug.present?
+      self.slug
+    elsif self.title[0..100].parameterize.present?
+      if Video.where(:slug => self.title[0..100].parameterize).blank?
+        self.title[0..100].parameterize 
+      else 
+        self.youtube_id.parameterize
+      end
+    else
+      self.youtube_id.parameterize
+    end
+
   end
 
   def to_param
