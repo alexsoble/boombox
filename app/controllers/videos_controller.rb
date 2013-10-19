@@ -49,8 +49,9 @@ class VideosController < ApplicationController
       @all_but_last_tag = @tags[0..(@tags.length - 1)]
     end
 
-    @interpretations = @video.interpretations
+    @interps_with_lines = @video.interpretations
     @transcripts = @video.transcripts
+    @lines = true
 
     @vocabulary = Word.where(:video_id => @video.id).order("created_at DESC")
     @vocabulary_contributors = []
