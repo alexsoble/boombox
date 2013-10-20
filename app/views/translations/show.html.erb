@@ -30,15 +30,11 @@
   </div>
   <% if current_user %>
     <% if current_user.id == @translation.user.id %>
-      <div class="small tab remove-translation">
-        <i class="icon icon-remove"></i>
-      </div>
-      <div class="small tab edit-translation">
-        <i class="icon icon-pencil"></i>
-      </div>
+      <div class="small tab edit-translation"><i class="icon icon-pencil"></i></div>
+      <div class="small tab remove-translation"><i class="icon icon-remove"></i></div>
     <% end %>
   <% end %>
-  <div class="small-tab"></div>
+  <div class="small-tab short"></div>
     <div id="community-notes">
       <div id="notes-container">
         <% if @translation.present? %>
@@ -55,8 +51,8 @@
   </div>
 </div>
 
-<div id="dialog-confirm" title="Confirmation" data-fill-exercise-id=<%= @translation.id %>>
-  <p><span class="ui-icon ui-icon-alert"></span>Are you extra double super-duper sure you want to delete this fill-in-the-blanks quiz?</span></p>
+<div id="dialog-confirm" title="Confirmation" data-translation-id=<%= @translation.id %>>
+  <p><span class="ui-icon ui-icon-alert"></span>Are you extra double super-duper sure you want to delete this translation?</span></p>
 </div>
 
 <div id="data" class="quiet"

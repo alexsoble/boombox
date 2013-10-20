@@ -149,14 +149,14 @@
               <% c_words = Word.where(:user_id => c.id, :video_id => @video.id).order("created_at DESC") %>
                 <% unless current_user %>
                   <div class='other-user-content'> 
-                    <p style="font-size: 16px;"> <%= link_to "#{c.username}", user_url(c) %> added vocabulary definitions: </p>
+                    <p class="friendly"> <%= link_to "#{c.username}", user_url(c) %> added vocabulary definitions: </p>
                 <% else %>
                   <% if current_user.id == c.id %>
                     <div id='current-user-definitions' class='current-user-content'>
-                      <p style="font-size: 16px;">You added vocabulary definitions: </p>
+                      <p class="friendly">You added vocabulary definitions: </p>
                   <% else %>
                     <div class='other-user-content'> 
-                     <p style="font-size: 16px;"> <%= link_to "#{c.username}", user_url(c) %> added vocabulary definitions: </p>
+                     <p class="friendly"> <%= link_to "#{c.username}", user_url(c) %> added vocabulary definitions: </p>
                   <% end %>
                 <% end %>
                 <% c_words.each do |w| %>
@@ -176,14 +176,14 @@
                 <% if @challenges.length > 1 then init = "multiple-choice questions" end %>
                 <% unless current_user %>
                   <div class='other-user-content'>
-                    <p style="font-size: 16px;"> <%= link_to "#{c.username}", user_url(c) %> added <%= "#{init}" %>: </p>
+                    <p class="friendly"> <%= link_to "#{c.username}", user_url(c) %> added <%= "#{init}" %>: </p>
                 <% else %>
                   <% if current_user.id == c.id %>
                     <div id='current-user-challenges' class='current-user-content'>
-                      <p style="font-size: 16px;">You added <%= "#{init}" %>: </p>
+                      <p class="friendly">You added <%= "#{init}" %>: </p>
                   <% else %>
                     <div class='other-user-content'>
-                      <p style="font-size: 16px;"> <%= link_to "#{c.username}", user_url(c) %> added <%= "#{init}" %>: </p>
+                      <p class="friendly"> <%= link_to "#{c.username}", user_url(c) %> added <%= "#{init}" %>: </p>
                   <% end %>
                 <% end %>
                 <% @challenges.each do |challenge| %>
@@ -211,14 +211,14 @@
             <% @fill_exercises.each do |f| %>
               <% unless current_user %>
                 <div class='other-user-content'>
-                  <p class="big-friendly"> <%= link_to "#{f.user.username}", user_url(f.user) %> added a <%= link_to "fill-in-the-blanks exercise", fill_exercise_url(f) %>. </p>
+                  <p class="friendly"> <%= link_to "#{f.user.username}", user_url(f.user) %> added a <%= link_to "fill-in-the-blanks exercise", fill_exercise_url(f) %>. </p>
               <% else %>
                 <% if current_user.id == f.user.id %>
                   <div id='current-user-discussion-questions' class='current-user-content'>
-                    <p class="big-friendly">You added a <%= link_to "fill-in-the-blanks exercise", fill_exercise_url(f) %>.</p>
+                    <p class="friendly">You added a <%= link_to "fill-in-the-blanks exercise", fill_exercise_url(f) %>.</p>
                 <% else %>
                   <div class='other-user-content'>
-                    <p class="big-friendly"> <%= link_to "#{f.user.username}", user_url(f.user) %> added a <%= link_to "fill-in-the-blanks exercise", fill_exercise_url(f) %>. </p>
+                    <p class="friendly"> <%= link_to "#{f.user.username}", user_url(f.user) %> added a <%= link_to "fill-in-the-blanks exercise", fill_exercise_url(f) %>. </p>
                 <% end %>
               <% end %>
               </div>
@@ -233,14 +233,14 @@
                 <% if @questions.length > 1 then init = "discussion questions" end %>
                 <% unless current_user %>
                   <div class='other-user-content'>
-                    <p style="font-size: 16px;"> <%= link_to "#{c.username}", user_url(c) %> added <%= "#{init}" %>: </p>
+                    <p class="friendly"> <%= link_to "#{c.username}", user_url(c) %> added <%= "#{init}" %>: </p>
                 <% else %>
                   <% if current_user.id == c.id %>
                     <div id='current-user-discussion-questions' class='current-user-content'>
-                      <p style="font-size: 16px;">You added <%= "#{init}" %>: </p>
+                      <p class="friendly">You added <%= "#{init}" %>: </p>
                   <% else %>
                     <div class='other-user-content'>
-                      <p style="font-size: 16px;"> <%= link_to "#{c.username}", user_url(c) %> added <%= "#{init}" %>: </p>
+                      <p class="friendly"> <%= link_to "#{c.username}", user_url(c) %> added <%= "#{init}" %>: </p>
                   <% end %>
                 <% end %>
                   <% @questions.each do |question| %>
@@ -270,14 +270,14 @@
               <% @lines = t.translated_lines.sort { |a, b| a.line.time <=> b.line.time } %>
               <% unless current_user %>
                 <div class='other-user-content'>
-                  <p style="font-size: 16px;"> <%= link_to "#{c.username}", user_url(c) %> added a translation: </p>
+                  <p class="friendly"> <%= link_to "#{c.username}", user_url(c) %> added a translation: </p>
               <% else %>
                 <% if current_user.id == c.id %>
                   <div id='current-user-challenges' class='current-user-content'>
-                    <p style="font-size: 16px;">You added a translation (<%= link_to "edit", translation_url(t) %>): </p>
+                    <p class="friendly">You added a translation (<%= link_to "edit", translation_url(t) %>): </p>
                 <% else %>
                   <div class='other-user-content'>
-                    <p style="font-size: 16px;"> <%= link_to "#{c.username}", user_url(c) %> added a translation: </p>
+                    <p class="friendly"> <%= link_to "#{c.username}", user_url(c) %> added a translation: </p>
                 <% end %>
               <% end %>
               <%= render "videos/translation", :translated_lines => @lines %>
@@ -292,14 +292,14 @@
               <% c = t.user %>
               <% unless current_user %>
                 <div class='other-user-content'>
-                  <p style="font-size: 16px;"> <%= link_to "#{c.username}", user_url(c) %> added a transcript: </p>
+                  <p class="friendly"> <%= link_to "#{c.username}", user_url(c) %> added a transcript: </p>
               <% else %>
                 <% if current_user.id == c.id %>
                   <div id='current-user-lines' class='current-user-content'>
-                    <p class="big-friendly">You added a transcript:<br>(<span class="edit-lines blue-link">edit + add times</span> / <span class="toggle-autoscroll blue-link">autoscroll</span>)</p>
+                    <p class="friendly">You added a transcript:<br>(<span class="edit-lines blue-link">edit + add times</span> / <span class="toggle-autoscroll blue-link">autoscroll</span>)</p>
                 <% else %>
                   <div class='other-user-content'>
-                    <p style="font-size: 16px;"> <%= link_to "#{c.username}", user_url(c) %> added a transcript: </p>
+                    <p class="friendly"> <%= link_to "#{c.username}", user_url(c) %> added a transcript: </p>
                 <% end %>
               <% end %>
                   <% t.lines.order("time ASC").order("created_at ASC").each do |l| %>
@@ -332,14 +332,14 @@
               <% @links = Link.where(:user_id => c.id, :video_id => @video.id).all %>
                 <% unless current_user %>
                   <div class='other-user-content'>
-                    <p style="font-size: 16px;"> <%= link_to "#{c.username}", user_url(c) %> added a link: </p>
+                    <p class="friendly"> <%= link_to "#{c.username}", user_url(c) %> added a link: </p>
                 <% else %>
                   <% if current_user.id == c.id %>
                     <div id='current-user-links' class='current-user-content'>
-                      <p style="font-size: 16px;">You added a link: </p>
+                      <p class="friendly">You added a link: </p>
                   <% else %>
                     <div class='other-user-content'>
-                      <p style="font-size: 16px;"><%= link_to "#{c.username}", user_url(c) %> added a link: </p>
+                      <p class="friendly"><%= link_to "#{c.username}", user_url(c) %> added a link: </p>
                   <% end %>
                 <% end %>
                   <% @links.each do |link| %>
@@ -358,14 +358,14 @@
               <% @tweets = Tweet.where(:user_id => c.id, :video_id => @video.id).all %>
                 <% unless current_user %>
                   <div class='other-user-content'>
-                    <p style="font-size: 16px;"> <%= link_to "#{c.username}", user_url(c) %> added a Tweet: </p>
+                    <p class="friendly"> <%= link_to "#{c.username}", user_url(c) %> added a Tweet: </p>
                 <% else %>
                   <% if current_user.id == c.id %>
                     <div id='current-user-tweets' class='current-user-content'>
-                      <p style="font-size: 16px;"> You added a Tweet: </p>
+                      <p class="friendly"> You added a Tweet: </p>
                   <% else %>
                     <div class='other-user-content'>
-                      <p style="font-size: 16px;"> <%= link_to "#{c.username}", user_url(c) %> added a Tweet: </p>
+                      <p class="friendly"> <%= link_to "#{c.username}", user_url(c) %> added a Tweet: </p>
                   <% end %>
                 <% end %>
                   <% @tweets.each do |tweet| %>

@@ -51,6 +51,7 @@ span { color: black; }
 
 .bigger-friendly { font-size: 22px; }
 .big-friendly { font-size: 18px; }
+.friendly { font-size: 16px; }
    
 .left { float: left; }
 .right { float: right; }

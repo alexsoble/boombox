@@ -31,12 +31,8 @@
   </div>
   <% if current_user %>
     <% if current_user.id == @fill_exercise.user.id %>
-      <div class="small tab remove-exercise">
-        <i class="icon icon-remove"></i>
-      </div>
-      <div class="small tab edit-exercise">
-        <i class="icon icon-pencil"></i>
-      </div>
+      <div class="small tab edit-exercise"><i class="icon icon-pencil"></i></div>
+      <div class="small tab remove-exercise"><i class="icon icon-remove"></i></div>
     <% end %>
   <% end %>
   <div class="small-tab">

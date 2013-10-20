@@ -304,6 +304,7 @@ select { width: 150px; }
   height: 70px; 
   font-size: 13px; 
   color: white; }
+.small-tab.short { height: 20px; }
 .inactive { color: #bdbdbd; }
 .active { color: white; cursor: pointer; }
 .option { color: white; cursor: pointer; }

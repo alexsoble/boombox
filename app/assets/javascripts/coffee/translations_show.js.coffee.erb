@@ -161,7 +161,7 @@ $ ->
       $('#watch-again').removeClass('video-finished')
       $('#watch-again').html('')
 
-  $('.remove-exercise').livequery ->
+  $('.remove-translation').livequery ->
     $(this).click ->
       $("#dialog-confirm").dialog("open")
 
@@ -188,8 +188,8 @@ $ ->
       autoOpen: false,
       buttons:
         Delete: ->
-          id = parseInt($(this).attr('data-fill-exercise-id'))
-          $.post('/destroy_fill_exercise', { 'id' : "#{id}" }, (data) ->
+          id = parseInt($(this).attr('data-translation-id'))
+          $.post('/destroy_translation', { 'id' : "#{id}" }, (data) ->
             console.log data
             $.post('/find_video_slug', { 'id' : "#{window.video_id}" }, (data) ->
               slug = data.data
