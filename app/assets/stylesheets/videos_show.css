@@ -19,7 +19,7 @@
 .transcript-line { padding: 4px; }
 .transcript-line .lang1 { 
   display: inline-block;
-  width: 380px; }
+  max-width: 380px; }
 
 .line-timing { float: right; }
 .line-container .line-timing {

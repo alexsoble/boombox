@@ -15,6 +15,8 @@ $ ->
       </div>
     ')
 
+  $('#ask-youtube').focus()
+
   $('#ask-youtube').autocomplete(
     source: (request, response) ->
       $.ajax(
