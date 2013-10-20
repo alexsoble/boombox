@@ -22,4 +22,10 @@ class FillExercisesController < ApplicationController
     @video = @fill_exercise.video
   end 
 
+  def destroy
+    @fill_exercise = FillExercise.find_by_id(params[:id])
+    @fill_exercise.destroy
+    if @fill_exercise.save then render json: { data: @fill_exercise } else render json: { data: 'save_failed' } end
+  end
+
 end

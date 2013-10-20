@@ -227,6 +227,11 @@ $ ->
   $('#new-content').click ->
     if window.adding_content == false
       $('.note-category').addClass('option')
+      $('#editing').html("
+        <div style='text-align: center;'>
+          <h1 style=>&uarr;</h1>
+          <h2>Click the things</h2>
+        </div>")
       $('#notes-container').hide()
       $(this).attr('style','right: -1px;')
       window.adding_content = true
@@ -251,6 +256,50 @@ $ ->
   $('#back-from-editing').livequery ->
     $(this).click ->
       backFromEditing()
+
+  createFillExerciseSetup = ->
+    $.post('/find_transcripts', { 'video_id' : "#{window.video_id}" }, (data) ->
+      transcripts = data.data
+      number_of_transcripts = transcripts.length
+      console.log number_of_transcripts
+      if number_of_transcripts == 0
+        $('#editing').html("
+          <h3>Sorry...</h3>
+          <br>
+          <p>There needs to be a transcript of this video before you can create a translation.</p>
+          <p>Why not add one? :)</p>
+          <br><br>
+          <div id='back-from-editing' class='btn btn-primary btn-small rounded'> Back </div>
+        ")
+      else if number_of_transcripts == 1
+        transcript_id = parseInt(transcripts[0].id)
+        $.post('/find_lines', { 'transcript_id' : "#{transcript_id}" }, (data) ->
+          lines = data.data
+          transcript_html = "#{lines[0].lang1}<br>#{lines[1].lang1}<br>#{lines[2].lang1}...<br><br><br>"
+          $('#editing').html("
+            <h3>Use this transcript?</h3>
+            <br>
+            #{transcript_html}
+            <div id='create-new-exercise' class='btn btn-primary btn-small rounded' data-transcript-id=#{transcript_id}> Let's do it! </div>
+            <div id='back-from-editing' class='btn btn-primary btn-small rounded'> Back </div>
+            <br><br>
+            <div id='notice-area'></div>
+          ")
+        )
+      else if number_of_transcripts > 1
+        $('#editing').html("
+            <h3>Which of these transcripts should we use?</h3><br><br>
+            <div id='transcripts-list'></div>
+            <div id='create-new-translation' class='btn btn-primary btn-small rounded'> Go </div>
+            <div id='back-from-editing' class='btn btn-primary btn-small rounded'> Back </div>
+          ")
+        for transcript in transcripts
+          $.post('/find_lines', { 'transcript_id' : "#{transcript.id}" }, (data) ->
+            lines = data.data
+            this_transcript_html = "#{lines[0].lang1}<br>#{lines[1].lang1}<br>#{lines[2].lang1}<br>...<br><br><br>"
+            $('#transcripts-list').append(this_transcript_html)
+          )
+    )
 
   $('.option').livequery ->
     $(this).click ->
@@ -325,7 +374,7 @@ $ ->
                 <div id='back-from-editing' class='btn btn-primary btn-small rounded'> Back </div>
               ")
             else if number_of_transcripts == 1
-              transcript_id = parseInt(transcripts[0].id)
+              window.transcript_id = parseInt(transcripts[0].id)
               $.post('/find_lines', { 'transcript_id' : "#{transcript_id}" }, (data) ->
                 lines = data.data
                 transcript_html = "#{lines[0].lang1}<br>#{lines[1].lang1}<br>#{lines[2].lang1}...<br>"
@@ -344,48 +393,7 @@ $ ->
               )
           )
         if category == 'fill-exercise'
-          $.post('/find_transcripts', { 'video_id' : "#{window.video_id}" }, (data) ->
-            transcripts = data.data
-            number_of_transcripts = transcripts.length
-            console.log number_of_transcripts
-            if number_of_transcripts == 0
-              $('#editing').html("
-                <h3>Sorry...</h3>
-                <br>
-                <p>There needs to be a transcript of this video before you can create a translation.</p>
-                <p>Why not add one? :)</p>
-                <br><br>
-                <div id='back-from-editing' class='btn btn-primary btn-small rounded'> Back </div>
-              ")
-            else if number_of_transcripts == 1
-              transcript_id = parseInt(transcripts[0].id)
-              $.post('/find_lines', { 'transcript_id' : "#{transcript_id}" }, (data) ->
-                lines = data.data
-                transcript_html = "#{lines[0].lang1}<br>#{lines[1].lang1}<br>#{lines[2].lang1}...<br><br><br>"
-                $('#editing').html("
-                  <h3>Use this transcript?</h3>
-                  <br>
-                  #{transcript_html}
-                  <div id='create-new-exercise' class='btn btn-primary btn-small rounded' data-transcript-id=#{transcript_id}> Let's do it! </div>
-                  <div id='back-from-editing' class='btn btn-primary btn-small rounded'> Back </div>
-                  <br><br>
-                  <div id='notice-area'></div>
-                ")
-              )
-            else if number_of_transcripts > 1
-              $('#editing').html("
-                  <h3>Which of these transcripts should we use?</h3><br><br>
-                  <div id='transcripts-list'></div>
-                  <div id='create-new-translation' class='btn btn-primary btn-small rounded'> Go </div>
-                  <div id='back-from-editing' class='btn btn-primary btn-small rounded'> Back </div>
-                ")
-              for transcript in transcripts
-                $.post('/find_lines', { 'transcript_id' : "#{transcript.id}" }, (data) ->
-                  lines = data.data
-                  this_transcript_html = "#{lines[0].lang1}<br>#{lines[1].lang1}<br>#{lines[2].lang1}<br>...<br><br><br>"
-                  $('#transcripts-list').append(this_transcript_html)
-                )
-          )
+          createFillExerciseSetup()
         if category == 'links'
           $('#editing').html("
             <h3>Add a relevant link:</h3>
@@ -429,7 +437,7 @@ $ ->
     $.post('/new_word', { 'word' : { 'interpretation_id' : "#{window.interp_id}", 'video_id' : "#{window.video_id}", 'user_id' : "#{window.user_id}", 'text' : "#{word}" } }, (data) ->
       word_id = data.data.id
       $('#vocab-list').append("
-        <li>#{word} = #{definition} <!-- &nbsp; <div id=#{word_id} class='add-time btn btn-primary btn-petite rounded'> Add time </div> -->
+        <li>#{word} = #{definition}
         </li>
         <br><br>
       ")
@@ -559,32 +567,24 @@ $ ->
       if window.editing_lines == false
         if window.line_being_edited_id == 0
           $('.edit-line').each(->
-            $(this).removeClass('quiet')
-          )
+            $(this).removeClass('quiet'))
           $('.remove-line').each(->
-            $(this).removeClass('quiet')
-          )
+            $(this).removeClass('quiet'))
           $('.comment-line').each(->
-            $(this).removeClass('quiet')
-          )
+            $(this).removeClass('quiet'))
           $('.add-time-to-line').each(->
-            $(this).removeClass('quiet')
-          )
+            $(this).removeClass('quiet'))
           $(this).html('done editing')
           window.editing_lines = true
       else
         $('.edit-line').each(->
-            $(this).addClass('quiet')
-          )
+            $(this).addClass('quiet'))
         $('.remove-line').each(->
-            $(this).addClass('quiet')
-          )
+            $(this).addClass('quiet'))
         $('.comment-line').each(->
-            $(this).addClass('quiet')
-          )
+            $(this).addClass('quiet'))
         $('.add-time-to-line').each(->
-          $(this).addClass('quiet')
-        )
+          $(this).addClass('quiet'))
         $(this).html('edit + add times')
         window.editing_lines = false
 
@@ -662,10 +662,12 @@ $ ->
       if window.user == 'logged-out'
         $('#notice-area').html("<p class='notice'><i>Please sign in to add a fill-in-the-blanks exercise.</i></p>")
       else
-        transcript_id = parseInt($(this).attr('data-transcript-id'))
+        window.transcript_id = parseInt($(this).attr('data-transcript-id'))
         $.post('/find_lines', { 'transcript_id' : "#{transcript_id}" }, (data) ->
           lines = data.data
-          transcript_html = '<h3>Click on the words that you want to blank out:</h3><div id="exercise-transcript">'
+          transcript_html = '<h3>Click on a word to blank it out:</h3><div id="exercise-transcript">'
+          transcript_html += '<div id="back-to-select-transcript-stage" class="btn btn-primary rounded" style="float:right;">Back</div></span>'
+          transcript_html += '<span><div id="finalize-fill-exercise" class="btn btn-primary rounded" style="float:right;">Create quiz</div>'
           for line in lines
             transcript_html += "<div class='exercise-transcript-line rounded' data-line-id=#{line.id}>#{line.lang1}</div>"
           transcript_html += '</div>'
@@ -673,26 +675,43 @@ $ ->
           $('.exercise-transcript-line').each(->
             $(this).lettering('words')
           )
-          $.post('/new_fill_exercise', { 'fill_exercise' : { 'transcript_id' : "#{transcript_id}", 'video_id' : "#{window.video_id}", 'user_id' : "#{window.user_id}" } }, (data) ->
-            window.fill_exercise_id = data.data.id
-          )
         )
+
+  $('#back-to-select-transcript-stage').livequery ->
+    $(this).click ->
+      createFillExerciseSetup()
+
+  $('#finalize-fill-exercise').livequery ->
+    $(this).click ->
+      if window.fill_exercise_id isnt undefined
+        window.location.href = "/fill_exercises/#{window.fill_exercise_id}"
+
+  postNewMissingWord = (word_text, line_id) ->
+    $.post('/new_missing_word', { 'missing_word' : { 'fill_exercise_id' : "#{window.fill_exercise_id}", 'line_id' : "#{line_id}", 'word_text' : "#{word_text}" } }, (data) ->
+        line_id = data.data.line_id
+        word_text = data.data.word_text
+        this_line = $(".exercise-transcript-line[data-line-id=#{line_id}]")
+        this_line.children().each(->
+          if $(this).html() == word_text
+            $(this).html("<input type='text' class='blank'>")
+        )
+      )
+
+  postFirstMissingWord = (word_text, line_id) ->
+    $.post('/new_fill_exercise', { 'fill_exercise' : { 'transcript_id' : "#{window.transcript_id}", 'video_id' : "#{window.video_id}", 'user_id' : "#{window.user_id}" } }, (data) ->
+      window.fill_exercise_id = data.data.id
+      postNewMissingWord(word_text, line_id)
+    )
 
   $('[class^="word"]').livequery ->
     $(this).click ->
       word_text = $(this).text()
       line_id = $(this).parent().attr('data-line-id')
-      console.log line_id
       unless word_text == ''
-        $.post('/new_missing_word', { 'missing_word' : { 'fill_exercise_id' : "#{window.fill_exercise_id}", 'line_id' : "#{line_id}", 'word_text' : "#{word_text}" } }, (data) ->
-            line_id = data.data.line_id
-            word_text = data.data.word_text
-            this_line = $(".exercise-transcript-line[data-line-id=#{line_id}]")
-            this_line.children().each(->
-              if $(this).html() == word_text
-                $(this).html("<input type='text' class='blank'>")
-            )
-          )
+        if window.fill_exercise_id == undefined
+          postFirstMissingWord(word_text, line_id)
+        else
+          postNewMissingWord(word_text, line_id)
 
   # # # Translations
 
@@ -706,22 +725,25 @@ $ ->
           $.post('/find_language', { 'language' : "#{language}" }, (data) ->
             console.log data
             window.language_id = data.data.id
-            translation_html = '<div class="big-friendly">Translate away!</div><div class="all-done-translating btn btn-primary rounded">All done</div>'
-            for line in $('.lang1')
-              id = $(line).attr('data-line-id')
-              time = $(line).attr('data-time')
-              lang1 = $.trim($(line).text())
-              translation_html += "<br><br>
-                <div class='line-container rounded' data-line-id=#{id} data-time=#{time}>
-                  <div class='line-left-subcontainer rounded'>#{lang1}</div>
-                  <div class='line-right-subcontainer rounded'>
-                    <div class='translate-line-input-area' data-line-id=#{id}></div>
-                    <div class='translate-line' data-line-id=#{id} style='color: blue;'>
-                      <i class='icon icon-pencil'></i>
+            $.post('/new_translation', { 'translation' : { 'transcript_id' : "#{window.transcript_id}", 'video_id' : "#{window.video_id}", 'user_id' : "#{window.user_id}", 'language_id' : "#{window.language_id}" } }, (data) ->
+              window.translation_id = data.data.id
+              translation_html = '<div class="big-friendly">Translate away!</div><div class="all-done-translating btn btn-primary rounded" style="float: right;">All done</div>'
+              for line in $('.lang1')
+                id = $(line).attr('data-line-id')
+                time = $(line).attr('data-time')
+                lang1 = $.trim($(line).text())
+                translation_html += "<br><br>
+                  <div class='line-container rounded' data-line-id=#{id} data-time=#{time}>
+                    <div class='line-left-subcontainer rounded'>#{lang1}</div>
+                    <div class='line-right-subcontainer rounded'>
+                      <div class='translate-line-input-area' data-line-id=#{id}></div>
+                      <div class='translate-line' data-line-id=#{id} style='color: blue;'>
+                        <i class='icon icon-pencil'></i>
+                      </div>
                     </div>
-                  </div>
-                </div>"
-              $('#editing').html(translation_html)
+                  </div>"
+                $('#editing').html(translation_html)
+              )
            )
 
   $('.translate-line').livequery ->
@@ -735,10 +757,10 @@ $ ->
   $('.submit-translation').livequery ->
     $(this).click ->
       id = $(this).attr('data-line-id')
-      text = $("input[data-line-id=#{id}]").val()
-      unless text == ''
-        $.post('/new_translation', { 'translation' : { 'line_id' : "#{id}", 'text' : "#{text}", 'language_id' : "#{window.language_id}", 'user_id' : "#{window.user_id}" } }, (data) ->
-          $(".translate-line-input-area[data-line-id=#{data.data.line_id}]").html("#{data.data.text}")
+      lang2 = $("input[data-line-id=#{id}]").val()
+      unless lang2 == ''
+        $.post('/new_translated_line', { 'translated_line' : { 'line_id' : "#{id}", 'lang2' : "#{lang2}", 'translation_id' : "#{window.translation_id}" } }, (data) ->
+          $(".translate-line-input-area[data-line-id=#{data.data.line_id}]").html("#{data.data.lang2}")
         )
 
   # # # New transcripts

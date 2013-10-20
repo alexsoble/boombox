@@ -106,6 +106,12 @@ class VideosController < ApplicationController
       
   end 
 
+  def find_slug
+    @video = Video.find_by_id(params[:id])
+    @slug = @video.slug
+    render json: { data: @slug } 
+  end
+
   def new
 
     @interp = Interpretation.find_by_id(params[:interp])

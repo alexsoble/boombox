@@ -15,6 +15,7 @@
 
 .line-right-subcontainer { width: 180px; margin-bottom: 4px; margin-top: 4px; margin-right: 4px; float: right; }
 
+.exercise-transcript-line { padding: 4px; }
 .transcript-line { padding: 4px; }
 .transcript-line .lang1 { 
   display: inline-block;

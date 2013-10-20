@@ -134,7 +134,6 @@
         </span> &nbsp;
       </div>
     </div>
-
     <div id="community-notes">
       <div id="editing"></div>
       <div id="notes-container">
@@ -275,7 +274,7 @@
               <% else %>
                 <% if current_user.id == c.id %>
                   <div id='current-user-challenges' class='current-user-content'>
-                    <p style="font-size: 16px;">You added a translation (<span class="edit-translation blue-link">edit</span>): </p>
+                    <p style="font-size: 16px;">You added a translation (<%= link_to "edit", translation_url(t) %>): </p>
                 <% else %>
                   <div class='other-user-content'>
                     <p style="font-size: 16px;"> <%= link_to "#{c.username}", user_url(c) %> added a translation: </p>

@@ -3,7 +3,7 @@ class LinesController < ApplicationController
 
   def find
     @transcript = Transcript.find_by_id(params[:transcript_id])
-    @lines = Line.where(:transcript_id => @transcript.id).order("created_at ASC").order("time ASC").all
+    @lines = Line.where(:transcript_id => @transcript.id).order("time ASC").order("created_at ASC").all
     render json: { data: @lines }
   end
 
