@@ -259,6 +259,7 @@ $ ->
       backFromEditing()
 
   createFillExerciseSetup = ->
+    $('#transcripts-list').html('')
     $.post('/find_transcripts', { 'video_id' : "#{window.video_id}" }, (data) ->
       transcripts = data.data
       number_of_transcripts = transcripts.length
@@ -281,7 +282,55 @@ $ ->
             <h3>Use this transcript?</h3>
             <br>
             #{transcript_html}
-            <div id='create-new-exercise' class='btn btn-primary btn-small rounded' data-transcript-id=#{transcript_id}> Let's do it! </div>
+            <div id='create-new-exercise' class='btn btn-primary btn-small rounded one-transcript' data-transcript-id=#{transcript_id}> Let's do it! </div>
+            <div id='back-from-editing' class='btn btn-primary btn-small rounded'> Back </div>
+            <br><br>
+            <div id='notice-area'></div>
+          ")
+        )
+      else if number_of_transcripts > 1
+        $('#editing').html("
+            <h3>Which of these transcripts should we use?</h3><br><br>
+            <div id='transcripts-list'></div>
+            <div id='create-new-exercise' class='btn btn-primary btn-small rounded'> Go </div>
+            <div id='back-from-editing' class='btn btn-primary btn-small rounded'> Back </div>
+          ")
+        for transcript in transcripts
+          window.t_id = transcript.id
+          $.post('/find_lines', { 'transcript_id' : "#{transcript.id}" }, (data) ->
+            lines = data.data
+            this_transcript_html = "<div style='float:left;'><input type='radio' class='transcript-choice' data-transcript-id=#{window.t_id}></div>"
+            this_transcript_html += "<div style='margin-left: 20px;'>#{lines[0].lang1}<br>#{lines[1].lang1}<br>#{lines[2].lang1}<br>...<br><br><br></div>"
+            $('#transcripts-list').append(this_transcript_html)
+          )
+    )
+
+  createTranslationSetup = ->
+    $.post('/find_transcripts', { 'video_id' : "#{window.video_id}" }, (data) ->
+      transcripts = data.data
+      number_of_transcripts = data.data.length
+      if number_of_transcripts == 0
+        $('#editing').html("
+          <h3>Sorry...</h3>
+          <br>
+          <p>There needs to be a transcript of this video before you can create a translation.</p>
+          <p>Why not add one? :)</p>
+          <br><br>
+          <div id='back-from-editing' class='btn btn-primary btn-small rounded'> Back </div>
+        ")
+      else if number_of_transcripts == 1
+        window.transcript_id = parseInt(transcripts[0].id)
+        $.post('/find_lines', { 'transcript_id' : "#{transcript_id}" }, (data) ->
+          lines = data.data
+          transcript_html = "#{lines[0].lang1}<br>#{lines[1].lang1}<br>#{lines[2].lang1}...<br>"
+          $('#editing').html("
+            <h3>Use this transcript?</h3>
+            <br>
+            #{transcript_html}
+            <br>
+            <div class='big-friendly'>Translate into: &nbsp; <input type='text' id='language-select' placeholder='Search language' style='width: 160px; position: relative; top: 4px;'></p>
+            <br>
+            <div id='create-new-translation' class='btn btn-primary btn-small rounded one-transcript'> Go </div>
             <div id='back-from-editing' class='btn btn-primary btn-small rounded'> Back </div>
             <br><br>
             <div id='notice-area'></div>
@@ -295,12 +344,22 @@ $ ->
             <div id='back-from-editing' class='btn btn-primary btn-small rounded'> Back </div>
           ")
         for transcript in transcripts
+          console.log transcript
+          window.t_id = transcript.id
           $.post('/find_lines', { 'transcript_id' : "#{transcript.id}" }, (data) ->
             lines = data.data
-            this_transcript_html = "#{lines[0].lang1}<br>#{lines[1].lang1}<br>#{lines[2].lang1}<br>...<br><br><br>"
+            this_transcript_html = "<div style='float:left;'><input type='radio' class='transcript-choice' data-transcript-id=#{window.t_id}></div>"
+            this_transcript_html += "<div style='margin-left: 20px;'>#{lines[0].lang1}<br>#{lines[1].lang1}<br>#{lines[2].lang1}<br>...<br><br><br></div>"
             $('#transcripts-list').append(this_transcript_html)
           )
     )
+
+  $('.transcript-choice').livequery ->
+    $(this).click ->
+      window.transcript_id = parseInt($(this).attr('data-transcript-id'))
+      console.log window.transcript_id
+      $('.transcript-choice').prop('checked', false)
+      $(this).prop('checked', true)
 
   $('.option').livequery ->
     $(this).click ->
@@ -362,37 +421,7 @@ $ ->
             ")
           )
         if category == 'translation'
-          $.post('/find_transcripts', { 'video_id' : "#{window.video_id}" }, (data) ->
-            transcripts = data.data
-            number_of_transcripts = data.data.length
-            if number_of_transcripts == 0
-              $('#editing').html("
-                <h3>Sorry...</h3>
-                <br>
-                <p>There needs to be a transcript of this video before you can create a translation.</p>
-                <p>Why not add one? :)</p>
-                <br><br>
-                <div id='back-from-editing' class='btn btn-primary btn-small rounded'> Back </div>
-              ")
-            else if number_of_transcripts == 1
-              window.transcript_id = parseInt(transcripts[0].id)
-              $.post('/find_lines', { 'transcript_id' : "#{transcript_id}" }, (data) ->
-                lines = data.data
-                transcript_html = "#{lines[0].lang1}<br>#{lines[1].lang1}<br>#{lines[2].lang1}...<br>"
-                $('#editing').html("
-                  <h3>Use this transcript?</h3>
-                  <br>
-                  #{transcript_html}
-                  <br>
-                  <div class='big-friendly'>Translate into: &nbsp; <input type='text' id='language-select' placeholder='Search language' style='width: 160px; position: relative; top: 4px;'></p>
-                  <br>
-                  <div id='create-new-translation' class='btn btn-primary btn-small rounded'> Go </div>
-                  <div id='back-from-editing' class='btn btn-primary btn-small rounded'> Back </div>
-                  <br><br>
-                  <div id='notice-area'></div>
-                ")
-              )
-          )
+          createTranslationSetup()
         if category == 'fill-exercise'
           createFillExerciseSetup()
         if category == 'links'
@@ -592,7 +621,7 @@ $ ->
   $('.edit-line').livequery ->
     $(this).click -> 
       id = parseInt($(this).attr('data-line-id'))
-      this_line = $(".lang1[data-line-id=#{id}]")
+      this_line = $(this).siblings(".lang1[data-line-id=#{id}]")
       text = $.trim(this_line.text())
       this_line.replaceWith("<input type='text' value='#{text}' style='width: 300px;' data-line-id=#{id}>")
       $(this).html("<i class='icon icon-ok'></i>")
@@ -663,21 +692,23 @@ $ ->
       if window.user == 'logged-out'
         $('#notice-area').html("<p class='notice'><i>Please sign in to add a fill-in-the-blanks exercise.</i></p>")
       else
-        window.transcript_id = parseInt($(this).attr('data-transcript-id'))
-        $.post('/find_lines', { 'transcript_id' : "#{transcript_id}" }, (data) ->
-          lines = data.data
-          transcript_html = '<h3>Click on a word to blank it out.</h3>'
-          transcript_html += '<span><div id="finalize-fill-exercise" class="btn btn-primary rounded">Create quiz</div>'
-          transcript_html += '<div id="back-to-select-transcript-stage" class="btn btn-primary rounded">Back</div></span>'
-          transcript_html += '<br><br><div id="exercise-transcript">'
-          for line in lines
-            transcript_html += "<div class='exercise-transcript-line rounded' data-line-id=#{line.id}>#{line.lang1}</div>"
-          transcript_html += '</div>'
-          $('#editing').html(transcript_html)
-          $('.exercise-transcript-line').each(->
-            $(this).lettering('words')
+        if $(this).hasClass('one-transcript')
+          window.transcript_id = parseInt($(this).attr('data-transcript-id'))
+        if window.transcript_id isnt null
+          $.post('/find_lines', { 'transcript_id' : "#{window.transcript_id}" }, (data) ->
+            lines = data.data
+            transcript_html = '<h3>Click on a word to blank it out.</h3>'
+            transcript_html += '<span><div id="finalize-fill-exercise" class="btn btn-primary rounded">Create quiz</div>'
+            transcript_html += '<div id="back-to-select-transcript-stage" class="btn btn-primary rounded">Back</div></span>'
+            transcript_html += '<br><br><div id="exercise-transcript">'
+            for line in lines
+              transcript_html += "<div class='exercise-transcript-line rounded' data-line-id=#{line.id}>#{line.lang1}</div>"
+            transcript_html += '</div>'
+            $('#editing').html(transcript_html)
+            $('.exercise-transcript-line').each(->
+              $(this).lettering('words')
+            )
           )
-        )
 
   $('#back-to-select-transcript-stage').livequery ->
     $(this).click ->
@@ -998,9 +1029,7 @@ $ ->
           <span class='tiny'><input type='checkbox' id='difficulty' class='tag-type'>&nbsp; Difficulty</span>
           <span class='tiny'><input type='checkbox' id='artist' class='tag-type'>&nbsp; Artist</span>
         </div>
-        <br>
-      </div>
-    ")
+      <br></div>")
 
   $('#back-from-tagging').livequery ->
     $(this).click ->

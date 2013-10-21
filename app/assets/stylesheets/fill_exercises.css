@@ -5,3 +5,5 @@
 span[class^="word"] { cursor: pointer; }
 
 .ui-dialog-buttonset { margin-right: 45px; } 
+
+.reverse-missing-word { cursor: pointer !important; }

@@ -53,9 +53,11 @@ Boombox::Application.routes.draw do
   post '/new_word' => 'words#create'
   post '/add_time_to_word' => 'words#update_time'
 
+  post '/new_missing_word' => 'missing_words#create'
+  post '/destroy_missing_word' => 'missing_words#destroy'
+
   post '/new_definition' => 'definitions#create'
   post '/new_challenge' => 'challenges#create'
-  post '/new_missing_word' => 'missing_words#create'
   post '/new_option' => 'options#create'
   post '/new_discussion_response' => 'discussion_responses#create'
 
@@ -72,8 +74,9 @@ Boombox::Application.routes.draw do
   post '/find_lines' => 'lines#find'
 
   post '/new_translation' => 'translations#create'
-  post '/new_translated_line' => 'translated_lines#create'
   post '/destroy_translation' => 'translations#destroy'
+  post '/new_translated_line' => 'translated_lines#create'
+  post '/update_translated_line' => 'translated_lines#update'
 
   post '/new_link/' => 'links#create'
   post '/new_tweet/' => 'tweets#create'

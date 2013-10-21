@@ -45,9 +45,7 @@ $ ->
   firstScriptTag = document.getElementsByTagName("script")[0]
   firstScriptTag.parentNode.insertBefore tag, firstScriptTag
 
-  window.max_score = parseInt($('#data').attr('data-max-score'))
-  window.fill_exercise_id = parseInt($('#data').attr('fill-exercise-id'))
-  window.editing_quiz = false
+  window.editing_translation = false
   window.section = 0 
   window.time = 0
   window.got_volume = false
@@ -165,24 +163,36 @@ $ ->
     $(this).click ->
       $("#dialog-confirm").dialog("open")
 
-  $('.edit-exercise').livequery ->
+  $('.edit-translation').livequery ->
     $(this).click ->
-      if window.editing_quiz == false
-        window.editing_quiz = true
-        $(this).attr('style','color: blue;')
-        $('#exercise-instructions').html('Editing quiz. Click on a word to blank it out.')
-        $('#score').html('')
-        $('.blank').each(->
-          this_blank = $(this)
-          this_word = this_blank.attr('data-missing-word')
-          this_blank.replaceWith(this_word)
-        )
-        $('.transcript-line').each(->
-          $(this).lettering('words')
+      if window.editing_translation == false
+        window.editing_translation = true
+        $('.line-right-subcontainer').each(->
+          $(this).children(".pencil-area").html("<i class='icon icon-pencil blue-link edit-translated-line'></i>")
         )
       else
-        $(this).attr('style','')
-        window.editing_quiz = false
+        window.editing_translation = false
+        $('.line-right-subcontainer').each(->
+          $(this).children(".pencil-area").html("")
+        )
+
+  $('.edit-translated-line').livequery ->
+    $(this).click ->
+      lang2 = $($(this).parent()).siblings('.lang2')
+      lang2_text = lang2.text()
+      lang2.replaceWith("<input value='#{lang2_text}' style='width: 180px; margin-right: 15px;'>")
+      $(this).replaceWith("<i class='icon icon-ok blue-link submit-revised-translation'></i>")
+
+  $('.submit-revised-translation').livequery ->
+    $(this).click ->
+      input_box =  $(this).parent().siblings('input')
+      revised_text = input_box.val()
+      id = parseInt($(this).parent().attr('data-translated-line-id'))
+      $.post('/update_translated_line', { 'translated_line' : { 'id' : "#{id}", 'lang2' : "#{revised_text}" } }, (data) ->
+        translated_line = data.data 
+        input_box.replaceWith(JSON.stringify(translated_line.lang2))
+        $(this).replaceWith("<i class='icon icon-pencil blue-link edit-translated-line'></i>")
+      )
 
   $("#dialog-confirm").dialog(
       autoOpen: false,
@@ -201,46 +211,3 @@ $ ->
           $(this).dialog("close")
     )
 
-  window.score_counter = 0 
-  $('.blank').eq(0).removeAttr('disabled')
-
-  $('.blank').livequery ->
-    $(this).keyup -> 
-
-      val = $(this).val()
-      missing_word = $(this).attr('data-missing-word')
-      console.log strip(val)
-      console.log strip(missing_word)
-
-      if strip(val) == strip(missing_word)
-        $(this).parent().append("<div class='you-got-it'>You got it!</div>")
-        $('.you-got-it').fadeOut(5000)
-        $(this).replaceWith("<span style='color: green;'><strong>#{missing_word}<strong></span>")
-        window.score_counter += 1
-        $('.blank').eq(0).removeAttr('disabled').focus()
-        $('#score').html("Your score: #{window.score_counter}/#{window.max_score}")
-        $('#exercise-instructions').html('')
-
-        if window.score_counter == window.max_score
-          $('#score').html("Well done! #{window.score_counter}/#{window.max_score}")
-          if window.user_id isnt null
-            $.post('/new_completed_exercise', { 'completed_exercise' : { 'user_id' : "#{window.user_id}", 'fill_exercise_id' : "#{window.fill_exercise_id}" } }, (data) ->
-              console.log data
-            )
-
-  $('[class^="word"]').livequery ->
-    $(this).click ->
-      word_text = $(this).text()
-      line_id = $(this).parent().attr('data-line-id')
-      postNewMissingWord(word_text, line_id)
-
-  postNewMissingWord = (word_text, line_id) ->
-    $.post('/new_missing_word', { 'missing_word' : { 'fill_exercise_id' : "#{window.fill_exercise_id}", 'line_id' : "#{line_id}", 'word_text' : "#{word_text}" } }, (data) ->
-        line_id = data.data.line_id
-        word_text = data.data.word_text
-        this_line = $(".exercise-transcript-line[data-line-id=#{line_id}]")
-        this_line.children().each(->
-          if $(this).html() == word_text
-            $(this).html("<input type='text' class='blank'>")
-        )
-      )

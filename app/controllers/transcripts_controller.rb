@@ -2,7 +2,7 @@ class TranscriptsController < ApplicationController
 
   def find
     @video = Video.find_by_id(params[:video_id])
-    @transcripts = Transcript.where(:video_id => @video.id).all
+    @transcripts = @video.transcripts
     render json: { data: @transcripts }
   end
 

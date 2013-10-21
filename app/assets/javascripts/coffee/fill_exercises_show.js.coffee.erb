@@ -46,7 +46,7 @@ $ ->
   firstScriptTag.parentNode.insertBefore tag, firstScriptTag
 
   window.max_score = $('.blank').length
-  window.fill_exercise_id = parseInt($('#data').attr('fill-exercise-id'))
+  window.fill_exercise_id = parseInt($('#data').attr('data-fill-exercise-id'))
   window.editing_quiz = false
   window.section = 0 
   window.time = 0
@@ -169,20 +169,39 @@ $ ->
     $(this).click ->
       if window.editing_quiz == false
         window.editing_quiz = true
-        $(this).addClass('icon-2x')
         $('#exercise-instructions').html('Editing quiz. Click on a word to blank it out.')
         $('#score').html('')
         $('.blank').each(->
           this_blank = $(this)
           this_word = this_blank.attr('data-missing-word')
-          this_blank.replaceWith(this_word)
+          this_blank.replaceWith("<span class='blank'>#{this_word}</span>")
         )
         $('.transcript-line').each(->
+          $(this).html($.trim($(this).html()))
           $(this).lettering('words')
         )
+        $.post('/find_fill_exercise', { 'fill_exercise_id' : "#{window.fill_exercise_id}" }, (data) ->
+          window.missing_words = data.data_missing_words
+          $('.transcript-line').each(->
+            for missing_word in window.missing_words
+              if missing_word.line_id == parseInt($(this).attr('data-line-id'))
+                for word in $(this).children()
+                  if $(word).text() == missing_word.word_text
+                    $(word).replaceWith("<span class='reverse-missing-word' data-missing-word-id='#{missing_word.id}' data-missing-word-text='#{missing_word.word_text}'><input type='text' class='reverse-missing-word blank' value='#{missing_word.word_text}' disabled></span>")
+          )
+        )
       else
-        $(this).removeClass('icon-2x')
         window.editing_quiz = false
+
+  $('.reverse-missing-word').livequery ->
+    $(this).click -> 
+      console.log 'reverse missing word!'
+      id = parseInt($(this).attr('data-missing-word-id'))
+      $.post('/destroy_missing_word', { 'id' : "#{id}" }, (data) ->
+        word = $("[data-missing-word-id=#{data.data.id}]")
+        word_text = $(this).attr('data-missing-word-text')
+        word.replaceWith(word_text)
+      )
 
   $("#dialog-confirm").dialog(
       autoOpen: false,
@@ -205,42 +224,41 @@ $ ->
   $('.blank').eq(0).removeAttr('disabled')
 
   $('.blank').livequery ->
-    $(this).keyup -> 
-
-      val = $(this).val()
-      missing_word = $(this).attr('data-missing-word')
-      console.log strip(val)
-      console.log strip(missing_word)
-
-      if strip(val) == strip(missing_word)
-        $(this).parent().append("<div class='you-got-it'>You got it!</div>")
-        $('.you-got-it').fadeOut(5000)
-        $(this).replaceWith("<span style='color: green;'><strong>#{missing_word}<strong></span>")
-        window.score_counter += 1
-        $('.blank').eq(0).removeAttr('disabled').focus()
-        $('#score').html("Your score: #{window.score_counter}/#{window.max_score}")
-        $('#exercise-instructions').html('')
-
-        if window.score_counter == window.max_score
-          $('#score').html("Well done! #{window.score_counter}/#{window.max_score}")
-          if window.user_id isnt null
-            $.post('/new_completed_exercise', { 'completed_exercise' : { 'user_id' : "#{window.user_id}", 'fill_exercise_id' : "#{window.fill_exercise_id}" } }, (data) ->
-              console.log data
-            )
+    $(this).keyup ->
+      unless window.editing_quiz == true
+        val = $(this).val()
+        missing_word = $(this).attr('data-missing-word')
+        console.log strip(val)
+        console.log strip(missing_word)
+        if strip(val) == strip(missing_word)
+          $(this).parent().append("<div class='you-got-it'>You got it!</div>")
+          $('.you-got-it').fadeOut(5000)
+          $(this).replaceWith("<span style='color: green;'><strong>#{missing_word}<strong></span>")
+          window.score_counter += 1
+          $('.blank').eq(0).removeAttr('disabled').focus()
+          $('#score').html("Your score: #{window.score_counter}/#{window.max_score}")
+          $('#exercise-instructions').html('')
+          if window.score_counter == window.max_score
+            $('#score').html("Well done! #{window.score_counter}/#{window.max_score}")
+            if window.user_id isnt null
+              $.post('/new_completed_exercise', { 'completed_exercise' : { 'user_id' : "#{window.user_id}", 'fill_exercise_id' : "#{window.fill_exercise_id}" } }, (data) ->
+                console.log data
+              )
 
   $('[class^="word"]').livequery ->
     $(this).click ->
-      word_text = $(this).text()
-      line_id = $(this).parent().attr('data-line-id')
-      postNewMissingWord(word_text, line_id)
+      if window.editing_quiz == true
+        word_text = $(this).text()
+        line_id = $(this).parent().attr('data-line-id')
+        postNewMissingWord(word_text, line_id)
 
   postNewMissingWord = (word_text, line_id) ->
     $.post('/new_missing_word', { 'missing_word' : { 'fill_exercise_id' : "#{window.fill_exercise_id}", 'line_id' : "#{line_id}", 'word_text' : "#{word_text}" } }, (data) ->
         line_id = data.data.line_id
         word_text = data.data.word_text
-        this_line = $(".exercise-transcript-line[data-line-id=#{line_id}]")
+        this_line = $(".transcript-line[data-line-id=#{line_id}]")
         this_line.children().each(->
           if $(this).html() == word_text
-            $(this).html("<input type='text' class='blank'>")
+            $(this).html("<span class='reverse-missing-word' data-missing-word-id='#{data.data.id}' data-missing-word-text='#{word_text}'><input type='text' class='reverse-missing-word blank' value='#{word_text}' disabled></span>")
         )
       )
