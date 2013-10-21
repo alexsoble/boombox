@@ -11,6 +11,23 @@ class User < ActiveRecord::Base
   belongs_to :school
   has_one :classroom
   belongs_to :classroom
+  before_validation :generate_slug
+  validates_presence_of :slug, :username, :email
+  validates_uniqueness_of :slug, :username, :email
+  validates_format_of :email, :with => /\A([^@\s]+)@((?:[-a-z0-9]+\.)+[a-z]{2,})\z/i
+  attr_accessible :email, :firstname, :lastname, :username, :password, :password_confirmation, :bio, :image_url
+
+  def generate_slug
+    if self.slug.blank?
+      if self.username.parameterize.present?
+        self.slug = "#{self.username.parameterize}"
+      end
+    end
+  end
+
+  def to_param
+    slug
+  end
 
   def self.from_omniauth(auth)
     where(auth.slice("provider", "uid")).first || create_from_omniauth(auth)
@@ -23,10 +40,5 @@ class User < ActiveRecord::Base
       user.name = auth["info"]["nickname"]
     end
   end
-
-  attr_accessible :email, :firstname, :lastname, :username, :password, :password_confirmation, :bio, :image_url
-  
-  validates_uniqueness_of :email
-  validates_format_of :email, :with => /\A([^@\s]+)@((?:[-a-z0-9]+\.)+[a-z]{2,})\z/i
 
 end

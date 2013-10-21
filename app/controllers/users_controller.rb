@@ -23,7 +23,7 @@ class UsersController < ApplicationController
   end
 
   def show
-    @user = User.find_by_id(params[:id])
+    @user = User.find_by_slug!(params[:id])
     @bio = @user.bio
     @username = @user.username
     @firstname = @user.firstname
