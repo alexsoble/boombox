@@ -10,7 +10,8 @@ class FillExercise < ActiveRecord::Base
 
   def generate_slug
     if self.slug.blank?
-      self.slug = "#{self.user.username.parameterize}-#{self.video.slug}-#{self.id}"
+      @last = FillExercise.last
+      self.slug = "#{self.user.username.parameterize}-#{self.video.slug}-#{@last.id + 1}"
     end
   end
 

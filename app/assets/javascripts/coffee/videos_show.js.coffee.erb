@@ -686,7 +686,9 @@ $ ->
   $('#finalize-fill-exercise').livequery ->
     $(this).click ->
       if window.fill_exercise_id isnt undefined
-        window.location.href = "/fill_exercises/#{window.fill_exercise_id}"
+        $.post('/find_fill_exercise', { 'fill_exercise_id' : "#{window.fill_exercise_id}" }, (data) ->
+          window.location.href = "/fill_in_the_blanks/#{data.data.slug}"
+        )
 
   postNewMissingWord = (word_text, line_id) ->
     $.post('/new_missing_word', { 'missing_word' : { 'fill_exercise_id' : "#{window.fill_exercise_id}", 'line_id' : "#{line_id}", 'word_text' : "#{word_text}" } }, (data) ->

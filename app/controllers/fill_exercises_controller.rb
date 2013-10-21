@@ -10,7 +10,7 @@ class FillExercisesController < ApplicationController
     @transcript = @fill_exercise.transcript
     @lines = @transcript.lines.order("created_at ASC").order("time ASC")
     @missing_words = @fill_exercise.missing_words
-    render :json => { :data_lines => @lines, :data_missing_words => @missing_words }
+    render :json => { :data_lines => @lines, :data_missing_words => @missing_words, :data => @fill_exercise }
   end
 
   def show
