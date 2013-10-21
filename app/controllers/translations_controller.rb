@@ -6,7 +6,7 @@ class TranslationsController < ApplicationController
   end
 
   def show
-    @translation = Translation.find_by_id(params[:id])
+    @translation = Translation.find_by_slug!(params[:id])
     @video = @translation.transcript.video 
   end
 

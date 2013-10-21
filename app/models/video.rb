@@ -28,7 +28,6 @@ class Video < ActiveRecord::Base
         self.slug = self.youtube_id.parameterize
       end
     end
-
   end
 
   def to_param

@@ -78,16 +78,35 @@
 
 <div id="social-content-area" class="content-area"> 
     <% if controller_name == 'videos' %>
-      <div id="all-content" class="big tab">Everyone's <span style='font-size:14px;color:white;'> materials</span></div>
+      <div id="all-content" class="big tab">
+        <div style="width: 100px; height: 40px; float: left;">
+          Everyone's materials
+        </div>
+        <div style="width: 30px; height: 40px; float: right; margin-top: 10px; margin-left: 5px;">
+          <i class="icon icon-group"></i>
+        </div>
+      </div>
       <% if current_user %>
         <% @this_user_interp = Interpretation.where(:video_id => @video.id, :user_id => current_user.id).first %>
         <% if @this_user_interp.present? %>
           <div id="just-your-content" class="small tab">
-            Just yours<br><%= link_to "(own page)", interpretation_url(@this_user_interp), :style => "color:white;font-size:10px;position:relative;bottom:6px;" %>
+            <div style="width: 65px; height: 40px; float: left;">
+              <%= link_to "Just yours", interpretation_url(@this_user_interp), :style => 'color: white;' %>
+            </div>
+            <div style="width: 30px; height: 40px; float: right; position:relative; top: 10px; left: 14px;">
+              <i class="icon icon-user" style="position: absolute; bottom: -40x; right: 16px;"></i>
+            </div>
           </div>
         <% end %>
       <% end %>
-      <div id="new-content" class="small tab">Add!</div>
+      <div id="new-content" class="small tab">
+            <div style="width: 40px; height: 40px; float: left; position:relative; top: 8px;">
+              Add
+            </div>
+            <div style="width: 30px; height: 40px; float: right; position:relative; top: 10px; left: 14px;">
+              <i class="icon icon-plus-sign" style="position: absolute; bottom: -40x; right: 16px;"></i>
+            </div>
+      </div>
     <% elsif controller_name == 'interpretations' %>
       <div class="big tab solo" id="all-content"><%= @user.username %>'s learning materials</div>
       <% if current_user %>
@@ -98,40 +117,34 @@
     <% end %>
     <br><br><br>
     <div class="small-tab"> &nbsp; &nbsp; 
-      <i>Content:</i> &nbsp; &nbsp;
-      <div style="position: absolute; left: 110px; top: 4px;">
+      <div style="position: absolute; left: 20px; top: 10px; text-align: justify;">
         <span id="vocabulary" class="note-category <% if @vocabulary.present? %>active<% else %>inactive<% end %>">
           Vocabulary
-        </span> &nbsp;
+        </span> &nbsp; &nbsp;
         <span id="transcript" class="note-category <% if @transcripts.present? %>active<% else %>inactive<% end %>">
           Lyrics / Transcript
-        </span> &nbsp;
+        </span> &nbsp; &nbsp;
         <span id="translation" class="note-category <% if @translations.present? %>active<% else %>inactive<% end %>">
-          Translation
-        </span> &nbsp;
-      </div>
-      <br>
-       &nbsp; &nbsp; <i>Quizzes:</i> &nbsp; &nbsp;
-      <div style="position: absolute; left: 110px; top: 24px;">
-        <span id="multiple-choice" class="note-category <% if @multiple_choice.present? %>active<% else %>inactive<% end %>">
-          Multiple-Choice
-        </span> &nbsp; 
-        <span id="fill-exercise" class="note-category <% if @fill_exercises.present? %>active<% else %>inactive<% end %>">
-          Fill-In-The-Blank
-        </span> &nbsp; 
-      </div>
-      <br>
-       &nbsp; &nbsp; <i>Enrichment:</i> &nbsp; &nbsp;
-      <div style="position: absolute; left: 110px; top: 44px;">
-        <span id="discussion-question" class="note-category <% if @discussion_questions.present? %>active<% else %>inactive<% end %>">
-          Discussion
-        </span> &nbsp; 
+          Translation 
+        </span> &nbsp; &nbsp;
         <span id="links" class="note-category <% if @links.present? %>active<% else %>inactive<% end %>">
           Links
-        </span> &nbsp;
+        </span> &nbsp; &nbsp;
         <span id="tweets" class="note-category <% if @tweets.present? %>active<% else %>inactive<% end %>">
           Tweets
-        </span> &nbsp;
+        </span>
+      </div>
+      <br>
+      <div style="position: absolute; left: 20px; top: 40px; text-align: justify;">
+        <span id="multiple-choice" class="note-category <% if @multiple_choice.present? %>active<% else %>inactive<% end %>">
+          Multiple-Choice
+        </span> &nbsp; &nbsp;
+        <span id="fill-exercise" class="note-category <% if @fill_exercises.present? %>active<% else %>inactive<% end %>">
+          Fill-In-The-Blank &nbsp; &nbsp;
+        </span> 
+        <span id="discussion-question" class="note-category <% if @discussion_questions.present? %>active<% else %>inactive<% end %>">
+          Discussion
+        </span> &nbsp; &nbsp;
       </div>
     </div>
     <div id="community-notes">

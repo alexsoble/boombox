@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20131018232352) do
+ActiveRecord::Schema.define(:version => 20131020195224) do
 
   create_table "challenges", :force => true do |t|
     t.integer  "user_id"
@@ -92,7 +92,10 @@ ActiveRecord::Schema.define(:version => 20131018232352) do
     t.datetime "created_at",    :null => false
     t.datetime "updated_at",    :null => false
     t.string   "name"
+    t.string   "slug"
   end
+
+  add_index "fill_exercises", ["slug"], :name => "index_fill_exercises_on_slug"
 
   create_table "interests", :force => true do |t|
     t.integer  "user_id"
@@ -108,7 +111,10 @@ ActiveRecord::Schema.define(:version => 20131018232352) do
     t.datetime "created_at", :null => false
     t.datetime "updated_at", :null => false
     t.integer  "user_id"
+    t.string   "slug"
   end
+
+  add_index "interpretations", ["slug"], :name => "index_interpretations_on_slug"
 
   create_table "keywords", :force => true do |t|
     t.integer  "interpretation_id"
@@ -266,7 +272,10 @@ ActiveRecord::Schema.define(:version => 20131018232352) do
     t.integer  "language_id"
     t.integer  "transcript_id"
     t.integer  "video_id"
+    t.string   "slug"
   end
+
+  add_index "translations", ["slug"], :name => "index_translations_on_slug"
 
   create_table "tweets", :force => true do |t|
     t.integer  "video_id"

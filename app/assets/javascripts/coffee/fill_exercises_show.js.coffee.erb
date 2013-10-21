@@ -169,7 +169,7 @@ $ ->
     $(this).click ->
       if window.editing_quiz == false
         window.editing_quiz = true
-        $(this).attr('style','color: blue;')
+        $(this).addClass('icon-2x')
         $('#exercise-instructions').html('Editing quiz. Click on a word to blank it out.')
         $('#score').html('')
         $('.blank').each(->
@@ -181,7 +181,7 @@ $ ->
           $(this).lettering('words')
         )
       else
-        $(this).attr('style','')
+        $(this).removeClass('icon-2x')
         window.editing_quiz = false
 
   $("#dialog-confirm").dialog(

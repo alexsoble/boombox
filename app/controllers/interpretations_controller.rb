@@ -30,7 +30,7 @@ class InterpretationsController < ApplicationController
   end
 
   def show
-    @interp = Interpretation.find_by_id(params[:id])
+    @interp = Interpretation.find_by_slug!(params[:id])
     @interpretations = [@interp]
     @video = @interp.video
     @user = User.find_by_id(@interp.user_id)

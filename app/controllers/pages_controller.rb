@@ -50,7 +50,7 @@ class PagesController < ApplicationController
   end
 
   def chile
-    redirect_to :controller => 'interpretations', :action => 'show', :id => '155'
+    redirect_to "/interpretations/alex-heyu-start-up-chile-video"
   end
 
   def new

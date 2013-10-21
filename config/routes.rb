@@ -24,11 +24,12 @@ Boombox::Application.routes.draw do
   resources :sessions
   resources :classrooms
   resources :discussion_questions
-  resources :fill_exercises
+  resources :fill_exercises, path: :fill_in_the_blanks
 
   post '/find_video_slug' => 'videos#find_slug'
 
   post '/find_language' => 'languages#find_id'
+  post '/find_language_by_id' => 'languages#find_name'
   post '/language_list' => 'languages#list'
 
   post '/student_list' => 'users#list'
@@ -78,6 +79,9 @@ Boombox::Application.routes.draw do
   post '/new_tweet/' => 'tweets#create'
   post '/new_discussion_question' => 'discussion_questions#create'
   post '/new_option_vote' => 'option_votes#create'
+
+  post '/new_language_interest' => 'interests#create'
+  post '/remove_language_interest' => 'interests#destroy'
   
   post '/new_tag_vote/' => 'tag_votes#create'
   post '/update_tag_vote/' => 'tag_votes#update'

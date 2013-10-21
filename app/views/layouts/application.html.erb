@@ -7,7 +7,7 @@
   <%= javascript_include_tag "application" %>
   <%= javascript_include_tag "bootstrap.min.css" %>
   <% unless controller_name == "interpretations" && action_name == "show" %>
-    <%= javascript_include_tag "coffee/#{controller_name}_#{action_name}" %>
+    <script src="/assets/coffee/<%= controller_name %>_<%= action_name %>.js?body=1" type="text/javascript"></script>
   <% else %>
     <%= javascript_include_tag "coffee/videos_show" %>
   <% end %>
@@ -95,15 +95,4 @@
 <% end %>
 
 </body>
-
-<%= javascript_tag do %>
-  <% if @keywords != nil %>
-    <% if @keywords.present? %>
-      window.keywords = <%= raw @keywords.to_json %>;
-    <% else %>
-      window.keywords = false;
-    <% end %>
-  <% end %>
-<% end %>
-
 </html>

@@ -19,4 +19,9 @@ class LanguagesController < ApplicationController
     render json: { data: @language }
   end 
 
+  def find_name
+    @language = Language.find_by_id(params[:language])
+    render json: { data: @language }
+  end
+
 end

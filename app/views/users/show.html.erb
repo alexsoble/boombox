@@ -17,7 +17,13 @@
       <% end %>
       <% if @bio.present? %> 
         <br>
-        <span id='user-bio' class="big-friendly"><%= @bio %></span> <span id='edit-bio-area'>(<span id='edit-bio' class='blue-link'>edit</span>)</span>
+        <span id='user-bio' class="big-friendly"><%= @bio %></span> <span id='edit-bio-area'>
+        <% if current_user %>
+          <% if current_user.id == @user.id %>
+            (<span id='edit-bio' class='blue-link'>edit</span>)
+          <% end %>
+        <% end %>
+        </span>
       <% else %>
         <% if current_user %>
           <% if current_user.id == @user.id %>
@@ -30,20 +36,29 @@
           <% end %>
         <% end %>
       <% end %>
+      <br><br>
+      <h2>Languages:</h2>
       <div id='languages'>
         <% @user_interests.each do |u| %>
           <% user_language_text = '' %>
           <% if u.teach == true then user_language_text += "Teaches " else user_language_text += "Studying " end %>
           <% user_language_text += u.language.name += '.' %>
-          <p class='friendly-big'><%= user_language_text %></p>
+          <p class='big-friendly' data-language-interest-id=<%= u.id %>><%= user_language_text %>
+            <% if current_user %>
+              <% if current_user.id == @user.id %>
+                <i class='remove-language icon icon-remove blue-link' data-language-interest-id=<%= u.id %>></i>
+              <% end %>
+            <% end %>
+          </p>
         <% end %>
-        <% if current_user %>
-          <% if current_user.id == @user.id %>
-            <br><br>
-            <div id='add-language-area'></div>
-            <p class="bigger-friendly blue-link add-a-language">+ Add a language</p>
-          <% end %>
+      </div>
+      <% if current_user %>
+        <% if current_user.id == @user.id %>
+          <br><br>
+          <div id='add-language-area'></div>
+          <p class="bigger-friendly blue-link add-a-language">+ Add a language</p>
         <% end %>
+      <% end %>
       </div>
     </div>
   </div>

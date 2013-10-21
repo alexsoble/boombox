@@ -44,7 +44,21 @@ $ ->
 
   $('.add-a-language').livequery ->
     $(this).click ->
-      add_lang_html = "<br><br><span style='font-size:40px;'>I...</span> <span style='font-size:50px;'>{</span> <span id='study' class='option-teach-study blue-link' style='position:relative;bottom:30px;left:2px;font-size:20px;'>study</span><span id='teach' class='option-teach-study blue-link' style='position:relative;top:10px;right:48px;font-size:20px;'>teach</span><input type='text' style='height:40px;font-size:20px;position:relative;right:8px;' placeholder='Enter language here' id='new-language'><span style='font-size:40px;'>.</span><br><br><div class='btn btn-primary rounded' id='update-bio'>Submit</div>"
+      add_lang_html = "
+        <br>
+        <span style='font-size:40px;'>I...</span> <span style='font-size:50px;'>{</span>
+        <span style='position: relative; bottom: 30px; left: 5px; font-size:20px;'>
+          <input id='study' class='option-teach-study' type='radio'> study
+        </span>
+        <span style='position: relative; top: 10px; right: 68px; font-size: 20px;'>
+          <input id='teach' class='option-teach-study' type='radio'> teach
+        </span>
+        <span style='position: relative; right: 45px;'>
+          <input type='text' style='height: 40px; font-size: 20px;' placeholder='Enter language here' id='new-language'>
+          <span style='font-size:40px;'>.</span>
+          <div class='btn btn-primary rounded' id='create-new-interest'>Submit</div>
+        </span>
+        <br><br>"
       $('#add-language-area').html(add_lang_html)
 
   $('#new-language').livequery ->
@@ -65,4 +79,39 @@ $ ->
 
   $('.option-teach-study').livequery ->
     $(this).click -> 
-      $(this).append('&nbsp;&#x2713;')
+      $('.option-teach-study').prop('checked', false)
+      $(this).prop('checked', true)
+
+  $('#create-new-interest').livequery ->
+    $(this).click ->
+      language = $.trim($('#new-language').val())
+      $.post('/find_language', { 'language' : "#{language}" }, (data) ->
+        language_id = data.data.id
+        checked = $('input:checked')
+        if checked.attr('id') == 'teach'
+          teach = 'true'
+        else
+          teach = 'false'
+        $.post('/new_language_interest', { 'interest' : { 'user_id' : "#{window.user_id}", 'language_id' : "#{language_id}", 'teach' : "#{teach}" } }, (data) ->
+          interest = data.data
+          if interest.teach == true 
+            window.init = "Teaches" 
+          else 
+            window.init = "Studying"
+          language_id = interest.language_id
+          $.post('/find_language_by_id', { 'language' : "#{language_id}" }, (data) ->
+            console.log data.data
+            console.log data.data.name
+            new_lang_html = "<p class='big-friendly'>#{window.init} #{data.data.name}.</p>"
+            $('#languages').append(new_lang_html)
+          ) 
+        )
+      )
+
+  $('.remove-language').livequery ->
+    $(this).click ->
+      id = parseInt($(this).attr('data-language-interest-id'))
+      $.post('/remove_language_interest', { 'id' : "#{id}" }, (data) ->
+        console.log data.data
+        $("[data-language-interest-id=#{data.data.id}]").remove()
+      )

@@ -230,7 +230,8 @@ $ ->
       $('#editing').html("
         <div style='text-align: center;'>
           <h1 style=>&uarr;</h1>
-          <h2>Click</h2>
+          <br>
+          <h3>What kind of content<br>would you like to add?</h2>
         </div>")
       $('#notes-container').hide()
       $(this).attr('style','right: -1px;')
@@ -665,9 +666,10 @@ $ ->
         window.transcript_id = parseInt($(this).attr('data-transcript-id'))
         $.post('/find_lines', { 'transcript_id' : "#{transcript_id}" }, (data) ->
           lines = data.data
-          transcript_html = '<h3>Click on a word to blank it out:</h3><div id="exercise-transcript">'
-          transcript_html += '<div id="back-to-select-transcript-stage" class="btn btn-primary rounded" style="float:right;">Back</div></span>'
-          transcript_html += '<span><div id="finalize-fill-exercise" class="btn btn-primary rounded" style="float:right;">Create quiz</div>'
+          transcript_html = '<h3>Click on a word to blank it out.</h3>'
+          transcript_html += '<span><div id="finalize-fill-exercise" class="btn btn-primary rounded">Create quiz</div>'
+          transcript_html += '<div id="back-to-select-transcript-stage" class="btn btn-primary rounded">Back</div></span>'
+          transcript_html += '<br><br><div id="exercise-transcript">'
           for line in lines
             transcript_html += "<div class='exercise-transcript-line rounded' data-line-id=#{line.id}>#{line.lang1}</div>"
           transcript_html += '</div>'

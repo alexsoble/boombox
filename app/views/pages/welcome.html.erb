@@ -3,7 +3,7 @@
   <br>
   <% if current_user %>
     <% if current_user.firstname %>
-      <h1 style='text-align: center;'>Welcome <%= current_user.firstname %></h1>
+      <h1 style='text-align: center;'>Welcome, <%= current_user.firstname %></h1>
     <% else %>
       <h1 style='text-align: center;'>Welcome, <%= current_user.username %>!</h1>
     <% end %>
@@ -13,7 +13,6 @@
     <br>
     <h2 style='text-align: center; font-size: 30px;'>It's more fun to learn with <i class="icon icon-music"></i> than with <i class="icon icon-book"></i>.</h2>
     <h2 style='text-align: center; font-size: 30px;'>Let's turn <i class="icon icon-youtube-sign"></i> into a language resource for the <i class="icon icon-globe"></i>.</h2>
-    <h2 style='text-align: center; font-size: 30px;'>(<i><a href='/philosophy'>Read more.</a></i>)</h2>
     <br>
     <% end %>
   <br>
