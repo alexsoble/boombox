@@ -14,7 +14,8 @@ class Translation < ActiveRecord::Base
       if Translation.where(:slug => "#{self.user.username.parameterize}-#{self.video.slug}").blank?
         self.slug = "#{self.user.username.parameterize}-#{self.video.slug}"
       else
-        self.slug = "#{self.user.username.parameterize}-#{self.video.slug}-#{self.id}"
+        @last = Translation.last
+        self.slug = "#{self.user.username.parameterize}-#{self.video.slug}-#{@last.id + 1}"
       end
     end
   end

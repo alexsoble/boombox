@@ -22,7 +22,8 @@ class Interpretation < ActiveRecord::Base
       if Interpretation.where(:slug => "#{self.user.username.parameterize}-#{self.video.slug}").blank?
         self.slug = "#{self.user.username.parameterize}-#{self.video.slug}"
       else
-        self.slug = "#{self.user.username.parameterize}-#{self.video.slug}-#{self.id}"
+        @last = Interpretation.last
+        self.slug = "#{self.user.username.parameterize}-#{self.video.slug}-#{@last.id + 1}"
       end
     end
   end
