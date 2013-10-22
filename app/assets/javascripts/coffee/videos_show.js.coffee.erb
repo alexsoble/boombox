@@ -772,12 +772,12 @@ $ ->
             window.language_id = data.data.id
             $.post('/new_translation', { 'translation' : { 'transcript_id' : "#{window.transcript_id}", 'video_id' : "#{window.video_id}", 'user_id' : "#{window.user_id}", 'language_id' : "#{window.language_id}" } }, (data) ->
               window.translation_id = data.data.id
-              translation_html = '<div class="big-friendly">Translate away!</div><div class="all-done-translating btn btn-primary rounded" style="float: right;">All done</div>'
+              $('#editing').html("<div class='big-friendly'>Translate away!</div>")
               for line in $('.lang1')
                 id = $(line).attr('data-line-id')
                 time = $(line).attr('data-time')
                 lang1 = $.trim($(line).text())
-                translation_html += "<br><br>
+                translation_html = "<br><br>
                   <div class='line-container rounded' data-line-id=#{id} data-time=#{time}>
                     <div class='line-left-subcontainer rounded'>#{lang1}</div>
                     <div class='line-right-subcontainer rounded'>
@@ -787,8 +787,9 @@ $ ->
                       </div>
                     </div>
                   </div>"
-                $('#editing').html(translation_html)
-              )
+                $('#editing').append(translation_html)
+              $('#editing').append("<br><div id='all-done-translating' class='btn btn-primary rounded' data-translation-id=#{window.translation_id}>All done</div>")
+             )
            )
 
   $('.translate-line').livequery ->
@@ -807,6 +808,14 @@ $ ->
         $.post('/new_translated_line', { 'translated_line' : { 'line_id' : "#{id}", 'lang2' : "#{lang2}", 'translation_id' : "#{window.translation_id}" } }, (data) ->
           $(".translate-line-input-area[data-line-id=#{data.data.line_id}]").html("#{data.data.lang2}")
         )
+
+  $('#all-done-translating').livequery ->
+    $(this).click ->
+      id = $(this).attr('data-translation-id')
+      $.post('/find_translation', { 'id' : "#{id}" }, (data) ->
+        slug = data.data.slug
+        window.location.href = "/translations/#{slug}"
+      )
 
   # # # New transcripts
 

@@ -10,6 +10,11 @@ class TranslationsController < ApplicationController
     @video = @translation.transcript.video 
   end
 
+  def find
+    @translation = Translation.find_by_id(params[:id])
+    render json: { data: @translation }
+  end
+
   def destroy
     @translation = Translation.find_by_id(params[:id])
     @translation.destroy

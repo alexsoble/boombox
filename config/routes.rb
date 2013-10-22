@@ -75,6 +75,8 @@ Boombox::Application.routes.draw do
 
   post '/new_translation' => 'translations#create'
   post '/destroy_translation' => 'translations#destroy'
+  post '/find_translation' => 'translations#find'
+
   post '/new_translated_line' => 'translated_lines#create'
   post '/update_translated_line' => 'translated_lines#update'
 
