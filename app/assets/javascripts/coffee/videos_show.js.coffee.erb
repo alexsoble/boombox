@@ -277,7 +277,12 @@ $ ->
         transcript_id = parseInt(transcripts[0].id)
         $.post('/find_lines', { 'transcript_id' : "#{transcript_id}" }, (data) ->
           lines = data.data
-          transcript_html = "#{lines[0].lang1}<br>#{lines[1].lang1}<br>#{lines[2].lang1}...<br><br><br>"
+          if lines[2] isnt undefined and lines[1] isnt undefined
+            transcript_html = "#{lines[0].lang1}<br>#{lines[1].lang1}<br>#{lines[2].lang1}...<br><br><br>"
+          else if lines[1] isnt undefined
+            transcript_html = "#{lines[0].lang1}<br>#{lines[1].lang1}<br><br><br>"
+          else
+            transcript_html = "#{lines[0].lang1}<br>"
           $('#editing').html("
             <h3>Use this transcript?</h3>
             <br>
@@ -322,7 +327,12 @@ $ ->
         window.transcript_id = parseInt(transcripts[0].id)
         $.post('/find_lines', { 'transcript_id' : "#{transcript_id}" }, (data) ->
           lines = data.data
-          transcript_html = "#{lines[0].lang1}<br>#{lines[1].lang1}<br>#{lines[2].lang1}...<br>"
+          if lines[2] isnt undefined and lines[1] isnt undefined
+            transcript_html = "#{lines[0].lang1}<br>#{lines[1].lang1}<br>#{lines[2].lang1}...<br><br><br>"
+          else if lines[1] isnt undefined
+            transcript_html = "#{lines[0].lang1}<br>#{lines[1].lang1}<br><br><br>"
+          else
+            transcript_html = "#{lines[0].lang1}<br>"
           $('#editing').html("
             <h3>Use this transcript?</h3>
             <br>
