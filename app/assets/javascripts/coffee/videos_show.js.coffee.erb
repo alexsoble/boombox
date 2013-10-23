@@ -32,9 +32,6 @@ $ ->
       if 9 < time%60 <= 59 then formatted_time = Math.floor((time)/60) + ":" + (time)%60
     formatted_time
 
-  addSlashes = (str) ->
-    return (str + '').replace(/[\\"']/g, '\\$&').replace(/\u0000/g, '\\0')
-
   youtube_id = $('#data').attr('data-youtube-id')
   window.video_id = parseInt($('#data').attr('data-video-id'))
 
@@ -837,7 +834,8 @@ $ ->
             line_html += "<span class='remove-line blue-link quiet tiny' data-line-id=#{line.id} title='Delete line'> <i class='icon icon-remove'></i></span>"
             line_html += "<span class='add-time-to-line blue-link quiet tiny' data-line-id=#{line.id} title='Add time to line'> <i class='icon icon-time'></i></span>"
             line_html += "&nbsp; <span class='lang1' data-line-id=#{line.id}>#{line.lang1}</span>"
-            line_html += "<span class='line-comment-area' data-line-id=#{line.id}></span></div>"
+            line_html += "<span class='line-comment-area' data-line-id=#{line.id}></span>"
+            line_html += "<span class='line-timing tiny gray quiet' data-line-id=#{line.id}></span></div>"
             if $('#current-user-lines').length > 0
               $('#current-user-lines').children(':first').append(line_html)
             else
