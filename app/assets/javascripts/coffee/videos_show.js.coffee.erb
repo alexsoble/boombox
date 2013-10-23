@@ -597,7 +597,7 @@ $ ->
         $('#instructions').remove()
         window.line_being_timed_id = 0
         showOtherIcons(line.id)
-        $(".line-timing[data-line-id=#{line.id}]").html(formattedTime(line.time))
+        $(".line-timing[data-line-id=#{line.id}]").html(formatTime(line.time))
       )
 
   # # # Editing transcript
