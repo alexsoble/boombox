@@ -32,8 +32,8 @@ $ ->
       if 9 < time%60 <= 59 then formatted_time = Math.floor((time)/60) + ":" + (time)%60
     formatted_time
 
-  capitalizeString = (string) ->
-    string.charAt(0).toUpperCase() + string.slice(1)
+  addSlashes = (str) ->
+    return (str + '').replace(/[\\"']/g, '\\$&').replace(/\u0000/g, '\\0')
 
   youtube_id = $('#data').attr('data-youtube-id')
   window.video_id = parseInt($('#data').attr('data-video-id'))
@@ -440,7 +440,7 @@ $ ->
             <input type='text' id='url'>
             <h3>Text excerpt:</h3>
             <textarea id='excerpt'></textarea>
-            <p class='big-friendly'>Translate into: &nbsp; <input type='text' id='language-select' placeholder='Search language' style='width: 160px; position: relative; top: 4px;'></p>
+            <p class='big-friendly'>Page language: &nbsp; <input type='text' id='language-select' placeholder='Search language' style='width: 160px; position: relative; top: 4px;'></p>
             <br>
             <div id='submit-new-link' class='btn btn-primary btn-small rounded'> Submit </div>
             <div id='back-from-editing' class='btn btn-primary btn-small rounded'> Done </div>
@@ -633,9 +633,9 @@ $ ->
       id = parseInt($(this).attr('data-line-id'))
       this_line = $(this).siblings(".lang1[data-line-id=#{id}]")
       text = $.trim(this_line.text())
-      this_line.replaceWith("<input type='text' value='#{text}' style='width: 300px;' data-line-id=#{id}>")
-      $(this).html("<i class='icon icon-ok'></i>")
-      $(this).addClass('update-line')
+      this_line.replaceWith("<input type='text' class='update-line-area' style='width: 300px;' data-line-id=#{id}>")
+      $(".update-line-area[data-line-id=#{id}]").val(text)
+      $(this).replaceWith("<i class='icon icon-ok blue-link update-line' data-line-id=#{id}></i>")
       $(".comment-line[data-line-id=#{id}]").addClass('quiet')
       $(".remove-line[data-line-id=#{id}]").addClass('quiet')
       $(".add-time-to-line[data-line-id=#{id}]").addClass('quiet')
@@ -643,11 +643,12 @@ $ ->
   $('.update-line').livequery ->
     $(this).click ->
       id = parseInt($(this).attr('data-line-id'))
-      this_line = $("input[data-line-id=#{id}]")
-      value = this_line.val()
+      this_line = $(".update-line-area[data-line-id=#{id}]")
+      this_lang1 = this_line.val()
       this_button = $(this)
-      $.post('/update_line', { 'line' : { 'lang1' : "#{value}" , 'id' : "#{id}" } }, (data) ->
+      $.post('/update_line', { 'line' : { 'lang1' : "#{this_lang1}" , 'id' : "#{id}" } }, (data) ->
         line = data.data
+        console.log line
         this_button.replaceWith("<span class='edit-line blue-link tiny' data-line-id=#{line.id}> <i class='icon icon-pencil'></i> </span>")
         this_line.replaceWith("<span class='lang1' data-line-id=#{id}>#{line.lang1}<span>")
       )

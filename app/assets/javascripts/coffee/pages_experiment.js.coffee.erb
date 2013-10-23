@@ -1,5 +1,26 @@
 $ ->
 
+  $('.edit-line').livequery ->
+    $(this).click -> 
+      console.log 'edit line triggered!'
+      id = parseInt($(this).attr('data-line-id'))
+      this_line = $(this).siblings(".lang1[data-line-id=#{id}]")
+      text = $.trim(this_line.text())
+      this_line.replaceWith("<input type='text' class='update-line-area' style='width: 300px;' data-line-id=#{id}>")
+      $(this).replaceWith("<i class='icon icon-ok blue-link update-line' data-line-id=#{id}></i>")
+      $(".update-line-area[data-line-id=#{id}]").val(text)
+
+  $('.update-line').livequery ->
+    $(this).click ->
+      id = parseInt($(this).attr('data-line-id'))
+      console.log "id = #{id}"
+      this_line = $(".update-line-area[data-line-id=#{id}]")
+      console.log $(".update-line-area").val()
+      console.log $(".update-line-area")
+      this_lang1 = this_line.val()
+      console.log this_lang1
+      this_button = $(this)
+
   $('#community-notes').mouseup ->
     if window.getSelection
       selection = window.getSelection()
