@@ -7,9 +7,18 @@ class TranscriptsController < ApplicationController
   end
 
   def find
-    @video = Video.find_by_id(params[:video_id])
-    @transcripts = @video.transcripts
-    render json: { data: @transcripts }
+
+    if params[:video_id].present?
+      @video = Video.find_by_id(params[:video_id])
+      @transcripts = @video.transcripts
+      render json: { data: @transcripts }
+    end
+
+    if params[:id].present?
+      @transcript = Transcript.find_by_id(params[:id])
+      render json: { data: @transcript }
+    end
+    
   end
 
   def create

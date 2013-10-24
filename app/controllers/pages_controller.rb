@@ -1,5 +1,19 @@
 class PagesController < ApplicationController
 
+  before_filter :authorize, only: :admin
+
+  def authorize
+    unless current_user
+      redirect_to '/welcome' 
+      false
+    else
+      unless current_user.id == 8
+        redirect_to '/welcome' 
+        false        
+      end
+    end
+  end
+
   def welcome
 
     @featured_video_1 = Video.find(25)
@@ -51,6 +65,9 @@ class PagesController < ApplicationController
 
   def chile
     redirect_to "/interpretations/alex-heyu-start-up-chile-video"
+  end
+
+  def admin
   end
 
   def new

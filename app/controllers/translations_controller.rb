@@ -8,6 +8,7 @@ class TranslationsController < ApplicationController
   def show
     @translation = Translation.find_by_slug!(params[:id])
     @video = @translation.transcript.video 
+    @user = @translation.user 
   end
 
   def find

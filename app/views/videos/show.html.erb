@@ -283,14 +283,14 @@
               <% @lines = t.translated_lines.sort { |a, b| a.line.time <=> b.line.time } %>
               <% unless current_user %>
                 <div class='other-user-content'>
-                  <p class="friendly"> <%= link_to "#{c.username}", user_url(c) %> added a translation: </p>
+                  <p class="friendly"> <%= link_to "#{c.username}", user_url(c) %> added a <%= link_to "translation", translation_url(t) %>: </p>
               <% else %>
                 <% if current_user.id == c.id %>
                   <div id='current-user-challenges' class='current-user-content'>
                     <p class="friendly">You added a translation (<%= link_to "edit", translation_url(t) %>): </p>
                 <% else %>
                   <div class='other-user-content'>
-                    <p class="friendly"> <%= link_to "#{c.username}", user_url(c) %> added a translation: </p>
+                    <p class="friendly"> <%= link_to "#{c.username}", user_url(c) %> added a <%= link_to "translation", translation_url(t) %>: </p>
                 <% end %>
               <% end %>
               <%= render "videos/translation", :translated_lines => @lines %>
@@ -305,14 +305,14 @@
               <% c = t.user %>
               <% unless current_user %>
                 <div class='other-user-content'>
-                  <p class="friendly"> <%= link_to "#{c.username}", user_url(c) %> added a transcript: </p>
+                  <p class="friendly"> <%= link_to "#{c.username}", user_url(c) %> added a <%= link_to 'transcript', transcript_path(t) %>: </p>
               <% else %>
                 <% if current_user.id == c.id %>
                   <div id='current-user-lines' class='current-user-content'>
-                    <p class="friendly">You added a transcript:<br>(<span class="edit-lines blue-link">edit + add times</span> / <span class="toggle-autoscroll blue-link">autoscroll</span>)</p>
+                    <p class="friendly">You added a transcript (<%= link_to "edit", transcript_path(t) %>):</p>
                 <% else %>
                   <div class='other-user-content'>
-                    <p class="friendly"> <%= link_to "#{c.username}", user_url(c) %> added a transcript: </p>
+                    <p class="friendly"> <%= link_to "#{c.username}", user_url(c) %> added a <%= link_to 'transcript', transcript_path(t) %>: </p>
                 <% end %>
               <% end %>
                   <% t.lines.order("time ASC").order("created_at ASC").each do |l| %>
@@ -332,7 +332,14 @@
                             <%= l.formatted_time %>
                           <% end %>
                         </span>
-                    </div>
+                      </div>
+                    <% if l.comments.present? %>
+                      <% l.comments.each do |c| %>
+                        <div class="line-comment rounded">
+                          <%= c.comment_text %> &nbsp; –<%= c.user.username %>
+                        </div>
+                      <% end %>
+                    <% end %>
                   <% end %>
                 <br><br>
               </div>

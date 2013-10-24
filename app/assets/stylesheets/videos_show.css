@@ -15,19 +15,28 @@
 
 .line-right-subcontainer { width: 180px; margin-bottom: 4px; margin-top: 4px; margin-right: 4px; float: right; }
 
-.exercise-transcript-line { padding: 4px; }
-.transcript-line { padding: 4px; }
-.transcript-line .lang1 { 
-  display: inline-block;
-  max-width: 380px; }
-
-.line-timing { float: right; }
+.line-timing { float: right; cursor: pointer; }
 .line-container .line-timing {
   margin-top: 15px;
   margin-bottom: 15px;
   margin-left: 15px;
   display: inline-block;
   height: 15px; }
+
+.transcript-line { padding: 4px; cursor: pointer; }
+.transcript-line .lang1 { 
+  display: inline-block;
+  max-width: 380px; }
+
+.line-comment {
+  padding: 6px; 
+  margin-top: 6px;
+  margin-bottom: 6px;
+  padding-left: 12px; 
+  background-color: #dcdce5;
+  font-size: 13px; }
+
+.exercise-transcript-line { padding: 4px; }
 
 .note-category { border-radius: 5px; }
 
@@ -116,6 +125,9 @@
   top: 10px; 
   right: 102px; 
   color: #9b59bb; }
+
+#star-empty.left { left: 20px }
+#star-full.left { left: 20px }
 
 #star-full { 
   position: absolute;

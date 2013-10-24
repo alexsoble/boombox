@@ -1,18 +1,5 @@
 $ ->
 
-  strip = (str) -> 
-    str = str.replace(/^\s+|\s+$/g, "").toLowerCase() # trim and force lowercase
-    from = "ãàáäâèéëêìíïîòóöôùúüûñç"
-    to = "aaaaaeeeeiiiioooouuuunc"
-    punctuation = ",.;!?'"
-    for i in [0..from.length]
-      str = str.replace(from.charAt(i), to.charAt(i))
-    for i in [0..punctuation]
-      str = str.replace(punctuation.charAt(i), '')
-    str = str.replace(/(\r\n|\n|\r)/gm,"")
-    str = str.replace(',','')
-    return str
-
   formatTime = (time) ->
     time = Math.floor(time)
     if time <= 9 then formatted_time = "00:0" + time
@@ -210,4 +197,3 @@ $ ->
         Cancel: ->
           $(this).dialog("close")
     )
-

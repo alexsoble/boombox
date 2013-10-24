@@ -5,6 +5,7 @@ class User < ActiveRecord::Base
   has_many :transcripts
   has_many :discussion_questions
   has_many :discussion_responses
+  has_many :fill_exercises
   has_many :stars
   has_many :interests
   has_many :comments

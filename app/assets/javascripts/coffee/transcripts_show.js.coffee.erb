@@ -1,0 +1,326 @@
+$ ->
+
+  strip = (str) -> 
+    str = str.replace(/^\s+|\s+$/g, "").toLowerCase() # trim and force lowercase
+    from = "ãàáäâèéëêìíïîòóöôùúüûñç"
+    to = "aaaaaeeeeiiiioooouuuunc"
+    punctuation = ",.;!?'"
+    for i in [0..from.length]
+      str = str.replace(from.charAt(i), to.charAt(i))
+    for i in [0..punctuation]
+      str = str.replace(punctuation.charAt(i), '')
+    str = str.replace(/(\r\n|\n|\r)/gm,"")
+    str = str.replace(',','')
+    return str
+
+  formatTime = (time) ->
+    time = Math.floor(time)
+    if time <= 9 then formatted_time = "00:0" + time
+    if 9 < time <= 59 then formatted_time = "00:" + time
+    if 60 <= time < 540
+      if time%60 <= 9 then formatted_time = "0" + Math.floor((time)/60) + ":0" + (time)%60
+      if 9 < time%60 <= 59 then formatted_time = "0" + Math.floor((time)/60) + ":" + (time)%60
+    if 540 <= time < 3600
+      if time%60 <= 9 then formatted_time = Math.floor((time)/60) + ":0" + (time)%60
+      if 9 < time%60 <= 59 then formatted_time = Math.floor((time)/60) + ":" + (time)%60
+    formatted_time
+
+  shortFormatTime = (time) ->
+    time = Math.floor(time)
+    if time <= 9 then formatted_time = ":0" + time
+    if 9 < time <= 59 then formatted_time = ":" + time
+    if 60 <= time < 540
+      if time%60 <= 9 then formatted_time = Math.floor((time)/60) + ":0" + (time)%60
+      if 9 < time%60 <= 59 then formatted_time = Math.floor((time)/60) + ":" + (time)%60
+    if 540 <= time < 3600
+      if time%60 <= 9 then formatted_time = Math.floor((time)/60) + ":0" + (time)%60
+      if 9 < time%60 <= 59 then formatted_time = Math.floor((time)/60) + ":" + (time)%60
+    formatted_time
+
+  youtube_id = $('#data').attr('data-youtube-id')
+  window.video_id = parseInt($('#data').attr('data-video-id'))
+
+  tag = document.createElement("script")
+  tag.src = "https://www.youtube.com/iframe_api"
+  firstScriptTag = document.getElementsByTagName("script")[0]
+  firstScriptTag.parentNode.insertBefore tag, firstScriptTag
+
+  window.editing_lines = false
+  window.section = 0 
+  window.time = 0
+  window.got_volume = false
+  window.video_play_counter = 0
+
+  if $('.star').attr('id') == 'star-full'
+    window.star_id = parseInt($('#star-full').attr('data-star-id'))
+
+  # WE GOTTA HAVE A PLAYBACK SLIDER
+
+  $('#settings').append("
+    <div class='playback-left-label end-label'><div class='playback-left-label inner-label'></div></div>
+      <div id='playback-slider'></div>
+    <div class='playback-right-label end-label'><div class='playback-right-label inner-label'></div></div>
+  ")
+
+  playbackControls = (video_duration) ->
+    $('.playback-left-label.inner-label').html(":00")
+    $('.playback-right-label.inner-label').html("#{shortFormatTime(video_duration)}")
+  
+    $('#playback-slider').slider(
+        min: 0,
+        max: video_duration,
+        value: window.time,
+        step: 1
+        stop: (event, ui) ->
+          player.seekTo($('#playback-slider').slider("value"))
+          window.sliding = false
+        slide: (event, ui) ->
+          window.sliding = true
+          $('#playback-slider').children().html(shortFormatTime(ui.value))
+      )
+
+  window.onYouTubeIframeAPIReady = ->
+    player = new YT.Player("new-video-box", {
+      height: "315"
+      width: "420"
+      videoId: youtube_id
+      playerVars: 
+        {
+        controls: 0
+        cc_load_policy: 1
+        wmode: "opaque"
+        }
+      events:
+        onReady: onPlayerReady
+        onStateChange: onPlayerStateChange })
+    console.log "Checking for cc..." + player.getOptions().indexOf('cc')
+    window.player = player
+
+  onPlayerReady = (event) ->
+    video_duration = window.player.getDuration()
+    window.video_duration = video_duration
+    window.half_duration = video_duration * .5
+    playbackControls(video_duration)
+    if window.loop_length == false
+      straightPlaybackBehavior()
+    event.target.playVideo()
+
+  countVideoPlayTime = ->
+
+    # IF PLAYER IS PLAYING, UPDATE THE PLAY COUNTER
+    state = player.getPlayerState()
+    if state == 1
+      window.video_play_counter += 1
+    if state == 0
+      $('#watch-again').addClass('video-finished')
+      $('#watch-again').html('<br><br><br><br><br><h3 class="link-style">Watch again?</class></h3>')
+      $('iframe').remove()
+      if window.video_play_counter + 10 > window.video_duration
+        $.post("/update_playcount/#{window.playcount_id}", (data) ->
+          new_playcount = data.data.play_count
+          $('#video-play-counter').html(new_playcount)
+        )
+        window.video_play_counter = 0
+      $('#watch-again').after('<div id="new-video-box"></div>')
+    
+    # UI RESPONDS AS VIDEO PLAYS
+    exact_time = player.getCurrentTime()
+    window.time = Math.floor(exact_time)
+
+    if $("[data-time=#{window.time}]").length != 0
+      this_line = $(".transcript-line[data-time=#{window.time}]").eq(0)
+      unless this_line.hasClass('highlighted')
+        this_line.effect("highlight", { color: "#FFFF00" }, 4000)
+        this_line.addClass("highlighted")
+        if window.autoscroll == true
+          $("#community-notes").scrollTo(this_line.prev().prev(), { duration : 250 } )
+
+    # PLAYBACK SLIDER MOVES HERE
+    unless window.sliding == true
+      $('#playback-slider').slider("value", window.time)
+      $('#playback-slider').children().html(shortFormatTime(window.time))
+
+  counter = setInterval(countVideoPlayTime, 400)
+  done = false
+
+  onPlayerStateChange = (event) ->
+    if event.data == YT.PlayerState.PAUSED
+      exact_time = player.getCurrentTime()
+      window.time = Math.round(exact_time)
+      window.section = window.time / window.loop_length
+
+  delayedShow = ->
+    window.player.playVideo()
+  window.setTimeout(delayedShow, 1000)
+
+  $("#dialog-confirm").dialog(
+      autoOpen: false,
+      buttons:
+        Delete: ->
+          id = parseInt($(this).attr('data-line-id'))
+          $.post('/destroy_line', { 'id' : "#{id}" }, (data) ->
+            line_id = data.data.id
+            $(".transcript-line[data-line-id=#{line_id}]").remove()
+            $("#dialog-confirm").dialog("close")
+          )
+        Cancel: ->
+          $(this).dialog("close")
+    )
+
+  hideOtherIcons = (id) ->
+    $(".edit-line[data-line-id=#{id}]").addClass('quiet')
+    $(".comment-line[data-line-id=#{id}]").addClass('quiet')
+    $(".remove-line[data-line-id=#{id}]").addClass('quiet')
+    $(".add-time-to-line[data-line-id=#{id}]").addClass('quiet')
+  
+  showOtherIcons = (id) ->
+    $(".edit-line[data-line-id=#{id}]").removeClass('quiet')
+    $(".comment-line[data-line-id=#{id}]").removeClass('quiet')
+    $(".remove-line[data-line-id=#{id}]").removeClass('quiet')
+    $(".add-time-to-line[data-line-id=#{id}]").removeClass('quiet')
+
+
+  # # # Adding timing to lines
+
+  $('.line-timing').livequery ->
+    $(this).click ->  
+      window.player.seekTo($(this).attr('data-time'))
+
+  $('.add-time-to-line').livequery ->
+    $(this).click ->
+      id = parseInt($(this).attr('data-line-id'))
+      window.line_being_timed_id = id
+      $('.ui-slider-handle').addClass('time-selector')
+      $('.ui-slider-handle').addClass('time-selector-handle')
+      $('.add-time-to-line').addClass('quiet')
+      $(".line-timing[data-line-id=#{id}]").hide()
+      $(".lang1[data-line-id=#{id}]").after("
+        <p id='instructions' class='tiny' style='margin-top: 8px;'>
+          <span>
+            <i class='icon icon-time icon-2x orange-icon time-selector'></i>
+            Double click the orange clock when the line begins...
+          </span>
+          <br>
+          <span class='back-from-adding-timing-to-lines'>
+            Or go back:
+            <i class='icon icon-remove icon-2x orange-icon'></i>
+          </span>
+        </p>")
+      $(".edit-line[data-line-id=#{id}]").addClass('quiet')
+      $(".comment-line[data-line-id=#{id}]").addClass('quiet')
+      $(".remove-line[data-line-id=#{id}]").addClass('quiet')
+
+  $('.back-from-adding-timing-to-lines').livequery ->
+    $(this).click ->
+      $('.time-selector').removeClass('time-selector')
+      $('.time-selector-handle').removeClass('time-selector-handle')
+      $(".line-timing").show()
+      $('.add-time-to-line').removeClass('quiet')
+      $('#instructions').remove()
+      window.line_being_timed_id = 0
+      $(".edit-line").removeClass('quiet')
+      $(".comment-line").removeClass('quiet')
+      $(".remove-line").removeClass('quiet')
+      
+  $('.time-selector').livequery ->
+    $(this).dblclick ->
+      time = window.time
+      $.post('/update_line', { 'line' : { 'id' : "#{window.line_being_timed_id}", 'time' : "#{time}" } }, (data) ->
+        line = data.data
+        $(".line-timing[data-line-id=#{line.id}]").html(formatTime(line.time)).show()
+        $('.time-selector').removeClass('time-selector')
+        $('.time-selector-handle').removeClass('time-selector-handle')
+        $('.add-time-to-line').removeClass('quiet')
+        $('#instructions').remove()
+        window.line_being_timed_id = 0
+        showOtherIcons(line.id)
+        $(".line-timing[data-line-id=#{line.id}]").html(formatTime(line.time))
+      )
+
+  # # # Editing transcript
+
+  $('.edit-lines').livequery ->
+    $(this).click -> 
+      if window.editing_lines == false
+        $('.edit-line').each(->
+          $(this).removeClass('quiet'))
+        $('.remove-line').each(->
+          $(this).removeClass('quiet'))
+        $('.comment-line').each(->
+          $(this).removeClass('quiet'))
+        $('.add-time-to-line').each(->
+          $(this).removeClass('quiet'))
+        $(this).html("<i class='icon icon-pencil'></i>")
+        window.editing_lines = true
+      else
+        $('.edit-line').each(->
+            $(this).addClass('quiet'))
+        $('.remove-line').each(->
+            $(this).addClass('quiet'))
+        $('.comment-line').each(->
+            $(this).addClass('quiet'))
+        $('.add-time-to-line').each(->
+          $(this).addClass('quiet'))
+        $(this).html("<i class='icon icon-pencil'></i>")
+        window.editing_lines = false
+
+  $('.edit-line').livequery ->
+    $(this).click -> 
+      id = parseInt($(this).attr('data-line-id'))
+      this_line = $(this).siblings(".lang1[data-line-id=#{id}]")
+      text = $.trim(this_line.text())
+      this_line.replaceWith("<input type='text' class='update-line-area' style='width: 300px;' data-line-id=#{id}>")
+      $(".update-line-area[data-line-id=#{id}]").val(text)
+      $(this).replaceWith("<i class='icon icon-ok blue-link update-line' data-line-id=#{id}></i>")
+      $(".comment-line[data-line-id=#{id}]").addClass('quiet')
+      $(".remove-line[data-line-id=#{id}]").addClass('quiet')
+      $(".add-time-to-line[data-line-id=#{id}]").addClass('quiet')
+
+  $('.update-line').livequery ->
+    $(this).click ->
+      id = parseInt($(this).attr('data-line-id'))
+      this_line = $(".update-line-area[data-line-id=#{id}]")
+      this_lang1 = this_line.val()
+      this_button = $(this)
+      $.post('/update_line', { 'line' : { 'lang1' : "#{this_lang1}" , 'id' : "#{id}" } }, (data) ->
+        line = data.data
+        console.log line
+        this_button.replaceWith("<span class='edit-line blue-link tiny' data-line-id=#{line.id}> <i class='icon icon-pencil'></i> </span>")
+        this_line.replaceWith("<span class='lang1' data-line-id=#{id}>#{line.lang1}<span>")
+      )
+      $(".comment-line[data-line-id=#{id}]").removeClass('quiet')
+      $(".remove-line[data-line-id=#{id}]").removeClass('quiet')
+      $(".add-time-to-line[data-line-id=#{id}]").removeClass('quiet')
+
+  $('.comment-line').livequery ->
+    $(this).click -> 
+      id = parseInt($(this).attr('data-line-id'))
+      comment_area = $(".line-comment-area[data-line-id=#{id}]")
+      comment_area.html("<span class='line-comment-area' data-line-id=#{id}><br><span class='notice'>Your comment:</span> &nbsp; <input type='text' class='comment' data-line-id=#{id}>&nbsp;<i class='icon-ok blue-link submit-line-comment' data-line-id=#{id}></i><i class='icon-remove blue-link remove-line-comment-area' data-line-id=#{id}></i></span>")
+      hideOtherIcons(id)
+
+  $('.remove-line-comment-area').livequery ->
+    $(this).click ->
+      id = parseInt($(this).attr('data-line-id'))
+      comment_area = $(".line-comment-area[data-line-id=#{id}]")
+      comment_area.html('')
+      showOtherIcons(id)
+
+  $('.submit-line-comment').livequery ->
+    $(this).click ->
+      id = parseInt($(this).attr('data-line-id'))
+      comment_text = $(".comment[data-line-id=#{id}]").val()
+      if comment_text isnt ''
+        $.post('/new_comment', { 'comment' : { 'line_id' : "#{id}", 'comment_text' : "#{comment_text}", 'user_id' : "#{window.user_id}" } }, (data) ->
+          $(".line-comment[data-line-id=#{id}]").html("
+            #{data.data.comment_text}
+          ")
+          $(".line-comment-area[data-line-id=#{id}]").remove()
+          hideOtherIcons(id)        
+        )
+
+  $('.remove-line').livequery ->
+    $(this).click ->
+      id = parseInt($(this).attr('data-line-id'))
+      $("#dialog-confirm").dialog("open")
+      $("#dialog-confirm").attr("data-line-id", "#{id}")

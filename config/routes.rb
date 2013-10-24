@@ -16,6 +16,7 @@ Boombox::Application.routes.draw do
   resources :videos
   resources :interpretations
   resources :translations
+  resources :transcripts, path: :lyrics
   resources :tags
   resources :definitions
   resources :challenges
@@ -42,6 +43,7 @@ Boombox::Application.routes.draw do
   post '/add_star' => 'stars#create'
   post 'remove_star' => 'stars#destroy'
 
+  post '/find_transcript' => 'transcripts#find'
   post '/find_transcripts' => 'transcripts#find'
   post '/new_transcript' => 'transcripts#create'
 
@@ -125,5 +127,6 @@ Boombox::Application.routes.draw do
   get '/dmca' => 'pages#dmca'
   get '/thanks' => 'pages#thankyou'
   get '/contact' => 'pages#contact'
+  get '/admin' => 'pages#admin'
 
 end

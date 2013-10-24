@@ -10,12 +10,14 @@ class Transcript < ActiveRecord::Base
   validates_presence_of :slug, :user, :video
 
   def generate_slug
-      if Transcript.where(:slug => "#{self.video.slug}-lyrics").blank?
-        self.slug = "#{self.video.slug}-lyrics"
+    if self.slug.blank?
+      if Transcript.where(:slug => "#{self.video.slug}").blank?
+        self.slug = "#{self.video.slug}"
       else
         @last = Transcript.last
-        self.slug = "#{self.video.slug}-lyrics-#{self.id}"
+        self.slug = "#{self.video.slug}-#{@last.id}"
       end
+    end
   end
 
   def to_param
