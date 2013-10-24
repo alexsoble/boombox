@@ -1,18 +1,5 @@
 $ ->
 
-  strip = (str) -> 
-    str = str.replace(/^\s+|\s+$/g, "").toLowerCase() # trim and force lowercase
-    from = "ãàáäâèéëêìíïîòóöôùúüûñç"
-    to = "aaaaaeeeeiiiioooouuuunc"
-    punctuation = ",.;!?'"
-    for i in [0..from.length]
-      str = str.replace(from.charAt(i), to.charAt(i))
-    for i in [0..punctuation]
-      str = str.replace(punctuation.charAt(i), '')
-    str = str.replace(/(\r\n|\n|\r)/gm,"")
-    str = str.replace(',','')
-    return str
-
   formatTime = (time) ->
     time = Math.floor(time)
     if time <= 9 then formatted_time = "00:0" + time
@@ -39,6 +26,7 @@ $ ->
 
   youtube_id = $('#data').attr('data-youtube-id')
   window.video_id = parseInt($('#data').attr('data-video-id'))
+  window.transcript_id = parseInt($('#data').attr('data-transcript-id'))
 
   tag = document.createElement("script")
   tag.src = "https://www.youtube.com/iframe_api"
@@ -324,3 +312,25 @@ $ ->
       id = parseInt($(this).attr('data-line-id'))
       $("#dialog-confirm").dialog("open")
       $("#dialog-confirm").attr("data-line-id", "#{id}")
+
+  $('#star-empty').livequery ->
+    $(this).click ->
+      if window.user_id isnt null
+        $.post('/add_star', { 'star' : { 'user_id' : "#{window.user_id}", 'transcript_id' : "#{window.transcript_id}" } }, (data) ->
+          window.star_id = data.data.id
+          $('#star-empty').replaceWith("<i class='icon icon-star star' id='star-full'> </i>")
+          $('#star-count').html(1 + parseInt($('#star-count').html()))
+        )
+      else
+        $('#star-notice-area').html('Please sign in to add star.')
+
+  $('#star-full').livequery ->
+    $(this).click ->
+      if window.user_id isnt null
+        $.post('/remove_star', { 'star_id' : "#{window.star_id}" }, (data) ->
+          $('#star-full').replaceWith("<i class='icon icon-star-empty star' id='star-empty'> </i>")
+          $('#star-count').html(-1 + parseInt($('#star-count').html()))
+        )
+      else
+        $('#star-notice-area').html('Please sign in to add star.')
+

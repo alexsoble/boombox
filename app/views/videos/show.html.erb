@@ -8,9 +8,9 @@
       <% if current_user %>
         <p style="font-size: 15px">You've watched <span id="video-play-counter"><%= @current_user_play_count %></span> times.</p>
         <% if @star.present? %>
-          <i class='icon icon-star icon-2x star' id='star-full' data-star-id='<%= @star.id %>'> </i>
+          <i class='icon icon-star icon-2x star star-left' id='star-full' data-star-id='<%= @star.id %>'> </i>
         <% else %>
-          <i class="icon icon-star-empty icon-2x star" id="star-empty"> </i>
+          <i class="icon icon-star-empty icon-2x star star-left" id="star-empty"> </i>
         <% end %>
       <% else %>
         <%= link_to "Sign in", "/sign_in" %> to track your progress!

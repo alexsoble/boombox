@@ -120,18 +120,14 @@
   text-align: center;
   background-color: #f3f3f6; }
 
-#star-empty {
+.star-left {
   position: absolute; 
   top: 10px; 
-  right: 102px; 
+  right: 102px; }
+  
+#star-empty {
   color: #9b59bb; }
 
-#star-empty.left { left: 20px }
-#star-full.left { left: 20px }
-
 #star-full { 
-  position: absolute;
-  top: 10px; 
-  right: 102px; 
   color: #0f82f5; }
 

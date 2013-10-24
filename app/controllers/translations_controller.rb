@@ -9,6 +9,11 @@ class TranslationsController < ApplicationController
     @translation = Translation.find_by_slug!(params[:id])
     @video = @translation.transcript.video 
     @user = @translation.user 
+
+    if current_user
+      @translation.stars.each { |s| if s.user_id == current_user.id then @star = s end }
+    end 
+
   end
 
   def find

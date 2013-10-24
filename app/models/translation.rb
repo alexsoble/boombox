@@ -4,6 +4,7 @@ class Translation < ActiveRecord::Base
   belongs_to :user
   belongs_to :video
   belongs_to :language
+  has_many :stars
   has_many :translated_lines
   before_validation :generate_slug
   validates_uniqueness_of :slug

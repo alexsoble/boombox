@@ -3,6 +3,7 @@ class Transcript < ActiveRecord::Base
   belongs_to :interpretation
   belongs_to :user
   belongs_to :video
+  has_many :stars
   has_many :lines
   has_many :translations
   before_validation :generate_slug

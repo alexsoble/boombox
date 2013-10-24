@@ -4,6 +4,15 @@
   <div id="new-video-box"></div>
   <div id="timer-box"></div>
   <div id="settings" style="height: 100px;">
+    <div style="margin-top: 15px; position: absolute; left: 22px;">
+      <% if @star.present? %>
+        <span class="big-friendly"><i class="icon icon-star star" id="star-full" data-star-id=<%= @star.id %>></i></span>
+      <% else %>
+        <span class="big-friendly"><i class="icon icon-star-empty star" id="star-empty"></i></span>
+      <% end %>
+      <span id='star-count' class="friendly-big"><%= @translation.stars.length %></span>
+      &nbsp; <span id='star-notice-area' class="notice"></span>
+    </div>
     <div style="margin-top: 15px; margin-left: 22px;">
       <div class='btn btn-info btn-small btn-tiny rounded tight-pack' id='play-pause' style="position: absolute; top: 13px; right: 22px;"> 
         <i class='icon-pause'></i> 
@@ -59,4 +68,5 @@
  data-youtube-id=<%= @video.youtube_id %>
  data-title=<%= @video.title %>
  data-video-id=<%= @video.id %>
+ data-translation-id=<%= @translation.id %>
 </div>

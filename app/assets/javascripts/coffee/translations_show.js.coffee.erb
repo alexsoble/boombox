@@ -26,6 +26,7 @@ $ ->
 
   youtube_id = $('#data').attr('data-youtube-id')
   window.video_id = parseInt($('#data').attr('data-video-id'))
+  window.translation_id = parseInt($('#data').attr('data-translation-id'))
 
   tag = document.createElement("script")
   tag.src = "https://www.youtube.com/iframe_api"
@@ -197,3 +198,25 @@ $ ->
         Cancel: ->
           $(this).dialog("close")
     )
+
+  $('#star-empty').livequery ->
+    $(this).click ->
+      if window.user_id isnt null
+        $.post('/add_star', { 'star' : { 'user_id' : "#{window.user_id}", 'translation_id' : "#{window.translation_id}" } }, (data) ->
+          window.star_id = data.data.id
+          $('#star-empty').replaceWith("<i class='icon icon-star star' id='star-full'> </i>")
+          $('#star-count').html(1 + parseInt($('#star-count').html()))
+        )
+      else
+        $('#star-notice-area').html('Please sign in to add star.')
+
+  $('#star-full').livequery ->
+    $(this).click ->
+      if window.user_id isnt null
+        $.post('/remove_star', { 'star_id' : "#{window.star_id}" }, (data) ->
+          $('#star-full').replaceWith("<i class='icon icon-star-empty star' id='star-empty'> </i>")
+          $('#star-count').html(-1 + parseInt($('#star-count').html()))
+        )
+      else
+        $('#star-notice-area').html('Please sign in to add star.')
+

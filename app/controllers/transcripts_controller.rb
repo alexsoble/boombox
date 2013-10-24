@@ -4,6 +4,11 @@ class TranscriptsController < ApplicationController
     @transcript = Transcript.find_by_slug!(params[:id])
     @user = @transcript.user
     @video = @transcript.video
+
+    if current_user
+      @transcript.stars.each { |s| if s.user_id == current_user.id then @star = s end }
+    end 
+
   end
 
   def find
