@@ -10,9 +10,9 @@ class CommentsController < ApplicationController
     @comment = Comment.find_by_id(params[:id])
     @comment.destroy
     if @comment.save
-      render :json => { :data => "comment destroyed" }
+      render json: { data: @comment }
     else
-      render :json => { :data => "comment not destroyed" }
+      render json: { data: "save failed :(" }
     end
   end
   

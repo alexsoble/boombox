@@ -451,6 +451,25 @@ $ ->
             <div id='submit-new-tweet' class='btn btn-primary btn-small rounded'> Submit </div>
             <div id='back-from-editing' class='btn btn-primary btn-small rounded'> Done </div>
           ")
+        if category == 'notes'
+          $('#editing').html("
+            <h3>Add your notes:</h3>
+            <textarea id='notes-textbox' style='width: 400px; height: 160px;'></textarea>
+            <br>
+            <!---
+            <div class='btn btn-info rounded'>
+              <i id='bold-text' class='icon icon-bold'></i>
+            </div>
+            <div class='btn btn-info rounded'>
+              <i id='underline-text' class='icon icon-underline'></i>
+            </div>
+            <div class='btn btn-info rounded'>
+              <i id='big-text' class='icon icon-text-height'></i>
+            </div> -->
+            <br><br><br>
+            <div id='submit-new-note' class='btn btn-primary btn-small rounded'> Submit </div>
+            <div id='back-from-editing' class='btn btn-primary btn-small rounded'> Done </div>
+          ")
         $('#editing').append("
           <br><br>
           <div id='notice-area'></div>")
@@ -990,3 +1009,16 @@ $ ->
         $(".#{category}-area").show()
       else 
         $('.note-area').show()
+
+  # # # Note text decorating
+
+  $('#bold-text').livequery ->
+    $(this).click ->
+      if window.getSelection()
+        console.log 'yeah!'
+        selection = window.getSelection()
+        range = selection.getRangeAt(0)
+        span = document.createElement('span')
+        span.className = 'highlight'
+        range.surroundContents(span)
+        $('.highlight').attr('style','font-weight: bold;')

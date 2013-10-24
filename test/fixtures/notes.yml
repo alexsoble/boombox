@@ -1,0 +1,13 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/Fixtures.html
+
+one:
+  note_text: MyText
+  user_id: 1
+  video_id: 1
+  interpretation_id: 1
+
+two:
+  note_text: MyText
+  user_id: 1
+  video_id: 1
+  interpretation_id: 1

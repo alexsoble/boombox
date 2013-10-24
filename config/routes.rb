@@ -101,7 +101,7 @@ Boombox::Application.routes.draw do
   get '/print_google/:stage/:id' => 'interpretations#print_google'
 
   post '/new_comment' => 'comments#create'
-  post '/delete_comment/' => 'comments#destroy'
+  post '/destroy_comment/' => 'comments#destroy'
   
   post '/new_video' => 'videos#create'
   post '/new_interp' => 'interpretations#create'

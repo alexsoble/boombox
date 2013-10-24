@@ -156,6 +156,20 @@ $ ->
           $(this).dialog("close")
     )
 
+  $("#dialog-confirm-remove-comment").dialog(
+      autoOpen: false,
+      buttons:
+        Delete: ->
+          id = parseInt($(this).attr('data-comment-id'))
+          $.post('/destroy_comment', { 'id' : "#{id}" }, (data) ->
+            comment_id = data.data.id
+            $(".line-comment[data-comment-id=#{comment_id}]").remove()
+            $("#dialog-confirm-remove-comment").dialog("close")
+          )
+        Cancel: ->
+          $(this).dialog("close")
+    )
+
   hideOtherIcons = (id) ->
     $(".edit-line[data-line-id=#{id}]").addClass('quiet')
     $(".comment-line[data-line-id=#{id}]").addClass('quiet')
@@ -239,6 +253,10 @@ $ ->
           $(this).removeClass('quiet'))
         $('.add-time-to-line').each(->
           $(this).removeClass('quiet'))
+        $('.remove-comment').each(->
+          $(this).removeClass('quiet'))
+        $('.edit-comment').each(->
+          $(this).removeClass('quiet'))
         $('#add-new-line').removeClass('quiet').after('<br class="extra-line-break"><br class="extra-line-break">')
         window.editing_lines = true
       else
@@ -249,6 +267,10 @@ $ ->
         $('.comment-line').each(->
             $(this).addClass('quiet'))
         $('.add-time-to-line').each(->
+          $(this).addClass('quiet'))
+        $('.remove-comment').each(->
+          $(this).addClass('quiet'))
+        $('.edit-comment').each(->
           $(this).addClass('quiet'))
         $('#add-new-line').addClass('quiet')
         $('.extra-line-break').remove()
@@ -302,8 +324,16 @@ $ ->
       comment_text = $(".comment[data-line-id=#{id}]").val()
       if comment_text isnt ''
         $.post('/new_comment', { 'comment' : { 'line_id' : "#{id}", 'comment_text' : "#{comment_text}", 'user_id' : "#{window.user_id}" } }, (data) ->
-          $(".line-comment[data-line-id=#{id}]").html("
-            #{data.data.comment_text}
+          $(".transcript-line[data-line-id=#{id}]").append("
+            <div class='line-comment rounded' data-line-id=#{data.data.line_id} data-comment-id=#{data.data.id}>
+              #{data.data.comment_text}
+              <span class='remove-comment' data-comment-id=#{data.data.id}>
+                <i class='icon icon-remove blue-link'></i>
+              </span>
+              <span class='edit-comment' data-comment-id=#{data.data.id}>
+                <i class='icon icon-pencil blue-link'></i>
+              </span>
+            </div>
           ")
           $(".line-comment-area[data-line-id=#{id}]").remove()
           hideOtherIcons(id)        
@@ -314,6 +344,12 @@ $ ->
       id = parseInt($(this).attr('data-line-id'))
       $("#dialog-confirm").dialog("open")
       $("#dialog-confirm").attr("data-line-id", "#{id}")
+
+  $('.remove-comment').livequery ->
+    $(this).click ->
+      id = parseInt($(this).attr('data-comment-id'))
+      $("#dialog-confirm-remove-comment").dialog("open")
+      $("#dialog-confirm-remove-comment").attr("data-comment-id", "#{id}")
 
   $('#add-new-line').livequery ->
     $(this).click ->

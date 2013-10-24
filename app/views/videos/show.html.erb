@@ -127,12 +127,12 @@
         <span id="translation" class="note-category <% if @translations.present? %>active<% else %>inactive<% end %>">
           Translation 
         </span> &nbsp; &nbsp;
+        <span id="notes" class="note-category <% if @notes.present? %>active<% else %>inactive<% end %>">
+          Notes
+        </span> &nbsp; &nbsp;
         <span id="links" class="note-category <% if @links.present? %>active<% else %>inactive<% end %>">
           Links
         </span> &nbsp; &nbsp;
-        <span id="tweets" class="note-category <% if @tweets.present? %>active<% else %>inactive<% end %>">
-          Tweets
-        </span>
       </div>
       <br>
       <div style="position: absolute; left: 20px; top: 40px; text-align: justify;">
@@ -145,6 +145,9 @@
         <span id="discussion-question" class="note-category <% if @discussion_questions.present? %>active<% else %>inactive<% end %>">
           Discussion
         </span> &nbsp; &nbsp;
+        <span id="tweets" class="note-category <% if @tweets.present? %>active<% else %>inactive<% end %>">
+          Tweets
+        </span>
       </div>
     </div>
     <div id="community-notes">
