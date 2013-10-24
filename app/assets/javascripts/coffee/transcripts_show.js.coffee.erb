@@ -27,6 +27,7 @@ $ ->
   youtube_id = $('#data').attr('data-youtube-id')
   window.video_id = parseInt($('#data').attr('data-video-id'))
   window.transcript_id = parseInt($('#data').attr('data-transcript-id'))
+  window.interpretation_id = parseInt($('#data').attr('data-interpretation-id'))
 
   tag = document.createElement("script")
   tag.src = "https://www.youtube.com/iframe_api"
@@ -238,7 +239,7 @@ $ ->
           $(this).removeClass('quiet'))
         $('.add-time-to-line').each(->
           $(this).removeClass('quiet'))
-        $(this).html("<i class='icon icon-pencil'></i>")
+        $('#add-new-line').removeClass('quiet').after('<br class="extra-line-break"><br class="extra-line-break">')
         window.editing_lines = true
       else
         $('.edit-line').each(->
@@ -249,7 +250,8 @@ $ ->
             $(this).addClass('quiet'))
         $('.add-time-to-line').each(->
           $(this).addClass('quiet'))
-        $(this).html("<i class='icon icon-pencil'></i>")
+        $('#add-new-line').addClass('quiet')
+        $('.extra-line-break').remove()
         window.editing_lines = false
 
   $('.edit-line').livequery ->
@@ -312,6 +314,46 @@ $ ->
       id = parseInt($(this).attr('data-line-id'))
       $("#dialog-confirm").dialog("open")
       $("#dialog-confirm").attr("data-line-id", "#{id}")
+
+  $('#add-new-line').livequery ->
+    $(this).click ->
+      $(this).replaceWith("
+        <div id='adding-new-line-area'>
+          New line: &nbsp; <input id='new-line-input' type='text'>
+          <i class='icon-ok blue-link submit-new-line'></i>
+          <i class='icon-remove blue-link back-from-adding-new-line'></i>
+        </div>
+      ")
+
+  backFromAddingNewLineArea = ->
+    $('#adding-new-line-area').replaceWith("
+      <span id='add-new-line' class='blue-link' style='float: right; margin-right: 15px;'>
+        <i class='icon icon-plus-sign'></i> Add new line
+      </span>")
+
+  $('.back-from-adding-new-line').livequery ->
+    $(this).click ->
+      backFromAddingNewLineArea()
+
+  $('.submit-new-line').livequery ->
+    $(this).click ->
+      lang1 = $('#new-line-input').val()
+      if lang1 isnt ''
+        $.post('/new_line', { 'line' : { 'transcript_id' : "#{window.transcript_id}", 'interpretation_id' : "#{window.interpretation_id}", 'lang1' : "#{lang1}", 'video_id' : "#{window.video_id}" } }, (data) ->
+          line = data.data
+          $('#transcript-lines').prepend("
+            <div class='transcript-line rounded' data-line-id=#{line.id}>
+              <span class='edit-line blue-link tiny' title='Edit line' data-line-id=#{line.id}> <i class='icon icon-pencil'></i></span>
+              <span class='comment-line blue-link tiny' title='Add comment to line' data-line-id=#{line.id}><i class='icon icon-comment'></i> </span>
+              <span class='remove-line blue-link tiny' title='Delete line' data-line-id=#{line.id}> <i class='icon icon-remove'></i></span>
+              <span class='add-time-to-line blue-link tiny' title='Add time to line' data-line-id=#{line.id}><i class='icon icon-time'></i></span> 
+              <span class='lang1' data-line-id=#{line.id}>#{line.lang1}</span>
+              <span class='line-comment-area' data-line-id=#{line.id}></span>
+              <span class='line-timing tiny gray' data-line-id=#{line.id}></span>
+            </div>
+          ")
+          backFromAddingNewLineArea()
+        )
 
   $('#star-empty').livequery ->
     $(this).click ->

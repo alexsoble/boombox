@@ -45,32 +45,41 @@
   <div class="small-tab short"></div>
     <div id="community-notes">
       <div id="notes-container">
-        <% @transcript.lines.order("time ASC").order("created_at ASC").each do |l| %>
-          <div class="transcript-line rounded" data-line-id=<%= l.id %> data-time=<%= l.time %>>
-            <% if current_user %>
-              <% if current_user.id == @user.id %>
-                <span class='edit-line blue-link quiet tiny' title='Edit line' data-line-id=<%= l.id %>> <i class='icon icon-pencil'></i> </span>
-                <span class='comment-line blue-link quiet tiny' title='Add comment to line' data-line-id=<%= l.id %>> <i class='icon icon-comment'></i> </span>
-                <span class='remove-line blue-link quiet tiny' title='Delete line' data-line-id=<%= l.id %>> <i class='icon icon-remove'></i> </span>
-                <span class='add-time-to-line blue-link quiet tiny' title='Add time to line' data-line-id=<%= l.id %>> <i class='icon icon-time'></i> </span> 
-              <% end %>
-            <% end %>
-              <span class="lang1" data-line-id=<%= l.id %>><%= l.lang1 %></span>
-              <span class="line-comment-area" data-line-id=<%= l.id %>></span>
-              <span class="line-timing tiny gray" data-line-id=<%= l.id %> data-time=<%= if l.time.present? then l.time end %>>
-                <% if l.time.present? %>
-                  <%= l.formatted_time %>
-                <% end %>
-              </span>
-              <% if l.comments.present? %>
-                <% l.comments.each do |c| %>
-                  <div class="line-comment rounded" data-line-id=<%= l.id %>>
-                    <%= c.comment_text %> &nbsp; — <%= c.user.username %>
-                  </div>
-                <% end %>
-             <% end %>
-            </div>
+        <% if current_user %>
+          <% if current_user.id == @transcript.user.id %>
+            <span id='add-new-line' class='blue-link quiet' style="float: right; margin-right: 15px;">
+              <i class='icon icon-plus-sign'></i> Add new line
+            </span>
+          <% end %>
         <% end %>
+        <div id='transcript-lines'>
+          <% @transcript.lines.order("time ASC").order("created_at ASC").each do |l| %>
+            <div class="transcript-line rounded" data-line-id=<%= l.id %> data-time=<%= l.time %>>
+              <% if current_user %>
+                <% if current_user.id == @user.id %>
+                  <span class='edit-line blue-link quiet tiny' title='Edit line' data-line-id=<%= l.id %>> <i class='icon icon-pencil'></i> </span>
+                  <span class='comment-line blue-link quiet tiny' title='Add comment to line' data-line-id=<%= l.id %>> <i class='icon icon-comment'></i> </span>
+                  <span class='remove-line blue-link quiet tiny' title='Delete line' data-line-id=<%= l.id %>> <i class='icon icon-remove'></i> </span>
+                  <span class='add-time-to-line blue-link quiet tiny' title='Add time to line' data-line-id=<%= l.id %>> <i class='icon icon-time'></i> </span> 
+                <% end %>
+              <% end %>
+                <span class="lang1" data-line-id=<%= l.id %>><%= l.lang1 %></span>
+                <span class="line-comment-area" data-line-id=<%= l.id %>></span>
+                <span class="line-timing tiny gray" data-line-id=<%= l.id %> data-time=<%= if l.time.present? then l.time end %>>
+                  <% if l.time.present? %>
+                    <%= l.formatted_time %>
+                  <% end %>
+                </span>
+                <% if l.comments.present? %>
+                  <% l.comments.each do |c| %>
+                    <div class="line-comment rounded" data-line-id=<%= l.id %>>
+                      <%= c.comment_text %> &nbsp; — <%= c.user.username %>
+                    </div>
+                  <% end %>
+               <% end %>
+            </div>
+          <% end %>
+        </div>
       </div>
     </div>
   </div>
@@ -85,4 +94,6 @@
  data-title=<%= @video.title %>
  data-video-id=<%= @video.id %>
  data-transcript-id=<%= @transcript.id %>
+ data-interpretation-id=<%= @transcript.interpretation.id %>
+ >
 </div>
