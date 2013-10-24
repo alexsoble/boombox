@@ -106,10 +106,9 @@ class VideosController < ApplicationController
       
   end 
 
-  def find_slug
+  def find
     @video = Video.find_by_id(params[:id])
-    @slug = @video.slug
-    render json: { data: @slug } 
+    render json: { data: @video } 
   end
 
   def new

@@ -15,5 +15,17 @@ class CommentsController < ApplicationController
       render json: { data: "save failed :(" }
     end
   end
+
+  def update
+    @update = params[:comment]
+    @comment = Comment.find_by_id(params[:comment][:id])
+
+    if @update[:comment_text].present?
+      @comment.comment_text = @update[:comment_text]
+      @comment.save
+    end
+    render :json => { :data => @comment }
+
+  end
   
 end

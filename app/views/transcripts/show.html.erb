@@ -40,6 +40,7 @@
   <% if current_user %>
     <% if current_user.id == @transcript.user.id %>
       <div class="small tab edit-lines"><i class="icon icon-pencil"></i></div>
+      <div class="small tab back-to-video"><i class="back-to-video icon icon-group"></i></div>
     <% end %>
   <% end %>
   <div class="small-tab short"></div>
@@ -73,15 +74,11 @@
                 <% if l.comments.present? %>
                   <% l.comments.each do |c| %>
                     <div class="line-comment rounded" data-line-id=<%= l.id %> data-comment-id=<%= c.id %>>
-                      <%= c.comment_text %>
+                      <span class="comment-text" data-comment-id=<%= c.id %>><%= c.comment_text %></span>
                       <% if current_user %>
                         <% if current_user.id == @user.id %>
-                          <span class="remove-comment quiet" data-comment-id=<%= c.id %>>
-                            <i class="icon icon-remove blue-link"></i>
-                          </span>
-                          <span class="edit-comment quiet" data-comment-id=<%= c.id %>>
-                            <i class="icon icon-pencil blue-link"></i>
-                          </span>
+                          <span class="edit-comment quiet" data-comment-id=<%= c.id %>><i class="icon icon-pencil blue-link"></i></span>
+                          <span class="remove-comment quiet" data-comment-id=<%= c.id %>><i class="icon icon-remove blue-link"></i></span>
                         <% end %>
                       <% end %>
                     </div>

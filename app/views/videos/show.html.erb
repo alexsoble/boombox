@@ -335,14 +335,14 @@
                             <%= l.formatted_time %>
                           <% end %>
                         </span>
-                      </div>
-                    <% if l.comments.present? %>
-                      <% l.comments.each do |c| %>
-                        <div class="line-comment rounded">
-                          <%= c.comment_text %> &nbsp; –<%= c.user.username %>
-                        </div>
+                      <% if l.comments.present? %>
+                        <% l.comments.each do |c| %> 
+                          <div class="line-comment rounded" data-line-id=<%= l.id %> data-comment-id=<%= c.id %>>
+                            <span class="comment-text" data-comment-id=<%= c.id %>><%= c.comment_text %></span>
+                          </div>
+                        <% end %>
                       <% end %>
-                    <% end %>
+                    </div>
                   <% end %>
                 <br><br>
               </div>

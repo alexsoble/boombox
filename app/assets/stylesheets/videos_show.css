@@ -64,26 +64,11 @@
 
 /* * * * * * */
 
-.narrow-lyrics-container {
-  width: 280px;
-  height: 60px;
-  float: left;
-  margin: 10px; }
-
 .show-video-box { position: relative; 
   overflow: visible;
   text-align: left; }
 
 .wrapper { overflow: hidden; width: 600px; }
-
-.commment { clear: both !important; }
-
-.comment-text { margin-left: 20px;
-  color: blue; 
-  font-size: 12px;
-  line-height: 0px; }
-
-.btn-add-comment { margin: 10px; float: left; }
 
 .lower-right-btn { position: absolute; 
   bottom: 20px; 
@@ -107,12 +92,6 @@
   position: absolute; 
   top: 20px; 
   margin-bottom: 5px }
-
-.button-container {
-  background-color: white;
-  float: right;
-  width: 10px;
-  border-top: 2px solid white }
 
 #watch-again.video-finished {
   height: 315px;

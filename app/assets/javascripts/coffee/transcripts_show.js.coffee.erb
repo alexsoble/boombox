@@ -308,7 +308,7 @@ $ ->
     $(this).click -> 
       id = parseInt($(this).attr('data-line-id'))
       comment_area = $(".line-comment-area[data-line-id=#{id}]")
-      comment_area.html("<span class='line-comment-area' data-line-id=#{id}><br><span class='notice'>Your comment:</span> &nbsp; <input type='text' class='comment' data-line-id=#{id}>&nbsp;<i class='icon-ok blue-link submit-line-comment' data-line-id=#{id}></i><i class='icon-remove blue-link remove-line-comment-area' data-line-id=#{id}></i></span>")
+      comment_area.html("<span class='line-comment-area' data-line-id=#{id}><br><i>Your explanation</i>: &nbsp; <input type='text' class='comment' data-line-id=#{id}>&nbsp;<i class='icon-ok blue-link submit-line-comment' data-line-id=#{id}></i><i class='icon-remove blue-link remove-line-comment-area' data-line-id=#{id}></i></span>")
       hideOtherIcons(id)
 
   $('.remove-line-comment-area').livequery ->
@@ -326,18 +326,53 @@ $ ->
         $.post('/new_comment', { 'comment' : { 'line_id' : "#{id}", 'comment_text' : "#{comment_text}", 'user_id' : "#{window.user_id}" } }, (data) ->
           $(".transcript-line[data-line-id=#{id}]").append("
             <div class='line-comment rounded' data-line-id=#{data.data.line_id} data-comment-id=#{data.data.id}>
-              #{data.data.comment_text}
-              <span class='remove-comment' data-comment-id=#{data.data.id}>
-                <i class='icon icon-remove blue-link'></i>
-              </span>
-              <span class='edit-comment' data-comment-id=#{data.data.id}>
-                <i class='icon icon-pencil blue-link'></i>
-              </span>
+              <span class='comment-text' data-comment-id=#{data.data.id}>#{data.data.comment_text}</span>
+              <span class='edit-comment' data-comment-id=#{data.data.id}><i class='icon icon-pencil blue-link'></i></span>
+              <span class='remove-comment' data-comment-id=#{data.data.id}><i class='icon icon-remove blue-link'></i></span>
             </div>
           ")
           $(".line-comment-area[data-line-id=#{id}]").remove()
           hideOtherIcons(id)        
         )
+
+  $('.edit-comment').livequery ->
+    $(this).click ->
+      id = parseInt($(this).attr('data-comment-id'))
+      $(".remove-comment[data-comment-id=#{id}]").hide()
+      $(this).hide()
+      comment = $(".comment-text[data-comment-id=#{id}]")
+      comment.hide()
+      val = comment.text()
+      comment.after("
+        <input type='text' class='edit-comment-box' data-comment-id=#{id}>
+        <i class='icon icon-ok blue-link submit-edited-comment' data-comment-id=#{id}></i>
+        <i class='icon icon-remove blue-link back-from-editing-comment' data-comment-id=#{id}></i>
+      ")
+      $(".edit-comment-box[data-comment-id=#{id}]").val(val)
+
+  backFromEditingComment = (id) ->
+    $(".comment-text[data-comment-id=#{id}]").show()
+    $(".submit-edited-comment[data-comment-id=#{id}]").remove()
+    $(".back-from-editing-comment[data-comment-id=#{id}]").remove()
+    $(".edit-comment-box[data-comment-id=#{id}]").remove()
+    $(".remove-comment[data-comment-id=#{id}]").show()
+    $(".edit-comment[data-comment-id=#{id}]").show()
+
+  $('.back-from-editing-comment').livequery ->
+    $(this).click ->
+      id = parseInt($(this).attr('data-comment-id'))
+      backFromEditingComment(id)
+
+  $('.submit-edited-comment').livequery ->
+    $(this).click -> 
+      id = parseInt($(this).attr('data-comment-id'))
+      new_comment_text = $(".edit-comment-box[data-comment-id=#{id}]").val()
+      $.post('/update_comment', { 'comment' : { 'id' : "#{id}", 'comment_text' : "#{new_comment_text}" } }, (data) ->
+        comment = data.data
+        comment_text = $(".comment-text[data-comment-id=#{comment.id}]")
+        comment_text.text(comment.comment_text)
+        backFromEditingComment(id)
+      )
 
   $('.remove-line').livequery ->
     $(this).click ->
@@ -411,4 +446,9 @@ $ ->
         )
       else
         $('#star-notice-area').html('Please sign in to add star.')
+
+  $('.back-to-video').click ->
+    $.post('/find_video', { 'id' : "#{window.video_id}" }, (data) ->
+      window.location.href = "/videos/#{data.data.slug}"
+    )
 

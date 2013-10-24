@@ -27,7 +27,7 @@ Boombox::Application.routes.draw do
   resources :discussion_questions
   resources :fill_exercises, path: :fill_in_the_blanks
 
-  post '/find_video_slug' => 'videos#find_slug'
+  post '/find_video' => 'videos#find'
 
   post '/find_language' => 'languages#find_id'
   post '/find_language_by_id' => 'languages#find_name'
@@ -102,6 +102,7 @@ Boombox::Application.routes.draw do
 
   post '/new_comment' => 'comments#create'
   post '/destroy_comment/' => 'comments#destroy'
+  post '/update_comment/' => 'comments#update'
   
   post '/new_video' => 'videos#create'
   post '/new_interp' => 'interpretations#create'
