@@ -37,10 +37,10 @@
       <%= @user.username %>'s translation
     <% end %>
   </div>
+  <div class="small tab remove-translation"><i class="icon icon-remove"></i></div>
   <% if current_user %>
     <% if current_user.id == @translation.user.id %>
       <div class="small tab edit-translation"><i class="icon icon-pencil"></i></div>
-      <div class="small tab remove-translation"><i class="icon icon-remove"></i></div>
     <% end %>
   <% end %>
   <div class="small-tab short"></div>

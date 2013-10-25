@@ -37,10 +37,10 @@
       <%= @user.username %>'s transcript
     <% end %>
   </div>
+  <div class="small tab back-to-video"><i class="back-to-video icon icon-group"></i></div>
   <% if current_user %>
     <% if current_user.id == @transcript.user.id %>
       <div class="small tab edit-lines"><i class="icon icon-pencil"></i></div>
-      <div class="small tab back-to-video"><i class="back-to-video icon icon-group"></i></div>
     <% end %>
   <% end %>
   <div class="small-tab short"></div>
