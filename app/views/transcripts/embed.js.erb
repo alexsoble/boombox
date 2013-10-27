@@ -1,7 +1,7 @@
-var window.lines = new Object();
+var lines = new Object();
 
 <% @lines.each do |l| %>
-window.lines[<%= l.time %>] = "<%= l.lang1.strip %>";
+lines[<%= l.time %>] = "<%= l.lang1.strip %>";
 <% end %> 
 
 var firstScriptTag, tag;
