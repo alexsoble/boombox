@@ -43,6 +43,31 @@ $ ->
   if $('.star').attr('id') == 'star-full'
     window.star_id = parseInt($('#star-full').attr('data-star-id'))
 
+  if $('#data').attr('data-user-id-match') == 'true'  
+    $('#transcript-lines').sortable(
+      stop: (event, ui) ->
+        line_before = $(ui.item).prev()
+        line_after = $(ui.item).next()
+        if line_before.length > 0 and line_after.length > 0
+          time_before = parseInt(line_before.attr('data-time'))
+          time_after = parseInt(line_after.attr('data-time'))
+          new_time = Math.floor((time_before + time_after)/2)
+        else if line_before.length > 0 and line_after.length == 0
+          time_before = parseInt(line_before.attr('data-time'))
+          new_time = time_before + 4
+        else if line_before.length == 0 and line_after.length > 0
+          time_after = parseInt(line_after.attr('data-time'))
+          if time_after > 3
+            new_time = time_after - 4
+          else
+            new_time = 0
+        console.log new_time
+        new_time_formatted = formatTime(new_time)
+        $(ui.item).attr('data-time', new_time)
+        $(ui.item).children('.line-timing').html(new_time_formatted)
+        $(ui.item).children('.line-timing').addClass('questionable')
+    )
+
   # WE GOTTA HAVE A PLAYBACK SLIDER
 
   $('#settings').append("

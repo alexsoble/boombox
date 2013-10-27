@@ -22,6 +22,7 @@
   margin-left: 15px;
   display: inline-block;
   height: 15px; }
+.line-timing.questionable { color: red; font-weight: bold; }
 
 .transcript-line { padding: 4px; cursor: pointer; }
 .transcript-line .lang1 { 

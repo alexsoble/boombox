@@ -30,6 +30,7 @@ $ ->
           results = []
           window.results = []
           for e in entries
+            console.log e
             item = ( label : e.getElementsByTagName("title")[0].textContent, value : (e.getElementsByTagName("id")[0].textContent).substr(e.getElementsByTagName("id")[0].textContent.length - 11) )
             results.push item
           $('#results-box').html('').show()

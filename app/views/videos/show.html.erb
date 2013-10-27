@@ -305,47 +305,49 @@
         <% if @transcripts.present? %>
           <div class="note-area transcript-area">
             <% @transcripts.each do |t| %>
-              <% c = t.user %>
-              <% unless current_user %>
-                <div class='other-user-content'>
-                  <p class="friendly"> <%= link_to "#{c.username}", user_url(c) %> added a <%= link_to 'transcript', transcript_path(t) %>: </p>
-              <% else %>
-                <% if current_user.id == c.id %>
-                  <div id='current-user-lines' class='current-user-content'>
-                    <p class="friendly">You added a transcript (<%= link_to "edit", transcript_path(t) %>):</p>
-                <% else %>
+              <% if t.lines.present? %>
+                <% c = t.user %>
+                <% unless current_user %>
                   <div class='other-user-content'>
                     <p class="friendly"> <%= link_to "#{c.username}", user_url(c) %> added a <%= link_to 'transcript', transcript_path(t) %>: </p>
-                <% end %>
-              <% end %>
-                  <% t.lines.order("time ASC").order("created_at ASC").each do |l| %>
-                    <div class="transcript-line rounded" data-line-id=<%= l.id %> data-time=<%= l.time %>>
-                      <% if current_user %>
-                        <% if current_user.id == c.id %>
-                          <span class='edit-line blue-link quiet tiny' title='Edit line' data-line-id=<%= l.id %>> <i class='icon icon-pencil'></i> </span>
-                          <span class='comment-line blue-link quiet tiny' title='Add comment to line' data-line-id=<%= l.id %>> <i class='icon icon-comment'></i> </span>
-                          <span class='remove-line blue-link quiet tiny' title='Delete line' data-line-id=<%= l.id %>> <i class='icon icon-remove'></i> </span>
-                          <span class='add-time-to-line blue-link quiet tiny' title='Add time to line' data-line-id=<%= l.id %>> <i class='icon icon-time'></i> </span> 
-                        <% end %>
-                      <% end %>
-                        <span class="lang1" data-line-id=<%= l.id %>><%= l.lang1 %></span>
-                        <span class="line-comment-area" data-line-id=<%= l.id %>></span>
-                        <span class="line-timing tiny gray" data-line-id=<%= l.id %> data-time=<%= if l.time.present? then l.time end %>>
-                          <% if l.time.present? %>
-                            <%= l.formatted_time %>
-                          <% end %>
-                        </span>
-                      <% if l.comments.present? %>
-                        <% l.comments.each do |c| %> 
-                          <div class="line-comment rounded" data-line-id=<%= l.id %> data-comment-id=<%= c.id %>>
-                            <span class="comment-text" data-comment-id=<%= c.id %>><%= c.comment_text %></span>
-                          </div>
-                        <% end %>
-                      <% end %>
-                    </div>
+                <% else %>
+                  <% if current_user.id == c.id %>
+                    <div id='current-user-lines' class='current-user-content'>
+                      <p class="friendly">You added a transcript (<%= link_to "edit", transcript_path(t) %>):</p>
+                  <% else %>
+                    <div class='other-user-content'>
+                      <p class="friendly"> <%= link_to "#{c.username}", user_url(c) %> added a <%= link_to 'transcript', transcript_path(t) %>: </p>
                   <% end %>
-                <br><br>
-              </div>
+                <% end %>
+                    <% t.lines.order("time ASC").order("created_at ASC").each do |l| %>
+                      <div class="transcript-line rounded" data-line-id=<%= l.id %> data-time=<%= l.time %>>
+                        <% if current_user %>
+                          <% if current_user.id == c.id %>
+                            <span class='edit-line blue-link quiet tiny' title='Edit line' data-line-id=<%= l.id %>> <i class='icon icon-pencil'></i> </span>
+                            <span class='comment-line blue-link quiet tiny' title='Add comment to line' data-line-id=<%= l.id %>> <i class='icon icon-comment'></i> </span>
+                            <span class='remove-line blue-link quiet tiny' title='Delete line' data-line-id=<%= l.id %>> <i class='icon icon-remove'></i> </span>
+                            <span class='add-time-to-line blue-link quiet tiny' title='Add time to line' data-line-id=<%= l.id %>> <i class='icon icon-time'></i> </span> 
+                          <% end %>
+                        <% end %>
+                          <span class="lang1" data-line-id=<%= l.id %>><%= l.lang1 %></span>
+                          <span class="line-comment-area" data-line-id=<%= l.id %>></span>
+                          <span class="line-timing tiny gray" data-line-id=<%= l.id %> data-time=<%= if l.time.present? then l.time end %>>
+                            <% if l.time.present? %>
+                              <%= l.formatted_time %>
+                            <% end %>
+                          </span>
+                        <% if l.comments.present? %>
+                          <% l.comments.each do |c| %> 
+                            <div class="line-comment rounded" data-line-id=<%= l.id %> data-comment-id=<%= c.id %>>
+                              <span class="comment-text" data-comment-id=<%= c.id %>><%= c.comment_text %></span>
+                            </div>
+                          <% end %>
+                        <% end %>
+                      </div>
+                    <% end %>
+                  <br><br>
+                </div>
+              <% end %>
             <% end %>
           </div>
         <% end %>

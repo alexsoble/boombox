@@ -101,10 +101,13 @@
 </div>
 
 <div id="data" class="quiet"
- data-youtube-id=<%= @video.youtube_id %>
- data-title=<%= @video.title %>
+ data-youtube-id='<%= @video.youtube_id %>'
+ data-title='<%= @video.title %>'
  data-video-id=<%= @video.id %>
  data-transcript-id=<%= @transcript.id %>
  data-interpretation-id=<%= @transcript.interpretation.id %>
+ <% if current_user %>
+ data-user-id-match=<%= if current_user.id == @user.id then true else false end %>
+ <% end %>
  >
 </div>
