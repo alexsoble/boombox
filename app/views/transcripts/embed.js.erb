@@ -64,9 +64,6 @@ onPlayerStateChange = function(event) {
 
 $('#new-video-box').after("<div id='lyrics-box' style='width: 420px; height: 200px; background-color: #f3f3f6;></div>");
 
-lines.forEach(->
+lines.forEach(function() {
   $('#lyrics-box').append(this);
-);
-
-
-
+});
