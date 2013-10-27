@@ -1,3 +1,5 @@
+var window.lines = new Object();
+
 <% @lines.each do |l| %>
 window.lines[<%= l.time %>] = "<%= l.lang1.strip %>";
 <% end %> 
