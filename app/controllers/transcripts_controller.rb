@@ -31,4 +31,11 @@ class TranscriptsController < ApplicationController
     render :json => { :data => @transcript }
   end
 
+  def embed
+    @transcript = Transcript.find_by_id(params[:id])
+    @lines = @transcript.lines
+    @youtube_id = @transcript.video.youtube_id
+    render file: 'transcripts/embed.js'
+  end
+
 end

@@ -1,0 +1,61 @@
+<% @lines.each do |l| %>
+window.lines[<%= l.time %>] = "<%= l.lang1.strip %>";
+<% end %> 
+
+var firstScriptTag, tag;
+tag = document.createElement("script");
+tag.src = "https://www.youtube.com/iframe_api";
+firstScriptTag = document.getElementsByTagName("script")[0];
+firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+
+var countVideoPlayTime, counter, done, onPlayerReady, onPlayerStateChange;
+
+window.onYouTubeIframeAPIReady = function() {
+  var player;
+  player = new YT.Player("new-video-box", {
+    height: "315",
+    width: "420",
+    videoId: "<%= @youtube_id %>",
+    playerVars: {
+      controls: 0,
+      cc_load_policy: 1,
+      wmode: "opaque"
+    },
+    events: {
+      onReady: onPlayerReady,
+      onStateChange: onPlayerStateChange
+    }
+  });
+  console.log("Checking for cc..." + player.getOptions().indexOf('cc'));
+  return window.player = player;
+};
+
+onPlayerReady = function(event) {
+  var video_duration;
+  video_duration = window.player.getDuration();
+  window.video_duration = video_duration;
+  window.half_duration = video_duration * .5;
+  playbackControls(video_duration);
+  return event.target.playVideo();
+};
+
+countVideoPlayTime = function() {
+  var exact_time, state, this_line;
+  state = player.getPlayerState();
+  exact_time = player.getCurrentTime();
+  window.time = Math.floor(exact_time);
+  console.log(window.lines[window.time]);
+};
+
+counter = setInterval(countVideoPlayTime, 400);
+
+done = false;
+
+onPlayerStateChange = function(event) {
+  var exact_time;
+  if (event.data === YT.PlayerState.PAUSED) {
+    exact_time = player.getCurrentTime();
+    window.time = Math.round(exact_time);
+    return window.section = window.time / window.loop_length;
+  }
+};

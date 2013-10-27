@@ -43,6 +43,7 @@ Boombox::Application.routes.draw do
   post '/add_star' => 'stars#create'
   post 'remove_star' => 'stars#destroy'
 
+  get '/transcripts/:id/embed.js' => 'transcripts#embed'
   post '/find_transcript' => 'transcripts#find'
   post '/find_transcripts' => 'transcripts#find'
   post '/new_transcript' => 'transcripts#create'
