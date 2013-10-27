@@ -61,3 +61,12 @@ onPlayerStateChange = function(event) {
     return window.section = window.time / window.loop_length;
   }
 };
+
+$('#new-video-box').after("<div id='lyrics-box' style='width: 420px; height: 200px; background-color: #f3f3f6;></div>");
+
+lines.forEach(->
+  $('#lyrics-box').append(this);
+);
+
+
+
