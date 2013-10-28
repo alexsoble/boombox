@@ -1,7 +1,9 @@
 var lines = new Object();
+var linesInOrder = [];
 
 <% @lines.each do |l| %>
 lines[<%= l.time %>] = "<%= l.lang1.strip %>";
+linesInOrder << l
 <% end %> 
 
 var firstScriptTag, tag;
@@ -37,7 +39,6 @@ onPlayerReady = function(event) {
   video_duration = window.player.getDuration();
   window.video_duration = video_duration;
   window.half_duration = video_duration * .5;
-  playbackControls(video_duration);
   return event.target.playVideo();
 };
 
@@ -64,6 +65,6 @@ onPlayerStateChange = function(event) {
 
 $('#new-video-box').after("<div id='lyrics-box' style='width: 420px; height: 200px; background-color: #f3f3f6;></div>");
 
-lines.forEach(function() {
-  $('#lyrics-box').append(this);
+linesInOrder(function() {
+  $('#lyrics-box').append(this.lang1);
 });
