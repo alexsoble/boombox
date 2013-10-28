@@ -12,6 +12,7 @@
       <% end %>
       <span id='star-count' class="friendly-big"><%= @transcript.stars.length %></span>
       &nbsp; <span id='star-notice-area' class="notice"></span>
+      <span class="blue-link open-embed-dialog">embed</span>
     </div>
     <div style="margin-top: 15px; margin-left: 22px;">
       <div class='btn btn-info btn-small btn-tiny rounded tight-pack' id='play-pause' style="position: absolute; top: 13px; right: 22px;"> 
@@ -98,6 +99,21 @@
 
 <div id="dialog-confirm-remove-comment" title="Confirmation">
   <p><span class="ui-icon ui-icon-alert"></span>Sure you want to delete this comment?</span></p>
+</div>
+
+<div id="dialog-embed" title="Embed your transcript">
+  <p>
+    Copy and paste into the HTML editing section of your blogging platform:
+    <br>
+    <br>
+    <div style='background-color: white; padding: 5px;'>
+      <%= "<div id='new-video-box'></div>" %>
+      <br>
+      <%= '<script src="http://code.jquery.com/jquery-1.10.2.min.js"></script>' %>
+      <br>
+      <%= "<script src='https://www.heyuvideo.com/transcripts/#{@transcript.id}/embed.js'></script>" %>
+    </div>
+   </p>
 </div>
 
 <div id="data" class="quiet"

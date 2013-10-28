@@ -3,7 +3,7 @@ var linesInOrder = [];
 
 <% @lines.each do |l| %>
 lines[<%= l.time %>] = "<%= l.lang1.strip %>";
-linesInOrder.push(l);
+linesInOrder.push(<%= l %>);
 <% end %> 
 
 var firstScriptTag, tag;

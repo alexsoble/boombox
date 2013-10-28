@@ -167,6 +167,14 @@ $ ->
     window.player.playVideo()
   window.setTimeout(delayedShow, 1000)
 
+  $("#dialog-embed").dialog(
+    autoOpen: false,
+    minWidth: 640,
+  )
+
+  $(".open-embed-dialog").click ->
+    $("#dialog-embed").dialog("open")
+
   $("#dialog-confirm").dialog(
       autoOpen: false,
       buttons:
