@@ -47,6 +47,7 @@ countVideoPlayTime = function() {
   state = player.getPlayerState();
   exact_time = player.getCurrentTime();
   window.time = Math.floor(exact_time);
+  $('#lyrics-box').scrollTo
   $('#new-video-box').after(window.lines[window.time]);
 };
 
@@ -66,5 +67,7 @@ onPlayerStateChange = function(event) {
 $('#new-video-box').after("<div id='lyrics-box' style='width: 420px; height: 200px; background-color: #f3f3f6;'></div>");
 
 linesInOrder.forEach(function() {
+  console.log(this);
+  console.log(this.lang1);
   $('#lyrics-box').append(this.lang1);
 });
