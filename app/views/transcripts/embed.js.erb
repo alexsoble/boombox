@@ -47,7 +47,7 @@ countVideoPlayTime = function() {
   state = player.getPlayerState();
   exact_time = player.getCurrentTime();
   window.time = Math.floor(exact_time);
-  console.log(window.lines[window.time]);
+  $('#new-video-box').after(window.lines[window.time]);
 };
 
 counter = setInterval(countVideoPlayTime, 400);
@@ -63,7 +63,7 @@ onPlayerStateChange = function(event) {
   }
 };
 
-$('#new-video-box').after("<div id='lyrics-box' style='width: 420px; height: 200px; background-color: #f3f3f6;></div>");
+$('#new-video-box').after("<div id='lyrics-box' style='width: 420px; height: 200px; background-color: #f3f3f6;'></div>");
 
 linesInOrder.forEach(function() {
   $('#lyrics-box').append(this.lang1);
