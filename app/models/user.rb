@@ -9,6 +9,8 @@ class User < ActiveRecord::Base
   has_many :stars
   has_many :interests
   has_many :comments
+  has_many :definitions
+  has_many :words
   belongs_to :school
   has_one :classroom
   belongs_to :classroom

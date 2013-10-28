@@ -43,6 +43,7 @@ $ ->
   if $('.star').attr('id') == 'star-full'
     window.star_id = parseInt($('#star-full').attr('data-star-id'))
 
+  ###
   if $('#data').attr('data-user-id-match') == 'true'  
     $('#transcript-lines').sortable(
       stop: (event, ui) ->
@@ -67,6 +68,7 @@ $ ->
         $(ui.item).children('.line-timing').html(new_time_formatted)
         $(ui.item).children('.line-timing').addClass('questionable')
     )
+    ###
 
   # WE GOTTA HAVE A PLAYBACK SLIDER
 

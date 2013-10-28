@@ -1,9 +1,7 @@
 var lines = new Object();
-var linesInOrder = [];
 
 <% @lines.each do |l| %>
 lines[<%= l.time %>] = "<%= l.lang1.strip %>";
-linesInOrder.push(<%= l %>);
 <% end %> 
 
 var firstScriptTag, tag;
@@ -47,8 +45,10 @@ countVideoPlayTime = function() {
   state = player.getPlayerState();
   exact_time = player.getCurrentTime();
   window.time = Math.floor(exact_time);
-  $('#lyrics-box').scrollTo
-  $('#new-video-box').after(window.lines[window.time]);
+  if ($("[data-time=" + window.time + "]").length != 0) {
+    $("[data-time=" + window.time + "]").effect("highlight", { color: "#FFFF00" }, 4000);
+    $("#lyrics-box").scrollTo($("[data-time=" + window.time + "]").prev().prev(), { duration : 250 } );
+  };
 };
 
 counter = setInterval(countVideoPlayTime, 400);
@@ -64,10 +64,9 @@ onPlayerStateChange = function(event) {
   }
 };
 
-$('#new-video-box').after("<div id='lyrics-box' style='width: 420px; height: 200px; background-color: #f3f3f6;'></div>");
+$('#new-video-box').after("<div id='lyrics-box'></div>");
 
-linesInOrder.forEach(function(element, index) {
-  console.log(element);
-  console.log(element.lang1);
-  $('#lyrics-box').append(this.lang1);
+Object.keys(lines).forEach(function (key) {
+   console.log(lines[key]);
+   $('#lyrics-box').append('<p data-time=' + key + '>' + lines[key] + '</p>');
 });

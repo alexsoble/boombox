@@ -177,7 +177,9 @@
                 <% end %>
                 <% c_words.each do |w| %>
                   <% d = Definition.where(:word_id => w.id).first %>
-                  <li><%= link_to "#{w.text + " = " + d.text}", definition_url(d) %></li>
+                  <% if d.present? %>
+                    <li><%= link_to "#{w.text + " = " + d.text}", definition_url(d) %></li>
+                  <% end %>
                 <% end %>
                 <br><br>
               </div>
@@ -283,7 +285,7 @@
           <div class="note-area translation-area">
             <% @translations.each do |t| %>
               <% c = t.user %>
-              <% @lines = t.translated_lines.sort { |a, b| a.line.time <=> b.line.time } %>
+              <% @lines = t.translated_lines.sort { |a, b| a.line.time.to_i <=> b.line.time.to_i } %>
               <% unless current_user %>
                 <div class='other-user-content'>
                   <p class="friendly"> <%= link_to "#{c.username}", user_url(c) %> added a <%= link_to "translation", translation_url(t) %>: </p>
