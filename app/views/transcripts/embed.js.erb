@@ -3,7 +3,7 @@ var linesInOrder = [];
 
 <% @lines.each do |l| %>
 lines[<%= l.time %>] = "<%= l.lang1.strip %>";
-linesInOrder << l
+linesInOrder << l;
 <% end %> 
 
 var firstScriptTag, tag;
@@ -65,6 +65,6 @@ onPlayerStateChange = function(event) {
 
 $('#new-video-box').after("<div id='lyrics-box' style='width: 420px; height: 200px; background-color: #f3f3f6;></div>");
 
-linesInOrder(function() {
+linesInOrder.forEach(function() {
   $('#lyrics-box').append(this.lang1);
 });
