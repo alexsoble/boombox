@@ -45,8 +45,9 @@ countVideoPlayTime = function() {
   state = player.getPlayerState();
   exact_time = player.getCurrentTime();
   window.time = Math.floor(exact_time);
-  if ($("[data-time=" + window.time + "]").length != 0) {
+  if ($("[data-time=" + window.time + "]").length != 0 && !($("[data-time=" + window.time + "]").hasClass("highlighted"))) {
     $("[data-time=" + window.time + "]").effect("highlight", { color: "#FFFF00" }, 4000);
+    $("[data-time=" + window.time + "]").addClass("highlighted");
     $("#lyrics-box").scrollTo($("[data-time=" + window.time + "]").prev().prev(), { duration : 250 } );
   };
 };

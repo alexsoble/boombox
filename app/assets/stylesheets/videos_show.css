@@ -37,6 +37,18 @@
   background-color: #dcdce5;
   font-size: 13px; }
 
+#saved-status { 
+  color: white; 
+  text-align: center; 
+  font-style: italic; 
+  font-size: 14px;
+  margin-right: auto;
+  margin-left: auto; }
+
+.editing-category { cursor: pointer; }
+
+.active-category { font-weight: bold; color: #9b59bb; }
+
 .exercise-transcript-line { padding: 4px; }
 
 .note-category { border-radius: 5px; }

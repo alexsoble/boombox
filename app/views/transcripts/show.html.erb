@@ -31,6 +31,8 @@
     <% if current_user %>
       <% if current_user.id == @transcript.user.id %>
         Your transcript
+        <br>
+        <span id="saved-status"></span>
       <% else %>
         <%= @user.username %>'s transcript
       <% end %>
@@ -46,6 +48,10 @@
   <% end %>
   <div class="small-tab short"></div>
     <div id="community-notes">
+      <div id='editing-area'>
+        <span class='big-friendly'>Editing tools:</span>
+        <br>
+      </div>
       <div id="notes-container">
         <% if current_user %>
           <% if current_user.id == @transcript.user.id %>
@@ -57,14 +63,6 @@
         <div id='transcript-lines'>
           <% @transcript.lines.order("time ASC").order("created_at ASC").each do |l| %>
             <div class="transcript-line rounded" data-line-id=<%= l.id %> data-time=<%= l.time %>>
-              <% if current_user %>
-                <% if current_user.id == @user.id %>
-                  <span class='edit-line blue-link quiet tiny' title='Edit line' data-line-id=<%= l.id %>> <i class='icon icon-pencil'></i> </span>
-                  <span class='comment-line blue-link quiet tiny' title='Add comment to line' data-line-id=<%= l.id %>> <i class='icon icon-comment'></i> </span>
-                  <span class='remove-line blue-link quiet tiny' title='Delete line' data-line-id=<%= l.id %>> <i class='icon icon-remove'></i> </span>
-                  <span class='add-time-to-line blue-link quiet tiny' title='Add time to line' data-line-id=<%= l.id %>> <i class='icon icon-time'></i> </span> 
-                <% end %>
-              <% end %>
                 <span class="lang1" data-line-id=<%= l.id %>><%= l.lang1 %></span>
                 <span class="line-comment-area" data-line-id=<%= l.id %>></span>
                 <span class="line-timing tiny gray" data-line-id=<%= l.id %> data-time=<%= if l.time.present? then l.time end %>>
@@ -90,6 +88,45 @@
         </div>
       </div>
     </div>
+  </div>
+</div>
+
+<div id="dialog-editing-tools" title="Editing Tools">
+  <span>Select the editing tool you'd like to use, then click on the line you'd like to edit.</span>
+  <br><br>
+  <div style='float:left; margin-left: 60px;'>
+    <span id='editing-lines' class='editing-category' data-active='Editing' data-inactive='Edit'>
+    <i class='icon icon-pencil'></i>
+    <span class='status'>Edit</span></span>
+    <br>
+    <span id='adding-lines' class='editing-category' data-active='Adding' data-inactive='Add'>
+    <i class='icon icon-plus-sign'></i>
+    <span class='status'>Add</span></span>
+    <br>
+    <span id='removing-lines' class='editing-category' data-active='Removing' data-inactive='Remove'>
+    <i class='icon icon-remove'></i>
+    <span class='status'>Remove</span></span>
+    <br>
+    <span id='timing-lines' class='editing-category' data-active='Timing' data-inactive='Time'>
+    <i class='icon icon-time'></i>
+    <span class='status'>Time</span></span>
+  </div>
+  <div style='float:right; margin-right: 60px;'>
+    <span id='commenting-lines' class='editing-category' data-active='Commenting' data-inactive='Comment'>
+    <i class='icon icon-comment'></i>
+    <span class='status'>Comment</span></span>
+    <br>
+    <span id='reordering-lines' class='editing-category' data-active='Reordering' data-inactive='Reorder'>
+    <i class='icon icon-reorder'></i>
+    <span class='status'>Reorder</span></span>
+    <br>
+    <span id='copying-lines' class='editing-category' data-active='Copy-pasting' data-inactive='Copy-paste'>
+    <i class='icon icon-copy'></i>
+    <span class='status'>Copy-paste</span></span>
+    <br>
+    <span id='slicing-lines' class='editing-category' data-active='Slicing' data-inactive='Slice'>
+    <i class='icon icon-cut'></i>
+    <span class='status'>Slice</span></span>
   </div>
 </div>
 
