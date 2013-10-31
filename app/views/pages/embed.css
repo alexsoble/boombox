@@ -5,4 +5,5 @@ margin-right: auto; }
 
 #lyrics-box { 
 width: 420px; height: 160px; 
-background-color: #f3f3f6 }
+background-color: #f3f3f6;
+overflow: scroll; }
