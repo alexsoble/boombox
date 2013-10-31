@@ -67,6 +67,10 @@ class PagesController < ApplicationController
     redirect_to "/interpretations/alex-heyu-start-up-chile-video"
   end
 
+  def embed_styling
+    render file: 'pages/embed.css'
+  end
+
   def admin
   end
 

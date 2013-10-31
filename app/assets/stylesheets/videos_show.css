@@ -46,12 +46,15 @@
   margin-left: auto; }
 
 .editing-category { cursor: pointer; }
+.editing-category .status { color: white; }
+.editing-category.width-120 { width: 110px; }
 
 .active-category { font-weight: bold; color: #9b59bb; }
 
 .exercise-transcript-line { padding: 4px; }
 
 .note-category { border-radius: 5px; }
+
 
 /* * * Quiz Related * * */
 
