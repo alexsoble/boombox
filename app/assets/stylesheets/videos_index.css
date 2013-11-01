@@ -118,20 +118,45 @@ li.ui-autocomplete.ui-menu { color: black; }
 
 #social-content-area {
   left: 640px; 
+  width: 600px;
   position: absolute;
-  width: 510px;
   top: 84px; }
+
+#navigation-sidebar {
+  background-color: #9b59bb; 
+  border: 1px solid white;
+  border-radius: 15px;
+  padding: 10px;
+  float: right; 
+  color: white;
+  position: relative;
+  top: -7px;
+  width: 112px; }
+
+.sidebar-option {
+  color: white; }
+.sidebar-option li {
+  color: white; 
+  margin-left: 5px; }
+.sidebar-option a {
+  color: white; }
+
+.sidebar-option:hover {
+  cursor: pointer;
+  text-decoration: underline; }
 
 #community-notes {
   overflow-y: scroll;
+  overflow-x: hidden;
   border: 1px solid white;
   border-bottom-right-radius: 10px; 
   border-bottom-left-radius: 10px; 
   background-color: #f3f3f6;
-  margin-top: 38px; 
-  height: 400px;
+  width: 400px;
+  height: 370px;
   padding: 30px; 
   position: relative;
-  bottom: 12px; }
+  bottom: 12px; 
+  float: left; }
 
 .video-page-btn { margin-top: 10px; margin-left: 10px; margin-right: 0px !important; }

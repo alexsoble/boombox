@@ -51,15 +51,6 @@
 
 /* LINES AND LYRICS EDITING AREA */
 
-.input-line { 
-  margin-left: 16px; 
-  margin-top: 16px; 
-  float: left; 
-  width: 250px; }
-
-.input-line-container { 
-  width: 640px; }
-
 .lang-name { float: left; 
   color: white; 
   background-color: #0f82f5;
@@ -302,7 +293,7 @@ select { width: 150px; }
   background-color: #9b59bb; 
   position: relative;
   bottom: 5px; 
-  width: 500px; 
+  width: 452px; 
   height: 70px; 
   font-size: 15px; 
   color: white; }
@@ -311,6 +302,19 @@ select { width: 150px; }
 .inactive { color: #bdbdbd; }
 .active { color: white; cursor: pointer; }
 .option { color: white; cursor: pointer; }
+
+.tab-text {
+  margin-left: 8px;
+  max-width: 100px; 
+  max-height: 40px; 
+  float: left; }
+
+.tab-icon {
+  width: 30px; 
+  height: 40px; 
+  float: right; 
+  margin-top: auto; 
+  margin-right: 8px; }
 
 .new-multiple-choice-option { cursor: auto !important; }
 

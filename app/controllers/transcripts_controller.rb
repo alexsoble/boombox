@@ -9,6 +9,8 @@ class TranscriptsController < ApplicationController
       @transcript.stars.each { |s| if s.user_id == current_user.id then @star = s end }
     end 
 
+    @translations = @transcript.translations
+
   end
 
   def find

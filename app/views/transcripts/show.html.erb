@@ -42,45 +42,59 @@
       <%= @user.username %>'s transcript
     <% end %>
   </div>
-  <div class="small tab back-to-video"><i class="back-to-video icon icon-group"></i></div>
-  <% if current_user %>
-    <% if current_user.id == @transcript.user.id %>
-      <div class="small tab edit-lines"><i class="icon icon-pencil"></i></div>
-    <% end %>
-  <% end %>
   <div class="small-tab short"></div>
-    <div id="community-notes">
-        <div id='transcript-lines'>
-          <% @transcript.lines.order("time ASC").order("created_at ASC").each do |l| %>
-            <div class="transcript-line <% if current_user %><% if current_user.id == @user.id %>editable-line<% end %><% end %> rounded" data-line-id=<%= l.id %> data-time=<%= l.time %>>
-                <span class="lang1" data-line-id=<%= l.id %>><%= l.lang1 %></span>
-                <span class="line-comment-area" data-line-id=<%= l.id %>></span>
-                <span class="line-timing tiny gray" data-line-id=<%= l.id %> data-time=<%= if l.time.present? then l.time end %>>
-                  <% if l.time.present? %>
-                    <%= l.formatted_time %>
+
+  <div id="navigation-sidebar">
+    <li class="back-to-video sidebar-option">
+      Main page  <i class="icon icon-globe"></i>
+    </li>
+    <% @translations.each do |tr| %>
+      <% user = tr.user.username %>
+      <li class="sidebar-option">
+        <%= link_to "Translation by #{user}", translation_url(tr) %>
+        <i class="icon icon-file"></i>
+      </li>
+    <% end %>
+    <% if current_user %>
+      <% if current_user.id == @transcript.user.id %>
+        <li class="edit-lines sidebar-option">
+          Edit  <i class="icon icon-pencil"></i>
+        </li>
+        <li class="sidebar-option">
+          Delete  <i class="icon icon-remove"></i>
+        </li>
+      <% end %>
+    <% end %>
+  </div>
+
+  <div id="community-notes">
+    <div id='transcript-lines'>
+      <% @transcript.lines.order("time ASC").order("created_at ASC").each do |l| %>
+        <div class="transcript-line <% if current_user %><% if current_user.id == @user.id %>editable-line<% end %><% end %> rounded" data-line-id=<%= l.id %> data-time=<%= l.time %>>
+            <span class="lang1" data-line-id=<%= l.id %>><%= l.lang1 %></span>
+            <span class="line-comment-area" data-line-id=<%= l.id %>></span>
+            <span class="line-timing tiny gray" data-line-id=<%= l.id %> data-time=<%= if l.time.present? then l.time end %>>
+              <% if l.time.present? %>
+                <%= l.formatted_time %>
+              <% end %>
+            </span>
+            <% if l.comments.present? %>
+              <% l.comments.each do |c| %>
+                <div class="line-comment rounded" data-line-id=<%= l.id %> data-comment-id=<%= c.id %>>
+                  <span class="comment-text" data-comment-id=<%= c.id %>><%= c.comment_text %></span>
+                  <% if current_user %>
+                    <% if current_user.id == @user.id %>
+                      <span class="edit-comment quiet" data-comment-id=<%= c.id %>><i class="icon icon-pencil blue-link"></i></span>
+                      <span class="remove-comment quiet" data-comment-id=<%= c.id %>><i class="icon icon-remove blue-link"></i></span>
+                    <% end %>
                   <% end %>
-                </span>
-                <% if l.comments.present? %>
-                  <% l.comments.each do |c| %>
-                    <div class="line-comment rounded" data-line-id=<%= l.id %> data-comment-id=<%= c.id %>>
-                      <span class="comment-text" data-comment-id=<%= c.id %>><%= c.comment_text %></span>
-                      <% if current_user %>
-                        <% if current_user.id == @user.id %>
-                          <span class="edit-comment quiet" data-comment-id=<%= c.id %>><i class="icon icon-pencil blue-link"></i></span>
-                          <span class="remove-comment quiet" data-comment-id=<%= c.id %>><i class="icon icon-remove blue-link"></i></span>
-                        <% end %>
-                      <% end %>
-                    </div>
-                  <% end %>
-               <% end %>
-            </div>
-          <% end %>
+                </div>
+              <% end %>
+           <% end %>
         </div>
-      </div>
+      <% end %>
     </div>
   </div>
-</div>
-
 <% if current_user %>
   <% if current_user.id == @user.id %>
     <div id="dialog-editing-tools" title="Editing Tools">

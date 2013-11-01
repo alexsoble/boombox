@@ -37,28 +37,42 @@
       <%= @user.username %>'s translation
     <% end %>
   </div>
-  <div class="small tab remove-translation"><i class="icon icon-remove"></i></div>
-  <% if current_user %>
-    <% if current_user.id == @translation.user.id %>
-      <div class="small tab edit-translation"><i class="icon icon-pencil"></i></div>
-    <% end %>
-  <% end %>
   <div class="small-tab short"></div>
-    <div id="community-notes">
-      <div id="notes-container">
-        <% if @translation.present? %>
-          <div class="note-area translation-area">
-            <% c = @translation.user %>
-            <% @lines = @translation.translated_lines.sort { |a, b| a.line.time <=> b.line.time } %>
-            <%= render "videos/translation", :translated_lines => @lines %>
-            <br><br>
-            </div>
+
+  <div id="navigation-sidebar">
+    <li class="sidebar-option">
+      <%= link_to "Main page", video_url(@video) %>
+      <i class="icon icon-globe"></i>
+    </li>
+    <li class="sidebar-option">
+      <%= link_to "Transcript by #{@transcript_creator}", transcript_url(@transcript) %>
+      <i class="icon icon-file"></i>
+    </li>
+    <% if current_user %>
+      <% if current_user.id == @transcript.user.id %>
+        <li class="edit-lines sidebar-option">
+          Edit  <i class="icon icon-pencil"></i>
+        </li>
+        <li class="sidebar-option">
+          Delete  <i class="icon icon-remove"></i>
+        </li>
+      <% end %>
+    <% end %>
+  </div>
+
+  <div id="community-notes">
+    <div id="notes-container">
+      <% if @translation.present? %>
+        <div class="note-area translation-area">
+          <% c = @translation.user %>
+          <% @lines = @translation.translated_lines.sort { |a, b| a.line.time <=> b.line.time } %>
+          <%= render "videos/translation", :translated_lines => @lines %>
+          <br><br>
           </div>
-        <% end %>
-      </div>
+        </div>
+      <% end %>
     </div>
   </div>
-</div>
 
 <div id="dialog-confirm" title="Confirmation" data-translation-id=<%= @translation.id %>>
   <p><span class="ui-icon ui-icon-alert"></span>Are you extra double super-duper sure you want to delete this translation?</span></p>

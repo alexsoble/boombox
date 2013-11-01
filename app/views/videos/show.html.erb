@@ -77,44 +77,13 @@
 </div>
 
 <div id="social-content-area" class="content-area"> 
-    <% if controller_name == 'videos' %>
-      <div id="all-content" class="big tab">
-        <div style="width: 100px; height: 40px; float: left;">
-          Everyone's materials
-        </div>
-        <div style="width: 30px; height: 40px; float: right; margin-top: 10px; margin-left: 5px;">
-          <i class="icon icon-group"></i>
-        </div>
-      </div>
-      <% if current_user %>
-        <% @this_user_interp = Interpretation.where(:video_id => @video.id, :user_id => current_user.id).first %>
-        <% if @this_user_interp.present? %>
-          <div id="just-your-content" class="small tab">
-            <div style="width: 65px; height: 40px; float: left;">
-              <%= link_to "Just yours", interpretation_url(@this_user_interp), :style => 'color: white;' %>
-            </div>
-            <div style="width: 30px; height: 40px; float: right; position:relative; top: 10px; left: 14px;">
-              <i class="icon icon-user" style="position: absolute; bottom: -40x; right: 16px;"></i>
-            </div>
-          </div>
-        <% end %>
+    <div class="big tab solo" id="all-content">
+      <% if controller_name == 'interpretations' %>
+        <%= @user.username %>'s learning materials  <i class="icon icon-user"></i>
+      <% elsif controller_name == 'videos' %>
+        Everyone's learning materials  <i class="icon icon-globe"></i>
       <% end %>
-      <div id="new-content" class="small tab">
-            <div style="width: 40px; height: 40px; float: left; position:relative; top: 8px;">
-              Add
-            </div>
-            <div style="width: 30px; height: 40px; float: right; position:relative; top: 10px; left: 14px;">
-              <i class="icon icon-plus-sign" style="position: absolute; bottom: -40x; right: 16px;"></i>
-            </div>
-      </div>
-    <% elsif controller_name == 'interpretations' %>
-      <div class="big tab solo" id="all-content"><%= @user.username %>'s learning materials</div>
-      <% if current_user %>
-        <% if current_user.id == @user.id%>
-          <div id="new-content" class="small tab">Add!</div>
-        <% end %>
-      <% end %>
-    <% end %>
+    </div>
     <br><br><br>
     <div class="small-tab"> &nbsp; &nbsp; 
       <div style="position: absolute; left: 20px; top: 10px; text-align: justify;">
@@ -150,6 +119,37 @@
         </span>
       </div>
     </div>
+
+    <div id="navigation-sidebar">
+      <div id="new-content" class="sidebar-option">
+        <li>
+          Add
+          <i class="icon icon-plus-sign"></i>
+        </li>
+      </div>
+      <% if controller_name == 'interpretations' %>
+        <div class="sidebar-option">
+          <li>
+            <a href="/videos/<%= @video.slug %>" style="color: white;">
+              Main page  <i class="icon icon-globe"></i>
+            </a>
+          </li>
+        </div>
+      <% elsif controller_name == 'videos' %>
+        <% if current_user %>
+          <% @this_user_interp = Interpretation.where(:video_id => @video.id, :user_id => current_user.id).first %>
+          <% if @this_user_interp.present? %>
+            <div class="sidebar-option">
+              <li>
+                <%= link_to "Just yours", interpretation_url(@this_user_interp), :style => 'color: white;' %>
+                <i class="icon icon-user"></i>
+              </li>
+            </div>
+          <% end %>
+        <% end %>
+      <% end %>
+    </div>
+
     <div id="community-notes">
       <div id="editing"></div>
       <div id="notes-container">

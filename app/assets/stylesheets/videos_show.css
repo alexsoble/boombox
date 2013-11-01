@@ -27,7 +27,7 @@
 .transcript-line { padding: 4px; cursor: pointer; }
 .transcript-line .lang1 { 
   display: inline-block;
-  max-width: 380px; }
+  max-width: 300px; }
 
 .line-comment {
   padding: 6px; 
