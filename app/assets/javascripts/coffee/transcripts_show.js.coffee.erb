@@ -28,6 +28,7 @@ $ ->
   window.video_id = parseInt($('#data').attr('data-video-id'))
   window.transcript_id = parseInt($('#data').attr('data-transcript-id'))
   window.interpretation_id = parseInt($('#data').attr('data-interpretation-id'))
+  window.number_of_lines = parseInt($('#data').attr('data-number-of-lines-init'))
 
   tag = document.createElement("script")
   tag.src = "https://www.youtube.com/iframe_api"
@@ -228,7 +229,8 @@ $ ->
       $(this).children('.status').text($(this).attr('data-active'))
       $(this).children('.status').attr('style','color: yellow;')
       $(this).children('.icon').attr('style','color: yellow;')
-      window.active_editing_category = $(this).attr('id')
+      unless $(this).attr('id') == 'slicing-lines'
+        window.active_editing_category = $(this).attr('id')
 
       # # # Cursor changes to pointer
       $('body').attr('style','cursor: pointer;')
@@ -241,8 +243,7 @@ $ ->
         
       # # # Change cursor to slicer
       else if $(this).attr('id') == 'slicing-lines'
-        $('body').attr('style','cursor: pointer;')
-        $('#editing-instructions').html("Slice baby slice!")
+        $('#editing-instructions').html("New feature, coming soon!")
       else if $(this).attr('id') == 'removing-lines'
         $('#editing-instructions').html("Remove lines you don't need any more.")
       else if $(this).attr('id') == 'timing-lines' 
@@ -252,8 +253,8 @@ $ ->
 
       # # # Turn on reordering
       else if $(this).attr('id') == 'reordering-lines'
-        $('#transcript-lines').sortable("enable")    
-        $('#editing-instructions').html("Drag lines into the right order.")
+        # $('#transcript-lines').sortable("enable")    
+        $('#editing-instructions').html("New feature, coming soon!")
       else if $(this).attr('id') == 'copying-lines'
         $('#editing-instructions').html("Double click a line to copy it.")
 
@@ -320,11 +321,22 @@ $ ->
   copyLine = (line_id) -> 
     this_line = $(".editable-line[data-line-id=#{line_id}]")
     this_lang1 = $(".lang1[data-line-id=#{line_id}]").text()
-    this_line.after("
-      <div class='editable-line transcript-line'>
-        #{this_lang1}
-      </div>
-    ")
+    if this_lang1 isnt ''
+      $.post('/new_line', { 'line' : { 'transcript_id' : "#{window.transcript_id}", 'interpretation_id' : "#{window.interpretation_id}", 'lang1' : "#{this_lang1}", 'video_id' : "#{window.video_id}" } }, (data) ->
+          line = data.data
+          this_line.after("
+            <div class='editable-line transcript-line rounded' data-line-id=#{line.id}>
+            <span class='lang1' data-line-id=#{line.id}>
+              #{line.lang1}
+            </span>
+            <span class='line-comment-area' data-line-id=#{line.id}></span>
+            <span class='line-timing tiny gray' data-line-id=#{line.id}>
+              ???
+            </span>
+            </div>
+          ")
+        )
+
 
   # # # Commenting logic
 
@@ -421,8 +433,20 @@ $ ->
 
   $('#transcript-lines').sortable(
     stop: (event, ui) ->
-      line_before = $(ui.item).prev()
-      line_after = $(ui.item).next()
+      this_line = $(ui.item)
+      line_before = this_line.prev()
+      line_after = this_line.next()
+
+      # # # Adjusting the order
+      if line_before.length == 0 and line_after.length > 0
+        this_line.attr('data-line-order', 1)
+        console.log 'first!!!'
+      if line_before.length > 0 and line_after.length == 0
+        this_line.attr('data-line-order', window.number_of_lines)
+        console.log 'last!!!'
+
+      ###
+      # # # Guessing the time
       if line_before.length > 0 and line_after.length > 0
         time_before = parseInt(line_before.attr('data-time'))
         time_after = parseInt(line_after.attr('data-time'))
@@ -441,6 +465,7 @@ $ ->
       $(ui.item).attr('data-time', new_time)
       $(ui.item).children('.line-timing').html(new_time_formatted)
       $(ui.item).children('.line-timing').addClass('questionable')
+      ###
   )
 
   $('#transcript-lines').sortable("disable")    

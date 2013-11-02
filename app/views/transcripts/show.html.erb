@@ -73,8 +73,10 @@
 
   <div id="community-notes">
     <div id='transcript-lines'>
+      <% n = 0 %>
       <% @transcript.lines.order("time ASC").order("created_at ASC").each do |l| %>
-        <div class="transcript-line <% if current_user %><% if current_user.id == @user.id %>editable-line<% end %><% end %> rounded" data-line-id=<%= l.id %> data-time=<%= l.time %>>
+        <div class="transcript-line <% if current_user %><% if current_user.id == @user.id %>editable-line<% end %><% end %> rounded" data-line-id=<%= l.id %> data-time=<%= l.time %> data-line-order=<%= n %>>
+            <% n += 1 %>
             <span class="lang1" data-line-id=<%= l.id %>><%= l.lang1 %></span>
             <span class="line-comment-area" data-line-id=<%= l.id %>></span>
             <span class="line-timing tiny gray" data-line-id=<%= l.id %> data-time=<%= if l.time.present? then l.time end %>>
@@ -189,6 +191,7 @@
  data-video-id=<%= @video.id %>
  data-transcript-id=<%= @transcript.id %>
  data-interpretation-id=<%= @transcript.interpretation.id %>
+ data-number-of-lines-init=<%= @transcript.lines.length %>
  <% if current_user %>
  data-user-id-match=<%= if current_user.id == @user.id then true else false end %>
  <% end %>
