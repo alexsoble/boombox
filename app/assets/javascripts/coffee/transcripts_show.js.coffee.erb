@@ -58,36 +58,10 @@ $ ->
   window.time = 0
   window.got_volume = false
   window.video_play_counter = 0
+  window.line_being_commented = 0
 
   if $('.star').attr('id') == 'star-full'
     window.star_id = parseInt($('#star-full').attr('data-star-id'))
-
-  ###
-  if $('#data').attr('data-user-id-match') == 'true'  
-    $('#transcript-lines').sortable(
-      stop: (event, ui) ->
-        line_before = $(ui.item).prev()
-        line_after = $(ui.item).next()
-        if line_before.length > 0 and line_after.length > 0
-          time_before = parseInt(line_before.attr('data-time'))
-          time_after = parseInt(line_after.attr('data-time'))
-          new_time = Math.floor((time_before + time_after)/2)
-        else if line_before.length > 0 and line_after.length == 0
-          time_before = parseInt(line_before.attr('data-time'))
-          new_time = time_before + 4
-        else if line_before.length == 0 and line_after.length > 0
-          time_after = parseInt(line_after.attr('data-time'))
-          if time_after > 3
-            new_time = time_after - 4
-          else
-            new_time = 0
-        console.log new_time
-        new_time_formatted = formatTime(new_time)
-        $(ui.item).attr('data-time', new_time)
-        $(ui.item).children('.line-timing').html(new_time_formatted)
-        $(ui.item).children('.line-timing').addClass('questionable')
-    )
-    ###
 
   # WE GOTTA HAVE A PLAYBACK SLIDER
 
@@ -205,16 +179,19 @@ $ ->
 
   $(".remove-transcript-dialog").click ->
     $("#dialog-confirm-remove-transcript").dialog("open")
+    $("#dialog-confirm-remove-transcript").attr('data-transcript-id', window.transcript_id)
 
   $("#dialog-confirm-remove-transcript").dialog(
     autoOpen: false,
     buttons:
       Delete: ->
-        id = parseInt($(this).attr('data-line-id'))
-        $.post('/destroy_line', { 'id' : "#{id}" }, (data) ->
-          line_id = data.data.id
-          $(".transcript-line[data-line-id=#{line_id}]").remove()
-          $("#dialog-confirm").dialog("close")
+        id = parseInt($(this).attr('data-transcript-id'))
+        $.post('/destroy_transcript', { 'id' : "#{id}" }, (data) ->
+          transcript = data.data
+          $.post('/find_video', { 'id' : "#{transcript.video_id}" }, (data) ->
+            video = data.data
+            window.location.href = "/videos/#{video.slug}" 
+          )
         )
       Cancel: ->
         $(this).dialog("close")
@@ -242,6 +219,7 @@ $ ->
 
   $('.editing-category').livequery ->
     $(this).click ->
+      stopReordering()
       $('.editing-category').each(->
         $(this).children('.status').text($(this).attr('data-inactive'))
         $(this).children('.status').removeAttr('style')
@@ -251,7 +229,33 @@ $ ->
       $(this).children('.status').attr('style','color: yellow;')
       $(this).children('.icon').attr('style','color: yellow;')
       window.active_editing_category = $(this).attr('id')
+
+      # # # Cursor changes to pointer
       $('body').attr('style','cursor: pointer;')
+
+      # # # Show instructions
+      if $(this).attr('id') == 'adding-lines'
+        $('#editing-instructions').html("Double click on a line, your new line will come afterward.")
+      else if $(this).attr('id') == 'editing-lines' 
+        $('#editing-instructions').html("Click on a line to revise its content.")
+        
+      # # # Change cursor to slicer
+      else if $(this).attr('id') == 'slicing-lines'
+        $('body').attr('style','cursor: pointer;')
+        $('#editing-instructions').html("Slice baby slice!")
+      else if $(this).attr('id') == 'removing-lines'
+        $('#editing-instructions').html("Remove lines you don't need any more.")
+      else if $(this).attr('id') == 'timing-lines' 
+        $('#editing-instructions').html("Click a line to time it along with the video.")
+      else if $(this).attr('id') == 'commenting-lines'
+        $('#editing-instructions').html("Click a line to add a comment.")
+
+      # # # Turn on reordering
+      else if $(this).attr('id') == 'reordering-lines'
+        $('#transcript-lines').sortable("enable")    
+        $('#editing-instructions').html("Drag lines into the right order.")
+      else if $(this).attr('id') == 'copying-lines'
+        $('#editing-instructions').html("Double click a line to copy it.")
 
   # # # Editing line logic
 
@@ -260,7 +264,7 @@ $ ->
     this_line_text = $(".lang1[data-line-id=#{line_id}]")
     text = $.trim(this_line_text.text())
     this_line.replaceWith("
-      <input type='text' class='update-line-area' style='width: 360px;' data-line-id=#{line_id}>
+      <input type='text' class='update-line-area' style='width: 320px;' data-line-id=#{line_id}>
       <span class='update-line blue-link' data-line-id=#{line_id}><i class='icon icon-ok'></i><strong>Save</strong></span>
     ")
     $(".update-line-area[data-line-id=#{line_id}]").val(text)
@@ -287,8 +291,8 @@ $ ->
   # # # Removing line logic
 
   removeLine = (line_id) ->
-    $("#dialog-dia").dialog("open")
-    $("#dialog-confirm").attr("data-line-id", "#{line_id}")
+    $("#dialog-confirm-remove-line").dialog("open")
+    $("#dialog-confirm-remove-line").attr("data-line-id", "#{line_id}")
 
   $("#dialog-confirm-remove-line").dialog(
       autoOpen: false,
@@ -298,12 +302,11 @@ $ ->
           $.post('/destroy_line', { 'id' : "#{id}" }, (data) ->
             line_id = data.data.id
             $(".transcript-line[data-line-id=#{line_id}]").remove()
-            $("#dialog-confirm").dialog("close")
+            $("#dialog-confirm-remove-line").dialog("close")
           )
         Cancel: ->
           $(this).dialog("close")
     )
-
 
   # # # Slicing line logic 
 
@@ -311,110 +314,31 @@ $ ->
     this_line = $(".editable-line[data-line-id=#{line_id}]")
     this_line.lettering('words')
 
-  # # # Assigns each editing category to its proper function
 
-  $('.editable-line').livequery ->
-    $(this).click -> 
-      line_id = parseInt($(this).attr('data-line-id'))
-      console.log line_id
-      time = parseInt($(this).attr('data-time'))
-      if window.active_editing_category == 'editing-lines'
-        editLine(line_id)
-      if window.active_editing_category == 'removing-lines'
-        removeLine(line_id)
-      if window.active_editing_category == 'timing-lines'
-        timeLine(line_id, time)
-      if window.active_editing_category == 'commenting-lines'
-        commentLine(line_id)
-      if window.active_editing_category == 'copying-lines'
-        copyLine(line_id)
-      if window.active_editing_category == 'slicing-lines'
-        sliceLine(line_id)
+  # # # Copy logic
 
-  $("#dialog-confirm-remove-comment").dialog(
-      autoOpen: false,
-      buttons:
-        Delete: ->
-          id = parseInt($(this).attr('data-comment-id'))
-          $.post('/destroy_comment', { 'id' : "#{id}" }, (data) ->
-            comment_id = data.data.id
-            $(".line-comment[data-comment-id=#{comment_id}]").remove()
-            $("#dialog-confirm-remove-comment").dialog("close")
-          )
-        Cancel: ->
-          $(this).dialog("close")
-    )
+  copyLine = (line_id) -> 
+    this_line = $(".editable-line[data-line-id=#{line_id}]")
+    this_lang1 = $(".lang1[data-line-id=#{line_id}]").text()
+    this_line.after("
+      <div class='editable-line transcript-line'>
+        #{this_lang1}
+      </div>
+    ")
 
-  # # # Adding timing to lines
+  # # # Commenting logic
 
-  $('.line-timing').livequery ->
-    $(this).click ->  
-      window.player.seekTo($(this).attr('data-time'))
-
-  $('.add-time-to-line').livequery ->
-    $(this).click ->
-      id = parseInt($(this).attr('data-line-id'))
-      window.line_being_timed_id = id
-      $('.ui-slider-handle').addClass('time-selector')
-      $('.ui-slider-handle').addClass('time-selector-handle')
-      $('.add-time-to-line').addClass('quiet')
-      $(".line-timing[data-line-id=#{id}]").hide()
-      $(".lang1[data-line-id=#{id}]").after("
-        <p id='instructions' class='tiny' style='margin-top: 8px;'>
-          <span>
-            <i class='icon icon-time icon-2x orange-icon time-selector'></i>
-            Double click the orange clock when the line begins...
-          </span>
-          <br>
-          <span class='back-from-adding-timing-to-lines'>
-            Or go back:
-            <i class='icon icon-remove icon-2x orange-icon'></i>
-          </span>
-        </p>")
-      $(".edit-line[data-line-id=#{id}]").addClass('quiet')
-      $(".comment-line[data-line-id=#{id}]").addClass('quiet')
-      $(".remove-line[data-line-id=#{id}]").addClass('quiet')
-
-  $('.back-from-adding-timing-to-lines').livequery ->
-    $(this).click ->
-      $('.time-selector').removeClass('time-selector')
-      $('.time-selector-handle').removeClass('time-selector-handle')
-      $(".line-timing").show()
-      $('.add-time-to-line').removeClass('quiet')
-      $('#instructions').remove()
-      window.line_being_timed_id = 0
-      $(".edit-line").removeClass('quiet')
-      $(".comment-line").removeClass('quiet')
-      $(".remove-line").removeClass('quiet')
-      
-  $('.time-selector').livequery ->
-    $(this).dblclick ->
-      time = window.time
-      $.post('/update_line', { 'line' : { 'id' : "#{window.line_being_timed_id}", 'time' : "#{time}" } }, (data) ->
-        line = data.data
-        $(".line-timing[data-line-id=#{line.id}]").html(formatTime(line.time)).show()
-        $('.time-selector').removeClass('time-selector')
-        $('.time-selector-handle').removeClass('time-selector-handle')
-        $('.add-time-to-line').removeClass('quiet')
-        $('#instructions').remove()
-        window.line_being_timed_id = 0
-        showOtherIcons(line.id)
-        $(".line-timing[data-line-id=#{line.id}]").html(formatTime(line.time))
-      )
-
-  $('.comment-line').livequery ->
-    $(this).click -> 
-      id = parseInt($(this).attr('data-line-id'))
-      comment_area = $(".line-comment-area[data-line-id=#{id}]")
-      comment_area.html("<span class='line-comment-area' data-line-id=#{id}><br><i>Your explanation</i>: &nbsp; <input type='text' class='comment' data-line-id=#{id}>&nbsp;<i class='icon-ok blue-link submit-line-comment' data-line-id=#{id}></i><i class='icon-remove blue-link remove-line-comment-area' data-line-id=#{id}></i></span>")
-      hideOtherIcons(id)
+  commentLine = (line_id) ->
+    unless window.line_being_commented == line_id
+      window.line_being_commented = line_id
+      comment_area = $(".line-comment-area[data-line-id=#{line_id}]")
+      comment_area.html("<span class='line-comment-area' data-line-id=#{line_id}><br><i>Your explanation/comment</i>: &nbsp; <input type='text' class='comment' data-line-id=#{line_id}>&nbsp;<i class='icon-ok blue-link submit-line-comment' data-line-id=#{line_id}></i><i class='icon-remove blue-link remove-line-comment-area' data-line-id=#{line_id}></i></span>")
 
   $('.remove-line-comment-area').livequery ->
     $(this).click ->
       id = parseInt($(this).attr('data-line-id'))
       comment_area = $(".line-comment-area[data-line-id=#{id}]")
       comment_area.html('')
-      showOtherIcons(id)
 
   $('.submit-line-comment').livequery ->
     $(this).click ->
@@ -430,8 +354,9 @@ $ ->
             </div>
           ")
           $(".line-comment-area[data-line-id=#{id}]").remove()
-          hideOtherIcons(id)        
         )
+
+  # # # More commenting logic! 
 
   $('.edit-comment').livequery ->
     $(this).click ->
@@ -478,21 +403,62 @@ $ ->
       $("#dialog-confirm-remove-comment").dialog("open")
       $("#dialog-confirm-remove-comment").attr("data-comment-id", "#{id}")
 
-  $('#add-new-line').livequery ->
-    $(this).click ->
-      $(this).replaceWith("
-        <div id='adding-new-line-area'>
-          New line: &nbsp; <input id='new-line-input' type='text'>
-          <i class='icon-ok blue-link submit-new-line'></i>
-          <i class='icon-remove blue-link back-from-adding-new-line'></i>
-        </div>
-      ")
+  $("#dialog-confirm-remove-comment").dialog(
+      autoOpen: false,
+      buttons:
+        Delete: ->
+          id = parseInt($(this).attr('data-comment-id'))
+          $.post('/destroy_comment', { 'id' : "#{id}" }, (data) ->
+            comment_id = data.data.id
+            $(".line-comment[data-comment-id=#{comment_id}]").remove()
+            $("#dialog-confirm-remove-comment").dialog("close")
+          )
+        Cancel: ->
+          $(this).dialog("close")
+    )
 
-  backFromAddingNewLineArea = ->
-    $('#adding-new-line-area').replaceWith("
-      <span id='add-new-line' class='blue-link' style='float: right; margin-right: 15px;'>
-        <i class='icon icon-plus-sign'></i> Add new line
-      </span>")
+  # # # Reorder lines logic 
+
+  $('#transcript-lines').sortable(
+    stop: (event, ui) ->
+      line_before = $(ui.item).prev()
+      line_after = $(ui.item).next()
+      if line_before.length > 0 and line_after.length > 0
+        time_before = parseInt(line_before.attr('data-time'))
+        time_after = parseInt(line_after.attr('data-time'))
+        new_time = Math.floor((time_before + time_after)/2)
+      else if line_before.length > 0 and line_after.length == 0
+        time_before = parseInt(line_before.attr('data-time'))
+        new_time = time_before + 4
+      else if line_before.length == 0 and line_after.length > 0
+        time_after = parseInt(line_after.attr('data-time'))
+        if time_after > 3
+          new_time = time_after - 4
+        else
+          new_time = 0
+      console.log new_time
+      new_time_formatted = formatTime(new_time)
+      $(ui.item).attr('data-time', new_time)
+      $(ui.item).children('.line-timing').html(new_time_formatted)
+      $(ui.item).children('.line-timing').addClass('questionable')
+  )
+
+  $('#transcript-lines').sortable("disable")    
+
+  stopReordering = ->
+    unless $('#transcript-lines').sortable("option", "disabled")
+      $('#transcript-lines').sortable("disable")
+
+  # # # Adding line logic
+
+  addLineAfter = (line_id) -> 
+    $(".editable-line[data-line-id=#{line_id}]").after("
+      <div id='adding-new-line-area'>
+        New line: &nbsp; <input id='new-line-input' type='text'>
+        <i class='icon-ok blue-link submit-new-line'></i>
+        <i class='icon-remove blue-link back-from-adding-new-line'></i>
+      </div>
+    ")
 
   $('.back-from-adding-new-line').livequery ->
     $(this).click ->
@@ -506,17 +472,93 @@ $ ->
           line = data.data
           $('#transcript-lines').prepend("
             <div class='transcript-line rounded' data-line-id=#{line.id}>
-              <span class='edit-line blue-link tiny' title='Edit line' data-line-id=#{line.id}> <i class='icon icon-pencil'></i></span>
-              <span class='comment-line blue-link tiny' title='Add comment to line' data-line-id=#{line.id}><i class='icon icon-comment'></i> </span>
-              <span class='remove-line blue-link tiny' title='Delete line' data-line-id=#{line.id}> <i class='icon icon-remove'></i></span>
-              <span class='add-time-to-line blue-link tiny' title='Add time to line' data-line-id=#{line.id}><i class='icon icon-time'></i></span> 
               <span class='lang1' data-line-id=#{line.id}>#{line.lang1}</span>
               <span class='line-comment-area' data-line-id=#{line.id}></span>
               <span class='line-timing tiny gray' data-line-id=#{line.id}></span>
             </div>
           ")
-          backFromAddingNewLineArea()
         )
+
+  # # # Assigns each editing category to its proper function
+
+  $('.editable-line').livequery ->
+    $(this).click -> 
+      line_id = parseInt($(this).attr('data-line-id'))
+      console.log line_id
+      time = parseInt($(this).attr('data-time'))
+      if window.active_editing_category == 'editing-lines'
+        editLine(line_id)
+      if window.active_editing_category == 'removing-lines'
+        removeLine(line_id)
+      if window.active_editing_category == 'timing-lines'
+        timeLine(line_id, time)
+      if window.active_editing_category == 'commenting-lines'
+        commentLine(line_id)
+      if window.active_editing_category == 'slicing-lines'
+        sliceLine(line_id)
+      if window.active_editing_category == 'adding-lines'
+        addLineAfter(line_id)
+    $(this).dblclick ->
+      line_id = parseInt($(this).attr('data-line-id'))
+      console.log line_id
+      if window.active_editing_category == 'copying-lines'
+        copyLine(line_id)
+
+  $('.line-timing').livequery ->
+    $(this).click ->  
+      window.player.seekTo($(this).attr('data-time'))
+  # # # Maybe this should also happen when we click on a line not in editing mode?
+
+
+  # # # These may need a home! v
+
+
+  # # # Adding timing to lines
+
+  $('.add-time-to-line').livequery ->
+    $(this).click ->
+      id = parseInt($(this).attr('data-line-id'))
+      window.line_being_timed_id = id
+      $('.ui-slider-handle').addClass('time-selector')
+      $('.ui-slider-handle').addClass('time-selector-handle')
+      $('.add-time-to-line').addClass('quiet')
+      $(".line-timing[data-line-id=#{id}]").hide()
+      $(".lang1[data-line-id=#{id}]").after("
+        <p id='instructions' class='tiny' style='margin-top: 8px;'>
+          <span>
+            <i class='icon icon-time icon-2x orange-icon time-selector'></i>
+            Double click the orange clock when the line begins...
+          </span>
+          <br>
+          <span class='back-from-adding-timing-to-lines'>
+            Or go back:
+            <i class='icon icon-remove icon-2x orange-icon'></i>
+          </span>
+        </p>")
+
+  $('.back-from-adding-timing-to-lines').livequery ->
+    $(this).click ->
+      $('.time-selector').removeClass('time-selector')
+      $('.time-selector-handle').removeClass('time-selector-handle')
+      $(".line-timing").show()
+      $('.add-time-to-line').removeClass('quiet')
+      $('#instructions').remove()
+      window.line_being_timed_id = 0
+      
+  $('.time-selector').livequery ->
+    $(this).dblclick ->
+      time = window.time
+      $.post('/update_line', { 'line' : { 'id' : "#{window.line_being_timed_id}", 'time' : "#{time}" } }, (data) ->
+        line = data.data
+        $(".line-timing[data-line-id=#{line.id}]").html(formatTime(line.time)).show()
+        $('.time-selector').removeClass('time-selector')
+        $('.time-selector-handle').removeClass('time-selector-handle')
+        $('.add-time-to-line').removeClass('quiet')
+        $('#instructions').remove()
+        window.line_being_timed_id = 0
+        showOtherIcons(line.id)
+        $(".line-timing[data-line-id=#{line.id}]").html(formatTime(line.time))
+      )
 
   $('#star-empty').livequery ->
     $(this).click ->

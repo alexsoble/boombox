@@ -49,6 +49,7 @@ Boombox::Application.routes.draw do
   post '/find_transcript' => 'transcripts#find'
   post '/find_transcripts' => 'transcripts#find'
   post '/new_transcript' => 'transcripts#create'
+  post '/destroy_transcript' => 'transcripts#destroy'
 
   post '/new_fill_exercise' => 'fill_exercises#create'
   post '/find_fill_exercise' => 'fill_exercises#find'

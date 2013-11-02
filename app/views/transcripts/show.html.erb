@@ -42,27 +42,31 @@
   <div class="small-tab short"></div>
 
   <div id="navigation-sidebar">
-    <li class="back-to-video sidebar-option">
-      Main page  <i class="icon icon-globe"></i>
-    </li>
+    <div class="back-to-video sidebar-option">
+      <i class="icon icon-globe"></i>
+      Main page
+    </div>
     <% @translations.each do |tr| %>
       <% user = tr.user.username %>
-      <li class="sidebar-option">
-        <%= link_to "Translation by #{user}", translation_url(tr) %>
+      <div class="sidebar-option">
         <i class="icon icon-file"></i>
-      </li>
+        <%= link_to "Translation by #{user}", translation_url(tr) %>
+      </div>
     <% end %>
     <% if current_user %>
       <% if current_user.id == @transcript.user.id %>
-        <li class="edit-lines sidebar-option">
-          Edit  <i class="icon icon-pencil"></i>
-        </li>
-        <li class="remove-transcript-dialog sidebar-option">
-          Delete  <i class="icon icon-remove"></i>
-        </li>
-        <li class="open-embed-dialog sidebar-option">
-          Embed  <i class="icon icon-share"></i>
-        </li>
+        <div class="edit-lines sidebar-option">
+          <i class="icon icon-pencil"></i>
+          Edit
+        </div>
+        <div class="remove-transcript-dialog sidebar-option">
+          <i class="icon icon-remove"></i>
+          Delete
+        </div>
+        <div class="open-embed-dialog sidebar-option">
+          <i class="icon icon-share"></i>
+          Embed
+        </div>
       <% end %>
     <% end %>
   </div>
@@ -98,7 +102,7 @@
 <% if current_user %>
   <% if current_user.id == @user.id %>
     <div id="dialog-editing-tools" title="Editing Tools">
-      <span>Select the editing tool you'd like to use, then click on the line you'd like to edit.</span>
+      <span id="editing-instructions" style="text-align: center;">Select the editing tool you'd like to use...</span>
       <br><br>
       <div style='float:left; margin-left: 60px;'>
         <div id='editing-lines' class='btn btn-info rounded editing-category width-120' data-active='Editing' data-inactive='Edit'>
@@ -142,6 +146,7 @@
           <span class='status'>Slice</span>
         </div>
       </div>
+      <br><br><br>
     </div>
   <% end %>
 <% end %>

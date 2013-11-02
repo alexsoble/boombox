@@ -40,4 +40,10 @@ class TranscriptsController < ApplicationController
     render file: 'transcripts/embed.js'
   end
 
+  def destroy
+    @transcript = Transcript.find_by_id(params[:id])
+    @transcript.destroy
+    if @transcript.save then render json: { data: @transcript } else render json: { data: 'save_failed' } end
+  end
+
 end
