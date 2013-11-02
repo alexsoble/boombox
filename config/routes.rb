@@ -12,6 +12,7 @@ Boombox::Application.routes.draw do
   get '/auth/:provider/callback' => 'sessions#create_with_omniauth'
   get '/new' => 'pages#new' 
   get '/teachers' => 'pages#teachers'
+  get '/earlyadopters' => 'pages#earlyadopters'
   get '/embed_styling' => 'pages#embed_styling'
   
   resources :videos

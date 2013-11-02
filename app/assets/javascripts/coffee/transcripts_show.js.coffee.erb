@@ -200,6 +200,26 @@ $ ->
     $("#dialog-embed").dialog("open")
     $("#embed-code").selectText()
 
+
+  # # # Deleting transcript 
+
+  $(".remove-transcript-dialog").click ->
+    $("#dialog-confirm-remove-transcript").dialog("open")
+
+  $("#dialog-confirm-remove-transcript").dialog(
+    autoOpen: false,
+    buttons:
+      Delete: ->
+        id = parseInt($(this).attr('data-line-id'))
+        $.post('/destroy_line', { 'id' : "#{id}" }, (data) ->
+          line_id = data.data.id
+          $(".transcript-line[data-line-id=#{line_id}]").remove()
+          $("#dialog-confirm").dialog("close")
+        )
+      Cancel: ->
+        $(this).dialog("close")
+  )
+
   # # # Save alert
 
   saveAlert = ->
@@ -267,10 +287,10 @@ $ ->
   # # # Removing line logic
 
   removeLine = (line_id) ->
-    $("#dialog-confirm").dialog("open")
+    $("#dialog-dia").dialog("open")
     $("#dialog-confirm").attr("data-line-id", "#{line_id}")
 
-  $("#dialog-confirm").dialog(
+  $("#dialog-confirm-remove-line").dialog(
       autoOpen: false,
       buttons:
         Delete: ->

@@ -98,4 +98,11 @@ class PagesController < ApplicationController
   def dmca
   end
 
+  def earlyadopters
+    @lanes_interpretation = Interpretation.find_by_id(248)
+    @michaels_fill_exercise = FillExercise.find_by_id(16)
+    @kelseys_fill_exercise = FillExercise.find_by_id(12)
+    @alex = User.find_by_id(8)
+  end
+
 end

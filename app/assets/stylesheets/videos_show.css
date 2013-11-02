@@ -9,11 +9,11 @@
 #lyrics-box.skinny { width: 320px;
   max-height: 530px; }
 
-.line-container { float: left; width: 420px; padding: 4px;  }
+.line-container { float: left; width: 400px; padding: 4px;  }
 
-.line-left-subcontainer { width: 180px; margin-bottom: 4px; margin-top: 4px; float: left; }
+.line-left-subcontainer { width: 165px; margin-bottom: 4px; margin-top: 4px; float: left; }
 
-.line-right-subcontainer { width: 180px; margin-bottom: 4px; margin-top: 4px; margin-right: 4px; float: right; }
+.line-right-subcontainer { width: 165px; margin-bottom: 4px; margin-top: 4px; margin-right: 4px; float: right; }
 
 .line-timing { float: right; cursor: pointer; }
 .line-container .line-timing {

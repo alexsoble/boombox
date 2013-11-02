@@ -285,7 +285,7 @@
           <div class="note-area translation-area">
             <% @translations.each do |t| %>
               <% c = t.user %>
-              <% @lines = t.translated_lines.sort { |a, b| a.line.time.to_i <=> b.line.time.to_i } %>
+              <% @lines = t.translated_lines.reject { |tl| tl.line.blank? }.sort { |a, b| a.line.time.to_i <=> b.line.time.to_i } %>
               <% unless current_user %>
                 <div class='other-user-content'>
                   <p class="friendly"> <%= link_to "#{c.username}", user_url(c) %> added a <%= link_to "translation", translation_url(t) %>: </p>

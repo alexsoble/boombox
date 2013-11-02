@@ -12,9 +12,6 @@
       <% end %>
       <span id='star-count' class="friendly-big"><%= @transcript.stars.length %></span>
       &nbsp; <span id='star-notice-area' class="notice"></span>
-      <span class="open-embed-dialog">
-        <i class="icon icon-share"></i>
-      </span>
     </div>
     <div style="margin-top: 15px; margin-left: 22px;">
       <div class='btn btn-info btn-small btn-tiny rounded tight-pack' id='play-pause' style="position: absolute; top: 13px; right: 22px;"> 
@@ -60,8 +57,11 @@
         <li class="edit-lines sidebar-option">
           Edit  <i class="icon icon-pencil"></i>
         </li>
-        <li class="sidebar-option">
+        <li class="remove-transcript-dialog sidebar-option">
           Delete  <i class="icon icon-remove"></i>
+        </li>
+        <li class="open-embed-dialog sidebar-option">
+          Embed  <i class="icon icon-share"></i>
         </li>
       <% end %>
     <% end %>
@@ -146,7 +146,7 @@
   <% end %>
 <% end %>
 
-<div id="dialog-confirm" title="Confirmation">
+<div id="dialog-confirm-remove-line" title="Confirmation">
   <p><span class="ui-icon ui-icon-alert"></span>Sure you want to delete this line?</span></p>
 </div>
 
@@ -154,10 +154,13 @@
   <p><span class="ui-icon ui-icon-alert"></span>Sure you want to delete this comment?</span></p>
 </div>
 
+<div id="dialog-confirm-remove-transcript" title="Confirmation">
+  <p><span class="ui-icon ui-icon-alert"></span>Are you super sure you want to delete this transcript?</span></p>
+</div>
+
 <div id="dialog-embed" title="Embed your transcript">
   <p>
-    <br>
-    Copy and paste into the HTML editing section of your blogging platform:
+    Copy and paste into the HTML editing section of your blog or website:
     <br><br>
     <div id='embed-code' style='background-color: white; padding: 5px;'>
       <%= "<div id='heyu-area'><div id='new-video-box'></div></div>" %>

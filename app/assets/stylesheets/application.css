@@ -92,3 +92,9 @@ span { color: black; }
 .purple-link { 
   cursor: pointer;
   color: #9b59bb; }
+
+.post {
+  margin-top: 50px; 
+  width: 600px;
+  margin-left: auto;  
+  margin-right: auto; }
