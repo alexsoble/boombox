@@ -118,7 +118,7 @@ li.ui-autocomplete.ui-menu { color: black; }
 
 #social-content-area {
   left: 640px; 
-  width: 600px;
+  width: 612px;
   position: absolute;
   top: 84px; }
 
@@ -131,7 +131,8 @@ li.ui-autocomplete.ui-menu { color: black; }
   color: white;
   position: relative;
   top: -7px;
-  width: 112px; }
+  width: 118px; 
+  font-size: 14px; }
 
 .sidebar-option {
   color: white; }

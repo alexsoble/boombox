@@ -18,11 +18,13 @@ class VideosController < ApplicationController
   def show 
 
     @video = Video.find_by_slug!(params[:id])
+    @interps = @video.interpretations
 
     if current_user
       if Star.where(:video_id => @video.id, :user_id => current_user.id).present?
         @star = Star.where(:video_id => @video.id, :user_id => current_user.id).first
       end
+      @this_user_interp = Interpretation.where(:video_id => @video.id, :user_id => current_user.id).first
     end
 
     @tags = Tag.where(:video_id => @video.id)
@@ -50,16 +52,16 @@ class VideosController < ApplicationController
     end
 
     @transcripts = @video.transcripts
-
     @translations = []
     @transcripts.each do |t|
       if t.translations.present?
-        @translation = true
-        t.translations.each do |tr|
+        translations = t.translations.reject { |tr| tr.translated_lines.blank? }
+        translations.each do |tr|
           @translations << tr
         end
       end
     end
+    @transcripts = @transcripts.reject { |tr| tr.lines.blank? }
 
     @lines = true
     @translation = true

@@ -39,11 +39,17 @@ class InterpretationsController < ApplicationController
     @translations = []
     @transcripts.each do |t|
       if t.translations.present?
-        @translation = true
-        t.translations.each do |tr|
+        translations = t.translations.reject { |tr| tr.translated_lines.blank? }
+        translations.each do |tr|
           @translations << tr
         end
       end
+    end
+    @transcripts = @transcripts.reject { |tr| tr.lines.blank? }
+
+
+    if current_user
+      @this_user_interp = Interpretation.where(:video_id => @video.id, :user_id => current_user.id).first
     end
 
     @tags = Tag.where(:video_id => @video.id)

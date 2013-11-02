@@ -79,7 +79,7 @@
 <div id="social-content-area" class="content-area"> 
     <div class="big tab solo" id="all-content">
       <% if controller_name == 'interpretations' %>
-        <%= @user.username %>'s learning materials  <i class="icon icon-user"></i>
+        <%= @user.username %>'s learning materials
       <% elsif controller_name == 'videos' %>
         Everyone's learning materials  <i class="icon icon-globe"></i>
       <% end %>
@@ -121,29 +121,60 @@
     </div>
 
     <div id="navigation-sidebar">
-      <div id="new-content" class="sidebar-option">
-        <li>
-          Add
-          <i class="icon icon-plus-sign"></i>
-        </li>
-      </div>
       <% if controller_name == 'interpretations' %>
+        <% if current_user %>
+          <% if current_user.id == @user.id %>
+            <div id="new-content" class="sidebar-option">
+              <i class="icon icon-plus-sign"></i> Add 
+            </div>
+          <% end %>
+        <% end %>
         <div class="sidebar-option">
-          <li>
-            <a href="/videos/<%= @video.slug %>" style="color: white;">
-              Main page  <i class="icon icon-globe"></i>
-            </a>
-          </li>
+          <i class="icon icon-globe"></i>
+          <%= link_to "Main page", video_url(@video) %>
         </div>
       <% elsif controller_name == 'videos' %>
+        <div id="new-content" class="sidebar-option">
+          <i class="icon icon-plus-sign"></i>
+          <% if current_user %>
+            <% if @this_user_interp.present? %>
+              Add 
+            <% else %>
+              Add your own
+            <% end %>
+          <% else %>
+            Add your own
+          <% end %>
+        </div>
         <% if current_user %>
-          <% @this_user_interp = Interpretation.where(:video_id => @video.id, :user_id => current_user.id).first %>
           <% if @this_user_interp.present? %>
             <div class="sidebar-option">
-              <li>
-                <%= link_to "Just yours", interpretation_url(@this_user_interp), :style => 'color: white;' %>
-                <i class="icon icon-user"></i>
-              </li>
+              <i class="icon icon-user"></i>
+              <%= link_to "Just yours", interpretation_url(@this_user_interp) %>
+            </div>
+            <br>
+            <% @interps.reject { |i| i == @this_user_interp }.each do |i| %>
+              <% this_user = i.user.username %>
+              <div class="sidebar-option">
+                <i class="icon icon-file"></i>
+                <%= link_to "#{this_user}'s materials", interpretation_url(i) %>
+              </div>
+            <% end %>
+          <% else %>
+            <% @interps.each do |i| %>
+              <% this_user = i.user.username %>
+              <div class="sidebar-option">
+                <i class="icon icon-file"></i>
+                <%= link_to "#{this_user}'s materials", interpretation_url(i) %>
+              </div>
+            <% end %>
+          <% end %>
+        <% else %>
+          <% @interps.each do |i| %>
+            <% this_user = i.user.username %>
+            <div class="sidebar-option">
+              <i class="icon icon-file"></i>
+              <%= link_to "#{this_user}'s materials", interpretation_url(i) %>
             </div>
           <% end %>
         <% end %>
