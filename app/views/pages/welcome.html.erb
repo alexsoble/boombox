@@ -74,6 +74,20 @@
       </div>
     <% end %>
   </div>
+  <!--<div class="offset1">
+    <span>
+    <h2>Latest quizzes</h2>
+    </span>
+    <hr id="hr">
+    <%  @interps_with_some_content.each do |i| %>
+      <% v = i.video %>
+      <div class="video-thumb-box frontpage-thumb-box <%= if v.langs.present? then v.langs[0] end %>" title="<%= v.title %>" data-video-slug=<%= v.slug %>>
+        <strong class="center" style="color: #2793E6;"><%= "#{v.title.slice(0,25)}" %></strong>
+        <br>
+        <div class="image-box"><%= image_tag "#{v.image}" %></div>
+      </div>
+    <% end %>
+  </div>-->
 </div>
 </div>
 <div id="data" class="quiet" data-edit-video-languages="<%= @interp.present? %>" <% if @interp.present? %>data-youtube-id='<%= @youtube_id %>' data-title='<%= @title %>'<% end %>>

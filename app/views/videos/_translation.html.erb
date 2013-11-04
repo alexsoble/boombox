@@ -9,9 +9,8 @@
                   <%= l.formatted_time %>
                 <% end %>
               </span>
-              <div class="line-right-subcontainer rounded">
-                <span class="lang2"><%= t.lang2 %></span>
-                <span class="pencil-area" data-translated-line-id=<%= t.id %>></span>
+              <div class="line-right-subcontainer rounded" data-translated-line-id=<%= t.id %>>
+                <span class="lang2" data-translated-line-id=<%= t.id %>><%= t.lang2 %></span>
               </div>
             </div>
           <% end %>

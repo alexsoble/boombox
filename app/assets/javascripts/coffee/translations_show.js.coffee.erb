@@ -115,13 +115,12 @@ $ ->
     exact_time = player.getCurrentTime()
     window.time = Math.floor(exact_time)
 
-    if $("[data-time=#{window.time}]").length != 0
-      this_line = $(".transcript-line[data-time=#{window.time}]").eq(0)
+    if $(".line-container[data-time=#{window.time}]").length != 0
+      this_line = $(".line-container[data-time=#{window.time}]").eq(0)
       unless this_line.hasClass('highlighted')
         this_line.effect("highlight", { color: "#FFFF00" }, 4000)
         this_line.addClass("highlighted")
-        if window.autoscroll == true
-          $("#community-notes").scrollTo(this_line.prev().prev(), { duration : 250 } )
+        $("#community-notes").scrollTo(this_line.prev().prev(), { duration : 250 } )
 
     # PLAYBACK SLIDER MOVES HERE
     unless window.sliding == true
@@ -149,40 +148,40 @@ $ ->
 
   $('.remove-translation').livequery ->
     $(this).click ->
-      $("#dialog-confirm").dialog("open")
+      $("#dialog-confirm-remove-translation").dialog("open")
 
   $('.edit-translation').livequery ->
     $(this).click ->
       if window.editing_translation == false
         window.editing_translation = true
         $('.line-right-subcontainer').each(->
-          $(this).children(".pencil-area").html("<i class='icon icon-pencil blue-link edit-translated-line'></i>")
-        )
+          translated_line_id = parseInt($(this).attr('data-translated-line-id'))
+          lang2 = $(this).children(".lang2").text()
+          $(this).children(".lang2").html("
+            <div class='translate-line-input-area line-right-subcontainer'>
+              <textarea style='width: 120px; float: left; height: 60px;'>#{lang2}</textarea>
+              <div class='revise-translation blue-link' data-translated-line-id=#{translated_line_id}>
+                <i class='icon icon-ok'></i>
+              </div>
+            </div>")
+          )
       else
         window.editing_translation = false
         $('.line-right-subcontainer').each(->
-          $(this).children(".pencil-area").html("")
+          lang2 = $(this).children('.translate-line-input-area').children('textarea').val()
+          $(this).children(".lang2").html("#{lang2}")
         )
 
-  $('.edit-translated-line').livequery ->
+  $('.revise-translation').livequery ->
     $(this).click ->
-      lang2 = $($(this).parent()).siblings('.lang2')
-      lang2_text = lang2.text()
-      lang2.replaceWith("<input value='#{lang2_text}' style='width: 180px; margin-right: 15px;'>")
-      $(this).replaceWith("<i class='icon icon-ok blue-link submit-revised-translation'></i>")
-
-  $('.submit-revised-translation').livequery ->
-    $(this).click ->
-      input_box =  $(this).parent().siblings('input')
-      revised_text = input_box.val()
-      id = parseInt($(this).parent().attr('data-translated-line-id'))
+      revised_text = $(this).siblings('textarea').val()
+      id = parseInt($(this).attr('data-translated-line-id'))
       $.post('/update_translated_line', { 'translated_line' : { 'id' : "#{id}", 'lang2' : "#{revised_text}" } }, (data) ->
         translated_line = data.data 
-        input_box.replaceWith(JSON.stringify(translated_line.lang2))
-        $(this).replaceWith("<i class='icon icon-pencil blue-link edit-translated-line'></i>")
+        $(".line-right-subcontainer[data-translated-line-id=#{translated_line.id}]").html("#{translated_line.lang2}")
       )
 
-  $("#dialog-confirm").dialog(
+  $("#dialog-confirm-remove-translation").dialog(
       autoOpen: false,
       buttons:
         Delete: ->

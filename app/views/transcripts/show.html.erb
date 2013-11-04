@@ -57,7 +57,11 @@
       <% if current_user.id == @transcript.user.id %>
         <div class="edit-lines sidebar-option">
           <i class="icon icon-pencil"></i>
-          Edit
+          Edit / timing
+        </div>
+        <div class="translate-lines sidebar-option">
+          <i class="icon icon-quote-left"></i>
+          Translate
         </div>
         <div class="remove-transcript-dialog sidebar-option">
           <i class="icon icon-remove"></i>
@@ -75,7 +79,7 @@
     <div id='transcript-lines'>
       <% n = 0 %>
       <% @transcript.lines.order("time ASC").order("created_at ASC").each do |l| %>
-        <div class="transcript-line <% if current_user %><% if current_user.id == @user.id %>editable-line<% end %><% end %> rounded" data-line-id=<%= l.id %> data-time=<%= l.time %> data-line-order=<%= n %>>
+        <div class="transcript-line <% if current_user %><% if current_user.id == @user.id %>editable-line<% end %><% end %> rounded" data-line-id=<%= l.id %> <% if l.time.present? %>data-time=<%= l.time %><% end %>>
             <% n += 1 %>
             <span class="lang1" data-line-id=<%= l.id %>><%= l.lang1 %></span>
             <span class="line-comment-area" data-line-id=<%= l.id %>></span>
@@ -163,6 +167,11 @@
 
 <div id="dialog-confirm-remove-transcript" title="Confirmation">
   <p><span class="ui-icon ui-icon-alert"></span>Are you super sure you want to delete this transcript?</span></p>
+</div>
+
+<div id="dialog-translation-language" title="Select language">
+  <p><span class="ui-icon ui-icon-alert"></span>
+  <div class='big-friendly'>Translate into: &nbsp; <input type='text' id='language-select' placeholder='Search language' style='width: 160px;'></div></p>
 </div>
 
 <div id="dialog-embed" title="Embed your transcript">

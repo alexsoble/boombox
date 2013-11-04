@@ -60,7 +60,8 @@ $ ->
   window.got_volume = false
   window.video_play_counter = 0
   window.line_being_commented = 0
-
+  window.line_being_timed_id = 0
+  
   if $('.star').attr('id') == 'star-full'
     window.star_id = parseInt($('#star-full').attr('data-star-id'))
 
@@ -474,6 +475,7 @@ $ ->
     unless $('#transcript-lines').sortable("option", "disabled")
       $('#transcript-lines').sortable("disable")
 
+
   # # # Adding line logic
 
   addLineAfter = (line_id) -> 
@@ -507,6 +509,48 @@ $ ->
           this_line_input.remove()
         )
 
+  # # # Adding timing logic
+
+  timeLine = (line_id) ->
+    if window.line_being_timed_id == 0
+      window.line_being_timed_id = line_id
+      $('.ui-slider-handle').addClass('time-selector')
+      $('.ui-slider-handle').addClass('time-selector-handle')
+      $(".line-timing[data-line-id=#{line_id}]").hide()
+      $(".lang1[data-line-id=#{line_id}]").after("
+        <p id='timing-instructions' class='tiny' style='margin-top: 8px;'>
+          <span>
+            <i class='icon icon-time icon-2x orange-icon time-selector'></i>
+            Double click the orange clock when the line begins...
+          </span>
+          <br>
+          <span class='back-from-adding-timing-to-lines'>
+            Or go back:
+            <i class='icon icon-remove icon-2x orange-icon'></i>
+          </span>
+        </p>")
+
+  $('.back-from-adding-timing-to-lines').livequery ->
+    $(this).click ->
+      $('.time-selector').removeClass('time-selector')
+      $('.time-selector-handle').removeClass('time-selector-handle')
+      $('#timing-instructions').remove()
+      window.line_being_timed_id = 0
+      
+  $('.time-selector').livequery ->
+    $(this).dblclick ->
+      time = window.time
+      $.post('/update_line', { 'line' : { 'id' : "#{window.line_being_timed_id}", 'time' : "#{time}" } }, (data) ->
+        line = data.data
+        $(".line-timing[data-line-id=#{line.id}]").html(formatTime(line.time)).show()
+        $('.time-selector').removeClass('time-selector')
+        $('.time-selector-handle').removeClass('time-selector-handle')
+        $('#timing-instructions').remove()
+        window.line_being_timed_id = 0
+        $(".line-timing[data-line-id=#{line.id}]").html(formatTime(line.time))
+      )
+
+
   # # # Assigns each editing category to its proper function
 
   $('.editable-line').livequery ->
@@ -538,55 +582,57 @@ $ ->
   # # # Maybe this should also happen when we click on a line not in editing mode?
 
 
-  # # # These may need a home! v
 
+  # # # Translating stuff 
 
-  # # # Adding timing to lines
-
-  $('.add-time-to-line').livequery ->
+  $('.translate-lines').livequery ->
     $(this).click ->
-      id = parseInt($(this).attr('data-line-id'))
-      window.line_being_timed_id = id
-      $('.ui-slider-handle').addClass('time-selector')
-      $('.ui-slider-handle').addClass('time-selector-handle')
-      $('.add-time-to-line').addClass('quiet')
-      $(".line-timing[data-line-id=#{id}]").hide()
-      $(".lang1[data-line-id=#{id}]").after("
-        <p id='instructions' class='tiny' style='margin-top: 8px;'>
-          <span>
-            <i class='icon icon-time icon-2x orange-icon time-selector'></i>
-            Double click the orange clock when the line begins...
-          </span>
-          <br>
-          <span class='back-from-adding-timing-to-lines'>
-            Or go back:
-            <i class='icon icon-remove icon-2x orange-icon'></i>
-          </span>
-        </p>")
+      $("#dialog-translation-language").dialog("open")
 
-  $('.back-from-adding-timing-to-lines').livequery ->
+  $("#dialog-translation-language").dialog(
+    autoOpen: false,
+    buttons:
+      Go: ->
+        language = $('#language-select').val()
+        if language isnt '' 
+          $("#dialog-translation-language").dialog("close")
+          $.post('/find_language', { 'language' : "#{language}" }, (data) ->
+            window.language_id = data.data.id
+            $.post('/new_translation', { 'translation' : { 'transcript_id' : "#{window.transcript_id}", 'video_id' : "#{window.video_id}", 'user_id' : "#{window.user_id}", 'language_id' : "#{window.language_id}" } }, (data) ->
+              window.translation_id = data.data.id
+              for line in $('.editable-line')
+                line = $(line)
+                id = line.attr('data-line-id')
+                time = line.attr('data-time')
+                lang1 = $.trim(line.text())
+                line.addClass('line-container')
+                line.children('.lang1').eq(0).addClass('line-left-subcontainer')
+                line.append("
+                  <div class='translate-line-input-area line-right-subcontainer' data-line-id=#{id}>
+                    <textarea style='width: 120px; float: left; height: 60px;' data-line-id=#{id}></textarea>
+                    <div class='submit-translation blue-link' data-line-id=#{id}>
+                      <i class='icon icon-ok'></i>
+                    </div>
+                  </div>
+                ")
+              )
+            )
+      Back: ->
+        $(this).dialog("close")
+    )
+
+  # .line-container { float: left; width: 400px; padding: 4px;  }
+  # .line-left-subcontainer { width: 165px; margin-bottom: 4px; margin-top: 4px; float: left; }
+  # .line-right-subcontainer { width: 165px; margin-bottom: 4px; margin-top: 4px; margin-right: 4px; float: right; }
+
+  $('.submit-translation').livequery ->
     $(this).click ->
-      $('.time-selector').removeClass('time-selector')
-      $('.time-selector-handle').removeClass('time-selector-handle')
-      $(".line-timing").show()
-      $('.add-time-to-line').removeClass('quiet')
-      $('#instructions').remove()
-      window.line_being_timed_id = 0
-      
-  $('.time-selector').livequery ->
-    $(this).dblclick ->
-      time = window.time
-      $.post('/update_line', { 'line' : { 'id' : "#{window.line_being_timed_id}", 'time' : "#{time}" } }, (data) ->
-        line = data.data
-        $(".line-timing[data-line-id=#{line.id}]").html(formatTime(line.time)).show()
-        $('.time-selector').removeClass('time-selector')
-        $('.time-selector-handle').removeClass('time-selector-handle')
-        $('.add-time-to-line').removeClass('quiet')
-        $('#instructions').remove()
-        window.line_being_timed_id = 0
-        showOtherIcons(line.id)
-        $(".line-timing[data-line-id=#{line.id}]").html(formatTime(line.time))
-      )
+      id = $(this).attr('data-line-id')
+      lang2 = $("textarea[data-line-id=#{id}]").val()
+      unless lang2 == ''
+        $.post('/new_translated_line', { 'translated_line' : { 'line_id' : "#{id}", 'lang2' : "#{lang2}", 'translation_id' : "#{window.translation_id}" } }, (data) ->
+          $(".translate-line-input-area[data-line-id=#{data.data.line_id}]").html("#{data.data.lang2}")
+        )
 
   $('#star-empty').livequery ->
     $(this).click ->
@@ -614,3 +660,18 @@ $ ->
       window.location.href = "/videos/#{data.data.slug}"
     )
 
+  $('#language-select').livequery ->
+    $(this).autocomplete(
+      source: (request, response) ->
+        $.ajax(
+          url: "/language_list?term=#{request.term}",
+          type: "POST", 
+          dataType: "json",
+          success: (data) ->
+            console.log data
+            response($.map(data.data, (item) ->
+              label: item.name,
+              value: item.name
+            ))
+        )
+      )

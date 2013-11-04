@@ -152,7 +152,6 @@
               <i class="icon icon-user"></i>
               <%= link_to "Just yours", interpretation_url(@this_user_interp) %>
             </div>
-            <br>
             <% @interps.reject { |i| i == @this_user_interp }.each do |i| %>
               <% this_user = i.user.username %>
               <div class="sidebar-option">
