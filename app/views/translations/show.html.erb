@@ -65,7 +65,7 @@
       <% if @translation.present? %>
         <div class="note-area translation-area">
           <% c = @translation.user %>
-          <% @lines = @translation.translated_lines.sort { |a, b| a.line.time <=> b.line.time } %>
+          <% @lines = @translation.translated_lines.reject { |tr| tr.line.blank? }.sort { |a, b| a.line.time <=> b.line.time } %>
           <%= render "videos/translation", :translated_lines => @lines %>
           <br><br>
           </div>
