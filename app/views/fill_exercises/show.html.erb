@@ -42,10 +42,6 @@
       <%= link_to "Main page", video_url(@video) %>
       <i class="icon icon-globe"></i>
     </li>
-    <li class="sidebar-option">
-      <%= link_to "Transcript by #{@transcript_creator}", transcript_url(@transcript) %>
-      <i class="icon icon-file"></i>
-    </li>
     <% if current_user %>
       <% if current_user.id == @transcript.user.id %>
         <li class="sidebar-option">
