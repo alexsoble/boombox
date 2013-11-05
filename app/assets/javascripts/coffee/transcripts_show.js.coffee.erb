@@ -500,7 +500,7 @@ $ ->
         $.post('/new_line', { 'line' : { 'transcript_id' : "#{window.transcript_id}", 'interpretation_id' : "#{window.interpretation_id}", 'lang1' : "#{lang1}", 'video_id' : "#{window.video_id}" } }, (data) ->
           line = data.data
           $(".editable-line[data-line-id=#{line_id}]").after("
-            <div class='transcript-line rounded' data-line-id=#{line.id}>
+            <div class='editable-line transcript-line rounded' data-line-id=#{line.id}>
               <span class='lang1' data-line-id=#{line.id}>#{line.lang1}</span>
               <span class='line-comment-area' data-line-id=#{line.id}></span>
               <span class='line-timing tiny gray' data-line-id=#{line.id}></span>
@@ -558,13 +558,12 @@ $ ->
     $(this).click -> 
       line_id = parseInt($(this).attr('data-line-id'))
       console.log line_id
-      time = parseInt($(this).attr('data-time'))
       if window.active_editing_category == 'editing-lines'
         editLine(line_id)
       if window.active_editing_category == 'removing-lines'
         removeLine(line_id)
       if window.active_editing_category == 'timing-lines'
-        timeLine(line_id, time)
+        timeLine(line_id)
       if window.active_editing_category == 'commenting-lines'
         commentLine(line_id)
       if window.active_editing_category == 'slicing-lines'
