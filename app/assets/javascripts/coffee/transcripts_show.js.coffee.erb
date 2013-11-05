@@ -512,26 +512,27 @@ $ ->
   # # # Adding timing logic
 
   timeLine = (line_id) ->
-    if window.line_being_timed_id == 0
-      window.line_being_timed_id = line_id
-      $('.ui-slider-handle').addClass('time-selector')
-      $('.ui-slider-handle').addClass('time-selector-handle')
-      $(".line-timing[data-line-id=#{line_id}]").hide()
-      $(".lang1[data-line-id=#{line_id}]").after("
-        <p id='timing-instructions' class='tiny' style='margin-top: 8px;'>
-          <span>
-            <i class='icon icon-time icon-2x orange-icon time-selector'></i>
-            Double click the orange clock when the line begins...
-          </span>
-          <br>
-          <span class='back-from-adding-timing-to-lines'>
-            Or go back:
-            <i class='icon icon-remove icon-2x orange-icon'></i>
-          </span>
-        </p>")
+    window.line_being_timed_id = line_id
+    $('.ui-slider-handle').addClass('time-selector')
+    $('.ui-slider-handle').addClass('time-selector-handle')
+    $(".line-timing[data-line-id=#{line_id}]").hide()
+    $('#timing-instructions').remove()
+    $(".editable-line[data-line-id=#{line_id}]").after("
+      <p id='timing-instructions' class='tiny' style='margin-top: 8px;'>
+        <span>
+          <i class='icon icon-time icon-2x orange-icon time-selector'></i>
+          Double click the orange clock when the line begins...
+        </span>
+        <br>
+        <span class='back-from-adding-timing-to-lines'>
+          Or go back:
+          <i class='icon icon-remove icon-2x orange-icon'></i>
+        </span>
+      </p>")
 
   $('.back-from-adding-timing-to-lines').livequery ->
     $(this).click ->
+      console.log 'back'
       $('.time-selector').removeClass('time-selector')
       $('.time-selector-handle').removeClass('time-selector-handle')
       $('#timing-instructions').remove()
