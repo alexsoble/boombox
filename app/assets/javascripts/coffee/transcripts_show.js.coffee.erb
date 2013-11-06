@@ -207,9 +207,11 @@ $ ->
   # # # Save alert
 
   saveAlert = ->
-    $('#saved-status').removeAttr('style')
-    $('#saved-status').html('Saved!')
-    $('#saved-status').fadeOut(7200)
+    $('.save-lines').html('<i class="icon icon-save"></i>  Saved!')
+    $('.save-lines').effect("highlight", { color: "#FFFF00" }, 4000)
+
+  $('.save-lines').click ->
+    saveAlert()
 
   # # # Editing transcript
 
@@ -273,7 +275,7 @@ $ ->
     text = $.trim(this_line_text.text())
     this_line.replaceWith("
       <input type='text' class='update-line-area' style='width: 320px;' data-line-id=#{line_id}>
-      <span class='update-line blue-link' data-line-id=#{line_id}><i class='icon icon-ok'></i><strong>Save</strong></span>
+      <span class='update-line blue-link' data-line-id=#{line_id}><i class='icon icon-ok'></i><strong></strong></span>
     ")
     $(".update-line-area[data-line-id=#{line_id}]").val(text)
 
@@ -311,6 +313,7 @@ $ ->
             line_id = data.data.id
             $(".transcript-line[data-line-id=#{line_id}]").remove()
             $("#dialog-confirm-remove-line").dialog("close")
+            saveAlert()
           )
         Cancel: ->
           $(this).dialog("close")
@@ -330,19 +333,20 @@ $ ->
     this_lang1 = $(".lang1[data-line-id=#{line_id}]").text()
     if this_lang1 isnt ''
       $.post('/new_line', { 'line' : { 'transcript_id' : "#{window.transcript_id}", 'interpretation_id' : "#{window.interpretation_id}", 'lang1' : "#{this_lang1}", 'video_id' : "#{window.video_id}" } }, (data) ->
-          line = data.data
-          this_line.after("
-            <div class='editable-line transcript-line rounded' data-line-id=#{line.id}>
-            <span class='lang1' data-line-id=#{line.id}>
-              #{line.lang1}
-            </span>
-            <span class='line-comment-area' data-line-id=#{line.id}></span>
-            <span class='line-timing tiny gray' data-line-id=#{line.id}>
-              ???
-            </span>
-            </div>
-          ")
-        )
+        line = data.data
+        this_line.after("
+          <div class='editable-line transcript-line rounded' data-line-id=#{line.id}>
+          <span class='lang1' data-line-id=#{line.id}>
+            #{line.lang1}
+          </span>
+          <span class='line-comment-area' data-line-id=#{line.id}></span>
+          <span class='line-timing tiny gray' data-line-id=#{line.id}>
+            ???
+          </span>
+          </div>
+        ")
+        saveAlert()
+      )
 
 
   # # # Commenting logic
@@ -414,6 +418,7 @@ $ ->
         comment_text = $(".comment-text[data-comment-id=#{comment.id}]")
         comment_text.text(comment.comment_text)
         backFromEditingComment(id)
+        saveAlert()
       )
 
   $('.remove-comment').livequery ->
@@ -432,6 +437,7 @@ $ ->
             $(".line-comment[data-comment-id=#{comment_id}]").remove()
             $("#dialog-confirm-remove-comment").dialog("close")
           )
+          saveAlert()
         Cancel: ->
           $(this).dialog("close")
     )
@@ -514,6 +520,7 @@ $ ->
             </div>
           ")
           this_line_input.remove()
+          saveAlert()
         )
 
   # # # Adding timing logic
@@ -556,6 +563,7 @@ $ ->
         $('#timing-instructions').remove()
         window.line_being_timed_id = 0
         $(".line-timing[data-line-id=#{line.id}]").html(formatTime(line.time))
+        saveAlert()
       )
 
 
