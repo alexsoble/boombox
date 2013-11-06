@@ -13,6 +13,7 @@ Boombox::Application.routes.draw do
   get '/new' => 'pages#new' 
   get '/teachers' => 'pages#teachers'
   get '/earlyadopters' => 'pages#earlyadopters'
+  get '/help' => 'pages#help'
   get '/embed_styling' => 'pages#embed_styling'
   
   resources :videos

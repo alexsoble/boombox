@@ -105,4 +105,7 @@ class PagesController < ApplicationController
     @alex = User.find_by_id(8)
   end
 
+  def help
+  end
+
 end

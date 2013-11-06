@@ -164,6 +164,12 @@ $ ->
     window.player.playVideo()
   window.setTimeout(delayedShow, 1000)
 
+  $('#watch-again').livequery ->
+    $(this).click ->
+      onYouTubeIframeAPIReady()
+      $('#watch-again').removeClass('video-finished')
+      $('#watch-again').html('')
+
 
   # # # Embedding 
 
@@ -255,7 +261,8 @@ $ ->
       # # # Turn on reordering
       else if $(this).attr('id') == 'reordering-lines'
         # $('#transcript-lines').sortable("enable")    
-        $('#editing-instructions').html("New feature, coming soon!")
+        # $('#editing-instructions').html("Drag the lines to reorder them. Please note: only lines that haven't been timed can be reordered.")
+        $('#editing-instructions').html("New feature, coming soon.")
       else if $(this).attr('id') == 'copying-lines'
         $('#editing-instructions').html("Double click a line to copy it.")
 
@@ -433,6 +440,7 @@ $ ->
   # # # Reorder lines logic 
 
   $('#transcript-lines').sortable(
+    cancel: ".has-time"
     stop: (event, ui) ->
       this_line = $(ui.item)
       line_before = this_line.prev()

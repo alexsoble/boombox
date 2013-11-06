@@ -1,5 +1,5 @@
 class Line < ActiveRecord::Base
-  attr_accessible :transcript_id, :interpretation_id, :lang1, :lang2, :time, :duration, :video_id
+  attr_accessible :transcript_id, :interpretation_id, :lang1, :lang2, :time, :duration, :video_id, :ordering
   belongs_to :transcript
   belongs_to :interpretation
   belongs_to :video
