@@ -81,7 +81,7 @@
 
 <%= yield %>
 
-<% if controller_name == 'pages' %>
+<% if controller_name == 'pages' && action_name != 'experiment' %>
   <br><br>
     <div class="row">
       <p style="text-align: center;">

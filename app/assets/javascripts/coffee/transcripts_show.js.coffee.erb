@@ -143,8 +143,7 @@ $ ->
       unless this_line.hasClass('highlighted')
         this_line.effect("highlight", { color: "#FFFF00" }, 4000)
         this_line.addClass("highlighted")
-        if window.autoscroll == true
-          $("#community-notes").scrollTo(this_line.prev().prev(), { duration : 250 } )
+        $("#community-notes").scrollTo(this_line.prev().prev(), { duration : 250 } )
 
     # PLAYBACK SLIDER MOVES HERE
     unless window.sliding == true
@@ -568,16 +567,19 @@ $ ->
       console.log line_id
       if window.active_editing_category == 'editing-lines'
         editLine(line_id)
-      if window.active_editing_category == 'removing-lines'
+      else if window.active_editing_category == 'removing-lines'
         removeLine(line_id)
-      if window.active_editing_category == 'timing-lines'
+      else if window.active_editing_category == 'timing-lines'
         timeLine(line_id)
-      if window.active_editing_category == 'commenting-lines'
+      else if window.active_editing_category == 'commenting-lines'
         commentLine(line_id)
-      if window.active_editing_category == 'slicing-lines'
+      else if window.active_editing_category == 'slicing-lines'
         sliceLine(line_id)
-      if window.active_editing_category == 'adding-lines'
+      else if window.active_editing_category == 'adding-lines'
         addLineAfter(line_id)
+      else if typeof $(this).attr('data-time') != 'undefined' and $(this).attr('data-time') != false
+        window.player.seekTo($(this).attr('data-time'))
+
     $(this).dblclick ->
       line_id = parseInt($(this).attr('data-line-id'))
       console.log line_id

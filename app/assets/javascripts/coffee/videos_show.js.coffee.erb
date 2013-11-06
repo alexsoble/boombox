@@ -130,13 +130,18 @@ $ ->
     if window.autoscroll == true
       if $("[data-time=#{window.time}]").length != 0
         if $('.translation-area').length > 0
-          this_line = $(".line-container[data-time=#{window.time}]").eq(0)
+          this_area = $('.translation-area').children().eq(0)
+          this_line = this_area.children(".line-container[data-time=#{window.time}]")
         else if $('.transcript-area').length > 0 
-          this_line = $(".transcript-line[data-time=#{window.time}]").eq(0)
+          this_area = $('.transcript-area').children().eq(0)
+          this_line = this_area.children(".transcript-line[data-time=#{window.time}]")
         unless this_line.hasClass('highlighted')
           this_line.effect("highlight", { color: "#FFFF00" }, 4000)
           this_line.addClass("highlighted")
-          $("#community-notes").scrollTo(this_line.prev().prev(), { duration : 250 } )
+          if this_line.prev().prev().length > 0
+            $("#community-notes").scrollTo(this_line.prev().prev(), { duration : 250 } )
+          else
+            $("#community-notes").scrollTo(this_line, { duration : 250 } )
 
     # PLAYBACK SLIDER MOVES HERE
     unless window.sliding == true

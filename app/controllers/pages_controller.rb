@@ -87,6 +87,7 @@ class PagesController < ApplicationController
   end
   
   def experiment
+    @video = Video.find_by_id(227)
   end
 
   def teachers

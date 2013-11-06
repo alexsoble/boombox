@@ -1,5 +1,138 @@
 $ ->
 
+  formatTime = (time) ->
+    time = Math.floor(time)
+    if time <= 9 then formatted_time = "00:0" + time
+    if 9 < time <= 59 then formatted_time = "00:" + time
+    if 60 <= time < 540
+      if time%60 <= 9 then formatted_time = "0" + Math.floor((time)/60) + ":0" + (time)%60
+      if 9 < time%60 <= 59 then formatted_time = "0" + Math.floor((time)/60) + ":" + (time)%60
+    if 540 <= time < 3600
+      if time%60 <= 9 then formatted_time = Math.floor((time)/60) + ":0" + (time)%60
+      if 9 < time%60 <= 59 then formatted_time = Math.floor((time)/60) + ":" + (time)%60
+    formatted_time
+
+  shortFormatTime = (time) ->
+    time = Math.floor(time)
+    if time <= 9 then formatted_time = ":0" + time
+    if 9 < time <= 59 then formatted_time = ":" + time
+    if 60 <= time < 540
+      if time%60 <= 9 then formatted_time = Math.floor((time)/60) + ":0" + (time)%60
+      if 9 < time%60 <= 59 then formatted_time = Math.floor((time)/60) + ":" + (time)%60
+    if 540 <= time < 3600
+      if time%60 <= 9 then formatted_time = Math.floor((time)/60) + ":0" + (time)%60
+      if 9 < time%60 <= 59 then formatted_time = Math.floor((time)/60) + ":" + (time)%60
+    formatted_time
+
+  youtube_id = $('#data').attr('data-youtube-id')
+  window.video_id = parseInt($('#data').attr('data-video-id'))
+
+  tag = document.createElement("script")
+  tag.src = "https://www.youtube.com/iframe_api"
+  firstScriptTag = document.getElementsByTagName("script")[0]
+  firstScriptTag.parentNode.insertBefore tag, firstScriptTag
+
+  window.section = 0 
+  window.time = 0
+  window.got_volume = false
+  window.video_play_counter = 0
+  window.autoscroll = true
+  window.exercise = false
+  window.adding_content = false
+  window.line_being_timed_id = 0
+  window.editing_lines = false
+  window.adding_times = false
+
+
+  window.onYouTubeIframeAPIReady = ->
+    player = new YT.Player("new-video-box", {
+      height: "315"
+      width: "420"
+      videoId: youtube_id
+      playerVars: 
+        {
+        controls: 0
+        cc_load_policy: 1
+        wmode: "opaque"
+        }
+      events:
+        onReady: onPlayerReady
+        onStateChange: onPlayerStateChange })
+    console.log "Checking for cc..." + player.getOptions().indexOf('cc')
+    window.player = player
+
+  onPlayerReady = (event) ->
+    video_duration = window.player.getDuration()
+    window.video_duration = video_duration
+    window.half_duration = video_duration * .5
+    playbackControls(video_duration)
+    if window.loop_length == false
+      straightPlaybackBehavior()
+    event.target.playVideo()
+
+  countVideoPlayTime = ->
+
+    # IF PLAYER IS PLAYING, UPDATE THE PLAY COUNTER
+    state = player.getPlayerState()
+    if state == 1
+      window.video_play_counter += 1
+    if state == 0
+      $('#watch-again').addClass('video-finished')
+      $('#watch-again').html('<br><br><br><br><br><h3 class="link-style">Watch again?</class></h3>')
+      $('iframe').remove()
+      if window.video_play_counter + 10 > window.video_duration
+        $.post("/update_playcount/#{window.playcount_id}", (data) ->
+          new_playcount = data.data.play_count
+          $('#video-play-counter').html(new_playcount)
+        )
+        window.video_play_counter = 0
+      $('#watch-again').after('<div id="new-video-box"></div>')
+    
+    # UI RESPONDS AS VIDEO PLAYS
+    exact_time = player.getCurrentTime()
+    window.time = Math.floor(exact_time)
+
+    if window.autoscroll == true
+      if $("[data-time=#{window.time}]").length != 0
+        if $('.translation-area').length > 0
+          this_area = $('.translation-area').children().eq(0)
+          this_line = this_area.children(".line-container[data-time=#{window.time}]")
+        else if $('.transcript-area').length > 0 
+          this_area = $('.transcript-area').children().eq(0)
+          this_line = this_area.children(".transcript-line[data-time=#{window.time}]")
+        unless this_line.hasClass('highlighted')
+          this_line.effect("highlight", { color: "#FFFF00" }, 4000)
+          this_line.addClass("highlighted")
+          if this_line.prev().prev().length > 0
+            $("#community-notes").scrollTo(this_line.prev().prev(), { duration : 250 } )
+          else
+            $("#community-notes").scrollTo(this_line, { duration : 250 } )
+
+    # PLAYBACK SLIDER MOVES HERE
+    unless window.sliding == true
+      $('#marker').attr("style", "position: relative; top: #{window.time}px")
+
+  counter = setInterval(countVideoPlayTime, 400)
+  done = false
+
+  onPlayerStateChange = (event) ->
+    if event.data == YT.PlayerState.PAUSED
+      exact_time = player.getCurrentTime()
+      window.time = Math.round(exact_time)
+      window.section = window.time / window.loop_length
+
+  delayedShow = ->
+    window.player.playVideo()
+  window.setTimeout(delayedShow, 1000)
+
+  $('#watch-again').livequery ->
+    $(this).click ->
+      onYouTubeIframeAPIReady()
+      $('#watch-again').removeClass('video-finished')
+      $('#watch-again').html('')
+
+
+  ###
   $('.edit-line').livequery ->
     $(this).click -> 
       console.log 'edit line triggered!'
@@ -35,3 +168,4 @@ $ ->
       text = $(this).text()
       $('#lines').append("<div style='margin:30px;'>#{text}</div>")
       $(this).remove()
+  ### 

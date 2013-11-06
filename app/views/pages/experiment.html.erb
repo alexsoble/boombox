@@ -1,5 +1,54 @@
-<div id='heyu-area'><div id='new-video-box'></div></div>
-<script src="/transcripts/142/embed.js"></script>
-<script src="http://code.jquery.com/jquery-1.10.2.min.js"></script>
-<script src="//ajax.googleapis.com/ajax/libs/jqueryui/1.10.3/jquery-ui.min.js"></script>
-<script src="//cdnjs.cloudflare.com/ajax/libs/jquery-scrollTo/1.4.6/jquery.scrollTo.min.js"></script>
+<style>
+  .video-container-alt {
+    width: 420px; 
+    background-color: #f3f3f6; 
+    height: 800px; 
+    float: left; 
+    }
+
+  .title-box-alt {
+    background-color: #9b59bb;
+    }
+
+  #vertical-bar {
+    width: 860px;
+    margin-right: auto; 
+    margin-left: auto; 
+    position: relative; 
+    top: -20px;
+    background-color: #9b59bb;
+    }
+
+  #timing-scale {
+    background-color: #d6d6e0;
+    width: 30px;
+    height: 100%;
+    float: right; }
+
+  #marker {
+    background-color: orange; 
+    height: 10px;
+    width: 100%;
+    }
+</style>
+
+<div id="vertical-bar">
+
+  <div class="video-container-alt">
+    <div id="watch-again"></div>
+    <div id="new-video-box"></div>
+    <div class="title-box-alt"><h3 style="color: white;"><%= @video.title %></h3></div>
+  </div>
+
+  <div class="video-container-alt" style="float: right">
+    <div id="timing-scale"></div>
+    <div id="marker">
+  </div>
+
+</div>
+
+<div id="data" class="quiet"
+ data-youtube-id=<%= @video.youtube_id %>
+ data-title=<%= @video.title %>
+ data-video-id=<%= @video.id %>
+</div>
