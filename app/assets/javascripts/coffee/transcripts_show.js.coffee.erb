@@ -259,6 +259,8 @@ $ ->
           <br>
           <input class='slicing-style' type='radio' name='asian'> Chinese characters (漢字)
         ")
+        $(".slicing-style[name='western']").prop('checked', true)
+        window.slicing_style = 'western'
       else if $(this).attr('id') == 'removing-lines'
         $('#editing-instructions').html("Remove lines you don't need any more.")
       else if $(this).attr('id') == 'timing-lines' 
@@ -270,7 +272,7 @@ $ ->
       else if $(this).attr('id') == 'reordering-lines'
         $('#untimed-lines').sortable("enable")    
         $('#editing-instructions').html("New feature, coming soon.")
-        $('#editing-instructions').html("Drag the lines to reorder them. Please note: only lines that haven't been timed can be reordered.")
+        $('#editing-instructions').html("Drag the lines to reorder them. Note: only lines that haven't been timed can be reordered.")
       else if $(this).attr('id') == 'copying-lines'
         $('#editing-instructions').html("Double click a line to copy it.")
 
@@ -355,7 +357,9 @@ $ ->
   $("[class^='word']").livequery ->
     $(this).click ->
 
-      id = parseInt($(this).parent().attr('data-line-id'))
+      this_lang1 = $(this).parent()
+      this_line = this_lang1.parent()
+      id = parseInt(this_lang1.attr('data-line-id'))
 
       after_words = []      
       for word in $(this).nextAll("[class^='word']")
@@ -365,13 +369,24 @@ $ ->
         after_sentence += (' ' + word) 
         console.log "after_sentence = #{after_sentence}"
 
-      $(this).parent().parent().after("
-        <div class='transcript-line editable-line rounded'>
-          <span class='lang1'>#{after_sentence}</span>
-          <span class='line-comment-area'></span>
-          <span class='line-timing tiny gray'></span>
-        </div>
-      ")
+      if $(this).parent().parent().hasClass('has-time')
+        time = parseInt($(this).parent().parent().attr('data-time'))
+      else
+        time = ''
+
+      $.post('/new_line', { 'line' : { 'lang1' : "#{after_sentence}", 'video_id' : "#{window.video_id}", 'interpretation_id' : "#{window.interpretation_id}", 'transcript_id' : "#{window.transcript_id}", 'time' : "#{time + 1}" } }, (data) ->
+        line = data.data
+        id = line.id
+        time = line.time
+        this_line.after("
+          <div class='transcript-line editable-line rounded' data-line-id=#{id} data-time=#{time}>
+            <span class='lang1' data-line-id=#{id}>#{after_sentence}</span>
+            <span class='line-comment-area' data-line-id=#{id}></span>
+            <span class='line-timing tiny gray' data-line-id=#{id} data-time=#{time}>#{formatTime(time)}</span>
+          </div>
+        ")
+        reorder()
+      )
 
       before_words = []
       for word in $(this).prevAll("[class^='word']")
@@ -380,7 +395,10 @@ $ ->
       for word in before_words.reverse()
         before_sentence += (' ' + word)
 
-      $(this).parent().text(before_sentence)
+      $.post('/update_line', { 'line' : { 'id' : "#{id}", 'lang1' : "#{before_sentence}" } }, (data) ->
+        line = data.data
+        this_lang1.text(line.lang1)
+      )
 
   $("[class^='char']").livequery ->
     $(this).click ->
@@ -401,7 +419,7 @@ $ ->
       else
         time = ''
 
-      $.post('/new_line', { 'line' : { 'lang1' : "#{after_sentence}", 'video_id' : "#{window.video_id}", 'interpretation_id' : "#{window.interpretation_id}", 'transcript_id' : "#{window.transcript_id}", 'time' : "#{time}" } }, (data) ->
+      $.post('/new_line', { 'line' : { 'lang1' : "#{after_sentence}", 'video_id' : "#{window.video_id}", 'interpretation_id' : "#{window.interpretation_id}", 'transcript_id' : "#{window.transcript_id}", 'time' : "#{time + 1}" } }, (data) ->
         line = data.data
         id = line.id
         time = line.time
@@ -628,6 +646,12 @@ $ ->
       $('.time-selector-handle').removeClass('time-selector-handle')
       $('#timing-instructions').remove()
       window.line_being_timed_id = 0
+
+  reorderTimes = ->
+    console.log 'attempting to sort!'
+    $('#timed-lines').children(".editable-line").sortElements (a, b) ->
+      if parseInt($(a).attr('data-time')) > parseInt($(b).attr('data-time')) then 1 else -1
+      console.log 'sorting happened!'
       
   $('.time-selector').livequery ->
     $(this).dblclick ->
@@ -638,36 +662,21 @@ $ ->
         $(".line-timing[data-line-id=#{line.id}]").html(formatTime(line.time)).show()
 
         if this_line.parent().attr('id') == 'untimed-lines'
-
           if $('#timed-lines').length == 0
             $('#transcript-lines').prepend("
               <div id='timed-lines'><p><strong>Timed lines</strong></p></div><br>
             ")
-          
           this_line.appendTo($('#timed-lines'))
 
-          ###   
-          else
-            timed_lines = $('#timed-lines').children(".transcript-line")
-            time_array = []
-            for line in timed_lines
-              time_array.push parseInt($(line).attr('data-time'))
-            for this_time in time_array
-              if this_time > time
-                this_time_index = time_array.indexOf(this_time)
-                time_array = time_array.splice(this_time_index, 1)
-            prev_time = time_array.max
-            console.log "prev_time = #{prev_time}"
-            prev_line = $("#timed-lines").children(".transcript-line[data-time=#{prev_time}]")
-            this_line.after(prev_line)
-          ###
+        $('.time-selector').removeClass('time-selector')
+        $('.time-selector-handle').removeClass('time-selector-handle')
+        $('#timing-instructions').remove()
+        window.line_being_timed_id = 0
+        $(".line-timing[data-line-id=#{line.id}]").html(formatTime(line.time))
+        saveAlert()
 
-          $('.time-selector').removeClass('time-selector')
-          $('.time-selector-handle').removeClass('time-selector-handle')
-          $('#timing-instructions').remove()
-          window.line_being_timed_id = 0
-          $(".line-timing[data-line-id=#{line.id}]").html(formatTime(line.time))
-          saveAlert()
+        if this_line.parent().attr('id') == 'timed-lines'
+          reorderTimes()
       )
 
 
@@ -796,7 +805,7 @@ $ ->
             ))
         )
       )
-      
+
 ###
 this_line = $(ui.item)
 line_before = this_line.prev()
@@ -828,4 +837,19 @@ new_time_formatted = formatTime(new_time)
 $(ui.item).attr('data-time', new_time)
 $(ui.item).children('.line-timing').html(new_time_formatted)
 $(ui.item).children('.line-timing').addClass('questionable')
+
+else
+  timed_lines = $('#timed-lines').children(".transcript-line")
+  time_array = []
+  for line in timed_lines
+    time_array.push parseInt($(line).attr('data-time'))
+  for this_time in time_array
+    if this_time > time
+      this_time_index = time_array.indexOf(this_time)
+      time_array = time_array.splice(this_time_index, 1)
+  prev_time = time_array.max
+  console.log "prev_time = #{prev_time}"
+  prev_line = $("#timed-lines").children(".transcript-line[data-time=#{prev_time}]")
+  this_line.after(prev_line)
+
 ###

@@ -11,12 +11,11 @@
 // GO AFTER THE REQUIRES BELOW.
 //
 //= require jquery
-//= require jquery_ujs
 //= require bootstrap.min
+//= require jquery_ujs
+//= require jquery-ui-1.10.3.custom.min
 //= require jquery.livequery
 //= require jquery.scrollTo
-//= require jquery-ui-1.10.3.custom.min
-//= require jQAllRangeSliders-min
 //= require jquery.lettering
-//= require jquery.hoverIntent.minified
+//= require jquery.sortElements
 //= require_directory .
