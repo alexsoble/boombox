@@ -81,30 +81,29 @@
 
   <div id="community-notes">
     <div id='transcript-lines'>
-      <% n = 0 %>
-      <% @transcript.lines.order("time ASC").order("ordering ASC").order("created_at ASC").each do |l| %>
-        <div class="transcript-line<% if current_user %><% if current_user.id == @user.id %> editable-line <% end %><% end %><% if l.time.present? %> has-time <% else %> no-time <% end %>rounded" data-line-id=<%= l.id %> <% if l.time.present? %>data-time=<%= l.time %><% end %>>
-            <% n += 1 %>
-            <span class="lang1" data-line-id=<%= l.id %>><%= l.lang1 %></span>
-            <span class="line-comment-area" data-line-id=<%= l.id %>></span>
-            <span class="line-timing tiny gray" data-line-id=<%= l.id %><% if l.time.present? %>data-time=<%= l.time %><% end %><% if l.ordering.present? %>data-ordering=<%= l.ordering %><% end %>>
-              <% if l.time.present? %>
-                <%= l.formatted_time %>
-              <% end %>
-            </span>
-            <% if l.comments.present? %>
-              <% l.comments.each do |c| %>
-                <div class="line-comment rounded" data-line-id=<%= l.id %> data-comment-id=<%= c.id %>>
-                  <span class="comment-text" data-comment-id=<%= c.id %>><%= c.comment_text %></span>
-                  <% if current_user %>
-                    <% if current_user.id == @user.id %>
-                      <span class="edit-comment quiet" data-comment-id=<%= c.id %>><i class="icon icon-pencil blue-link"></i></span>
-                      <span class="remove-comment quiet" data-comment-id=<%= c.id %>><i class="icon icon-remove blue-link"></i></span>
-                    <% end %>
-                  <% end %>
-                </div>
-              <% end %>
-           <% end %>
+      <% if @timed_lines.present? %>
+        <% if current_user %>
+          <% if current_user.id == @user.id %>
+            <p><strong>Timed lines</strong></p>
+          <% end %>
+        <% end %>
+        <div id="timed-lines">
+          <% @timed_lines.each do |l| %>
+            <%= render "line", :l => l, :user => @user %>
+          <% end %>
+        </div>
+        <br>
+      <% end %>
+      <% if @untimed_lines.present? %>
+        <% if current_user %>
+          <% if current_user.id == @user.id %>
+            <p><strong>Untimed lines</strong></p>
+          <% end %>
+        <% end %>
+        <div id="untimed-lines">
+          <% @untimed_lines.each do |l| %>
+            <%= render "line", :l => l, :user => @user %>
+          <% end %>
         </div>
       <% end %>
     </div>

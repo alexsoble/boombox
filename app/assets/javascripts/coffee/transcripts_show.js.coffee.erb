@@ -61,6 +61,7 @@ $ ->
   window.video_play_counter = 0
   window.line_being_commented = 0
   window.line_being_timed_id = 0
+  window.line_being_sliced = 0
   
   if $('.star').attr('id') == 'star-full'
     window.star_id = parseInt($('#star-full').attr('data-star-id'))
@@ -237,8 +238,7 @@ $ ->
       $(this).children('.status').text($(this).attr('data-active'))
       $(this).children('.status').attr('style','color: yellow;')
       $(this).children('.icon').attr('style','color: yellow;')
-      unless $(this).attr('id') == 'slicing-lines'
-        window.active_editing_category = $(this).attr('id')
+      window.active_editing_category = $(this).attr('id')
 
       # # # Cursor changes to pointer
       $('body').attr('style','cursor: pointer;')
@@ -251,7 +251,14 @@ $ ->
         
       # # # Change cursor to slicer
       else if $(this).attr('id') == 'slicing-lines'
-        $('#editing-instructions').html("New feature, coming soon!")
+        $('#editing-instructions').html("
+          Click the line you'd like to slice. Then click on the word that should begin the new line.
+          <br><br>
+          Text style:<br>
+          <input class='slicing-style' type='radio' name='western'> Latin alphabet
+          <br>
+          <input class='slicing-style' type='radio' name='asian'> Chinese characters (漢字)
+        ")
       else if $(this).attr('id') == 'removing-lines'
         $('#editing-instructions').html("Remove lines you don't need any more.")
       else if $(this).attr('id') == 'timing-lines' 
@@ -261,9 +268,9 @@ $ ->
 
       # # # Turn on reordering
       else if $(this).attr('id') == 'reordering-lines'
-        # $('#transcript-lines').sortable("enable")    
-        # $('#editing-instructions').html("Drag the lines to reorder them. Please note: only lines that haven't been timed can be reordered.")
+        $('#untimed-lines').sortable("enable")    
         $('#editing-instructions').html("New feature, coming soon.")
+        $('#editing-instructions').html("Drag the lines to reorder them. Please note: only lines that haven't been timed can be reordered.")
       else if $(this).attr('id') == 'copying-lines'
         $('#editing-instructions').html("Double click a line to copy it.")
 
@@ -322,9 +329,100 @@ $ ->
   # # # Slicing line logic 
 
   sliceLine = (line_id) -> 
-    this_line = $(".editable-line[data-line-id=#{line_id}]")
-    this_line.lettering('words')
+    this_line = $(".lang1[data-line-id=#{line_id}]")
+    unless this_line.hasClass('slicing')
+      unsliceLine($('.slicing'))
+      window.line_being_sliced = line_id
+      if window.slicing_style == 'western'
+        this_line.lettering('words')
+      else if window.slicing_style == 'asian'
+        this_line.lettering()
+      this_line.parent().addClass('slicing')
 
+  unsliceLine = (line) ->
+    lang1 = line.children('.lang1')
+    lang1.html(lang1.text())
+    line.removeClass('slicing')
+
+  $('.slicing-style').livequery ->
+    $(this).click -> 
+      $('.slicing-style').each(->
+        $(this).prop('checked', false)
+      )
+      $(this).prop('checked', true)
+      window.slicing_style = $(this).attr('name')
+
+  $("[class^='word']").livequery ->
+    $(this).click ->
+
+      id = parseInt($(this).parent().attr('data-line-id'))
+
+      after_words = []      
+      for word in $(this).nextAll("[class^='word']")
+        after_words.push $(word).text()
+      after_sentence = $(this).text()
+      for word in after_words
+        after_sentence += (' ' + word) 
+        console.log "after_sentence = #{after_sentence}"
+
+      $(this).parent().parent().after("
+        <div class='transcript-line editable-line rounded'>
+          <span class='lang1'>#{after_sentence}</span>
+          <span class='line-comment-area'></span>
+          <span class='line-timing tiny gray'></span>
+        </div>
+      ")
+
+      before_words = []
+      for word in $(this).prevAll("[class^='word']")
+        before_words.push $(word).text()
+      before_sentence = ''
+      for word in before_words.reverse()
+        before_sentence += (' ' + word)
+
+      $(this).parent().text(before_sentence)
+
+  $("[class^='char']").livequery ->
+    $(this).click ->
+
+      id = parseInt($(this).parent().attr('data-line-id'))
+
+      after_words = []      
+      for word in $(this).nextAll("[class^='char']")
+        after_words.push $(word).text()
+      after_sentence = $(this).text()
+      for word in after_words
+        after_sentence += word
+
+      if $(this).parent().parent().hasClass('has-time')
+        time = parseInt($(this).parent().parent().attr('data-time'))
+      else
+        time = ''
+
+      $.post('/new_line', { 'line' : { 'lang1' : "#{after_sentence}", 'video_id' : "#{window.video_id}", 'interpretation_id' : "#{window.interpretation_id}", 'transcript_id' : "#{window.transcript_id}", 'time' : "#{time}" } }, (data) ->
+        line = data.data
+        id = line.id
+        time = line.time
+        $(this).parent().parent().after("
+          <div class='transcript-line editable-line rounded' data-line-id=#{id} data-time=#{time}>
+            <span class='lang1' data-line-id=#{id}>#{after_sentence}</span>
+            <span class='line-comment-area' data-line-id=#{id}></span>
+            <span class='line-timing tiny gray' data-line-id=#{id} data-time=#{time}>#{formatTime(time)}</span>
+          </div>
+        ")
+      )
+
+      before_words = []
+      for word in $(this).prevAll("[class^='char']")
+        before_words.push $(word).text()
+      before_sentence = ''
+      for word in before_words.reverse()
+        before_sentence += word
+
+      $.post('/update_line', { 'line' : { 'id' : "#{id}", 'lang1' : "#{before_sentence}" } }, (data) ->
+        line = data.data
+        $(this).parent().text(line.lang1)
+      )
 
   # # # Copy logic
 
@@ -444,22 +542,32 @@ $ ->
 
   # # # Reorder lines logic 
 
-  $('#transcript-lines').sortable(
-    cancel: ".has-time"
+  $('#untimed-lines').sortable(
+
     stop: (event, ui) ->
       this_line = $(ui.item)
       line_before = this_line.prev()
       line_after = this_line.next()
 
       # # # Adjusting the order
-      if line_before.length == 0 and line_after.length > 0
-        this_line.attr('data-line-order', 1)
-        console.log 'first!!!'
-      if line_before.length > 0 and line_after.length == 0
-        this_line.attr('data-line-order', window.number_of_lines)
-        console.log 'last!!!'
+
+      for line in $('#untimed-lines').children(".editable-line")
+        position = $(line).prevAll().length + 1
+        $(line).attr('data-line-order', "#{position}")
+        id = parseInt($(line).attr('data-line-id'))
+        $.post('/update_line', { 'line' : { 'id' : "#{id}", 'ordering' : "#{position}" } }, (data) ->
+          console.log data
+        )
+
 
       ###
+      if line_before.length == 0 and line_after.length > 0
+        this_line.attr('data-ordering', "1")
+        console.log 'first!!!'
+
+      if line_before.length > 0 and line_after.length == 0
+        number_of_lines = $('#untimed-lines').children().length
+        console.log 'last!!!'
       # # # Guessing the time
       if line_before.length > 0 and line_after.length > 0
         time_before = parseInt(line_before.attr('data-time'))
@@ -482,11 +590,11 @@ $ ->
       ###
   )
 
-  $('#transcript-lines').sortable("disable")    
+  $('#untimed-lines').sortable("disable")    
 
   stopReordering = ->
-    unless $('#transcript-lines').sortable("option", "disabled")
-      $('#transcript-lines').sortable("disable")
+    unless $('#untimed-lines').sortable("option", "disabled")
+      $('#untimed-lines').sortable("disable")
 
 
   # # # Adding line logic
@@ -532,7 +640,7 @@ $ ->
     $(".line-timing[data-line-id=#{line_id}]").hide()
     $('#timing-instructions').remove()
     $(".editable-line[data-line-id=#{line_id}]").after("
-      <p id='timing-instructions' class='tiny' style='margin-top: 8px;'>
+      <p id='timing-instructions' class='tiny rounded' style='margin-top: 8px;'>
         <span>
           <i class='icon icon-time icon-2x orange-icon time-selector'></i>
           Double click the orange clock when the line begins...
@@ -557,13 +665,40 @@ $ ->
       time = window.time
       $.post('/update_line', { 'line' : { 'id' : "#{window.line_being_timed_id}", 'time' : "#{time}" } }, (data) ->
         line = data.data
+        this_line = $(".transcript-line[data-line-id=#{line.id}]")
         $(".line-timing[data-line-id=#{line.id}]").html(formatTime(line.time)).show()
-        $('.time-selector').removeClass('time-selector')
-        $('.time-selector-handle').removeClass('time-selector-handle')
-        $('#timing-instructions').remove()
-        window.line_being_timed_id = 0
-        $(".line-timing[data-line-id=#{line.id}]").html(formatTime(line.time))
-        saveAlert()
+
+        if this_line.parent().attr('id') == 'untimed-lines'
+
+          if $('#timed-lines').length == 0
+            $('#transcript-lines').prepend("
+              <div id='timed-lines'><p><strong>Timed lines</strong></p></div><br>
+            ")
+          
+          this_line.appendTo($('#timed-lines'))
+
+          ###   
+          else
+            timed_lines = $('#timed-lines').children(".transcript-line")
+            time_array = []
+            for line in timed_lines
+              time_array.push parseInt($(line).attr('data-time'))
+            for this_time in time_array
+              if this_time > time
+                this_time_index = time_array.indexOf(this_time)
+                time_array = time_array.splice(this_time_index, 1)
+            prev_time = time_array.max
+            console.log "prev_time = #{prev_time}"
+            prev_line = $("#timed-lines").children(".transcript-line[data-time=#{prev_time}]")
+            this_line.after(prev_line)
+          ###
+
+          $('.time-selector').removeClass('time-selector')
+          $('.time-selector-handle').removeClass('time-selector-handle')
+          $('#timing-instructions').remove()
+          window.line_being_timed_id = 0
+          $(".line-timing[data-line-id=#{line.id}]").html(formatTime(line.time))
+          saveAlert()
       )
 
 
@@ -586,6 +721,7 @@ $ ->
       else if window.active_editing_category == 'adding-lines'
         addLineAfter(line_id)
       else if typeof $(this).attr('data-time') != 'undefined' and $(this).attr('data-time') != false
+        console.log $(this).attr('data-time')
         window.player.seekTo($(this).attr('data-time'))
 
     $(this).dblclick ->
@@ -597,8 +733,6 @@ $ ->
   $('.line-timing').livequery ->
     $(this).click ->  
       window.player.seekTo($(this).attr('data-time'))
-  # # # Maybe this should also happen when we click on a line not in editing mode?
-
 
 
   # # # Translating stuff 

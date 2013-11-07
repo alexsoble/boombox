@@ -32,6 +32,10 @@ class LinesController < ApplicationController
       @line.lang2 = @update[:lang2]
       @line.save
     end
+    if @update[:ordering].present?
+      @line.ordering = @update[:ordering]
+      @line.save
+    end
     render :json => { :data => @line }
   end
 

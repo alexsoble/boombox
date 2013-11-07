@@ -24,10 +24,15 @@
   height: 15px; }
 .line-timing.questionable { color: red; font-weight: bold; }
 
-.transcript-line { padding: 4px; cursor: pointer; }
+.transcript-line { padding: 4px; }
+.transcript-line.has-time { cursor: pointer; }
+
 .transcript-line .lang1 { 
   display: inline-block;
   max-width: 300px; }
+
+.transcript-line.slicing { 
+  background-color: #37FDFC; }
 
 .line-comment {
   padding: 6px; 
@@ -36,6 +41,10 @@
   padding-left: 12px; 
   background-color: #dcdce5;
   font-size: 13px; }
+
+#timing-instructions { 
+  background-color: white;
+  padding: 6px; }
 
 #saved-status { 
   color: white; 

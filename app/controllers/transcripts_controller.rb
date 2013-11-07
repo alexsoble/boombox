@@ -2,6 +2,9 @@ class TranscriptsController < ApplicationController
 
   def show
     @transcript = Transcript.find_by_slug!(params[:id])
+    @timed_lines = @transcript.lines.reject { |l| l.time.blank? }.sort { |a, b| a.time <=> b.time }
+    @untimed_lines = @transcript.lines.reject { |l| l.time.present? }.sort { |a, b| a.ordering <=> b.ordering }
+
     @user = @transcript.user
     @video = @transcript.video
 
