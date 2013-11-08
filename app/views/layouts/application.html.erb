@@ -70,12 +70,8 @@
 </div>
 
 <% unless flash.empty? %> 
-  <div class="row">
-    <div class="span11 offset1">
-      <div class="alert alert-success rounded" style="background-color: yellow; color: black; text-align: center;">
-        <%= notice %>
-      </div>
-    </div>
+  <div class="centerbox center">
+    <p class="alert alert-success rounded"><%= notice %></p>
   </div>
 <% end %>
 

@@ -69,7 +69,12 @@ span { color: black; }
 
 .hr { height: 1px;
   background: #9B59BB;
-  margin: 0px;}
+  margin: 0px; }
+
+.alert.alert-success {
+  background-color: yellow !important; 
+  color: black; 
+  text-align: center; }
 
 #footer { position: fixed;
    left: 0px;
