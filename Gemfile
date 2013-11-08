@@ -8,6 +8,7 @@ gem 'pg'
 # gem 'rails', :git => 'git://github.com/rails/rails.git'
 
 gem 'bcrypt-ruby', '~> 3.0.0'
+gem 'devise'
 gem 'omniauth'
 gem 'omniauth-twitter'
 gem 'omniauth-facebook'
