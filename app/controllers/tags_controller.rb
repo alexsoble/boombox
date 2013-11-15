@@ -1,30 +1,21 @@
 class TagsController < ApplicationController
 
   def create
-    @tag = Tag.new
-    @tag.name = params[:name]
-    @tag.video_id = params[:video_id]
-    @tag.user_id = params[:user_id]
+    @tag = Tag.create(params[:tag])
+    render json: { data: @tag }
+  end
 
-    @tag.type_lang = false
-    @tag.type_style = false
-    @tag.type_artist = false
-    @tag.type_difficulty = false
-
-    tag_type = params[:tag_type]
-    if tag_type == 'language'
-      @tag.type_lang = true
-    elsif tag_type == 'style'
-      @tag.type_style = true
-    elsif tag_type == 'artist'
-      @tag.type_artist = true
-    elsif tag_type == 'difficulty'
-      @tag.type_difficulty = true
+  def update
+    @tag = Tag.find_by_id(params[:tag][:id])
+    if params[:tag][:difficulty_id].present?
+      @tag.difficulty_id = params[:tag][:difficulty_id]
     end
-
-    @tag.save
-
-    render :json => { :tag => @tag }
+    if params[:tag][:reason].present?
+      @tag.reason = params[:tag][:reason]
+    end
+    if @tag.save
+      render json: { data: @tag }
+    end
   end
 
   def show
@@ -32,6 +23,18 @@ class TagsController < ApplicationController
     @tag = Tag.find_by_id(params[:id])
     @tag_creator = User.find_by_id(@tag.user_id)
     @tag_video = Video.find_by_id(@tag.video_id)
+
+    if @tag.language.present?
+      @language = @tag.language.name
+    end
+
+    if @tag.difficulty.present?
+      @difficulty = @tag.difficulty.name
+    end
+
+    if @tag.reason.present?
+      @reason = @tag.reason.text
+    end
 
     if current_user
       @user_vote = TagVote.where(:user_id => current_user.id, :tag_id => @tag.id).first
@@ -50,6 +53,12 @@ class TagsController < ApplicationController
     @upvote_total = @votes.where(:value => 1).length
     @downvote_total = @votes.where(:value => -1).length
 
+  end
+
+  def fetch
+    @video = Video.find_by_id(params[:video_id])
+    @tags = @video.tags
+    render json: { data: @tags }
   end
 
   def destroy

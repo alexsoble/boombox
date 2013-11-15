@@ -56,12 +56,6 @@ $ ->
 
   # WE GOTTA HAVE A PLAYBACK SLIDER
 
-  $('#settings').append("
-    <div class='playback-left-label end-label'><div class='playback-left-label inner-label'></div></div>
-      <div id='playback-slider'></div>
-    <div class='playback-right-label end-label'><div class='playback-right-label inner-label'></div></div>
-  ")
-
   playbackControls = (video_duration) ->
     $('.playback-left-label.inner-label').html(":00")
     $('.playback-right-label.inner-label').html("#{shortFormatTime(video_duration)}")
@@ -899,90 +893,81 @@ $ ->
         else
           postNewChallengeQuestion(challenge, options)
 
-  $('#add-tag').click ->
-    $('#tag-area').hide()
-    $('#add-tag-action-prompt').hide()
-    $('#new-tag-area').html("
-      <div style='float: left; width: 180px;'>
-        <span>New tag:<span>
-        <br>
-        <input id='new-tag' type='text' style='width: 160px; height: 18px; margin-top: 4px;'>
-        <br>
-        <div id='submit-new-tag' class='btn btn-primary btn-small rounded'> Submit </div>
-        <div id='back-from-tagging' class='btn btn-primary btn-small rounded'> Back </div>
-      </div>
-      <div id='tag-types' style='float: right; width: 180px;'>
-        <div style='width: 180px; float: left;'>
-          <span>Tag description:</span>
-        </div>
-        <div style='width: 85px; float: left;'>
-          <span class='tiny'><input type='checkbox' id='language' class='tag-type'>&nbsp; Language</span>
-          <span class='tiny'><input type='checkbox' id='style' class='tag-type'>&nbsp; Style</span>
-        </div>
-        <div style='width: 85px; float: right;'>
-          <span class='tiny'><input type='checkbox' id='difficulty' class='tag-type'>&nbsp; Difficulty</span>
-          <span class='tiny'><input type='checkbox' id='artist' class='tag-type'>&nbsp; Artist</span>
-        </div>
-      <br></div>")
+  $('#confirm-tag').hide()
 
-  $('#back-from-tagging').livequery ->
-    $(this).click ->
-      $('#tag-area').show()
-      $('#add-tag-action-prompt').show()
-      $('#new-tag-area').html("")
+  $('#tags').click ->
+    $('#tag-list').removeClass('quiet')
 
-  $('.tag-type').livequery ->
-    $(this).click ->
-      if $(this).is(':checked')
-        console.log "already checked"
-      $('.tag-type').each(->
-        $(this).prop("checked", false)
+  $('#add-tag').autocomplete(
+    source: (request, response) ->
+      $.ajax(
+        url: "/language_list?term=#{request.term}",
+        type: "POST", 
+        dataType: "json",
+        success: (data) ->
+          response($.map(data.data, (item) ->
+            label: item.name,
+            value: item.name
+          ))
+          $('#confirm-tag').show()
       )
-      $(this).prop("checked", true)
+  ).keyup( (e) ->
+    if e.which == 13
+      console.log 'trigger'
+      language = $(this).val()
+      submitTag(language)
+  )
 
-  $('#new-tag').livequery -> 
-    $('#new-tag').autocomplete(
-      source: (request, response) ->
-        matches = $.map(availableTags, (tag) ->
-          tag  if tag.toUpperCase().indexOf(request.term.toUpperCase()) is 0)
-        response matches
-      minLength: 0
-    )
+  $('#confirm-tag').click ->
+    language = $('#add-tag').val()
+    submitTag(language)
 
-  $('#submit-new-tag').livequery ->
+  submitTag = (language) ->
+    if window.user_id isnt null
+      $.post('/find_language', { 'language' : "#{language}" }, (data) ->
+        language_id = data.data.id
+        $.post('/new_tag', { 'tag' : { 'video_id' : "#{window.video_id}", 'user_id' : "#{window.user_id}", 'language_id' : "#{language_id}" } }, (data) ->
+          tag = data.data
+          $('#tag-area').replaceWith("
+            <div id='add-difficulty' data-tag-id=#{tag.id}>
+              How hard is the #{language}?
+              <br/>
+              <select>
+                <option value=1 name='total beginner'>total beginner</option>
+                <option value=2 name='beginner'>beginner</option>
+                <option value=3 name='intermediate'>intermediate</option>
+                <option value=4 name='advanced'>advanced</option>
+              </select>
+            <i id='confirm-difficulty' class='icon icon-ok blue-link'></i>
+            </div>
+          ")
+        )
+      )
+    else
+      $('#add-tag').val("Please sign in to add a language.")
+
+  $('#confirm-difficulty').livequery ->
     $(this).click ->
-      if window.user_id == null
-        $('#new-tag').val('Please sign in first.')
-      else
-        new_tag = $('#new-tag').val()
-        unless new_tag == '' or new_tag == 'Oops, enter a tag first.' or new_tag == 'Oops, select a tag description.'
-          $("input:checkbox").each(->
-            if $(this).is(":checked") then window.tag_type = $(this).attr('id')
-          )
-          unless window.tag_type == undefined
-            $.post('/new_tag', { 'name' : "#{new_tag}", 'user_id' : "#{window.user_id}", 'video_id' : "#{window.video_id}", 'tag_type' : "#{window.tag_type}" }, (data) ->
-              tag_category = $("##{window.tag_type + '-tags'}")
-              console.log tag_category
-              tag_url = "/tags/#{data.tag.id}"
-              console.log tag_url
-              if $.trim(tag_category.text()) == ''
-                tag_category.html("
-                  <span class='tiny'>#{capitalizeString(window.tag_type)}:</span> &nbsp;
-                    <a href=" + tag_url + ">#{data.tag.name}</a>
-                ")
-                $('#no-tags-yet').remove()
-              else
-                tag_category.html($.trim(tag_category.html()))
-                tag_category.append("<span>, <a href=" + tag_url + ">#{data.tag.name}</a></span>")
-              $('#new-tag-area').html("")
-              $('#tag-area').show()
-              $('#add-tag-action-prompt').show()
-            )
-          else
-            $('#new-tag').val('Select tag description?')
-        else
-          $('#new-tag').val('Oops, enter a tag first.')
-          
+      difficulty_id = $('option').filter(':selected').attr('value')
+      tag_id = $('#add-difficulty').attr('data-tag-id')
+      $.post('/update_tag', { 'tag' : { 'id' : "#{tag_id}", 'difficulty_id' : "#{difficulty_id}" } }, (data) ->
+        tag = data.data
+        $('#add-difficulty').replaceWith("
+          <textarea id='add-reason' data-tag-id=#{tag.id} style='width: 220px; height: 40px;' placeholder='Why would you recommend this video?'></textarea>
+          <i id='confirm-reason' class='icon icon-ok blue-link'></i>
+        ")
+      )
+
+  $('#confirm-reason').livequery ->
+    $(this).click ->
+      reason = $('#add-reason').val()
+      tag_id = $('#add-reason').attr('data-tag-id')
+      $.post('/update_tag', { 'tag' : { 'id' : "#{tag_id}", 'reason' : "#{reason}" } }, (data) ->
+        console.log data
+        $('#add-reason').replaceWith("
+          Woohoo!
+        ")
+      )
 
   $('#done').livequery ->
     $(this).click -> 

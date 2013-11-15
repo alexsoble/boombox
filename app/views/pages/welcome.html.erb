@@ -1,93 +1,179 @@
-<div class="row">
-  <div class="offset3 span12">
-  <br>
-  <% if current_user %>
-    <% if current_user.firstname %>
-      <h1 style='text-align: center;'>Welcome, <%= current_user.firstname %></h1>
-    <% else %>
-      <h1 style='text-align: center;'>Welcome, <%= current_user.username %>!</h1>
-    <% end %>
-    <br>
+<% if current_user %>
+  <% if current_user.firstname %>
+    <h1 style='text-align: center;'>Welcome, <%= current_user.firstname %></h1>
   <% else %>
-    <h1 style='text-align: center;'><strong>Love learning languages?</strong></h1>
-    <br>
-    <h2 style='text-align: center; font-size: 30px;'>It's more fun to learn with <i class="icon icon-music"></i> than with <i class="icon icon-book"></i>.</h2>
-    <h2 style='text-align: center; font-size: 30px;'>Let's turn <i class="icon icon-youtube-sign"></i> into a language resource for the <i class="icon icon-globe"></i>.</h2>
-    <br>
-    <% end %>
+    <h1 style='text-align: center;'>Welcome, <%= current_user.username %>!</h1>
+  <% end %>
   <br>
+<% end %>
   <br><br>
-  </div>
-</div>
-<div class="row">
-  <div class="offset4">
-    <div class="video-thumb-box frontpage-thumb-box featured-video-box" data-video-slug=<%= @featured_video_1.slug %>>
-      <strong>SPANISH</strong>
-      <br><br>
-      <strong class="center" style="color: #2793E6;"><%= "#{@featured_video_1.title.slice(0,25)}" %></strong>
-      <br><div class="image-box"><%= image_tag "#{@featured_video_1.image}" %></div>
-    </div>
-    <div class="video-thumb-box frontpage-thumb-box featured-video-box" data-video-slug=<%= @featured_video_2.slug %>>
-      <strong>FRENCH</strong>
-      <br><br>
-      <strong class="center" style="color: #2793E6;"><%= "#{@featured_video_2.title.slice(0,25)}" %></strong>
-      <br><div class="image-box"><%= image_tag "#{@featured_video_2.image}" %></div>
-    </div>
-    <div class="video-thumb-box frontpage-thumb-box featured-video-box" data-video-slug=<%= @featured_video_3.slug %>>
-      <strong>ITALIAN</strong>
-      <br><br>
-      <strong class="center" style="color: #2793E6;"><%= "#{@featured_video_3.title.slice(0,25)}" %></strong>
-      <br><div class="image-box"><%= image_tag "#{@featured_video_3.image}" %></div>
-    </div>
-    <div class="video-thumb-box frontpage-thumb-box featured-video-box" data-video-slug=<%= @featured_video_4.slug %>>
-      <strong>HINDI</strong>
-      <br><br>
-      <strong class="center" style="color: #2793E6;"><%= "#{@featured_video_4.title.slice(0,25)}" %></strong>
-      <br><div class="image-box"><%= image_tag "#{@featured_video_4.image}" %></div>
-    </div>
-    <br><br>
-  </div>
-</div>
-<br><br>
-<div class="row">
-  <div class="offset1">
-    <span>
-      <h2> Show me videos in... &nbsp;
-      <div class="btn-group">
-        <div class="btn btn-info rounded dropdown-toggle" data-toggle="dropdown"> (select language) </div>
-        <ul class="dropdown-menu">
-          <li><a class="language-selector" id="all">All</a></li>
-          <% @language_tags.each do |t_name| %>
-            <li><a class="language-selector" id="<%= t_name %>"><%= t_name %></a></li>
-          <% end %>
-        </ul>
-      </div>
-    </h2>
-    </span>
-    <hr id="hr">
-    <%  @interps_with_some_content.each do |i| %>
-      <% v = i.video %>
-      <div class="video-thumb-box frontpage-thumb-box <%= if v.langs.present? then v.langs[0] end %>" title="<%= v.title %>" data-video-slug=<%= v.slug %>>
-        <strong class="center" style="color: #2793E6;"><%= "#{v.title.slice(0,25)}" %></strong>
-        <br>
-        <div class="image-box"><%= image_tag "#{v.image}" %></div>
-      </div>
-    <% end %>
-  </div>
-  <!--<div class="offset1">
-    <span>
-    <h2>Latest quizzes</h2>
-    </span>
-    <hr id="hr">
-    <%  @interps_with_some_content.each do |i| %>
-      <% v = i.video %>
-      <div class="video-thumb-box frontpage-thumb-box <%= if v.langs.present? then v.langs[0] end %>" title="<%= v.title %>" data-video-slug=<%= v.slug %>>
-        <strong class="center" style="color: #2793E6;"><%= "#{v.title.slice(0,25)}" %></strong>
-        <br>
-        <div class="image-box"><%= image_tag "#{v.image}" %></div>
-      </div>
-    <% end %>
-  </div>-->
-</div>
-</div>
-<div id="data" class="quiet" data-edit-video-languages="<%= @interp.present? %>" <% if @interp.present? %>data-youtube-id='<%= @youtube_id %>' data-title='<%= @title %>'<% end %>>
+  <h3 style='text-align: center; font-size: 30px;'><i>Heyu</i>: Turn any <span style="font-size: 36px;"><i class="icon icon-youtube-sign"></i></span> video into a language-study resource for the <span style="font-size: 36px;"><i class="icon icon-globe"></i></span>.</h3>
+  <br><br>
+  <!--<h2 style='text-align: center; font-size: 30px;'>
+    I'm studying 
+    <input id="language-select-dropdown" style='text-align: center; font-size: 30px; height: 40px; width: 220px;'>
+    at the 
+    <input id="difficulty-select-dropdown" style='text-align: center; font-size: 30px; height: 40px; width: 220px;'>
+    level.
+  </h2>-->
+<!DOCTYPE html>
+<meta charset="utf-8">
+<body>
+<script src="http://mbostock.github.io/d3/talk/20111018/d3/d3.js"></script>
+<script src="http://mbostock.github.io/d3/talk/20111018/d3/d3.geo.js"></script>
+
+<style type="text/css">
+
+svg {
+  width: 1280px;
+  height: 800px;
+  pointer-events: all;
+}
+
+circle {
+  fill: #dbe4f0;
+}
+
+path {
+  fill: #aaa;
+  stroke: #fff;
+}
+
+    </style>
+<script type="text/javascript">
+$(function() {
+  var feature;
+
+var feature // eventually: all svg paths (countries) of the world
+  , countries
+  , toggle; // animation on/off control
+ 
+var projection = d3.geo.azimuthal()
+    .scale(380)
+    .origin([-71.03,42.37])
+    .mode("orthographic")
+    .translate([400, 400]);
+ 
+var circle = d3.geo.greatCircle()
+    .origin(projection.origin());
+ 
+// TODO fix d3.geo.azimuthal to be consistent with scale
+var scale =
+{ orthographic: 380
+, stereographic: 380
+, gnomonic: 380
+, equidistant: 380 / Math.PI * 2
+, equalarea: 380 / Math.SQRT2
+};
+ 
+var path = d3.geo.path()
+    .projection(projection);
+ 
+var svg = d3.select("#body").append("svg:svg")
+    .attr("width",  800)
+    .attr("height", 800)
+    .on("mousedown", mousedown);
+ 
+if (frameElement) frameElement.style.height = '800px';
+ 
+d3.json("d3/globe", function(collection) {
+  countries = collection;
+  feature = svg.selectAll("path")
+      .data(collection.features)
+    .enter().append("svg:path")
+      .attr('id', function(d) { return d.id; })
+      .attr("d", clip);
+ 
+  feature.append("svg:title")
+      .text(function(d) { return d.properties.name; });
+ 
+  startAnimation();
+  d3.select('#animate').on('click', function () {
+    if (done) startAnimation(); else stopAnimation();
+  });
+});
+ 
+function stopAnimation() {
+  done = true;
+  d3.select('#animate').node().checked = false;
+}
+ 
+function startAnimation() {
+  done = false;
+  d3.timer(function() {
+    var origin = projection.origin();
+    origin = [origin[0] + .18, origin[1] + .06];
+    projection.origin(origin);
+    circle.origin(origin);
+    refresh();
+    return done;
+  });
+}
+ 
+function animationState() {
+  return 'animation: '+ (done ? 'off' : 'on');
+}
+ 
+d3.select(window)
+    .on("mousemove", mousemove)
+    .on("mouseup", mouseup);
+ 
+d3.select("select").on("change", function() {
+  stopAnimation();
+  projection.mode(this.value).scale(scale[this.value]);
+  refresh(750);
+});
+ 
+var m0
+  , o0
+  , done
+  ;
+ 
+function mousedown() {
+  stopAnimation();
+  m0 = [d3.event.pageX, d3.event.pageY];
+  o0 = projection.origin();
+  d3.event.preventDefault();
+}
+ 
+function mousemove() {
+  if (m0) {
+    var m1 = [d3.event.pageX, d3.event.pageY]
+      , o1 = [o0[0] + (m0[0] - m1[0]) / 8, o0[1] + (m1[1] - m0[1]) / 8];
+    projection.origin(o1);
+    circle.origin(o1);
+    refresh();
+  }
+}
+ 
+function mouseup() {
+  if (m0) {
+    mousemove();
+    m0 = null;
+  }
+}
+ 
+function refresh(duration) {
+  (duration ? feature.transition().duration(duration) : feature).attr("d", clip);
+}
+ 
+function clip(d) {
+  return path(circle.clip(d));
+}
+ 
+function reframe(css) {
+  for (var name in css)
+    frameElement.style[name] = css[name] + 'px';
+}
+});
+</script>
+  
+  <div id="body"></div>
+        <div><label for="animate">animate:</label>
+          <input id="animate" type="checkbox" checked>
+        </div>
+
+  <% @languages_with_videos.each do |l| %>
+    <p><%= l.name %></p>
+  <% end %>
+<div id="results-box"></div>

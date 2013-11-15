@@ -33,6 +33,9 @@ Boombox::Application.routes.draw do
   resources :fill_exercises, path: :fill_in_the_blanks
 
   post '/find_video' => 'videos#find'
+  post '/find_difficulty' => 'videos#find_difficulty'
+  post '/fetch_videos' => 'videos#fetch'
+  post '/fetch_tags' => 'tags#fetch'
 
   post '/find_language' => 'languages#find_id'
   post '/find_language_by_id' => 'languages#find_name'
@@ -44,6 +47,7 @@ Boombox::Application.routes.draw do
   get '/teachers/:id' => 'users#teacher_dashboard'
 
   post '/new_tag' => 'tags#create'
+  post '/update_tag' => 'tags#update'
 
   post '/add_star' => 'stars#create'
   post 'remove_star' => 'stars#destroy'
@@ -136,5 +140,7 @@ Boombox::Application.routes.draw do
   get '/thanks' => 'pages#thankyou'
   get '/contact' => 'pages#contact'
   get '/admin' => 'pages#admin'
+  get '/d3/globe' => 'pages#globe'
+  get '/d3/countries' => 'pages#countries'
 
 end

@@ -43,10 +43,36 @@ $ ->
   window.editing_lines = false
   window.adding_times = false
 
+  scrollPlaybackColumnUp = ->
+    $('#playback-column').animate({
+      top: "-=20"
+    }, 1000)
+
+  scrollPlaybackColumnDown = ->
+    $('#playback-column').animate({
+      top: "+=20"
+    }, 1000)
+
+  $('#scroll-up').click ->
+    scrollPlaybackColumnUp()
+
+  $('#scroll-down').click ->
+    scrollPlaybackColumnDown()
+
+  animatePlayhead = ->
+    $('#playhead').animate({
+      top: "+=20"
+    }, 1000, "linear")
+
+  startAnimatingPlayhead = ->
+    window.playhead_interval = window.setInterval(animatePlayhead, 1000)
+
+  stopAnimatingPlayhead = -> 
+    clearInterval(window.playhead_interval)
 
   window.onYouTubeIframeAPIReady = ->
     player = new YT.Player("new-video-box", {
-      height: "315"
+      height: "300"
       width: "420"
       videoId: youtube_id
       playerVars: 
@@ -64,16 +90,51 @@ $ ->
   onPlayerReady = (event) ->
     video_duration = window.player.getDuration()
     window.video_duration = video_duration
-    window.half_duration = video_duration * .5
-    playbackControls(video_duration)
-    if window.loop_length == false
-      straightPlaybackBehavior()
-    event.target.playVideo()
+
+    $('#new-video-box').before("<div id='youtube-gem-box'>")
+    $('#new-video-box').after("</div>")
+
+    # # # Playback column gets decoration
+
+    $('#playback-column').attr('style',"height: #{video_duration * 10}px")
+
+    for time in [0..video_duration]
+      if $(".line[data-time=#{time}]").length > 0
+        line = $(".line[data-time=#{time}]")
+        line_text = line.text()
+        $('#line-container').append("
+          <div class='marker'>
+            <div class='marker-text' data-time=#{time}>
+              #{shortFormatTime(time)}
+            </div>
+          </div>
+          <div class='line-area' data-time=#{time}>
+            #{line_text}
+          </div>
+        ")
+
+    $('#meta-slider-handle').draggable({
+      axis: "y" 
+      containment: "#playback-column-wrapper"
+      containment: "#playback-column"
+      drag: (event, ui) ->
+        $('#line-container').attr("style","top: #{-(10 * ui.position.top)}px")
+    })
+
+    event.target.playVideo().setPlaybackRate(0.5)
+    startAnimatingPlayhead()
+
+  slowlyRemoveHighlight = (line) ->
+    window.setTimeout(->
+      line.removeClass('highlighted')
+    , 4000)
 
   countVideoPlayTime = ->
 
     # IF PLAYER IS PLAYING, UPDATE THE PLAY COUNTER
     state = player.getPlayerState()
+    if state == 2
+      stopAnimatingPlayhead()
     if state == 1
       window.video_play_counter += 1
     if state == 0
@@ -92,25 +153,23 @@ $ ->
     exact_time = player.getCurrentTime()
     window.time = Math.floor(exact_time)
 
-    if window.autoscroll == true
-      if $("[data-time=#{window.time}]").length != 0
-        if $('.translation-area').length > 0
-          this_area = $('.translation-area').children().eq(0)
-          this_line = this_area.children(".line-container[data-time=#{window.time}]")
-        else if $('.transcript-area').length > 0 
-          this_area = $('.transcript-area').children().eq(0)
-          this_line = this_area.children(".transcript-line[data-time=#{window.time}]")
-        unless this_line.hasClass('highlighted')
-          this_line.effect("highlight", { color: "#FFFF00" }, 4000)
-          this_line.addClass("highlighted")
-          if this_line.prev().prev().length > 0
-            $("#community-notes").scrollTo(this_line.prev().prev(), { duration : 250 } )
-          else
-            $("#community-notes").scrollTo(this_line, { duration : 250 } )
+    $('#time-counter').html("#{shortFormatTime(window.time)}")
+    
+    if $(".line-area[data-time=#{window.time}]").length != 0
+      this_line = $(".line-area[data-time=#{window.time}]")
+      unless this_line.hasClass('highlighted')
+        this_line.effect("highlight", { color: "#FFFF00" }, 4000)
+        this_line.addClass("highlighted")
+        slowlyRemoveHighlight(this_line)
 
-    # PLAYBACK SLIDER MOVES HERE
-    unless window.sliding == true
-      $('#marker').attr("style", "position: relative; top: #{window.time}px")
+    ###
+    if $(".line[data-time=#{window.time}]").length > 0
+      time = window.time
+      line = $(".line[data-time=#{time}]")
+      line_area = $(".line-area[data-time=#{time}]")
+      line_area.text(line.text())
+      line_area.removeClass('quiet')
+    ###
 
   counter = setInterval(countVideoPlayTime, 400)
   done = false
@@ -131,41 +190,6 @@ $ ->
       $('#watch-again').removeClass('video-finished')
       $('#watch-again').html('')
 
-
-  ###
-  $('.edit-line').livequery ->
-    $(this).click -> 
-      console.log 'edit line triggered!'
-      id = parseInt($(this).attr('data-line-id'))
-      this_line = $(this).siblings(".lang1[data-line-id=#{id}]")
-      text = $.trim(this_line.text())
-      this_line.replaceWith("<input type='text' class='update-line-area' style='width: 300px;' data-line-id=#{id}>")
-      $(this).replaceWith("<i class='icon icon-ok blue-link update-line' data-line-id=#{id}></i>")
-      $(".update-line-area[data-line-id=#{id}]").val(text)
-
-  $('.update-line').livequery ->
+  $('.line-area').livequery ->
     $(this).click ->
-      id = parseInt($(this).attr('data-line-id'))
-      console.log "id = #{id}"
-      this_line = $(".update-line-area[data-line-id=#{id}]")
-      console.log $(".update-line-area").val()
-      console.log $(".update-line-area")
-      this_lang1 = this_line.val()
-      console.log this_lang1
-      this_button = $(this)
-
-  $('#community-notes').mouseup ->
-    if window.getSelection
-      selection = window.getSelection()
-      range = selection.getRangeAt(0)
-      span = document.createElement('span')
-      span.className = 'highlight'
-      range.surroundContents(span)
-      $('.highlight').attr('style','background-color: yellow;')
-
-  $('.highlight').livequery ->
-    $(this).dblclick ->
-      text = $(this).text()
-      $('#lines').append("<div style='margin:30px;'>#{text}</div>")
-      $(this).remove()
-  ### 
+      window.player.seekTo(parseInt($(this).attr('data-time')))

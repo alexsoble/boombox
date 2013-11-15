@@ -16,16 +16,18 @@ class PagesController < ApplicationController
 
   def welcome
 
+    @languages_with_videos = []
+
+    Tag.all.each do |t|
+      unless @languages_with_videos.index(t.language).present?
+        @languages_with_videos << t.language 
+      end
+    end
+
     @featured_video_1 = Video.find(25)
     @featured_video_2 = Video.find(85)
     @featured_video_3 = Video.find(132)
     @featured_video_4 = Video.find(24)
-
-    all_language_tags = Tag.where(:type_lang => true)
-    @language_tags = []
-    all_language_tags.each do |t|
-      if @language_tags.index(t.name) == nil then @language_tags << t.name end
-    end
 
     interps_with_some_content = []
     Interpretation.all.each do |i|
@@ -87,7 +89,12 @@ class PagesController < ApplicationController
   end
   
   def experiment
-    @video = Video.find_by_id(227)
+    # Los Rakas video
+    @transcript = Transcript.find_by_id(67)
+    @video = @transcript.video
+
+    # Kambiz Hosseini video
+    # @video = Video.find_by_id(234)
   end
 
   def teachers
@@ -109,4 +116,13 @@ class PagesController < ApplicationController
   def help
   end
 
+  def globe
+    globe = File.read("d3/world-110m.json")
+    render json: globe
+  end
+
+  def countries
+    countries = File.read("d3/world-country-names.tsv")
+    render json: countries
+  end
 end

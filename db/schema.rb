@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20131108161251) do
+ActiveRecord::Schema.define(:version => 20131110201945) do
 
   create_table "challenges", :force => true do |t|
     t.integer  "user_id"
@@ -70,6 +70,12 @@ ActiveRecord::Schema.define(:version => 20131108161251) do
   end
 
   add_index "definitions", ["slug"], :name => "index_definitions_on_slug"
+
+  create_table "difficulties", :force => true do |t|
+    t.string   "name"
+    t.datetime "created_at", :null => false
+    t.datetime "updated_at", :null => false
+  end
 
   create_table "discussion_questions", :force => true do |t|
     t.integer  "video_id"
@@ -253,15 +259,13 @@ ActiveRecord::Schema.define(:version => 20131108161251) do
   end
 
   create_table "tags", :force => true do |t|
-    t.string   "name"
     t.integer  "user_id"
     t.integer  "video_id"
-    t.boolean  "type_lang"
-    t.boolean  "type_difficulty"
-    t.boolean  "type_artist"
-    t.boolean  "type_style"
-    t.datetime "created_at",      :null => false
-    t.datetime "updated_at",      :null => false
+    t.datetime "created_at",    :null => false
+    t.datetime "updated_at",    :null => false
+    t.integer  "language_id"
+    t.integer  "difficulty_id"
+    t.string   "reason"
   end
 
   create_table "transcripts", :force => true do |t|

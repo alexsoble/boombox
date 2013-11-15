@@ -1,19 +1,19 @@
 <div class="word-box">
   <div class="word-box-title">Video tag</div>
-  <h2><%= @tag.name %></h2>
-  <% if current_user %>
-    <% if current_user.id == @tag_creator.id %>
-      Tagged by: you
-      <br>
-      (<%= link_to "delete tag?", tag_url(@tag), :confirm => 'Are you sure?', :method => :delete %>)
-    <% else %>
-      Tagged by: <%= @tag_creator.username %>
-    <% end %>
-  <% else %>
-      Tagged by: <%= @tag_creator.username %>
+  <br/>
+  <h2><%= @tag_creator.username %> says:</h2>
+  <br/>
+  <% if @language.present? %>
+    <p>This video is in <span class="big-friendly"><%= @language %></span>.</p>
   <% end %>
-  <br>
-  <br>
+  <% if @difficulty.present? %>
+    <p>This video is good for <span class="big-friendly"><%= @difficulty %></span> students.</p>
+  <% end %>
+  <% if @reason.present? %>
+    <p><%= @reason %></p>
+  <% end %>
+  <br/>
+  <!-- Voting on stuff! -->
   <div style="font-size: 18px;">
     <span id="upvote-area" class="<% if @upvote_total > @downvote_total%>blue<% end %>">
       <span id="video-upvotes-status" class="<% if @upvote_total > @downvote_total%>blue<% end %>"><%= @upvote_total %></span>

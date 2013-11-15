@@ -27,28 +27,42 @@ class VideosController < ApplicationController
       @this_user_interp = Interpretation.where(:video_id => @video.id, :user_id => current_user.id).first
     end
 
-    @tags = Tag.where(:video_id => @video.id)
+    @tags = @video.tags
 
     if @tags.present?
-      @lang_tags = @tags.where(:type_lang => true)
-      @last_lang_tag = @lang_tags[@lang_tags.length - 1]
+      language_votes, difficulty_votes, language_count, difficulty_count = [], [], Hash.new(0), Hash.new(0)
 
-      @artist_tags = @tags.where(:type_artist => true)
-      @last_artist_tag = @artist_tags[@artist_tags.length - 1]
+      @tags.each do |t|
+        if t.language.present?
+          language_votes << t.language
+        end
+        if t.difficulty.present?
+          difficulty_votes << t.difficulty
+        end
+      end
 
-      @difficulty_tags = @tags.where(:type_difficulty => true)
-      @last_difficulty_tag = @difficulty_tags[@difficulty_tags.length - 1]
+      if language_votes.present?
+        language_votes.each { |language| language_count[language] += 1 }
+      end
 
-      @style_tags = @tags.where(:type_style => true)
-      @last_style_tag = @style_tags[@style_tags.length - 1]
-    end 
+      if language_count.present?
+        @language = language_count.max_by{ |k, v| v }[0]
+      end
+      
+      if difficulty_votes.present?
+        difficulty_votes.each { |difficulty| difficulty_count[difficulty] += 1 }
+      end
 
-    @last_tag = @tags[@tags.length - 1]
+      if difficulty_count.present?
+        @difficulty = difficulty_count.max_by{ |k, v| v }[0]
+      end
 
-    if @tags.length < 2
-      @all_but_last_tag = []
-    else
-      @all_but_last_tag = @tags[0..(@tags.length - 1)]
+      @video_description_text = @language.name
+
+      if @difficulty.present?
+        @video_description_text += " // #{@difficulty.name}"
+      end
+
     end
 
     @transcripts = @video.transcripts
@@ -111,6 +125,19 @@ class VideosController < ApplicationController
   def find
     @video = Video.find_by_id(params[:id])
     render json: { data: @video } 
+  end
+
+  def fetch
+    language = Language.find_by_name(params[:term])
+    tags = language.tags
+    @videos = []
+    tags.each { |t| @videos << t.video }
+    render json: { data: @videos } 
+  end
+
+  def find_difficulty
+    @video = Video.find_by_id(params[:id])
+    render json: { data: @video.approximate_difficulty } 
   end
 
   def new

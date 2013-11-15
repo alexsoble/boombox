@@ -1,5 +1,6 @@
 class Video < ActiveRecord::Base
   attr_accessible :title, :youtube_id, :slug
+  has_many :tags
   has_many :interpretations
   has_many :transcripts
   has_many :translations
@@ -28,6 +29,17 @@ class Video < ActiveRecord::Base
         self.slug = self.youtube_id.parameterize
       end
     end
+
+  end
+
+  def approximate_difficulty
+    difficulties = []
+    self.tags.each do |t|
+      if t.difficulty.present?
+        difficulties << t.difficulty.id
+      end
+    end
+    return difficulties.inject{ |sum, el| sum + el }.to_f / difficulties.size
   end
 
   def to_param

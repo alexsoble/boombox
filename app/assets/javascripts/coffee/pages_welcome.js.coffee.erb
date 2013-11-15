@@ -1,21 +1,67 @@
 $ ->
+  window.difficulty_level = 0
 
-  $('.row').hide()
-  $('.row').toggle('width')
+  $('#language-select-dropdown').autocomplete(
+    source: (request, response) ->
+      $.ajax(
+        url: "/language_list?term=#{request.term}",
+        type: "POST", 
+        dataType: "json",
+        success: (data) ->
+          window.first_lang = data.data[0].name
+          fetchRelevantVideos(window.first_lang, window.difficulty_level)
+          response($.map(data.data, (item) ->
+            label: item.name,
+            value: item.name
+          ))
+      )
+    )
 
-  $('.frontpage-thumb-box').livequery ->
+  $('#difficulty-select-dropdown').autocomplete(
+      availableTags = [ "total beginner", "beginner", "intermediate", "advanced" ] 
+      source: availableTags
+      select: (event, ui) ->
+        if ui.item.value == "total beginner"
+          window.difficulty_level = 1
+        else if ui.item.value == "beginner"
+          window.difficulty_level = 2
+        else if ui.item.value == "intermediate"
+          window.difficulty_level = 3
+        else if ui.item.value == "advanced"
+          window.difficulty_level = 4
+        fetchRelevantVideos(window.first_lang, window.difficulty_level)
+    )
+
+  fetchRelevantVideos = (language_name, difficulty_level) ->
+    $.post("/fetch_videos?term=#{language_name}", (data) ->
+      videos = data.data
+      if videos.length > 0
+        results_html = '<br/><h2><i>Heyu recommends:</i></h2><br/>'
+        for v in videos
+          video_html = "
+            <div class='video-thumb-box' data-video-id=#{v.id} data-youtube-id='#{v.youtube_id}' data-slug='#{v.slug}'>
+              <strong class='center blue'>#{v.title.slice(0,30)}</strong>
+              <br/><br/>
+              <img alt='video_#{v.title}' src='http://img.youtube.com/vi/#{v.youtube_id}/1.jpg' style='float: left'/>
+            </div>"
+          if window.difficulty_level > 0
+            $.post("/find_difficulty", { 'id' : "#{v.id}" }, (data) ->
+              difficulty_level = data.data
+              console.log window.difficulty_level
+              console.log difficulty_level
+              console.log Math.abs(difficulty_level - window.difficulty_level)
+              if .5 > Math.abs(difficulty_level - window.difficulty_level)
+                console.log 'trigger!!'
+                results_html += video_html
+            )
+          else
+            results_html += video_html
+      else
+        results_html = "<br/><h2>Sorry, no videos like that yet.</h2><br/><h2><a href='/new'>Add one?</a></h2>"
+      $('#results-box').html(results_html)
+    )
+
+  $('.video-thumb-box').livequery ->
     $(this).click ->
-      video_slug = $(this).attr('data-video-slug')
+      video_slug = $(this).attr('data-slug')
       window.location.href = "/videos/#{video_slug}/"
-
-  $('.language-selector').click ->
-    lang = $(this).attr('id')
-    unless lang == 'all' or lang == 'featured'
-      $('.frontpage-thumb-box').hide()
-      $('.featured-video-box').show()
-      $(".#{lang}").show()
-    if lang == 'all'
-      $('.video-thumb-box').show()
-    if lang == 'featured'
-      $('#featured-videos').slideDown()
-      $('.featured-video-box').show()

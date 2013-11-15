@@ -1,54 +1,215 @@
 <style>
+  #vertical-bar {
+    width: 960px;
+    height: 600px;
+    margin-right: auto; 
+    margin-left: auto; 
+    position: relative; 
+    top: 20px;
+    background-color: white;
+    overflow: hidden;
+    }
+
   .video-container-alt {
     width: 420px; 
-    background-color: #f3f3f6; 
+    background-color: white; 
     height: 800px; 
     float: left; 
+    overflow: visible;
     }
 
   .title-box-alt {
     background-color: #9b59bb;
+    border-radius: 10px;
+    padding: 10px;
+    text-align: center;
+    }
+  .title-box-alt p {
+    color: white;
     }
 
-  #vertical-bar {
-    width: 860px;
-    margin-right: auto; 
+  #playback-column-box {
+    width: 120px;
     margin-left: auto; 
-    position: relative; 
-    top: -20px;
-    background-color: #9b59bb;
+    margin-right: auto;
     }
 
-  #timing-scale {
-    background-color: #d6d6e0;
-    width: 30px;
-    height: 100%;
-    float: right; }
+  #playback-column-wrapper {
+    width: 10px;
+    height: 600px;
+    overflow-y: visible;
+    overflow-x: visible;
+    margin-left: 60px;
+    border-radius: 10px;
+    }
 
-  #marker {
+  #playback-column {
+    background-color: #9b59bb;
+    position: relative;
+    }
+
+  #playhead { 
     background-color: orange; 
+    height: 20px;
+    width: 20px;
+    position: relative;
+    cursor: pointer;
+    z-index: 1;
+    -webkit-transform: rotate(45deg);
+    -moz-transform: rotate(45deg);
+    -o-transform: rotate(45deg);
+    -ms-transform: rotate(45deg);
+    transform: rotate(45deg);
+    }
+  
+  #time-counter-box {
+    background-color: #0fbcf5;
+    width: 160px;
+    height: 160px;
+    border-radius: 160px;
+    position: absolute;
+    top: 120px;
+    left: 425px;
+    } 
+
+  #time-counter {
+    font-size: 24px;
+    color: white;
+    line-height: 60px;
+    text-align: center;
+    }
+
+  #scroll-down {
+    position: absolute;
+    top: 620px;
+    z-index: 1;
+    }
+
+  #scroll-up {
+    z-index: 2;
+    color: #9b59bb;
+    font-size: 50px;
+    position: relative;
+    top: 25px;
+    left: 45px;
+    }
+
+  #youtube-gem-box {
+    overflow: hidden;
+    width: 410px;
+    height: 290px;
+    border: 13px solid white;
+    border-radius: 20px;
+    position: absolute;
+    top: 60px;
+    left: -5px;
+    }
+
+  .marker {
+    height: 20px; 
+    width: 20px; 
+    background-color: #9b59bb; 
+    border-radius: 30px; 
+    padding: 10px; 
+    margin-bottom: 30px;
+    position: relative;
+    left: 20px;
+    }
+
+  .marker-text {
+    color: white;
+    font-size: 10px;
+    text-align: center;
+    }
+
+  .line-area {
+    width: 330px;
+    background-color: #f3f3f6;
+    color: black; 
+    position: relative;
+    bottom: 78px;
+    left: 100px;
+    border-radius: 10px;
+    padding: 20px;
+    cursor: pointer;
+    }
+
+  .line-area:hover {
+    background-color: #c7c7d5;
+    }
+
+  #meta-slider-handle {
+    background-color: white;
     height: 10px;
-    width: 100%;
+    width: 10px;
+    border-radius: 10px;
+    }
+
+  #line-container {
+    position: absolute;
+    top: 30px;
+    right: 100px;
     }
 </style>
 
 <div id="vertical-bar">
 
   <div class="video-container-alt">
-    <div id="watch-again"></div>
-    <div id="new-video-box"></div>
-    <div class="title-box-alt"><h3 style="color: white;"><%= @video.title %></h3></div>
+    <div class="title-box-alt"><p><%= @video.title %></p></div>
+      <br>
+      <div id="new-video-box"></div>
+      <div class='btn btn-info btn-small btn-tiny rounded tight-pack' id='play-pause' style="position: relative; top: 5px; left: 5px;"> 
+        <i class='icon-pause'></i> 
+      </div>
+      <div class='btn btn-info btn-small btn-tiny rounded tight-pack' id='volume' style="position: relative; top: 5px; left: 5px;">
+        <div id='volume-slider'> </div>
+        <i class='icon-volume-up'></i> 
+      </div>
+      <div class='btn btn-info btn-small btn-tiny rounded tight-pack' style="position: relative; top: 5px; left: 5px;">
+        <div id='volume-slider'> </div>
+        <i class='icon-cog'></i> 
+      </div>
   </div>
 
+  <div id="playback-column-box">
+    <div id="playback-column-wrapper">
+      <div id="playback-column">
+        <div id="meta-slider-handle"></div>
+      </div> 
+    </div>
+  </div>
+
+  <div id="line-container">
+    <div class="add-a-line">
+      <div style="border: 1px solid black; width: 40px; height: 40px; float: right;">
+        Add a line
+      </div>
+    </div>
+  </div>
+
+  <!-- <div id="scroll-up"><i class="icon icon-caret-up"></i></div> -->
+  <!-- <div id="scroll-down"><i class="icon icon-caret-down"></i></div> -->
+  <!--<div id="time-counter-box">
+    <div id="time-counter"></div>
+  </div> -->
+
   <div class="video-container-alt" style="float: right">
-    <div id="timing-scale"></div>
-    <div id="marker">
   </div>
 
 </div>
+<br/>
+<br/>
+<br/>
 
 <div id="data" class="quiet"
  data-youtube-id=<%= @video.youtube_id %>
  data-title=<%= @video.title %>
  data-video-id=<%= @video.id %>
 </div>
+<% if @transcript.present? %>
+  <% if @transcript.lines.present? %>
+    <% @transcript.lines.each do |l| %>
+      <p class="line quiet" data-time=<%= l.time %>><%= l.lang1 %></p>
+    <% end %>
+  <% end %>
+<% end %>

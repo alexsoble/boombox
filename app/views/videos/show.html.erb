@@ -5,15 +5,28 @@
   <div id="timer-box"></div>
   <div id="settings">
     <div style="margin-top: 15px; margin-left: 22px;">
-      <% if current_user %>
-        <p style="font-size: 15px">You've watched <span id="video-play-counter"><%= @current_user_play_count %></span> times.</p>
-        <% if @star.present? %>
-          <i class='icon icon-star icon-2x star star-left' id='star-full' data-star-id='<%= @star.id %>'> </i>
-        <% else %>
-          <i class="icon icon-star-empty icon-2x star star-left" id="star-empty"> </i>
-        <% end %>
+      <% if @tags.blank? %>
+        <div id='tag-area'>
+          <input id="add-tag" placeholder="What language is this video in?" style="width: 220px;">
+          <i id="confirm-tag" class="icon icon-ok blue-link"></i>
+        </div>
       <% else %>
-        <%= link_to "Sign in", "/sign_in" %> to track your progress!
+        <span id='tags' class="blue-link"><%= @video_description_text %></span>
+        <div id="tag-list" class="rounded quiet">
+          <% @tags.each do |t| %>
+            <%= link_to "#{t.user.username}'s tag", tag_url(t) %>
+          <% end %>
+          <p class="blue-link">
+            <i class="icon icon-plus-sign"></i>Add your own tag
+          </p>
+        </div>
+      <% end %>
+    </div>
+    <div style="margin-top: 15px; margin-left: 22px;">
+      <% if @star.present? %>
+        <i class='icon icon-star icon-2x star star-left' id='star-full' data-star-id='<%= @star.id %>'> </i>
+      <% else %>
+        <i class="icon icon-star-empty icon-2x star star-left" id="star-empty"> </i>
       <% end %>
       <div class='btn btn-info btn-small btn-tiny rounded tight-pack' id='play-pause' style="position: absolute; top: 13px; right: 22px;"> 
         <i class='icon-pause'></i> 
@@ -23,56 +36,9 @@
         <i class='icon-volume-up'></i> 
       </div>
     </div>
-    <br>
-    <div style="margin-top: 45px; margin-left: 15px; margin-right: 15px; font-size: 14px;">
-      <div id='new-tag-area'></div>
-      <div id='tag-area'>
-          <div id="tags-list" style="float: left; margin-bottom: 20px;">
-            <span id='language-tags' class='tag-category'>
-              <% if @lang_tags.present? %>
-                <span class="tiny">Language<% if @lang_tags.length > 1 %>s<% end %>:</span> &nbsp;
-                <% @lang_tags.each do |t| %>
-                  <%= link_to "#{t.name}", tag_url(t) %><% unless t == @last_lang_tag %>, <% end %>
-                <% end %>
-              <% end %>
-            </span>
-            <span id='artist-tags' class='tag-category'>
-              <% if @artist_tags.present? %>
-                <span class="tiny">Artist<% if @artist_tags.length > 1 %>s<% end %>:</span> &nbsp;
-                <% @artist_tags.each do |t| %>
-                  <%= link_to "#{t.name}", tag_url(t) %><% unless t == @last_artist_tag %>, <% end %>
-                <% end %>
-              <% end %>
-            </span>
-            <span id='difficulty-tags' class='tag-category right'>
-              <% if @difficulty_tags.present? %>
-                <span class="tiny">Difficulty:</span> &nbsp;
-                <% @difficulty_tags.each do |t| %>
-                  <%= link_to "#{t.name}", tag_url(t) %><% unless t == @last_difficulty_tag %>, <% end %>
-                <% end %>
-              <% end %>
-            </span>
-            <span id='style-tags' class='tag-category right'>
-              <% if @style_tags.present? %>
-                <span class="tiny">Style<% if @style_tags.length > 1 %>s<% end %>:</span> &nbsp;
-                <% @style_tags.each do |t| %>
-                  <%= link_to "#{t.name}", tag_url(t) %><% unless t == @last_style_tag %>, <% end %>
-                <% end %>
-              <% end %>
-            </span>
-          </div>
-        <% if @tags.blank? %>
-          <span id='no-tags-yet' style="margin-left: 10px;">
-            No tags yet!
-          </span>
-          <br><br>
-        <% end %>
-      </div>
-      <div id='add-tag-action-prompt' style="margin-left: 10px;">
-        <span id="add-tag" class="link-style">Add a tag</span> that describes this video.
-      </div>
-      <br>
-    </div>
+    <div class='playback-left-label end-label'><div class='playback-left-label inner-label'></div></div>
+      <div id='playback-slider'></div>
+    <div class='playback-right-label end-label'><div class='playback-right-label inner-label'></div></div>
   </div>
 </div>
 

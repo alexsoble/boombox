@@ -1,5 +1,16 @@
 #encoding: utf-8
 
+Difficulty.create([
+  {:name => "total beginner" },
+  {:name => "beginner"},
+  {:name => "intermediate"},
+  {:name => "advanced"}
+])
+
+Language.create([
+   {:name => "Portuguese" }
+])
+
 # Language.create([
 #   {:name => "English" },
 #   {:name => "Dutch"},

@@ -52,21 +52,11 @@ class InterpretationsController < ApplicationController
       @this_user_interp = Interpretation.where(:video_id => @video.id, :user_id => current_user.id).first
     end
 
-    @tags = Tag.where(:video_id => @video.id)
+    @tags = @video.tags
 
     if @tags.present?
-      @lang_tags = @tags.where(:type_lang => true)
-      @last_lang_tag = @lang_tags[@lang_tags.length - 1]
-
-      @artist_tags = @tags.where(:type_artist => true)
-      @last_artist_tag = @artist_tags[@artist_tags.length - 1]
-
-      @difficulty_tags = @tags.where(:type_difficulty => true)
-      @last_difficulty_tag = @difficulty_tags[@difficulty_tags.length - 1]
-
-      @style_tags = @tags.where(:type_style => true)
-      @last_style_tag = @style_tags[@style_tags.length - 1]
-    end 
+      @language = @tags.first.language.name # This is dumb but you can make it smarter later
+    end
 
     @vocabulary = Word.where(:video_id => @video.id, :user_id => @user.id).order("created_at DESC")
 
