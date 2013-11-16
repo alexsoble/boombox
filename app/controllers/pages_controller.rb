@@ -90,11 +90,14 @@ class PagesController < ApplicationController
   
   def experiment
     # Los Rakas video
-    @transcript = Transcript.find_by_id(67)
-    @video = @transcript.video
+    # @transcript = Transcript.find_by_id(67)
+    # @video = @transcript.video
 
     # Kambiz Hosseini video
     # @video = Video.find_by_id(234)
+
+    # James Blake
+    @video = Video.find_by_id(235)
   end
 
   def teachers

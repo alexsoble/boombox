@@ -32,6 +32,7 @@
     width: 120px;
     margin-left: auto; 
     margin-right: auto;
+    position: relative;
     }
 
   #playback-column-wrapper {
@@ -48,20 +49,6 @@
     position: relative;
     }
 
-  #playhead { 
-    background-color: orange; 
-    height: 20px;
-    width: 20px;
-    position: relative;
-    cursor: pointer;
-    z-index: 1;
-    -webkit-transform: rotate(45deg);
-    -moz-transform: rotate(45deg);
-    -o-transform: rotate(45deg);
-    -ms-transform: rotate(45deg);
-    transform: rotate(45deg);
-    }
-  
   #time-counter-box {
     background-color: #0fbcf5;
     width: 160px;
@@ -105,15 +92,23 @@
     left: -5px;
     }
 
+  .line-and-marker {
+    float: left;
+    margin-left: 62px;
+    width: 330px;
+    margin-bottom: 20px;
+    position: relative;
+    }
+
   .marker {
     height: 20px; 
     width: 20px; 
     background-color: #9b59bb; 
     border-radius: 30px; 
     padding: 10px; 
-    margin-bottom: 30px;
-    position: relative;
-    left: 20px;
+    position: absolute;
+    left: -60px;
+    top: 10px;
     }
 
   .marker-text {
@@ -123,12 +118,10 @@
     }
 
   .line-area {
-    width: 330px;
+    float: left;
+    width: 260px;
     background-color: #f3f3f6;
     color: black; 
-    position: relative;
-    bottom: 78px;
-    left: 100px;
     border-radius: 10px;
     padding: 20px;
     cursor: pointer;
@@ -138,18 +131,69 @@
     background-color: #c7c7d5;
     }
 
-  #meta-slider-handle {
+  .slider-handle {
     background-color: white;
     height: 10px;
     width: 10px;
+    border: 4px solid #9b59bb; 
     border-radius: 10px;
+    position: relative;
+    }
+
+  #column-slider-handle {
+    right: 4px;
+    }
+
+  #row-slider-handle {
+    bottom: 4px;
     }
 
   #line-container {
     position: absolute;
-    top: 30px;
-    right: 100px;
+    top: 0px; right: 0px; 
+    float: right;
+  }
+
+  .tool-panel {
+    width: 60px;
+    font-size: 40px; 
+    color: #9b59bb; 
+    cursor: pointer;
+    border-radius: 40px;
+    z-index: 1;
+    position: absolute; 
     }
+
+  #new-line-tools {
+    left: 0px;
+    }
+
+  #add-a-line {
+    top: 0px; 
+    right: -20px;
+    }
+
+  #add-a-line-button:hover {
+    background-color: #e6c8e9;
+    }
+
+  #new-line-input {
+    border-radius: 10px;
+    padding: 20px;
+    width: 290px; 
+    height: 65px;
+    float: right;
+    margin-bottom: 60px;
+    }
+
+  #playback-row {
+    width: 420px;
+    height: 10px; 
+    background-color: #9b59bb; 
+    position: relative; top: 10px;
+    border-radius: 10px;
+    }
+
 </style>
 
 <div id="vertical-bar">
@@ -158,14 +202,17 @@
     <div class="title-box-alt"><p><%= @video.title %></p></div>
       <br>
       <div id="new-video-box"></div>
-      <div class='btn btn-info btn-small btn-tiny rounded tight-pack' id='play-pause' style="position: relative; top: 5px; left: 5px;"> 
+      <div id="playback-row">
+        <div id="row-slider-handle" class="slider-handle"></div>
+      </div>
+      <div class='btn btn-info btn-small btn-tiny rounded tight-pack' id='play-pause' style="position: relative; top: 20px; left: 5px;"> 
         <i class='icon-pause'></i> 
       </div>
-      <div class='btn btn-info btn-small btn-tiny rounded tight-pack' id='volume' style="position: relative; top: 5px; left: 5px;">
+      <div class='btn btn-info btn-small btn-tiny rounded tight-pack' id='volume' style="position: relative; top: 20px; left: 5px;">
         <div id='volume-slider'> </div>
         <i class='icon-volume-up'></i> 
       </div>
-      <div class='btn btn-info btn-small btn-tiny rounded tight-pack' style="position: relative; top: 5px; left: 5px;">
+      <div class='btn btn-info btn-small btn-tiny rounded tight-pack' style="position: relative; top: 20px; left: 5px;">
         <div id='volume-slider'> </div>
         <i class='icon-cog'></i> 
       </div>
@@ -174,17 +221,17 @@
   <div id="playback-column-box">
     <div id="playback-column-wrapper">
       <div id="playback-column">
-        <div id="meta-slider-handle"></div>
+        <div id="column-slider-handle" class="slider-handle"></div>
       </div> 
     </div>
   </div>
 
-  <div id="line-container">
-    <div class="add-a-line">
-      <div style="border: 1px solid black; width: 40px; height: 40px; float: right;">
-        Add a line
-      </div>
-    </div>
+  <div id="line-container" class="video-container-alt">
+    <div id="new-line-area"></div>
+  </div>>
+
+  <div id="add-a-line" class="tool-panel">
+    <i class="icon icon-plus"></i>
   </div>
 
   <!-- <div id="scroll-up"><i class="icon icon-caret-up"></i></div> -->
@@ -192,9 +239,6 @@
   <!--<div id="time-counter-box">
     <div id="time-counter"></div>
   </div> -->
-
-  <div class="video-container-alt" style="float: right">
-  </div>
 
 </div>
 <br/>

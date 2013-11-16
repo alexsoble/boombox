@@ -91,8 +91,8 @@ $ ->
     video_duration = window.player.getDuration()
     window.video_duration = video_duration
 
-    $('#new-video-box').before("<div id='youtube-gem-box'>")
-    $('#new-video-box').after("</div>")
+    # $('#new-video-box').before("<div id='youtube-gem-box'>")
+    # $('#new-video-box').after("</div>")
 
     # # # Playback column gets decoration
 
@@ -103,22 +103,35 @@ $ ->
         line = $(".line[data-time=#{time}]")
         line_text = line.text()
         $('#line-container').append("
-          <div class='marker'>
-            <div class='marker-text' data-time=#{time}>
-              #{shortFormatTime(time)}
+          <div class='line-and-marker'>
+            <div class='marker'>
+              <div class='marker-text' data-time=#{time}>
+                #{shortFormatTime(time)}
+              </div>
             </div>
-          </div>
-          <div class='line-area' data-time=#{time}>
-            #{line_text}
+            <div class='line-area' data-time=#{time}>
+              #{line_text}
+            </div>
           </div>
         ")
 
-    $('#meta-slider-handle').draggable({
+    $('#column-slider-handle').draggable({
       axis: "y" 
       containment: "#playback-column-wrapper"
       containment: "#playback-column"
       drag: (event, ui) ->
         $('#line-container').attr("style","top: #{-(10 * ui.position.top)}px")
+    })
+
+    $('#row-slider-handle').draggable({
+      axis: "x" 
+      containment: "#playback-row"
+      drag: (event, ui) ->
+       console.log ui.position.left
+       new_time = ui.position.left * (window.video_duration / 420)
+       window.player.seekTo(new_time)
+      stop: (event, ui) ->
+       window.player.playVideo()
     })
 
     event.target.playVideo().setPlaybackRate(0.5)
@@ -193,3 +206,36 @@ $ ->
   $('.line-area').livequery ->
     $(this).click ->
       window.player.seekTo(parseInt($(this).attr('data-time')))
+
+  $('#add-a-line').click ->
+    $('#new-line-area').html("
+      <textarea id='new-line-input'></textarea>
+      <div id='new-line-tools' class='tool-panel'>
+        <i id='submit-new-line' class='icon icon-check'></i>
+        <i id='back-from-adding-line' class='icon icon-remove'></i>
+        <i id='new-line-options' class='icon icon-cog'></i>
+      </div>
+    ")
+    $(this).remove()
+
+  $('#back-from-adding-line').livequery ->
+    $(this).click ->
+      console.log 'back from adding line!'
+      $('#add-a-line').html("<i class='icon icon-plus'></i>")
+      $('#new-line-area').html('')
+
+  $('#submit-new-line').livequery ->
+    $(this).click ->
+      val = $('#new-line-input').val()
+      time = 0
+      $('#line-container').append("
+        <div class='line-and-marker'>
+          <div class='marker'>
+            <div class='marker-text' data-time=#{time}>
+              #{shortFormatTime(time)}
+            </div>
+          </div>
+          <div class='line-area' data-time=#{time}>
+            #{val}
+          </div>
+        </div>")
