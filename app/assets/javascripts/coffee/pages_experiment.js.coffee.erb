@@ -94,44 +94,24 @@ $ ->
     # $('#new-video-box').before("<div id='youtube-gem-box'>")
     # $('#new-video-box').after("</div>")
 
-    # # # Playback column gets decoration
-
-    $('#playback-column').attr('style',"height: #{video_duration * 10}px")
-
-    for time in [0..video_duration]
-      if $(".line[data-time=#{time}]").length > 0
-        line = $(".line[data-time=#{time}]")
-        line_text = line.text()
-        $('#line-container').append("
-          <div class='line-and-marker'>
-            <div class='marker'>
-              <div class='marker-text' data-time=#{time}>
-                #{shortFormatTime(time)}
-              </div>
-            </div>
-            <div class='line-area' data-time=#{time}>
-              #{line_text}
-            </div>
-          </div>
-        ")
-
     $('#column-slider-handle').draggable({
       axis: "y" 
-      containment: "#playback-column-wrapper"
       containment: "#playback-column"
       drag: (event, ui) ->
-        $('#line-container').attr("style","top: #{-(10 * ui.position.top)}px")
+        $('#line-container').attr("style","top: #{-(5 * ui.position.top)}px")
     })
 
     $('#row-slider-handle').draggable({
       axis: "x" 
       containment: "#playback-row"
       drag: (event, ui) ->
-       console.log ui.position.left
-       new_time = ui.position.left * (window.video_duration / 420)
-       window.player.seekTo(new_time)
+        window.sliding = true
+        console.log ui.position.left
+        new_time = ui.position.left * (window.video_duration / 420)
+        window.player.seekTo(new_time)
       stop: (event, ui) ->
        window.player.playVideo()
+       window.sliding = false
     })
 
     event.target.playVideo().setPlaybackRate(0.5)
@@ -168,21 +148,25 @@ $ ->
 
     $('#time-counter').html("#{shortFormatTime(window.time)}")
     
+    unless window.sliding == true
+      $('#row-slider-handle').attr("style","left: #{window.time * 420 / window.video_duration}px")
+      # $('#row-slider-handle').animate(left: "#{window.time * 420 / window.video_duration}px", 1000)
+    
     if $(".line-area[data-time=#{window.time}]").length != 0
       this_line = $(".line-area[data-time=#{window.time}]")
       unless this_line.hasClass('highlighted')
         this_line.effect("highlight", { color: "#FFFF00" }, 4000)
         this_line.addClass("highlighted")
         slowlyRemoveHighlight(this_line)
+      top = this_line.parent().position().top
+      console.log top
+      $('#line-container').scrollTo(this_line, { duration : 250 })
 
-    ###
-    if $(".line[data-time=#{window.time}]").length > 0
-      time = window.time
-      line = $(".line[data-time=#{time}]")
-      line_area = $(".line-area[data-time=#{time}]")
-      line_area.text(line.text())
-      line_area.removeClass('quiet')
-    ###
+    this_marker = $(".time-marker[data-time-marker=#{window.time}]")
+    unless this_marker.hasClass('highlighted')
+      this_marker.effect("highlight", { color: "#FFFF00" }, 4000)
+      this_marker.addClass("highlighted")
+      slowlyRemoveHighlight(this_marker)
 
   counter = setInterval(countVideoPlayTime, 400)
   done = false

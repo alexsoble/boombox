@@ -18,4 +18,5 @@
 //= require jquery.scrollTo
 //= require jquery.lettering
 //= require jquery.sortElements
+//= require jquery.hoverIntent.minified.js
 //= require_directory .

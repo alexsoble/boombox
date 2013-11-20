@@ -34,6 +34,7 @@ $ ->
 
   youtube_id = $('#data').attr('data-youtube-id')
   window.video_id = parseInt($('#data').attr('data-video-id'))
+  window.duration = parseInt($('#data').attr('data-duration'))
 
   tag = document.createElement("script")
   tag.src = "https://www.youtube.com/iframe_api"
@@ -56,22 +57,25 @@ $ ->
 
   # WE GOTTA HAVE A PLAYBACK SLIDER
 
-  playbackControls = (video_duration) ->
-    $('.playback-left-label.inner-label').html(":00")
-    $('.playback-right-label.inner-label').html("#{shortFormatTime(video_duration)}")
-  
-    $('#playback-slider').slider(
-        min: 0,
-        max: video_duration,
-        value: window.time,
-        step: 1
-        stop: (event, ui) ->
-          player.seekTo($('#playback-slider').slider("value"))
-          window.sliding = false
-        slide: (event, ui) ->
-          window.sliding = true
-          $('#playback-slider').children().html(shortFormatTime(ui.value))
-      )
+  $('#column-slider-handle').draggable({
+    axis: "y" 
+    containment: "#playback-column"
+    drag: (event, ui) ->
+      $('#line-container').attr("style","top: #{-(5 * ui.position.top)}px")
+  })
+
+  $('#row-slider-handle').draggable({
+    axis: "x" 
+    containment: "#playback-row"
+    drag: (event, ui) ->
+      window.sliding = true
+      console.log ui.position.left
+      new_time = ui.position.left * (window.video_duration / 420)
+      window.player.seekTo(new_time)
+    stop: (event, ui) ->
+     window.player.playVideo()
+     window.sliding = false
+  })
 
   window.onYouTubeIframeAPIReady = ->
     player = new YT.Player("new-video-box", {
@@ -121,26 +125,25 @@ $ ->
     exact_time = player.getCurrentTime()
     window.time = Math.floor(exact_time)
 
-    if window.autoscroll == true
-      if $("[data-time=#{window.time}]").length != 0
-        if $('.translation-area').length > 0
-          this_area = $('.translation-area').children().eq(0)
-          this_line = this_area.children(".line-container[data-time=#{window.time}]")
-        else if $('.transcript-area').length > 0 
-          this_area = $('.transcript-area').children().eq(0)
-          this_line = this_area.children(".transcript-line[data-time=#{window.time}]")
-        unless this_line.hasClass('highlighted')
-          this_line.effect("highlight", { color: "#FFFF00" }, 4000)
-          this_line.addClass("highlighted")
-          if this_line.prev().prev().length > 0
-            $("#community-notes").scrollTo(this_line.prev().prev(), { duration : 250 } )
-          else
-            $("#community-notes").scrollTo(this_line, { duration : 250 } )
-
-    # PLAYBACK SLIDER MOVES HERE
     unless window.sliding == true
-      $('#playback-slider').slider("value", window.time)
-      $('#playback-slider').children().html(shortFormatTime(window.time))
+      $('#row-slider-handle').attr("style","left: #{window.time * 420 / window.video_duration}px")
+      # $('#row-slider-handle').animate(left: "#{window.time * 420 / window.video_duration}px", 1000)
+    
+    if $(".line-area[data-time=#{window.time}]").length != 0
+      this_line = $(".line-area[data-time=#{window.time}]")
+      unless this_line.hasClass('highlighted')
+        this_line.effect("highlight", { color: "#FFFF00" }, 4000)
+        this_line.addClass("highlighted")
+        slowlyRemoveHighlight(this_line)
+      top = this_line.parent().position().top
+      console.log top
+      $('#line-container').scrollTo(this_line, { duration : 250 })
+
+    this_marker = $(".time-marker[data-time-marker=#{window.time}]")
+    unless this_marker.hasClass('highlighted')
+      this_marker.effect("highlight", { color: "#FFFF00" }, 4000)
+      this_marker.addClass("highlighted")
+      slowlyRemoveHighlight(this_marker)
 
   counter = setInterval(countVideoPlayTime, 400)
   done = false
@@ -160,6 +163,24 @@ $ ->
       onYouTubeIframeAPIReady()
       $('#watch-again').removeClass('video-finished')
       $('#watch-again').html('')
+
+  $('#column-slider-handle').draggable({
+      axis: "y" 
+      containment: "#playback-column-wrapper"
+      drag: (event, ui) ->
+        $('#line-container').attr("style","top: #{-(10 * ui.position.top)}px")
+    })
+
+    $('#row-slider-handle').draggable({
+      axis: "x" 
+      containment: "#playback-row"
+      drag: (event, ui) ->
+        console.log ui.position.left
+        new_time = ui.position.left * (window.duration / 420)
+        window.player.seekTo(new_time)
+      stop: (event, ui) ->
+        window.player.playVideo()
+    })
 
   # CHECK TO SEE IF A PLAYCOUNT EXISTS FOR THIS USER/VIDEO PAIR; IF NOT, CREATE ONE
   # CHECK TO SEE IF AN INTERPRETATION EXISTS FOR THIS USER/VIDEO PAIR; IF NOT, CREATE ONE

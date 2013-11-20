@@ -140,7 +140,7 @@ Boombox::Application.routes.draw do
   get '/thanks' => 'pages#thankyou'
   get '/contact' => 'pages#contact'
   get '/admin' => 'pages#admin'
-  get '/d3/globe' => 'pages#globe'
-  get '/d3/countries' => 'pages#countries'
+  get '/d3/world' => 'pages#world'
+  get '/d3/names' => 'pages#names'
 
 end

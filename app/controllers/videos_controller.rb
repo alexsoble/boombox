@@ -128,11 +128,19 @@ class VideosController < ApplicationController
   end
 
   def fetch
-    language = Language.find_by_name(params[:term])
-    tags = language.tags
-    @videos = []
-    tags.each { |t| @videos << t.video }
-    render json: { data: @videos } 
+    if params[:type] == "language"
+      language = Language.find_by_name(params[:term])
+      tags = language.tags
+      @videos = []
+      tags.each { |t| @videos << t.video }
+      render json: { data: @videos } 
+    elsif params[:type] == "country"
+      country = Country.find_by_name(params[:term])
+      tags = country.tags
+      @videos = []
+      tags.each { |t| @videos << t.video }
+      render json: { data: @videos } 
+    end  
   end
 
   def find_difficulty

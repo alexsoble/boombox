@@ -31,12 +31,12 @@ $ ->
           window.results = []
           for e in entries
             console.log e
-            item = ( label : e.getElementsByTagName("title")[0].textContent, value : (e.getElementsByTagName("id")[0].textContent).substr(e.getElementsByTagName("id")[0].textContent.length - 11) )
+            item = ( label : e.getElementsByTagName("title")[0].textContent, value : (e.getElementsByTagName("id")[0].textContent).substr(e.getElementsByTagName("id")[0].textContent.length - 11), duration : e.getElementsByTagName("group")[0].getElementsByTagName("duration")[0].getAttribute("seconds") )
             results.push item
           $('#results-box').html('').show()
           for r in results
             $('#results-box').append("
-              <div class='video-thumb-box result-thumb-box' data-youtube-id=#{r.value}>
+              <div class='video-thumb-box result-thumb-box' data-youtube-id=#{r.value} data-duration=#{r.duration}>
                 <div class='quiet'>#{r.label}</div>
                 <strong class='center blue'>#{r.label.slice(0,30)}</strong>
                 <br>
@@ -60,7 +60,8 @@ $ ->
     $(this).click ->
       window.youtube_id = $(this).attr('data-youtube-id')
       window.title = $(this).children(':first').html()
-      $.post('/new_video', { 'video' : { 'youtube_id' : "#{window.youtube_id}", 'title' : "#{window.title}" } }, (data) ->
+      duration = $(this).attr('data-duration')
+      $.post('/new_video', { 'video' : { 'youtube_id' : "#{window.youtube_id}", 'title' : "#{window.title}", 'duration' : "#{duration}" } }, (data) ->
         console.log data
         video_slug = data.video.slug
         window.location.href = "/videos/#{video_slug}"

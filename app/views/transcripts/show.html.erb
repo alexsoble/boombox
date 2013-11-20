@@ -1,113 +1,66 @@
-<div id="outer-video-box" class="video-container" style="margin-left: 120px;">
-  <div id="title-box"><h3 style="margin-top: 20px; color:white;"><%= @video.title %></h3></div>
-  <div id="watch-again"></div>
-  <div id="new-video-box"></div>
-  <div id="timer-box"></div>
-  <div id="settings" style="height: 100px;">
-    <div style="margin-top: 15px; position: absolute; left: 22px;">
-      <% if @star.present? %>
-        <span class="big-friendly"><i class="icon icon-star star" id="star-full" data-star-id=<%= @star.id %>></i></span>
-      <% else %>
-        <span class="big-friendly"><i class="icon icon-star-empty star" id="star-empty"></i></span>
-      <% end %>
-      <span id='star-count' class="friendly-big"><%= @transcript.stars.length %></span>
-      &nbsp; <span id='star-notice-area' class="notice"></span>
-    </div>
-    <div style="margin-top: 15px; margin-left: 22px;">
-      <div class='btn btn-info btn-small btn-tiny rounded tight-pack' id='play-pause' style="position: absolute; top: 13px; right: 22px;"> 
+
+<div id="vertical-bar">
+
+  <div class="video-container-alt">
+    <div class="title-box-alt"><p><%= @video.title %></p></div>
+      <br>
+      <div id="new-video-box"></div>
+      <div id="playback-row">
+        <div id="row-slider-handle" class="slider-handle"></div>
+      </div>
+      <div class='btn btn-info btn-small btn-tiny rounded tight-pack' id='play-pause' style="position: relative; top: 20px; left: 5px;"> 
         <i class='icon-pause'></i> 
       </div>
-      <div class='btn btn-info btn-small btn-tiny rounded tight-pack' id='volume' style="position: absolute; top: 13px; right: 62px;">
+      <div class='btn btn-info btn-small btn-tiny rounded tight-pack' id='volume' style="position: relative; top: 20px; left: 5px;">
         <div id='volume-slider'> </div>
         <i class='icon-volume-up'></i> 
       </div>
-    </div>
-    <br>
-  </div>
-</div>
-<div id="social-content-area" class="content-area">
-  <div class="big tab solo" id="all-content">
-    <% if current_user %>
-      <% if current_user.id == @transcript.user.id %>
-        Your transcript
-        <br>
-        <span id="saved-status"></span>
-      <% else %>
-        <%= @user.username %>'s transcript
-      <% end %>
-    <% else %>
-      <%= @user.username %>'s transcript
-    <% end %>
-  </div>
-  <div class="small-tab short"></div>
-
-  <div id="navigation-sidebar">
-    <div class="back-to-video sidebar-option">
-      <i class="icon icon-globe"></i>
-      Main page
-    </div>
-    <% @translations.each do |tr| %>
-      <% user = tr.user.username %>
-      <div class="sidebar-option">
-        <i class="icon icon-file"></i>
-        <%= link_to "Translation by #{user}", translation_url(tr) %>
+      <div class='btn btn-info btn-small btn-tiny rounded tight-pack' style="position: relative; top: 20px; left: 5px;">
+        <div id='volume-slider'> </div>
+        <i class='icon-cog'></i> 
       </div>
-    <% end %>
-    <% if current_user %>
-      <% if current_user.id == @transcript.user.id %>
-        <div class="edit-lines sidebar-option">
-          <i class="icon icon-pencil"></i>
-          Edit / timing
-        </div>
-        <div class="save-lines sidebar-option rounded">
-          <i class="icon icon-save"></i>
-          Save
-        </div>
-        <div class="translate-lines sidebar-option">
-          <i class="icon icon-quote-left"></i>
-          Translate
-        </div>
-        <div class="remove-transcript-dialog sidebar-option">
-          <i class="icon icon-remove"></i>
-          Delete
-        </div>
-        <div class="open-embed-dialog sidebar-option">
-          <i class="icon icon-share"></i>
-          Embed
+  </div>
+
+  <div id="playback-column-box">
+    <div id="playback-column-wrapper">
+      <div id="playback-column">
+        <div id="column-slider-handle" class="slider-handle"></div>
+      </div> 
+    </div>
+  </div>
+
+  <div id="line-container" class="video-container-alt">
+    <div id="new-line-area"></div>
+      <% if @transcript.lines.present? %>
+        <% c = @transcript.user %>
+        <% unless current_user %>
+          <div class='other-user-content'>
+            <p class="friendly"> <%= link_to "#{c.username}", user_url(c) %> added a <%= link_to 'transcript', transcript_path(@transcript) %>: </p>
+        <% else %>
+          <% if current_user.id == c.id %>
+            <div id='current-user-lines' class='current-user-content'>
+              <p class="friendly">You added a transcript (<%= link_to "edit", transcript_path(@transcript) %>):</p>
+          <% else %>
+            <div class='other-user-content'>
+              <p class="friendly"> <%= link_to "#{c.username}", user_url(c) %> added a <%= link_to 'transcript', transcript_path(@transcript) %>: </p>
+            <% end %>
+          <% end %>
+      <% @transcript.lines.reject { |l| l.time.blank? }.sort { |a, b| a.time <=> b.time }.each do |l| %>
+        <div class='line-and-marker'>
+          <div class='marker'>
+            <div class='marker-text' data-time=<%= l.time %>>
+              <%= l.short_formatted_time %>
+            </div>
+          </div>
+          <div class='line-area' data-time=<%= l.time %>>
+            <%= l.lang1 %>
+          </div>
         </div>
       <% end %>
     <% end %>
   </div>
 
-  <div id="community-notes">
-    <div id='transcript-lines'>
-      <% if @timed_lines.present? %>
-        <% if current_user %>
-          <% if current_user.id == @user.id %>
-            <p><strong>Timed lines</strong></p>
-          <% end %>
-        <% end %>
-        <div id="timed-lines">
-          <% @timed_lines.each do |l| %>
-            <%= render "line", :l => l, :user => @user %>
-          <% end %>
-        </div>
-        <br>
-      <% end %>
-      <% if @untimed_lines.present? %>
-        <% if current_user %>
-          <% if current_user.id == @user.id %>
-            <p><strong>Untimed lines</strong></p>
-          <% end %>
-        <% end %>
-        <div id="untimed-lines">
-          <% @untimed_lines.each do |l| %>
-            <%= render "line", :l => l, :user => @user %>
-          <% end %>
-        </div>
-      <% end %>
-    </div>
-  </div>
+
 <% if current_user %>
   <% if current_user.id == @user.id %>
     <div id="dialog-editing-tools" title="Editing Tools">

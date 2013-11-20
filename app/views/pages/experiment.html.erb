@@ -1,200 +1,3 @@
-<style>
-  #vertical-bar {
-    width: 960px;
-    height: 600px;
-    margin-right: auto; 
-    margin-left: auto; 
-    position: relative; 
-    top: 20px;
-    background-color: white;
-    overflow: hidden;
-    }
-
-  .video-container-alt {
-    width: 420px; 
-    background-color: white; 
-    height: 800px; 
-    float: left; 
-    overflow: visible;
-    }
-
-  .title-box-alt {
-    background-color: #9b59bb;
-    border-radius: 10px;
-    padding: 10px;
-    text-align: center;
-    }
-  .title-box-alt p {
-    color: white;
-    }
-
-  #playback-column-box {
-    width: 120px;
-    margin-left: auto; 
-    margin-right: auto;
-    position: relative;
-    }
-
-  #playback-column-wrapper {
-    width: 10px;
-    height: 600px;
-    overflow-y: visible;
-    overflow-x: visible;
-    margin-left: 60px;
-    border-radius: 10px;
-    }
-
-  #playback-column {
-    background-color: #9b59bb;
-    position: relative;
-    }
-
-  #time-counter-box {
-    background-color: #0fbcf5;
-    width: 160px;
-    height: 160px;
-    border-radius: 160px;
-    position: absolute;
-    top: 120px;
-    left: 425px;
-    } 
-
-  #time-counter {
-    font-size: 24px;
-    color: white;
-    line-height: 60px;
-    text-align: center;
-    }
-
-  #scroll-down {
-    position: absolute;
-    top: 620px;
-    z-index: 1;
-    }
-
-  #scroll-up {
-    z-index: 2;
-    color: #9b59bb;
-    font-size: 50px;
-    position: relative;
-    top: 25px;
-    left: 45px;
-    }
-
-  #youtube-gem-box {
-    overflow: hidden;
-    width: 410px;
-    height: 290px;
-    border: 13px solid white;
-    border-radius: 20px;
-    position: absolute;
-    top: 60px;
-    left: -5px;
-    }
-
-  .line-and-marker {
-    float: left;
-    margin-left: 62px;
-    width: 330px;
-    margin-bottom: 20px;
-    position: relative;
-    }
-
-  .marker {
-    height: 20px; 
-    width: 20px; 
-    background-color: #9b59bb; 
-    border-radius: 30px; 
-    padding: 10px; 
-    position: absolute;
-    left: -60px;
-    top: 10px;
-    }
-
-  .marker-text {
-    color: white;
-    font-size: 10px;
-    text-align: center;
-    }
-
-  .line-area {
-    float: left;
-    width: 260px;
-    background-color: #f3f3f6;
-    color: black; 
-    border-radius: 10px;
-    padding: 20px;
-    cursor: pointer;
-    }
-
-  .line-area:hover {
-    background-color: #c7c7d5;
-    }
-
-  .slider-handle {
-    background-color: white;
-    height: 10px;
-    width: 10px;
-    border: 4px solid #9b59bb; 
-    border-radius: 10px;
-    position: relative;
-    }
-
-  #column-slider-handle {
-    right: 4px;
-    }
-
-  #row-slider-handle {
-    bottom: 4px;
-    }
-
-  #line-container {
-    position: absolute;
-    top: 0px; right: 0px; 
-    float: right;
-  }
-
-  .tool-panel {
-    width: 60px;
-    font-size: 40px; 
-    color: #9b59bb; 
-    cursor: pointer;
-    border-radius: 40px;
-    z-index: 1;
-    position: absolute; 
-    }
-
-  #new-line-tools {
-    left: 0px;
-    }
-
-  #add-a-line {
-    top: 0px; 
-    right: -20px;
-    }
-
-  #add-a-line-button:hover {
-    background-color: #e6c8e9;
-    }
-
-  #new-line-input {
-    border-radius: 10px;
-    padding: 20px;
-    width: 290px; 
-    height: 65px;
-    float: right;
-    margin-bottom: 60px;
-    }
-
-  #playback-row {
-    width: 420px;
-    height: 10px; 
-    background-color: #9b59bb; 
-    position: relative; top: 10px;
-    border-radius: 10px;
-    }
-
-</style>
 
 <div id="vertical-bar">
 
@@ -213,17 +16,26 @@
         <i class='icon-volume-up'></i> 
       </div>
       <div class='btn btn-info btn-small btn-tiny rounded tight-pack' style="position: relative; top: 20px; left: 5px;">
-        <div id='volume-slider'> </div>
         <i class='icon-cog'></i> 
       </div>
   </div>
 
   <div id="playback-column-box">
-    <div id="playback-column-wrapper">
-      <div id="playback-column">
-        <div id="column-slider-handle" class="slider-handle"></div>
-      </div> 
-    </div>
+    <% n = 0 %>
+    <% @video.duration.times do |s| %>
+      <% n += 1 %>
+      <!-- <div class='time-marker' data-time-marker=<%= n %>>
+        <div class='marker-text'>
+          <%= n %>
+        </div>
+      </div>
+    </br> -->
+    <% end %>
+
+    <div id="playback-column">
+      <div id="column-slider-handle" class="slider-handle"></div>
+    </div> 
+    
   </div>
 
   <div id="line-container" class="video-container-alt">
@@ -233,12 +45,6 @@
   <div id="add-a-line" class="tool-panel">
     <i class="icon icon-plus"></i>
   </div>
-
-  <!-- <div id="scroll-up"><i class="icon icon-caret-up"></i></div> -->
-  <!-- <div id="scroll-down"><i class="icon icon-caret-down"></i></div> -->
-  <!--<div id="time-counter-box">
-    <div id="time-counter"></div>
-  </div> -->
 
 </div>
 <br/>

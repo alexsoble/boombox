@@ -1,5 +1,5 @@
 class Video < ActiveRecord::Base
-  attr_accessible :title, :youtube_id, :slug
+  attr_accessible :title, :youtube_id, :slug, :duration
   has_many :tags
   has_many :interpretations
   has_many :transcripts

@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20131110201945) do
+ActiveRecord::Schema.define(:version => 20131117150816) do
 
   create_table "challenges", :force => true do |t|
     t.integer  "user_id"
@@ -50,6 +50,12 @@ ActiveRecord::Schema.define(:version => 20131110201945) do
     t.datetime "updated_at",       :null => false
     t.integer  "user_id"
     t.integer  "fill_exercise_id"
+  end
+
+  create_table "countries", :force => true do |t|
+    t.string   "name"
+    t.datetime "created_at", :null => false
+    t.datetime "updated_at", :null => false
   end
 
   create_table "definition_votes", :force => true do |t|
@@ -266,6 +272,7 @@ ActiveRecord::Schema.define(:version => 20131110201945) do
     t.integer  "language_id"
     t.integer  "difficulty_id"
     t.string   "reason"
+    t.integer  "country_id"
   end
 
   create_table "transcripts", :force => true do |t|
@@ -342,6 +349,7 @@ ActiveRecord::Schema.define(:version => 20131110201945) do
     t.datetime "updated_at", :null => false
     t.string   "youtube_id"
     t.string   "slug"
+    t.integer  "duration"
   end
 
   add_index "videos", ["slug"], :name => "index_videos_on_slug"
