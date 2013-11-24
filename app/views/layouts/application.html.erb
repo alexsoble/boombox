@@ -78,14 +78,14 @@
 <%= yield %>
 
 <% if controller_name == 'pages' && action_name != 'experiment' %>
-  <br><br>
+<!--  <br><br>
     <div class="row">
       <p style="text-align: center;">
         <a href="/contact">Contact Us</a> | 
         <a href="/terms">Terms of Use</a> | 
         <a href="/dmca">DMCA Notice</a> 
       </p>
-    </div>
+    </div> -->
 <% end %>
 
 <%= content_tag "div", id: "user-id", data: { user: if current_user then current_user.id else 'logged-out' end } do %>

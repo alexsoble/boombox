@@ -1,8 +1,0 @@
-<% @video = this_interpretation.video %>
-<div class='video-thumb-box'>
-  <strong class='center'><%= link_to "#{@video.title.slice(0,25)}", interpretation_url(this_interpretation) %></strong>
-  <br>
-  <div class='image-box'>
-    <img src='http://img.youtube.com/vi/<%= @video.youtube_id %>/1.jpg'>
-  </div>
-</div>
