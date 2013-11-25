@@ -30,7 +30,7 @@ class VideosController < ApplicationController
     @tags = @video.tags
 
     if @tags.present?
-      language_votes, difficulty_votes, language_count, difficulty_count = [], [], Hash.new(0), Hash.new(0)
+      language_votes, difficulty_votes, country_votes, language_count, difficulty_count, country_count = [], [], [], Hash.new(0), Hash.new(0), Hash.new(0)
 
       @tags.each do |t|
         if t.language.present?
@@ -38,6 +38,9 @@ class VideosController < ApplicationController
         end
         if t.difficulty.present?
           difficulty_votes << t.difficulty
+        end
+        if t.country.present?
+          country_votes << t.country
         end
       end
 
@@ -48,7 +51,7 @@ class VideosController < ApplicationController
       if language_count.present?
         @language = language_count.max_by{ |k, v| v }[0]
       end
-      
+
       if difficulty_votes.present?
         difficulty_votes.each { |difficulty| difficulty_count[difficulty] += 1 }
       end
@@ -57,12 +60,14 @@ class VideosController < ApplicationController
         @difficulty = difficulty_count.max_by{ |k, v| v }[0]
       end
 
-      @video_description_text = @language.name
-
-      if @difficulty.present?
-        @video_description_text += " // #{@difficulty.name}"
+      if country_votes.present?
+        country_votes.each { |country| country_count[country] += 1 }
       end
 
+      if country_count.present?
+        @country = country_count.max_by{ |k, v| v }[0]
+      end
+      
     end
 
     @transcripts = @video.transcripts

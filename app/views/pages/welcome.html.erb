@@ -39,7 +39,7 @@ function fetchVideos(country) {
         title = data.data[i].title;
         slug = data.data[i].slug;
         youtube_id = data.data[i].youtube_id;
-        country_videos_html = "<div class='globe-thumb-box' data-youtube-id=" + youtube_id + " data-slug=" + slug + ">";
+        country_videos_html = "<div class='globe-thumb-box result-thumb-box' data-youtube-id=" + youtube_id + " data-slug=" + slug + ">";
         country_videos_html += "<div class='quiet'>" + slug + "</div>";
         country_videos_html += "<strong class='center blue'>" + title.slice(0,30) + "</strong>";
         country_videos_html += "<br><div class='image-box'><img src='http://img.youtube.com/vi/" + youtube_id + "/1.jpg' /></div><br></div>";

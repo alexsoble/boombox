@@ -135,9 +135,12 @@ $ ->
         this_line.effect("highlight", { color: "#FFFF00" }, 4000)
         this_line.addClass("highlighted")
         slowlyRemoveHighlight(this_line)
-      top = this_line.parent().position().top
-      console.log top
-      $('#line-container').scrollTo(this_line, { duration : 250 })
+        this_line_top = this_line.offset().top - 75
+        console.log this_line_top
+        if this_line_top < 200
+          $('#column-slider-handle').animate(top: "#{this_line_top}px")
+        else
+          $('#line-container').animate(top: "+=#{146 - this_line_top}px")
 
     this_marker = $(".time-marker[data-time-marker=#{window.time}]")
     unless this_marker.hasClass('highlighted')
@@ -171,16 +174,21 @@ $ ->
         $('#line-container').attr("style","top: #{-(10 * ui.position.top)}px")
     })
 
-    $('#row-slider-handle').draggable({
-      axis: "x" 
-      containment: "#playback-row"
-      drag: (event, ui) ->
-        console.log ui.position.left
-        new_time = ui.position.left * (window.duration / 420)
-        window.player.seekTo(new_time)
-      stop: (event, ui) ->
-        window.player.playVideo()
-    })
+  $('#row-slider-handle').draggable({
+    axis: "x" 
+    containment: "#playback-row"
+    drag: (event, ui) ->
+      console.log ui.position.left
+      new_time = ui.position.left * (window.duration / 420)
+      window.player.seekTo(new_time)
+    stop: (event, ui) ->
+      window.player.playVideo()
+  })
+
+  slowlyRemoveHighlight = (line) ->
+  window.setTimeout(->
+    line.removeClass('highlighted')
+  , 4000)
 
   # CHECK TO SEE IF A PLAYCOUNT EXISTS FOR THIS USER/VIDEO PAIR; IF NOT, CREATE ONE
   # CHECK TO SEE IF AN INTERPRETATION EXISTS FOR THIS USER/VIDEO PAIR; IF NOT, CREATE ONE
@@ -914,34 +922,30 @@ $ ->
         else
           postNewChallengeQuestion(challenge, options)
 
-  $('#confirm-tag').hide()
+  $('#add-language').livequery ->
+    $(this).click ->
+      $(this).replaceWith("<input id='language-input' type='text' class='small-input'><br/>")
 
-  $('#tags').click ->
-    $('#tag-list').removeClass('quiet')
-
-  $('#add-tag').autocomplete(
-    source: (request, response) ->
-      $.ajax(
-        url: "/language_list?term=#{request.term}",
-        type: "POST", 
-        dataType: "json",
-        success: (data) ->
-          response($.map(data.data, (item) ->
-            label: item.name,
-            value: item.name
-          ))
-          $('#confirm-tag').show()
-      )
-  ).keyup( (e) ->
-    if e.which == 13
-      console.log 'trigger'
-      language = $(this).val()
-      submitTag(language)
-  )
-
-  $('#confirm-tag').click ->
-    language = $('#add-tag').val()
-    submitTag(language)
+  $('#language-input').livequery ->
+    $(this).autocomplete(
+      source: (request, response) ->
+        $.ajax(
+          url: "/language_list?term=#{request.term}",
+          type: "POST", 
+          dataType: "json",
+          success: (data) ->
+            response($.map(data.data, (item) ->
+              label: item.name,
+              value: item.name
+            ))
+            $('#confirm-tag').show()
+        )
+    ).keyup( (e) ->
+      if e.which == 13
+        console.log 'trigger'
+        language = $(this).val()
+        submitTag(language)
+    )
 
   submitTag = (language) ->
     if window.user_id isnt null

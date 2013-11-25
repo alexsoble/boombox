@@ -61,7 +61,7 @@ $ ->
       $('#results-box').html(results_html)
     )
 
-  $('.video-thumb-box').livequery ->
+  $('.result-thumb-box').livequery ->
     $(this).click ->
       video_slug = $(this).attr('data-slug')
       window.location.href = "/videos/#{video_slug}/"

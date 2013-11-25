@@ -66,31 +66,6 @@ $ ->
   if $('.star').attr('id') == 'star-full'
     window.star_id = parseInt($('#star-full').attr('data-star-id'))
 
-  # WE GOTTA HAVE A PLAYBACK SLIDER
-
-  $('#settings').append("
-    <div class='playback-left-label end-label'><div class='playback-left-label inner-label'></div></div>
-      <div id='playback-slider'></div>
-    <div class='playback-right-label end-label'><div class='playback-right-label inner-label'></div></div>
-  ")
-
-  playbackControls = (video_duration) ->
-    $('.playback-left-label.inner-label').html(":00")
-    $('.playback-right-label.inner-label').html("#{shortFormatTime(video_duration)}")
-  
-    $('#playback-slider').slider(
-        min: 0,
-        max: video_duration,
-        value: window.time,
-        step: 1
-        stop: (event, ui) ->
-          player.seekTo($('#playback-slider').slider("value"))
-          window.sliding = false
-        slide: (event, ui) ->
-          window.sliding = true
-          $('#playback-slider').children().html(shortFormatTime(ui.value))
-      )
-
   window.onYouTubeIframeAPIReady = ->
     player = new YT.Player("new-video-box", {
       height: "315"
@@ -139,20 +114,48 @@ $ ->
     exact_time = player.getCurrentTime()
     window.time = Math.floor(exact_time)
 
-    if $("[data-time=#{window.time}]").length != 0
-      this_line = $(".transcript-line[data-time=#{window.time}]").eq(0)
+    unless window.sliding == true
+      $('#row-slider-handle').attr("style","left: #{window.time * 420 / window.video_duration}px")
+      # $('#row-slider-handle').animate(left: "#{window.time * 420 / window.video_duration}px", 1000)
+    
+    if $(".line-area[data-time=#{window.time}]").length != 0
+      this_line = $(".line-area[data-time=#{window.time}]")
       unless this_line.hasClass('highlighted')
         this_line.effect("highlight", { color: "#FFFF00" }, 4000)
         this_line.addClass("highlighted")
-        $("#community-notes").scrollTo(this_line.prev().prev(), { duration : 250 } )
-
-    # PLAYBACK SLIDER MOVES HERE
-    unless window.sliding == true
-      $('#playback-slider').slider("value", window.time)
-      $('#playback-slider').children().html(shortFormatTime(window.time))
+        slowlyRemoveHighlight(this_line)
+        this_line_top = this_line.offset().top - 75
+        console.log this_line_top
+        if this_line_top < 200
+          $('#column-slider-handle').animate(top: "#{this_line_top}px")
+        else
+          $('#line-container').animate(top: "+=#{146 - this_line_top}px")
 
   counter = setInterval(countVideoPlayTime, 400)
   done = false
+
+  $('#column-slider-handle').draggable({
+      axis: "y" 
+      containment: "#playback-column-wrapper"
+      drag: (event, ui) ->
+        $('#line-container').attr("style","top: #{-(10 * ui.position.top)}px")
+    })
+
+  $('#row-slider-handle').draggable({
+    axis: "x" 
+    containment: "#playback-row"
+    drag: (event, ui) ->
+      console.log ui.position.left
+      new_time = ui.position.left * (window.duration / 420)
+      window.player.seekTo(new_time)
+    stop: (event, ui) ->
+      window.player.playVideo()
+  })
+
+  slowlyRemoveHighlight = (line) ->
+  window.setTimeout(->
+    line.removeClass('highlighted')
+  , 4000)
 
   onPlayerStateChange = (event) ->
     if event.data == YT.PlayerState.PAUSED

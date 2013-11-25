@@ -17,6 +17,10 @@
   font-size: 16px;
 }
 
+.country {
+  cursor: pointer;
+}
+
 #instructions {
   float: left;  
   text-align: center;

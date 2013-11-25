@@ -93,6 +93,11 @@ span { color: black; }
   cursor: pointer;
   color: #007FFF; }
 
+.white-link {
+  color: white; }
+.white-link:hover {
+  color: white; }
+
 .blue-link:hover {
   text-decoration: underline; }
 

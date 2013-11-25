@@ -7,27 +7,43 @@
       <div id="playback-row">
         <div id="row-slider-handle" class="slider-handle"></div>
       </div>
-      <div class='btn btn-info btn-small btn-tiny rounded tight-pack' id='play-pause' style="position: relative; top: 20px; left: 5px;"> 
+      <div class='btn btn-info btn-small btn-tiny rounded tight-pack left-side-button' id='play-pause'> 
         <i class='icon-pause'></i> 
       </div>
-      <div class='btn btn-info btn-small btn-tiny rounded tight-pack' id='volume' style="position: relative; top: 20px; left: 5px;">
+      <div class='btn btn-info btn-small btn-tiny rounded tight-pack left-side-button' id='volume'>
         <div id='volume-slider'> </div>
         <i class='icon-volume-up'></i> 
       </div>
-      <div class='btn btn-info btn-small btn-tiny rounded tight-pack' style="position: relative; top: 20px; left: 5px;">
+      <div class='btn btn-info btn-small btn-tiny rounded tight-pack left-side-button'>
         <i class='icon-cog'></i> 
       </div>
-      <div id='google-plus-button'>
-        <i class='icon-google-plus'></i> 
-      </div>
-      <div class='btn btn-info btn-small btn-tiny rounded tight-pack' id='twitter' style="position: relative; top: 20px; right: 5px; float: right;"> 
-        <i class='icon-twitter'></i> 
-      </div>
-      <div class='btn btn-info btn-small btn-tiny rounded tight-pack' id='fb' style="position: relative; top: 20px; right: 5px; float: right">
+      <div class='btn btn-info btn-small btn-tiny rounded tight-pack right-side-button' id='fb'>
         <i class='icon-facebook'></i> 
       </div>
-      <div class='btn btn-info btn-small btn-tiny rounded tight-pack' id='mail' style="position: relative; top: 20px; right: 5px; float: right">
+      <div class='btn btn-info btn-small btn-tiny rounded tight-pack right-side-button' id='mail'>
         <i class='icon-envelope'></i> 
+      </div>
+      <div class='btn btn-info btn-small btn-tiny rounded tight-pack right-side-button' id='twitter'> 
+        <i class='icon-twitter'></i> 
+      </div>
+      <div class='btn btn-info btn-small btn-tiny rounded tight-pack right-side-button' id='g-plus'>
+        <i class='icon-google-plus'></i> 
+      </div>
+      <br/><br/><br/>
+      <div style="position: relative; top: -10px; font-size: 10px;">
+        <i>
+          <% if @language.present? %>
+            <span id='language'><%= @language.name %> |</span>
+          <% else %>
+            <span id='add-language' class='purple-link'>language  |</span>
+          <% end %>
+          <% if @country.present? %>
+            <span id='country'><%= @country.name %> | </span>
+          <% else %>
+            <span id='add-country' class='purple-link'>country |</span>
+          <% end %>
+          <span id='add-difficulty' class='purple-link'>difficulty</span>
+        </i>
       </div>
   </div>
 
@@ -44,67 +60,28 @@
     <% if @vocabulary.present? %>
         <% @vocabulary_contributors.each do |c| %>
           <% c_words = Word.where(:user_id => c.id, :video_id => @video.id).order("created_at DESC") %>
-            <% unless current_user %>
-              <div class='other-user-content'> 
-                <p class="friendly"> <%= link_to "#{c.username}", user_url(c) %> added vocabulary definitions: </p>
-            <% else %>
-              <% if current_user.id == c.id %>
-                <div id='current-user-definitions' class='current-user-content'>
-                  <p class="friendly">You added vocabulary definitions: </p>
-              <% else %>
-                <div class='other-user-content'> 
-                 <p class="friendly"> <%= link_to "#{c.username}", user_url(c) %> added vocabulary definitions: </p>
-              <% end %>
-            <% end %>
-            <% c_words.each do |w| %>
-              <% d = Definition.where(:word_id => w.id).first %>
-              <% if d.present? %>
-                <div class='line-and-marker'>
-                  <div class='marker'>
-                    <div class='marker-text'></div>
-                  </div>
-                  <div class='line-area'>
-                    <%= link_to "#{w.text + " = " + d.text}", definition_url(d) %></li>
-                  </div>
+            <div class='headline'> 
+              <%= link_to "#{c.username}", user_url(c), :class => "white-link" %>'s vocabulary definitions:
+            </div>
+          <% c_words.each do |w| %>
+            <% d = Definition.where(:word_id => w.id).first %>
+            <% if d.present? %>
+              <div class='line-and-marker'>
+                <div class='marker'>
+                  <div class='marker-text'></div>
                 </div>
-              <% end %>
-            <% end %>
-          </div>
+                <div class='line-area'>
+                  <%= link_to "#{w.text + " = " + d.text}", definition_url(d) %></li>
+                </div>
+              </div>
+          <% end %>
         <% end %>
-      </div>
+      <% end %>   
     <% end %>
     <% if @fill_exercises.present? %>
       <% @fill_exercises.each do |f| %>
-        <% unless current_user %>
-          <div class='line-and-marker'>
-            <div class='marker'>
-              <div class='marker-text'></div>
-            </div>
-            <div class='line-area'>
-              <p class="friendly"> <%= link_to "#{f.user.username}", user_url(f.user) %> added a <%= link_to "fill-in-the-blanks exercise", fill_exercise_url(f) %>. </p>
-            </div>
-          </div>
-        <% else %>
-          <% if current_user.id == f.user.id %>
-            <div class='line-and-marker'>
-              <div class='marker'>
-                <div class='marker-text'></div>
-              </div>
-              <div class='line-area'>
-                <p class="friendly"> <%= link_to "You", user_url(f.user) %> added a <%= link_to "fill-in-the-blanks exercise", fill_exercise_url(f) %>. </p>
-              </div>
-            </div>
-          <% else %>
-            <div class='line-and-marker'>
-              <div class='marker'>
-                <div class='marker-text'></div>
-              </div>
-              <div class='line-area'>
-                <p class="friendly"> <%= link_to "#{f.user.username}", user_url(f.user) %> added a <%= link_to "fill-in-the-blanks exercise", fill_exercise_url(f) %>. </p>
-              </div>
-            </div>
-          <% end %>
-        <% end %>
+        <div class='headline'> 
+          <%= link_to "#{c.username}'s fill-in-the-blanks exercise", user_url(f.user), :class => "white-link" %>
         </div>
       <% end %>
     <% end %>
@@ -112,18 +89,9 @@
       <% @transcripts.each do |t| %>
         <% if t.lines.present? %>
           <% c = t.user %>
-          <% unless current_user %>
-            <div class='other-user-content'>
-              <p class="friendly"> <%= link_to "#{c.username}", user_url(c) %> added a <%= link_to 'transcript', transcript_path(t) %>: </p>
-          <% else %>
-            <% if current_user.id == c.id %>
-              <div id='current-user-lines' class='current-user-content'>
-                <p class="friendly">You added a transcript (<%= link_to "edit", transcript_path(t) %>):</p>
-            <% else %>
-              <div class='other-user-content'>
-                <p class="friendly"> <%= link_to "#{c.username}", user_url(c) %> added a <%= link_to 'transcript', transcript_path(t) %>: </p>
-              <% end %>
-            <% end %>
+            <div class='headline'> 
+              <%= link_to "#{c.username}'s transcript", user_url(c), :class => "white-link" %>
+            </div>
             <% t.lines.reject { |l| l.time.blank? }.sort { |a, b| a.time <=> b.time }.each do |l| %>
               <div class='line-and-marker'>
                 <div class='marker'>
@@ -135,8 +103,11 @@
                   <%= l.lang1 %>
                 </div>
               </div>
+            <% end %>
           <% end %>
-  </div>
+        <% end %>
+      <% end %>
+    </div>
 
   <div id="add-a-line" class="tool-panel">
     <i class="icon icon-plus"></i>
@@ -381,9 +352,6 @@
   </div>
 </div> -->
 
-<% end %>
-<% end %>
-<% end %>
 <div id="dialog-confirm" title="Confirmation">
   <p><span class="ui-icon ui-icon-alert"></span>Sure you want to delete this line?</span></p>
 </div>
