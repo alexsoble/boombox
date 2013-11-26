@@ -1,17 +1,11 @@
 <div class="centerbox">
   <br>
-  <h2><i><strong>Heyu</strong></i> gives <strong>you</strong> the power to turn any YouTube video into a langauge-learning resource.</h2>
-  <br>
+  <h2><i><strong>Heyu</strong></i> gives <strong><i>you</i></strong> the power to turn any YouTube video into a langauge-learning resource.</h2>
+  <h3>Search the globe to find Heyu videos.</h3>
 </div>
+
 <div id="globe-box">
-  <div id="globe"></div>
-</div>
-<div id="country-info-box">
-  <div id="instructions">
-    <h3>Search the globe to find Heyu videos.</h3>
-  </div>
-  <div id="country-name"></div>
-  <div id="country-videos"></div>
+  <div id="globe"></div>  
 </div>
 
 <script src="http://d3js.org/queue.v1.min.js"></script>
@@ -21,32 +15,30 @@
 
 <script>
 
+window.current_country_hover = null; 
+
 function fetchVideos(country) {
-  country.attr('style','opacity: 0.8');
-  country.animate({ opacity : 1.0 }, 4000);
-  $('#instructions').html("");  
   name = country.attr('name');
 
-  $.post("/fetch_videos", { 'type' : 'country', 'term' : name }, function(data) {
-    if (data.data.length === 0) {
-      $('#country-name').html("<strong>" + name + "</strong>:<br/><br/>No videos yet.<br/><a href='/new'>Add one?</a>");
-      $('#country-videos').html("");
-    } else {
-      console.log(data.data);
-      country_videos_html = "<strong>" + name + "</strong>:<br/><a>" + data.data.length + " videos.</a><br/><br/>";
-      $('#country-name').html(country_videos_html);
-      for (var i = 0; i < data.data.length; i++) {
-        title = data.data[i].title;
-        slug = data.data[i].slug;
-        youtube_id = data.data[i].youtube_id;
-        country_videos_html = "<div class='globe-thumb-box result-thumb-box' data-youtube-id=" + youtube_id + " data-slug=" + slug + ">";
-        country_videos_html += "<div class='quiet'>" + slug + "</div>";
-        country_videos_html += "<strong class='center blue'>" + title.slice(0,30) + "</strong>";
-        country_videos_html += "<br><div class='image-box'><img src='http://img.youtube.com/vi/" + youtube_id + "/1.jpg' /></div><br></div>";
+  if (window.current_country_hover !== name) { 
+    window.current_country_hover = name; 
+
+    $('#country-results').remove();
+
+    $.post("/fetch_videos", { 'type' : 'country', 'term' : name }, function(data) {
+      country_position = $(".country[name='" + name + "']").offset();
+      $('body').append("<div id='country-results' style='top: " + country_position.top + "px; left: " + country_position.left + "px'></div>");
+      if (data.data.length === 0) {
+        $('#country-results').html("<strong>" + name + "</strong>:<br/>No videos yet.<br/><a href='/new'>Add one?</a>");
+      } else if (data.data.length === 1) {
+        country_videos_html = "<strong>" + name + "</strong>:<br/><a href='/countries/" + name + "'>" + data.data.length + " video.</a>";
+        $('#country-results').html(country_videos_html);
+      } else {
+        country_videos_html = "<strong>" + name + "</strong>:<br/><a href='/countries/" + name + "'>" + data.data.length + " video.</a>";
+        $('#country-results').html(country_videos_html);
       }
-      $('#country-videos').html(country_videos_html);
-    }
-  });
+    });
+  }
 }
 
 var width = 960,

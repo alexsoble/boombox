@@ -1,20 +1,16 @@
 #globe-box {
-  float: left; 
-  margin-left: 60px;
-  text-align: center;
+  margin-right: auto;
+  margin-left: auto;
+  width: 960px;
 }
 
-#country-info-box {
-  float: left;
-  margin-left: 20px;
-  margin-top: 20px;
-  width: 200px;
-  text-align: center;
-}
-
-#country-name {
-  text-align: center; 
-  font-size: 16px;
+#country-results {
+  z-index: 1; 
+  background-color: white;
+  padding: 10px;
+  border-radius: 10px;
+  position: absolute; 
+  font-size: 11px;
 }
 
 .country {
@@ -25,13 +21,6 @@
   float: left;  
   text-align: center;
   width: 180px;
-}
-
-#country-videos {
-  width: 400px;
-  margin-left: auto;
-  margin-right: auto;
-  text-align: center;
 }
 
 .stroke {
